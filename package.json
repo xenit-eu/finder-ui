@@ -1,0 +1,52 @@
+{
+  "name": "finder-ui",
+  "version": "0.0.1",
+  "description": "Finder UI components using ReactJS",
+  "main": "index.js",
+  "scripts": {
+    "install:all": "npm install && typings install",
+    "test": "karma start ./karma.conf.js --single-run",
+    "test:watch": "karma start ./karma.conf.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/xenit/finder-ui.git"
+  },
+  "keywords": [
+    "finder",
+    "ui",
+    "react"
+  ],
+  "author": "xenit.eu",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/xenit/finder-ui#README",
+  "dependencies": {
+    "material-ui": "^0.16.4",
+    "react": "^15.4.1",
+    "react-dom": "^15.4.1",
+    "react-tap-event-plugin": "^2.0.1"
+  },
+  "devDependencies": {
+    "enzyme": "^2.6.0",
+    "enzyme-matchers": "^2.0.0",
+    "jasmine": "^2.5.2",
+    "jasmine-core": "^2.4.1",
+    "jasmine-enzyme": "^2.0.0",
+    "karma": "^1.2.0",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-cli": "^1.0.1",
+    "karma-edge-launcher": "^0.1.1",
+    "karma-jasmine": "^1.0.2",
+    "karma-junit-reporter": "^1.1.0",
+    "karma-phantomjs-launcher": "^1.0.2",
+    "karma-sourcemap-loader": "^0.3.7",
+    "karma-webpack": "^1.8.0",
+    "react-addons-test-utils": "^15.4.1",
+    "rimraf": "^2.5.4",
+    "typings": "^2.0.0",
+    "webpack": "^1.13.1",
+    "awesome-typescript-loader": "2.1.1",
+    "typescript": "^2.0.10",
+    "ignore-loader": "^0.1.2"
+  }
+}
