@@ -1,6 +1,7 @@
 # Finder UI React components.
 
 Tools:
+
   * [React](https://facebook.github.io/react/)
   * [Material UI](http://www.material-ui.com/) (material design library implemented in react).
   * for unit tests: [karma](https://karma-runner.github.io/1.0/index.html)/[jasmine](https://jasmine.github.io/)/[enzyme](http://airbnb.io/enzyme/).
@@ -42,7 +43,7 @@ Tools:
 
 #### pager hash description
 
-| Parameter    | Description                             |  
+| Key    | Description                             |  
 |--------------|-----------                                |
 | totalItems| total number of rows in searched set   |
 | pageSize| number of rows to be displayed on the page   |
@@ -52,7 +53,7 @@ Tools:
 #### menu item hash description
 
 
-| Parameter    | Description                             |  
+| Key    | Description                             |  
 |--------------|-----------                                |
 | label | label to be displayed for the menu   |
 | onMenuSelected| callback to be called when menu is selected (idx of row passed as parameter) |
