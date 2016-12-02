@@ -1,6 +1,6 @@
 
-import { mount, shallow } from 'enzyme';
-import { DOM as _, createElement as __, Component } from 'react';
+import { mount, shallow, ShallowWrapper } from 'enzyme';
+import { DOM as _, createElement as __, Component, ReactElement } from 'react';
 import { Facets, Facets_t } from './facets';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
@@ -43,14 +43,14 @@ describe('Facets test', function () {
 
         expect(topListItem.prop('primaryText')).toBe(case1.facets[0].label);
 
-        const subListItems = topListItem.prop('nestedItems').map(c => mount(c, { context: { muiTheme: muiTheme } }));
+        const subListItems = topListItem.prop('nestedItems').map((c : ReactElement<any>) => mount(c, { context: { muiTheme: muiTheme } }));
         expect(subListItems.length).toBe(case1.facets[0].values.length);
 
         // check value of sub-items labels.
-        expect(subListItems.map(a => a.prop('primaryText'))).toEqual(case1.facets[0].values.map(a => a.label));
+        expect(subListItems.map((a : ShallowWrapper<any,any>) => a.prop('primaryText'))).toEqual(case1.facets[0].values.map(a => a.label));
 
         // check value of badges (counts)
-        expect(subListItems.map(a => a.find('Badge').text())).toEqual(case1.facets[0].values.map(a => a.count.toString()));
+        expect(subListItems.map((a : ShallowWrapper<any,any>) => a.find('Badge').text())).toEqual(case1.facets[0].values.map(a => a.count.toString()));
 
     });
 
@@ -60,13 +60,13 @@ describe('Facets test', function () {
 
         const wrapper = shallow(__(Facets, case1));
         const topListItem = wrapper.find('ListItem');
-        const subListItems = topListItem.prop('nestedItems').map(c => mount(c, { context: { muiTheme: muiTheme } }));
+        const subListItems = topListItem.prop('nestedItems').map((c : ReactElement<any>) => mount(c, { context: { muiTheme: muiTheme } }));
 
         //subListItems[1].simulate('touchTap');  // doesn't work !
         //console.log(subListItems[1].debug());   
         simulateEvent(subListItems[1].find('EnhancedButton'), 'touchTap');
 
-        expect(case1.onFacetSelected).toHaveBeenCalledWith("F1", "V2");
+        expect(case1.onFacetSelected).toHaveBeenCalledWith("F1", "Facet1", "V2");
 
     });
 

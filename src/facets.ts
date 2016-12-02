@@ -4,31 +4,41 @@ import { List, ListItem } from 'material-ui/List';
 import ActionInfo from 'material-ui/svg-icons/action/info';
 import Badge from 'material-ui/Badge';
 
-export type Facet_t = { name: string, label: string, values: { count: number, label: string, value: string }[] };
+export type OnFacetSelected = (name: string, label: string, value: string) => void;
 
-type facetSub_t = { 
-    facet: Facet_t, 
-    onFacetSelected: (name: string, value: string) => void 
+export type Facet_t = {
+    name: string,
+    label: string,
+    values: {
+        count: number,
+        label: string,
+        value: string
+    }[]
 };
 
-function FacetSub({facet, onFacetSelected}: facetSub_t) : ReactElement<any> {
+type facetSub_t = {
+    facet: Facet_t,
+    onFacetSelected: OnFacetSelected
+};
+
+function FacetSub({facet, onFacetSelected}: facetSub_t): ReactElement<any> {
     return __(ListItem, {
         key: facet.name,
         primaryText: facet.label,
         initiallyOpen: false,
         primaryTogglesNestedList: true,
-        nestedItems: facet.values.map(c => __(ListItem, { key: c.value, onTouchTap: () => onFacetSelected(facet.name, c.value), primaryText: c.label, rightIcon: __(Badge, { badgeContent: c.count }) }))
+        nestedItems: facet.values.map(c => __(ListItem, { key: c.value, onTouchTap: () => onFacetSelected(facet.name, facet.label, c.value), primaryText: c.label, rightIcon: __(Badge, { className: "badge", badgeContent: c.count }) }))
     });
 }
 
-export type Facets_t = { 
-    facets: Facet_t[], 
-    onFacetSelected: (name: string, value: string) => void 
+export type Facets_t = {
+    facets: Facet_t[],
+    onFacetSelected: OnFacetSelected
 };
 
-export function Facets({facets, onFacetSelected}: Facets_t) : ReactElement<any> {
-    return _.div({}, [
-        __(List, { key: "first" }, facets.filter(k => k.values.length).map(facet => FacetSub({ facet: facet, onFacetSelected: onFacetSelected })))
-    ]);
+export function Facets({facets, onFacetSelected}: Facets_t): ReactElement<any> {
+    return _.div({className: "facets"},
+        __(List, { key: "first" }, facets.filter(k => k.values.length > 0).map(facet => FacetSub({ facet: facet, onFacetSelected: onFacetSelected })))
+    );
 }
 

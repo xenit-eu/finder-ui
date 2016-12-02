@@ -16,7 +16,7 @@ function Page ({value, isActive, onClick} : Page_t) : ReactElement<any> {
 }
 
 type Ellipsis_t = {onClick: () => void};
-function Ellipsis ({onClick}) : ReactElement<any> {
+function Ellipsis ({onClick} : Ellipsis_t) : ReactElement<any> {
     return __(FlatButton, { style: flatButtonStyle, label: "...", onClick: onClick });
 }
 
@@ -41,7 +41,7 @@ const LastPageLink = ({isActive, onClick}) => (
 );
 */
 
-const range = (n) => Array.apply(null, Array(n)).map((skip, i) => i);
+const range = (n : number) => Array.apply(null, Array(n)).map((skip : number, i : number) => i);
 
 export type Pager_t = {
     totalItems: number,
@@ -62,16 +62,16 @@ export function Pager ({totalItems, pageSize, selected, pageSelected} : Pager_t)
 
     selected = selected || 1;
 
-    let pages = range(nbOfPages).map(i => __(Page, { key: 'page' + i, value: i + 1, isActive: selected === i + 1, onClick: () => pageSelected(i + 1) }))
+    let pages = range(nbOfPages).map((i : number) => __(Page, { /*key: 'page' + i,*/ value: i + 1, isActive: selected === i + 1, onClick: () => pageSelected(i + 1) }))
 
     //__(FirstPageLink, {isActive: true, onClick: onClick}),
     //__(LastPageLink, {isActive: true, onClick: onClick}),
 
     return _.div({ className: 'pager' }, [
-        __(PreviousPageLink, { key: 'previous', isActive: selected > 1, onClick: () => pageSelected(selected - 1) }),
+        __(PreviousPageLink, { /*key: 'previous',*/ isActive: selected > 1, onClick: () => pageSelected(selected - 1) }),
         _.span({key: 'pages'}, pages),
         maxReached ? "..." : "",
-        __(NextPageLink, { key: 'next', isActive: selected < nbOfPages, onClick: () => pageSelected(selected + 1) }),
+        __(NextPageLink, { /*key: 'next',*/ isActive: selected < nbOfPages, onClick: () => pageSelected(selected + 1) }),
     ]);
 }
 

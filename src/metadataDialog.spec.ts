@@ -8,7 +8,7 @@ import { MetaDataDialog, MetaDataDialog_t, MetadataType_t } from './metadataDial
 const jasmineEnzyme = require('jasmine-enzyme'); // no typings for jasmine-engine => require instead of import.
 
 
-describe('DocList component tests', function () {
+describe('Metadata component', function () {
 
     beforeAll(() => {
         injectTapEventPlugin();
@@ -52,7 +52,7 @@ describe('DocList component tests', function () {
 
         const wrapper = Fixture(MetaDataDialog(props));
 
-        console.log(wrapper.find("Dialog").debug());
+        //console.log(wrapper.find("Dialog").debug());
 
         expect(wrapper.find("Dialog").prop("open")).toBe(true);
 
@@ -79,12 +79,63 @@ describe('DocList component tests', function () {
         };
 
         const wrapper = Fixture(MetaDataDialog(props));
+        const layerWrapper = Fixture(wrapper.find("RenderToLayer").prop('render')()); // render the popup menu layer content !
 
-        //expect(wrapper.find('TextField').length).toBe(props.fields.length);
+        expect(layerWrapper.find('TextField').length).toBe(props.fields.length);
 
-        // !! dialog content not displayed in fixture
+    });
+
+    it('should return all the metadata (with modified ones) when pushing the "save" button', () => {
+
+        const props: MetaDataDialog_t = {
+            opened: true,
+            fields: [{
+                name: "F1",
+                label: "L1",
+                value: "V1",
+                type: MetadataType_t.STRING
+            },{
+                name: "F2",
+                label: "L2",
+                value: "V2",
+                type: MetadataType_t.STRING
+            }],
+            onClose: () => { },
+            onSave: (fields) => { }
+        };
+
+        spyOn(props, "onSave");
+
+        const wrapper = Fixture(MetaDataDialog(props));
+        const layerWrapper = Fixture(wrapper.find("RenderToLayer").prop('render')()); // render the popup menu layer content !
+
+        const inputIdx = 1, inputText = "ABC";
+
+        // change value of input.
+        const textField = layerWrapper.find('TextField').at(inputIdx);
+        const input : any = textField.find('input');
+        input.value = inputText;
+        //textField.simulate('change');
+        textField.prop("onChange")({target: {value: inputText}});
+
+
+        // simulate a click on save button.
+        const saveButton = layerWrapper.find("FlatButton").at(1); // second button is save button 
+        simulateEvent(saveButton, "touchTap");
+
+        expect(props.onSave).toHaveBeenCalledWith([{
+                name: "F1",
+                label: "L1",
+                value: "V1",
+                type: MetadataType_t.STRING
+            },{
+                name: "F2",
+                label: "L2",
+                value: inputText,
+                type: MetadataType_t.STRING
+            }]);
+
     });
 
 
-
-})
+});

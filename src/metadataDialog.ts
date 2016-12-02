@@ -18,16 +18,17 @@ function metadataFilter(a: Metadata_t) {
     return !/\}(store\-protocol|node\-dbid|content|locale|store\-identifier|lastThumbnailModification|node\-uuid)$/.test(a.name);
 }
 
-function DialogActions({handleClose, handleSave}) {
+type DialogActions_t = {
+    handleClose: () => void, 
+    handleSave: () => void
+};
+
+function DialogActions ({handleClose, handleSave} : DialogActions_t) {
     return [
         __(FlatButton, { label: "Cancel", primary: true, onTouchTap: handleClose }),
         __(FlatButton, { label: "Save", primary: true, keyboardFocused: true, onTouchTap: handleSave }),
     ];
 }
-
-type metadata_t = { [k: string]: string[] };
-type props_t = { opened: boolean, fields: metadata_t, handleClose: () => any, handleSave: (fields: { [k: string]: string[] }) => any };
-
 
 const customContentStyle = {
     width: '90%',
@@ -41,7 +42,7 @@ export type MetaDataDialog_t = {
     onSave: (fields: Metadata_t[]) => void
 };
 
-export function MetaDataDialog({opened, fields, onClose, onSave}: MetaDataDialog_t) {
+export function MetaDataDialog ({opened, fields, onClose, onSave}: MetaDataDialog_t) {
     return __(Dialog, {
         title: "Metadata",
         actions: DialogActions({ handleClose: onClose, handleSave: () => onSave(fields) }),
@@ -54,7 +55,7 @@ export function MetaDataDialog({opened, fields, onClose, onSave}: MetaDataDialog
         __(TextField, {
             key: field.name,
             hintText: "Type value...",
-            onChange: evt => field.value = evt.target.value,
+            onChange: (evt: any) => field.value = evt.target.value,
             floatingLabelText: field.label,
             defaultValue: field.value,
             className: 'metadata-field'

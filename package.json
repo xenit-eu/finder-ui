@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "Finder UI components using ReactJS",
   "main": "src/index.ts",
+  "types": "src/index.ts",
   "scripts": {
     "install:all": "npm install && typings install",
     "test": "karma start ./karma.conf.js --single-run",
