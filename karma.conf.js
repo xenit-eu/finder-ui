@@ -33,6 +33,9 @@ module.exports = function (config) {
 
 
         webpack: {  // packaging of app before testing... 
+            /*output: {
+                filename: "[name].js" // cfr https://github.com/webpack/karma-webpack/issues/109
+            },*/
             resolve: {
                 root: path.resolve('./src'),
                 extensions: ['', '.ts', '.js']

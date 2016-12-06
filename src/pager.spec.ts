@@ -34,9 +34,9 @@ describe('Pager component tests', function () {
         
         //console.log(wrapper.debug());
 
-        expect(wrapper.find('Page')).toBeEmpty();
-        expect(wrapper.find('PreviousPageLink')).not.toBeEmpty();
-        expect(wrapper.find('NextPageLink')).not.toBeEmpty();
+        expect(wrapper.find('Page').length).toBe(0);
+        expect(wrapper.find('PreviousPageLink').length).not.toBe(0);
+        expect(wrapper.find('NextPageLink').length).not.toBe(0);
 
         expect(wrapper.find('PreviousPageLink').prop('isActive')).toBe(false);
         expect(wrapper.find('NextPageLink').prop('isActive')).toBe(false);
@@ -58,10 +58,10 @@ describe('Pager component tests', function () {
         
         //console.log(wrapper.find('Page').debug());
 
-        expect(wrapper.find('Page')).not.toBeEmpty();
+        expect(wrapper.find('Page').length).not.toBe(0);
         expect(wrapper.find('Page').length).toBe(1);
-        expect(wrapper.find('PreviousPageLink')).not.toBeEmpty();
-        expect(wrapper.find('NextPageLink')).not.toBeEmpty();
+        expect(wrapper.find('PreviousPageLink').length).not.toBe(0);
+        expect(wrapper.find('NextPageLink').length).not.toBe(0);
 
         expect(wrapper.find('PreviousPageLink').prop('isActive')).toBe(false);
         expect(wrapper.find('NextPageLink').prop('isActive')).toBe(false);
@@ -82,7 +82,7 @@ describe('Pager component tests', function () {
         
         //console.log(wrapper.find('Page').debug());
 
-        expect(wrapper.find('Page')).not.toBeEmpty();
+        expect(wrapper.find('Page').length).not.toBe(0);
         expect(wrapper.find('Page').length).toBe(3);
 
         expect(wrapper.find('PreviousPageLink').prop('isActive')).toBe(false);

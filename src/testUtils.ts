@@ -12,7 +12,7 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme'
  *      cfr https://github.com/airbnb/enzyme/issues/99 
  * 
  */
-export function simulateEvent(wrappedTarget, eventType) {
+export function simulateEvent(wrappedTarget : any, eventType : string) {
     if (wrappedTarget.node) {
         // wrappedTarget was obtained using enzyme's mount()
         const domNode = ReactDOM.findDOMNode(wrappedTarget.node)

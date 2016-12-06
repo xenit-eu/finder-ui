@@ -45,7 +45,7 @@ describe('DocList component tests', function () {
 
         //console.log(wrapper.debug());
 
-        expect(wrapper.find('table')).toBeEmpty();
+        expect(wrapper.find('table').length).toBe(0);
 
     });
 
@@ -80,7 +80,7 @@ describe('DocList component tests', function () {
 
         //console.log(wrapper.debug());
 
-        expect(wrapper.find('table')).not.toBeEmpty();
+        expect(wrapper.find('table').length).not.toBe(0);
         const table = wrapper.find('table');
         expect(table.find('thead tr th').at(1).text()).toBe(props.columns[0].label);
         expect(table.find('tbody tr').length).toBe(props.data.length);
@@ -89,7 +89,7 @@ describe('DocList component tests', function () {
 
         //console.log(table.debug());    
 
-        expect(wrapper.find('Pager')).not.toBeEmpty();
+        expect(wrapper.find('Pager').length).not.toBe(0);
         const pager = wrapper.find('Pager');
 
         //console.log(pager.debug());
@@ -130,7 +130,7 @@ describe('DocList component tests', function () {
 
         const wrapper = Fixture(DocList(props));
 
-        expect(wrapper.find('table')).not.toBeEmpty();
+        expect(wrapper.find('table').length).not.toBe(0);
         const table = wrapper.find('table');
 
         table.find('tbody tr').at(1).simulate('click');
