@@ -24,16 +24,23 @@ const customContentStyle = {
 };
 
 export type MetaData_t = {
+    editionMode: boolean,
     fields: Metadata_t[],
+    onEdit: () => void,
     onSave: (fields: Metadata_t[]) => void
 };
 
-export function MetaData({fields, onSave}: MetaData_t) {
+export function MetaData({editionMode, fields, onEdit, onSave} : MetaData_t) {
     return _.div({ className: 'metadata' }, [
-        _.div({className: 'metadata-header'}, __(FlatButton, { label: "Save", primary: true, keyboardFocused: true, onTouchTap: () => onSave(fields) })),
+        _.div({className: 'metadata-header'}, [
+            editionMode 
+                ?  __(FlatButton, { label: "Save", primary: true, keyboardFocused: true, onTouchTap: () => onSave(fields) }) 
+                : __(FlatButton, { label: "Edit", primary: true, keyboardFocused: true, onTouchTap: () => onEdit() })
+        ]),
         _.div({className: 'metadata-content'}, fields.filter(metadataFilter).map((field) =>
             __(TextField, {
                 key: field.name,
+                disabled: !editionMode,
                 hintText: "Type value...",
                 onChange: (evt : any) => field.value = evt.target.value,
                 floatingLabelText: field.label,

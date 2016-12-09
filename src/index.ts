@@ -5,4 +5,5 @@ export { MetadataType_t, Metadata_t, MetaDataDialog_t, MetaDataDialog } from './
 export { MetaData_t, MetaData } from './metadata';
 export { Facet_t, Facets_t, Facets } from './facets';
 export { DocPreview } from './docpreview';
+export { DocPreviewPdfJs } from './docpreviewPdfJs';
 export { PageMenu_t, MenuItem_t as PageMenuItem_t, PageMenu } from './pageMenu'
