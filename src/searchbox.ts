@@ -43,12 +43,12 @@ export type SearchBox_t = {
 
 export function SearchBox({searching, terms, suggestionList, onRemove, onEnter} : SearchBox_t) : ReactElement<any> {
     return _.div({ className: 'search-box' }, [
-        _.div({ key: "2" }, terms.map((t, i) => __(Chip, { key: t.name, onRequestDelete: () => onRemove(i) }, t.label + ":" + t.value))),
-        _.input({ key: "3", list: 'dropdown-list', placeholder: "Type search term...", onKeyUp: (evt) => detectEnterKey(evt, text => onEnter(text)) }),
+        ...terms.map((t, i) => __(Chip, { key: t.name, onRequestDelete: () => onRemove(i) }, t.label + ":" + t.value)),
+        _.input({ key: "3", list: 'dropdown-list', placeholder: "Type search term...", onKeyUp: (evt : any) => detectEnterKey(evt, text => onEnter(text)) }),
         _.datalist({ key: "4", id: "dropdown-list" }, suggestionList.map(n => _.option({key: n}, n + ':'))),
         _.div({ key: "5", className: 'search-icon' },
             searching
-                ? __(CircularProgress, { size: 0.5, style: searchIconStyle, color: iconColor })
+                ? __(CircularProgress, { size: 24 })
                 : __(SearchIcon, { color: iconColor, onClick: () => onEnter("") })
         )
     ]);
