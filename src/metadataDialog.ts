@@ -15,7 +15,7 @@ export type Metadata_t = {
 };
 
 function metadataFilter(a: Metadata_t) {
-    return !/\}(store\-protocol|node\-dbid|content|locale|store\-identifier|lastThumbnailModification|node\-uuid)$/.test(a.name);
+    return !/\}(store\-protocol|node\-dbid|content|locale|store\-identifier|lastThumbnailModification|node\-uuid|type)$/.test(a.name);
 }
 
 type DialogActions_t = {

@@ -31,6 +31,8 @@ function RowMenu({rowIndex, menuItems, onMenuSelected}: RowMenu_t): ReactElement
     );
 }
 
+export type Row_t = { [k: string]: string };
+
 export enum SortDirection_t {
     NONE,
     ASC,
@@ -40,14 +42,15 @@ export enum SortDirection_t {
 export type Column_t = {
     name: string,
     label: string,
-    alignRight: boolean,
-    sortable: boolean,
-    sortDirection: SortDirection_t,
+    alignRight?: boolean,
+    sortable?: boolean,
+    sortDirection?: SortDirection_t,
+    format?: (a : any, props : Row_t) => string
 };
 
 export type DocList_t = {
     columns: Column_t[],
-    data: { [k: string]: string }[],
+    data: Row_t[],
     pager: Pager_t,
     rowMenu: MenuItem_t[],
     onPageSelected : (pageIndex : number) => void,
@@ -61,12 +64,12 @@ export function DocList({columns, data, pager, onPageSelected, rowMenu, onRowSel
         __(Pager, { totalItems: pager.totalItems, pageSize: pager.pageSize, selected: pager.selected, pageSelected: onPageSelected }),
         _.table({ key: "table", className: 'table table-hover table-striped table-mc-purple table-condensed' }, [
             _.thead({ key: 'header' }, [
-                _.tr({key:'head'}, [_.th({ key: 'Menu' }, ''), ...columns.map(c => _.th({ key: c.name }, c.label))])
+                _.tr({key:'head'}, [_.th({ key: 'Menu' }, ''), ...columns.map(c => _.th({ key: c.name + c.label }, c.label))])
             ]),
             _.tbody({ key: 'body' },
                 data.map((row, i) => _.tr({ key: i, onClick: () => onRowSelected(i) }, [
                     _.td({key: '_menu'}, __(RowMenu, { rowIndex: i, menuItems: rowMenu, onMenuSelected: onMenuSelected })), 
-                    ...columns.map(col => _.td({ key: col.name }, row[col.name]))
+                    ...columns.map(col => _.td({ key: col.name + col.label }, col.format ? col.format(row[col.name], row) : row[col.name]))
                 ]))
             )
         ]) // table

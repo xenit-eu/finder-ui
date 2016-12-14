@@ -20,7 +20,7 @@ export function PageMenu({menuItems, onMenuSelected} : PageMenu_t) {
     return __(IconMenu, {
         iconButtonElement: __(IconButton, {}, __(MoreVertIcon, { color: 'white' })),
         targetOrigin: { horizontal: 'left', vertical: 'top' },
-        anchorOrigin: { horizontal: 'left', vertical: 'top' }
+        anchorOrigin: { horizontal: 'left', vertical: 'top' },
     }, menuItems.map((m, i) =>  __(MenuItem, { key: "m"+i, primaryText: m.label, onTouchTap: () => onMenuSelected(i, m.key) })  )); 
 }
 
