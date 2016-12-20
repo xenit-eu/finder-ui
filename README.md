@@ -1,6 +1,6 @@
 # Finder UI React components.
 
-Tools:
+Based on:
 
   * [React](https://facebook.github.io/react/)
   * [Material UI](http://www.material-ui.com/) (material design library implemented in react).
@@ -8,18 +8,20 @@ Tools:
 
 ## Installation
 
-  * to use it: 
-    * npm i --save git+ssh://git@bitbucket.org:xenit/finder-ui.git#<version-tag>
+  * to use it in another package: 
+    * npm i --save git+ssh://git@bitbucket.org:xenit/finder-ui.git#\<version-tag>
 
   * to change/test it:
     * git clone   git@bitbucket.org:xenit/finder-ui.git
     * cd finder-ui
     * npm run install:all
-    * npm run test:watch
+    * npm run test:watch (run all unit tests after each change of sources)
 
-## Usage
+## Components
 
-### DocList
+### _DocList_
+
+Display a paged list of documents, columns can be sorted and each row can have a menu.
 
     DocList({param1: value1, param2: value2, ...})
 
@@ -29,17 +31,24 @@ Tools:
 | data        | array of hash (name => value) to be displayed. The name here should match the name of the column to be displayed in 'columns' |
 | pager       | paging instructions (see below for details) |
 | rowMenu     | Array of Menu Item (hash, see below for details) to be displayed on each row. |
-| rowSelected | callback function called when a row has been clicked (index of selected row is passed to the callback) |
+| onPageSelected | callback function called when a page has been clicked (index of selected page is passed to the callback, starting at 1) |
+| onRowSelected | callback function called when a row has been clicked (index of selected row is passed to the callback) |
+| onMenuSelected | callback indicating the menu called on a specific row  |
+| onSortColumnSelected| callback called when a sort has been requested for a column | 
+
+
 
 #### columns hash description
 
 | Key    | Description                             |  
 |--------------|-----------                                |
-| name         | name identifying uniquely the column (can be the alfresco property name)   |
+| name         | name identifying uniquely the column (the alfresco property name)   |
 | label        | Label to put on top of the table   |
-| alignRight   | Not used yet   |
-| sortable     | boolean indicating if column can be sorted by user   |
-| sortDirection| default sort direction : NONE(default), ASC, DESC   |
+| alignRight   | (optional) Not used yet (default: false)   |
+| sortable     | (optional) boolean indicating if column can be sorted by user (default: false)   |
+| sortDirection| (optional) default sort direction : NONE(default), ASC, DESC   |
+| format       | (optional) function to call to format the data to be displayed |
+
 
 #### pager hash description
 
@@ -48,34 +57,106 @@ Tools:
 | totalItems| total number of rows in searched set   |
 | pageSize| number of rows to be displayed on the page   |
 | selected| selected (active) page (default: 1, starting at 1)   |
-| pageSelected|  callback which is called when new page selected (idx of page, starting at 1, is passed as parameter)   |
+
 
 #### menu item hash description
-
 
 | Key    | Description                             |  
 |--------------|-----------                                |
 | label | label to be displayed for the menu   |
-| onMenuSelected| callback to be called when menu is selected (idx of row passed as parameter) |
+| key | (optional) key of the menu that will be passed to the onMenuSelected callback described above |
 
 
 
-### Facets
+### _Facets_
 
-TBD
+Display alfresco facets in a hierarchical manner.
 
-### SearchBox
+    Facets({param1: value1, param2: value2, ...})
 
-TBD
+| Parameter   | Description                             |  
+|-------------|-----------                                |
+| facets      | facets data to be displayed (see below for more details) |
+| onFacetSelected | callback called when a specific facet value has been clicked |
 
-### MetaDataDialog
+#### facets data structure
 
-TBD
+| Key    | Description                             |  
+|--------------|-----------                                |
+| name | internal name of the facet |
+| label | displayable name of the facet |
+| values | each facet can have a list of values and for each of value we have: count (number of nodes for this facet value), value (value of the facet), label (displayable text for the value) |
 
-### DocPreview
 
-TBD
+### _SearchBox_
 
+Input box allowing the search by terms (node name, creator, ...).
+
+    SearchBox({param1: value1, param2: value2, ...})
+
+| Parameter   | Description                             |  
+|-------------|-----------                                |
+| searching| flag indicating that search process is busy => activate spinner !| 
+| terms| list of existing terms already requested for search.|
+| suggestionList | suggestions to be proposed on the drop-down list when entering a term name. |
+| onRemove | callback called to remove an existing term. |
+| onEnter | callback called when a new text (eventually a term) has been entered. |   
+
+#### Term structure
+
+| Key    | Description                             |  
+|--------------|-----------                                |
+| name | internal name of the term |
+| label | displayable name of the term |
+| value | value entered for this term |
+
+
+### _MetaDataDialog_
+
+Dialog allowing to display and change node metadata (properties).
+
+    MetaDataDialog({param1: value1, param2: value2, ...})
+
+
+| Parameter   | Description                             |  
+|-------------|-----------                                |
+| opened   | flag indicating whether the dialog must be shown.     |
+| fields   | list of metadata fields.     |
+| onClose  | callback called when close/cancel button called (without save)     |
+| onSave   | callback called when save button called     |
+
+#### Metadata field structure
+
+| Key    | Description                             |  
+|--------------|-----------                                |
+| name | internal name of the property (alfresco property name)    |
+| label| displayable name of the property    |
+| value| current value of the property    |
+| type | type : STRING, ...    |
+
+
+### _DocPreview_
+
+Preview of a document (using the browser capabilities to display PDF, JPG, PNG, Movies, ...)
+
+    DocPreview({param1: value1, param2: value2, ...})
+
+| Parameter   | Description                             |  
+|-------------|-----------                                |
+| src         | url of the document to be displayed |
+
+### _DocPreviewPdfJs_
+
+Preview of a document (using the PDFJS library).
+
+    DocPreview({param1: value1, param2: value2, ...})
+
+| Parameter   | Description                             |  
+|-------------|-----------                                |
+| src         | url of the document to be displayed |
+
+
+Note: To use this component, the pdfjs library should be accessible at the following URL: _/alfresco/finder/pdfjs_
 
 ## Implementation notes
 
