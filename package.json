@@ -6,6 +6,7 @@
   "types": "src/index.ts",
   "scripts": {
     "install:all": "npm install && typings install",
+    "typings": "typings install",
     "test": "karma start ./karma.conf.js --single-run",
     "test:watch": "karma start ./karma.conf.js"
   },
