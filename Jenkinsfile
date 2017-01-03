@@ -8,12 +8,9 @@ node {
     def buildNr = "SNAPSHOT"
 
     try {
-        stage 'Node setup + npm install'
-        sh "./gradlew npmInstall npm_run_typings --continue -i"
+        stage 'Node setup + npm install + TESTS'
+        sh "./gradlew npmInstall npm_run_typings npm_test --continue -i"
 
-        state 'Unit tests'
-        sh "./gradlew npm_test --continue -i"
-        
     } catch (err) {
         currentBuild.result = "FAILED"
     } finally {

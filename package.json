@@ -48,7 +48,7 @@
     "typings": "^2.0.0",
     "webpack": "^1.13.1",
     "awesome-typescript-loader": "2.1.1",
-    "typescript": "^2.0.10",
+    "typescript": "2.0.10",
     "ignore-loader": "^0.1.2"
   }
 }
