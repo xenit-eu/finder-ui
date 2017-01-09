@@ -8,9 +8,9 @@ import * as injectTapEventPlugin from 'react-tap-event-plugin';
 import { Fixture, simulateEvent, TestWrapper } from './testUtils';
 
 const muiTheme = getMuiTheme();
-const childLower = { open: true, Toggle: () => { }, text: "ChildBottom", children: [] }
-const childLow = { open: true, Toggle: () => { }, text: "Child", children: [childLower]}
-const case1: DocumentTreeNode_t = { open: true, Toggle: () => { }, text: "Parent", children: [childLow, childLower] };
+const childLower: DocumentTreeNode_t = { open: true,id: "c",isFolder:false, Toggle: () => { }, text: "ChildBottom", children: [] }
+const childLow = { open: true,id: "c",isFolder:false, Toggle: () => { }, text: "Child", children: [childLower]}
+const case1: DocumentTreeNode_t = { open: true,id: "c",isFolder:true, Toggle: () => { }, text: "Parent", children: [childLow, childLower] };
 
 describe('Treeview test', function () {
 

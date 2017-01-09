@@ -1,4 +1,3 @@
-export { DocumentTreeNode, DocumentTreeNode_t, DocumentTree} from './treeview';
 export { Pager_t } from './pager';
 export { DocumentTreeNode, DocumentTreeNode_t, DocumentTree } from './treeview';
 export { MenuItem_t, DocList_t, DocList, SortDirection_t, Column_t, Row_t } from './doclist';

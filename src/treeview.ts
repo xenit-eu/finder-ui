@@ -7,20 +7,35 @@ import ActionGrade from 'material-ui/svg-icons/action/grade';
 import ContentInbox from 'material-ui/svg-icons/content/inbox';
 import ContentDrafts from 'material-ui/svg-icons/content/drafts';
 import ContentSend from 'material-ui/svg-icons/content/send';
+import FileFolder from 'material-ui/svg-icons/file/folder';
 import Subheader from 'material-ui/Subheader';
 import Toggle from 'material-ui/Toggle';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import Avatar from 'material-ui/Avatar';
+import ActionAssignment from 'material-ui/svg-icons/action/assignment';
+
 
 export type DocumentTreeNode_t = {
+    id: any,
     open: boolean,
-    Toggle: () => void,
+    Toggle: (id: any) => void,
     text: string,
-    children: DocumentTreeNode_t[]
+    children: DocumentTreeNode_t[],
+    isFolder: boolean
 }
 
-export function DocumentTreeNode({open, Toggle, text, children}: DocumentTreeNode_t, indexFromParent: number): ReactElement<any> {
-    return __(ListItem, { initiallyOpen: open, primaryTogglesNestedList: (children && children.length > 0), primaryText: text, key: indexFromParent, nestedItems: children.map((v, i) => DocumentTreeNode(v, i)) });
+export function DocumentTreeNode({open, Toggle, text, children, isFolder, id}: DocumentTreeNode_t, indexFromParent: number): ReactElement<any> {
+    let avatar = __(Avatar, { icon: __(isFolder ? FileFolder : ActionAssignment, {}) });
+    return __(ListItem, { 
+        onNestedListToggle: () => Toggle(id),
+        initiallyOpen: open, 
+        leftAvatar: avatar, 
+        primaryTogglesNestedList: (children && children.length > 0), 
+        primaryText: text, 
+        key: indexFromParent, 
+        nestedItems: children.map((v, i) => DocumentTreeNode(v, i)) });
 }
+
 export function DocumentTree(node: DocumentTreeNode_t) {
     return __(List, {}, [DocumentTreeNode(node, 0)]);
 }
