@@ -7,3 +7,4 @@ export { MetaData_t, MetaData } from './metadata';
 export { Facet_t, Facets_t, Facets } from './facets';
 export { DocPreview } from './docpreview';
 export { DocPreviewPdfJs } from './docpreviewPdfjs';
+export { PageMenu, PageMenu_t } from './pageMenu'
