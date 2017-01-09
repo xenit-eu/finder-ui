@@ -1,20 +1,16 @@
 
 import { mount, shallow, ShallowWrapper } from 'enzyme';
 import { DOM as _, createElement as __, Component, ReactElement } from 'react';
-import { Treeview_t, TreeviewElement } from './treeview';
+import { DocumentTree, DocumentTreeNode_t } from './treeview';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import * as injectTapEventPlugin from 'react-tap-event-plugin';
-import { TestWrapper, simulateEvent } from './testUtils';
+import { Fixture, simulateEvent, TestWrapper } from './testUtils';
 
 const muiTheme = getMuiTheme();
-const childLower = { label: "ChildBottom" };
-const childLow = { label: "Sub Child", children: [childLower] };
-const childHigh = { label: "Child", children: [childLow, childLower] };
-const case1: Treeview_t = {
-    label: "Explorer",
-    children: [childHigh, childHigh, childLow]
-}
+const childLower = { open: true, Toggle: () => { }, text: "ChildBottom", children: [] }
+const childLow = { open: true, Toggle: () => { }, text: "Child", children: [childLower]}
+const case1: DocumentTreeNode_t = { open: true, Toggle: () => { }, text: "Parent", children: [childLow, childLower] };
 
 describe('Treeview test', function () {
 
@@ -22,10 +18,12 @@ describe('Treeview test', function () {
         injectTapEventPlugin();
     });
     it('should display nested items', () => {
-
-        const wrapper = shallow(__(TreeviewElement, case1));
-
-        const title = wrapper.childAt(0).text();
-        expect(title).toBe("Explorer");
+        const wrapper = Fixture(__(DocumentTree, case1));
+        let list = wrapper; 
+        const topListItems = list.find('ListItem');
+        expect(topListItems.get(0).props["primaryText"]).toBe("Parent");
+        const subItems = topListItems.at(0).prop("nestedItems").map((c : ReactElement<any>) => Fixture(c, { context: { muiTheme: muiTheme } }));
+        const subItem = subItems[0].find("ListItem").at(0); 
+        expect(subItem.prop("primaryText")).toBe("Child");
     });
 });

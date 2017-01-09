@@ -41,6 +41,6 @@ export class TestWrapper extends Component<any, any> {
     }
 }
 
-export function Fixture (component : ReactElement<any>) {
-    return mount(__(TestWrapper, {}, component));
+export function Fixture (component : ReactElement<any>,context: any= {}) {
+    return mount(__(TestWrapper, context, component));
 }
