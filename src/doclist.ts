@@ -1,6 +1,7 @@
 import { DOM as _, createElement as __, ReactElement } from 'react';
 import { Pager, Pager_t } from './pager'
 
+import FontIcon from 'material-ui/FontIcon';
 import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
@@ -48,6 +49,8 @@ export type Column_t = {
     format?: (a : any, props : Row_t) => string
 };
 
+export type OnSortColumnSelected_t = (columnIndex : number, columnName : string, direction : SortDirection_t) => void;
+
 export type DocList_t = {
     columns: Column_t[],
     data: Row_t[],
@@ -56,15 +59,36 @@ export type DocList_t = {
     onPageSelected : (pageIndex : number) => void,
     onRowSelected: (rowIndex: number) => void,
     onMenuSelected: OnMenuSelected,
-    onSortColumnSelected: (columnIndex : number, columnName : string, direction : SortDirection_t) => void
+    onSortColumnSelected: OnSortColumnSelected_t,
+    className : string
 };
 
-export function DocList({columns, data, pager, onPageSelected, rowMenu, onRowSelected, onMenuSelected, onSortColumnSelected}: DocList_t) : ReactElement<any> {
-    return _.div({ className: 'doclist' }, pager.totalItems ? [
+function sortIcon (c : Column_t, onSortColumnSelected : OnSortColumnSelected_t) : ReactElement<any> | undefined {
+    let iconName : string = "sort";
+    let nextSort : SortDirection_t = SortDirection_t.NONE;
+    switch(c.sortDirection) {
+        case SortDirection_t.ASC:
+            iconName = "sort-asc";
+            nextSort = SortDirection_t.DESC;
+            break;
+        case SortDirection_t.DESC:
+            iconName = "sort-desc";
+            nextSort = SortDirection_t.NONE;
+            break;
+        case SortDirection_t.NONE:
+            iconName = "sort";
+            nextSort = SortDirection_t.ASC;
+            break;
+    }    
+    return c.sortable ? __(FontIcon, {onClick: () => {  onSortColumnSelected(0, c.name, nextSort) }, className:`header-icon fa fa-${iconName}`}) : undefined;
+}
+
+export function DocList({columns, data, pager, onPageSelected, rowMenu, onRowSelected, onMenuSelected, onSortColumnSelected, className }: DocList_t) : ReactElement<any> {
+    return _.div({ className: 'doclist' }, pager.totalItems > 0 ? [
         __(Pager, { totalItems: pager.totalItems, pageSize: pager.pageSize, selected: pager.selected, pageSelected: onPageSelected }),
-        _.table({ key: "table", className: 'table table-hover table-striped table-mc-purple table-condensed' }, [
+        _.table({ key: "table", className: className || 'table table-hover table-striped table-mc-purple table-condensed' }, [
             _.thead({ key: 'header' }, [
-                _.tr({key:'head'}, [_.th({ key: 'Menu' }, ''), ...columns.map(c => _.th({ key: c.name + c.label }, c.label))])
+                _.tr({key:'head'}, [_.th({ key: 'Menu' }, ''), ...columns.map(c => _.th({ key: c.name + c.label }, [sortIcon(c, onSortColumnSelected), c.label]))])
             ]),
             _.tbody({ key: 'body' },
                 data.map((row, i) => _.tr({ key: i, onClick: () => onRowSelected(i) }, [
