@@ -24,18 +24,19 @@ export type DocumentTreeNode_t = {
     isFolder: boolean
 }
 
-export function DocumentTreeNode({open, Toggle, text, children, isFolder, id}: DocumentTreeNode_t, indexFromParent: number): ReactElement<any> {
+export function DocumentTreeNode({open, Toggle, text, children, isFolder, id}: DocumentTreeNode_t): ReactElement<any> {
     let avatar = __(Avatar, { icon: __(isFolder ? FileFolder : ActionAssignment, {}) });
+    console.log("Building a fireloaded toggle: "+id);
     return __(ListItem, { 
-        onNestedListToggle: () => Toggle(id),
+        onNestedListToggle: () => {console.log("Firing a toggle with id: "+id);Toggle(id);},
         initiallyOpen: open, 
         leftAvatar: avatar, 
         primaryTogglesNestedList: (children && children.length > 0), 
         primaryText: text, 
-        key: indexFromParent, 
-        nestedItems: children.map((v, i) => DocumentTreeNode(v, i)) });
+        key: id, 
+        nestedItems: children.map((v, i) => DocumentTreeNode(v)) });
 }
 
 export function DocumentTree(node: DocumentTreeNode_t) {
-    return __(List, {}, [DocumentTreeNode(node, 0)]);
+    return __(List, {}, [DocumentTreeNode(node)]);
 }
