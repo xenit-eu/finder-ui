@@ -3,7 +3,8 @@ import { DOM as _, createElement as __, Component, PropTypes } from 'react';
 import * as injectTapEventPlugin from 'react-tap-event-plugin';
 import { Fixture, simulateEvent } from './testUtils';
 
-import { MetaDataDialog, MetaDataDialog_t, MetadataType_t } from './metadataDialog';
+import { MetadataType_t } from './metadata';
+import { MetaDataDialog, MetaDataDialog_t } from './metadataDialog';
 
 const jasmineEnzyme = require('jasmine-enzyme'); // no typings for jasmine-engine => require instead of import.
 

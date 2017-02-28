@@ -60,8 +60,8 @@ export type DocList_t = {
     onRowSelected: (rowIndex: number) => void,
     onMenuSelected: OnMenuSelected,
     onSortColumnSelected: OnSortColumnSelected_t,
-    className?: string,
-    rowStyle?: (i: number) => any
+    className: string,
+    rowStyle    : (i: number) => any
 };
 
 function sortIcon(c: Column_t, onSortColumnSelected: OnSortColumnSelected_t): ReactElement<any> | undefined {
