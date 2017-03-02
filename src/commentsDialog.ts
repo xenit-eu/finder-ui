@@ -104,7 +104,7 @@ export function commentCards(
             cardText = _.div({ className: "comment-card-body" },
                 _.div({ className: "comment-card-title" }, __(CardTitle, {
                     title: comment.comment,
-                    subtitle: comment.author + " - " + comment.modified, // TODO format datetime
+                    subtitle: comment.author + " - " + calendarTime(comment.modified),
                     style: { "overflow-wrap": "break-word" }
                 })),
                 _.div({ className: "comment-delete-icon" }, __(FontIcon, {
@@ -156,5 +156,13 @@ export function commentCards(
 
 const iconStyle = {
     cursor: "pointer"
+}
+
+declare var require: any
+var moment = require('moment');
+
+const calendarTime = (date: string, format?: string): string => {
+    if (format) return moment(date, format).calendar();
+    else return moment(date).calendar();
 }
 
