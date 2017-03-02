@@ -10,4 +10,4 @@ export { Facet_t, Facets_t, Facets } from './facets';
 export { DocPreview } from './docpreview';
 export { DocPreviewPdfJs } from './docpreviewPdfjs';
 export { PageMenu, PageMenu_t } from './pageMenu';
-export { paneltab, TabsPanelOnChange_t, TabsPanel } from './tabspanel'
+export { TabPanel_t, TabsPanelOnChange_t, TabsPanel, TabsPanel_t } from './tabspanel'
