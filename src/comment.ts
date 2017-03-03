@@ -9,6 +9,7 @@ export type Comment_t = {
     parentNodeRef: string,
     author: string,
     authorDisplayName: string,
+    editable: boolean | undefined,
     editing: boolean,
     title: string,
     comment: string,
@@ -20,7 +21,7 @@ declare var require: any
 var moment = require('moment');
 const calendarTime = (date: string, language?: string, format?: string): string => {
     if (format) return moment(date, format).calendar();
-    else if(language) return moment(date).lang(language).calendar();
+    else if (language) return moment(date).lang(language).calendar();
     else return moment(date).calendar();
 }
 
@@ -56,7 +57,7 @@ export function newCommentCard(onSaveNewComment: (newComment: string) => void) {
 }
 
 export function commentCards(
-    language:string,
+    language: string | undefined,
     comments: Comment_t[],
     onDeleteComment: (commentToDelete: Comment_t) => void,
     onStartEditing: (commentToEdit: Comment_t) => void,
@@ -65,25 +66,27 @@ export function commentCards(
 ) {
     return comments.map((comment: Comment_t) => {
         let cardText: any;
-        if (!comment.editing) {
+        if (!comment.editing || !comment.editable) {
             cardText = _.div({ className: "comment-card-body" },
                 _.div({ className: "comment-card-title" }, __(CardTitle, {
                     title: comment.comment,
                     subtitle: comment.author + " - " + calendarTime(comment.modified, language),
                     style: { "overflow-wrap": "break-word" }
                 })),
-                _.div({ className: "comment-delete-icon" }, __(FontIcon, {
-                    className: `fa fa-trash`,
-                    primary: true,
-                    onTouchTap: () => onDeleteComment(comment),
-                    style: iconStyle
-                })),
-                _.div({ className: "comment-edit-icon" }, __(FontIcon, {
-                    className: `fa fa-pencil`,
-                    primary: true,
-                    onTouchTap: () => onStartEditing(comment),
-                    style: iconStyle
-                }))
+                comment.editable ?
+                    _.div({ className: "comment-delete-icon" }, __(FontIcon, {
+                        className: `fa fa-trash`,
+                        primary: true,
+                        onTouchTap: () => onDeleteComment(comment),
+                        style: iconStyle
+                    })) : "",
+                comment.editable ?
+                    _.div({ className: "comment-edit-icon" }, __(FontIcon, {
+                        className: `fa fa-pencil`,
+                        primary: true,
+                        onTouchTap: () => onStartEditing(comment),
+                        style: iconStyle,
+                    })) : "",
             )
         } else {
             let backupComment: Comment_t = Object.assign({}, comment);
