@@ -21,7 +21,7 @@ declare var require: any
 var moment = require('moment');
 const calendarTime = (date: string, language?: string, format?: string): string => {
     if (format) return moment(date, format).calendar();
-    else if (language) return moment(date).lang(language).calendar();
+    else if (language) return moment(date).locale(language).calendar();
     else return moment(date).calendar();
 }
 
