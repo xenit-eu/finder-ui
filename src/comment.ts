@@ -9,7 +9,7 @@ export type Comment_t = {
     parentNodeRef: string,
     author: string,
     authorDisplayName: string,
-    editable: boolean | undefined,
+    editable: boolean,
     editing: boolean,
     title: string,
     comment: string,
@@ -57,7 +57,7 @@ export function newCommentCard(onSaveNewComment: (newComment: string) => void) {
 }
 
 export function commentCards(
-    language: string | undefined,
+    language: string,
     comments: Comment_t[],
     onDeleteComment: (commentToDelete: Comment_t) => void,
     onStartEditing: (commentToEdit: Comment_t) => void,

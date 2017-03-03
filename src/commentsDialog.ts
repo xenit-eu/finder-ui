@@ -20,7 +20,7 @@ function CommentDialogActions({ handleClose }: CommentDialogActions_t) {
 }
 
 export type CommentsDialog_t = {
-    language: string | undefined,
+    language: string,
     opened: boolean,
     nbrOfComments: number, // To make React re-render when a deep change took place
     comments: Comment_t[],
