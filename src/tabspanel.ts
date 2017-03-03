@@ -10,19 +10,30 @@ export type TabPanel_t = {
 export type TabsPanelOnChange_t = (value: string, event: any, tab: Tab) => void;
 
 export type TabsPanel_t = {
-    tabsInfo: TabPanel_t[], 
-    onchange: TabsPanelOnChange_t, 
-    selectedPanel: string, 
-    key: string,
-    className: string,
+    tabsInfo: TabPanel_t[],
+    onchange: TabsPanelOnChange_t,
+    selectedPanel: string,
 };
 
-export const TabsPanel = ({tabsInfo, onchange, selectedPanel, key, className} : TabsPanel_t) => {
-    const tabChildren = tabsInfo.map((p, i) => __(Tab, { label: p.label, value: name, key: i }, p.content));
+export type TabsPanelStyle = {
+    styleContent?: any,
+    styleContentcssKey?: string,
+    styleTabs?: any,
+    inkBarStyle?: any
+}
+
+
+export const TabsPanel = ({tabsInfo, onchange, selectedPanel}: TabsPanel_t, style: TabsPanelStyle = {}) => {
+    const tabChildren = tabsInfo.map((p, i) => __(Tab, { style: style.styleTabs, label: p.label, value: name, key: i }, p.content));
     let index = tabsInfo.map(p => p.name).indexOf(selectedPanel);
-    const tabs = __(Tabs, {
-                onChange: onchange,
+    let cssKeycontent = style.styleContentcssKey ? style.styleContentcssKey : "tabspanel";
+    const tabs = __(Tabs,{
+            onChange: onchange,
+            inkBarStyle: style.inkBarStyle ? style.inkBarStyle : {},
+            style: style.styleContent,
+            key: style.styleContentcssKey,
+            className: cssKeycontent + ' ' + (true ? 'open' : ''),
             initialSelectedIndex: index,
         }, tabChildren);
-    return _.div({ key: key, className: className }, tabs);
+    return tabs;
 }
