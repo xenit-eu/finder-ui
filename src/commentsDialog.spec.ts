@@ -3,7 +3,7 @@ import { DOM as _, createElement as __, Component, PropTypes } from 'react';
 import * as injectTapEventPlugin from 'react-tap-event-plugin';
 import { Fixture, simulateEvent } from './testUtils';
 
-import { Comment_t } from './commentsDialog';
+import { Comment_t } from './comment';
 import { CommentsDialog_t, CommentsDialog } from './commentsDialog';
 
 const jasmineEnzyme = require('jasmine-enzyme'); // no typings for jasmine-engine => require instead of import.
