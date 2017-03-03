@@ -70,7 +70,7 @@ export function commentCards(
             cardText = _.div({ className: "comment-card-body" },
                 _.div({ className: "comment-card-title" }, __(CardTitle, {
                     title: comment.comment,
-                    subtitle: comment.author + " - " + calendarTime(comment.modified, language),
+                    subtitle: (comment.authorDisplayName ? comment.authorDisplayName : comment.author) + " - " + calendarTime(comment.modified, language),
                     style: { "overflow-wrap": "break-word" }
                 })),
                 comment.editable ?
