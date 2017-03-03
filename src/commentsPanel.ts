@@ -2,6 +2,7 @@ import { DOM as _, createElement as __ } from 'react';
 import { Comment_t, newCommentCard, commentCards } from './comment';
 
 export type CommentsPanel_t = {
+    language: string,
     nbrOfComments: number, // To make React re-render when a deep change took place
     comments: Comment_t[],
     nrOfEditingComments: number, // To make React re-render when a deep change took place
@@ -12,12 +13,12 @@ export type CommentsPanel_t = {
     onCancelEditing: (canceledComment: Comment_t) => void
 };
 
-export function CommentsPanel({ nbrOfComments, comments, nrOfEditingComments, onSaveNewComment, onDeleteComment, onStartEditing, onSaveEditing, onCancelEditing }: CommentsPanel_t) {
+export function CommentsPanel({ language, nbrOfComments, comments, nrOfEditingComments, onSaveNewComment, onDeleteComment, onStartEditing, onSaveEditing, onCancelEditing }: CommentsPanel_t) {
     return _.div({ className: 'comments-panel' }, [
         _.div({ className: 'comments-content' },
             [
                 newCommentCard(onSaveNewComment),
-                ...commentCards(comments, onDeleteComment, onStartEditing, onSaveEditing, onCancelEditing)
+                ...commentCards(language, comments, onDeleteComment, onStartEditing, onSaveEditing, onCancelEditing)
             ])
     ]
     );

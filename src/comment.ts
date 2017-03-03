@@ -18,8 +18,9 @@ export type Comment_t = {
 
 declare var require: any
 var moment = require('moment');
-const calendarTime = (date: string, format?: string): string => {
+const calendarTime = (date: string, language?: string, format?: string): string => {
     if (format) return moment(date, format).calendar();
+    else if(language) return moment(date).lang(language).calendar();
     else return moment(date).calendar();
 }
 
@@ -55,6 +56,7 @@ export function newCommentCard(onSaveNewComment: (newComment: string) => void) {
 }
 
 export function commentCards(
+    language:string,
     comments: Comment_t[],
     onDeleteComment: (commentToDelete: Comment_t) => void,
     onStartEditing: (commentToEdit: Comment_t) => void,
@@ -67,7 +69,7 @@ export function commentCards(
             cardText = _.div({ className: "comment-card-body" },
                 _.div({ className: "comment-card-title" }, __(CardTitle, {
                     title: comment.comment,
-                    subtitle: comment.author + " - " + calendarTime(comment.modified),
+                    subtitle: comment.author + " - " + calendarTime(comment.modified, language),
                     style: { "overflow-wrap": "break-word" }
                 })),
                 _.div({ className: "comment-delete-icon" }, __(FontIcon, {

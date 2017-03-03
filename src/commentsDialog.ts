@@ -20,6 +20,7 @@ function CommentDialogActions({ handleClose }: CommentDialogActions_t) {
 }
 
 export type CommentsDialog_t = {
+    language: string,
     opened: boolean,
     nbrOfComments: number, // To make React re-render when a deep change took place
     comments: Comment_t[],
@@ -32,7 +33,7 @@ export type CommentsDialog_t = {
     onCancelEditing: (canceledComment: Comment_t) => void
 };
 
-export function CommentsDialog({ opened, nbrOfComments, comments, nrOfEditingComments, onClose, onSaveNewComment, onDeleteComment, onStartEditing, onSaveEditing, onCancelEditing }: CommentsDialog_t) {
+export function CommentsDialog({ language, opened, nbrOfComments, comments, nrOfEditingComments, onClose, onSaveNewComment, onDeleteComment, onStartEditing, onSaveEditing, onCancelEditing }: CommentsDialog_t) {
     return __(Dialog, {
         title: "Comments",
         actions: CommentDialogActions({ handleClose: onClose }),
@@ -45,7 +46,7 @@ export function CommentsDialog({ opened, nbrOfComments, comments, nrOfEditingCom
         autoScrollBodyContent: true
     }, [
             newCommentCard(onSaveNewComment),
-            ...commentCards(comments, onDeleteComment, onStartEditing, onSaveEditing, onCancelEditing)
+            ...commentCards(language, comments, onDeleteComment, onStartEditing, onSaveEditing, onCancelEditing)
         ]
     );
 }
