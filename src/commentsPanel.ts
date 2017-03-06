@@ -11,7 +11,7 @@ export type CommentsPanel_t = {
     onCancelEditing: (canceledComment: Comment_t) => void
 };
 
-export function CommentsPanel({ language,  comments,  onSaveNewComment, onDeleteComment, onStartEditing, onSaveEditing, onCancelEditing }: CommentsPanel_t) {
+export function CommentsPanel({ language, comments, onSaveNewComment, onDeleteComment, onStartEditing, onSaveEditing, onCancelEditing }: CommentsPanel_t) {
     return _.div({ className: 'comments-panel' }, [
         _.div({ className: 'comments-content' },
             [

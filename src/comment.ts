@@ -61,7 +61,7 @@ export function commentCards(
     comments: Comment_t[],
     onDeleteComment: (commentToDelete: Comment_t) => void,
     onStartEditing: (commentToEdit: Comment_t) => void,
-    onSaveEditing: (backupComment: Comment_t, updatedComment: Comment_t) => void,
+    onSaveEditing: (updatedComment: Comment_t) => void,
     onCancelEditing: (canceledComment: Comment_t) => void
 ) {
     return comments.map((comment: Comment_t) => {
@@ -103,7 +103,7 @@ export function commentCards(
                 _.div({ className: "comment-save-icon" }, __(FontIcon, {
                     className: `fa fa-floppy-o`,
                     primary: true,
-                    onTouchTap: () => onSaveEditing(backupComment, comment),
+                    onTouchTap: () => onSaveEditing(comment),
                     style: iconStyle
                 })),
                 _.div({ className: "comment-cancel-icon" }, __(FontIcon, {
