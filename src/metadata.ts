@@ -16,6 +16,7 @@ export type Metadata_t = {
     name: string,
     label: string,
     value: string,
+    disable: boolean,
     type: MetadataType_t,
     options?: any  // list of values if type = "LIST", format [{value: 'aaa', text: 'AAA'}, ...]
 };
@@ -29,6 +30,7 @@ class SelectionField extends Component<any, any> {
         return __(SelectField, {
             floatingLabelText: this.props.field.label,
             value: this.state.value,
+            disabled: this.props.disable,
             onChange: (event: any, key: number, payload: any) => { 
                 this.props.field.value = payload; 
                 this.setState({value: payload}) 
@@ -45,40 +47,28 @@ function metadataFilter(a: Metadata_t) {
     return !/\}(store\-protocol|node\-dbid|content|locale|store\-identifier|lastThumbnailModification|node\-uuid)$/.test(a.name);
 }
 
-export function metadataFields (fields: Metadata_t[]) {
+export function metadataFields (fields: Metadata_t[], editable : boolean = true) {
     return fields.filter(metadataFilter).map((field) => {
+        let disable = field.disable;
+        if (!editable) {
+            disable = true;
+        }
         switch(field.type) {
             case MetadataType_t.DATE:
                 return _.span({className: 'metadata-field'}, __(DatePicker, {
                     hintText: "Portrait Inline Dialog", 
                     container: "inline",
+                    disabled: disable,
                     floatingLabelText: field.label,
                     autoOk: true,
                     onChange: (empty : any, newDate: Date) => field.value = newDate.toISOString(),
                     defaultDate: new Date(field.value),
                 }));
 
-/*            case MetadataType_t.LIST:
-                 return _.span({className: 'metadata-field'}, __(AutoComplete, {
-                    floatingLabelText: field.label,
-                    filter: AutoComplete.caseInsensitiveFilter,
-                    onNewRequest: (chosenRequest : string, index : number) => { console.log(chosenRequest, index); if (index >= 0) field.value = field.options[index].value  },
-                    openOnFocus: true,
-                    dataSource: field.options ? field.options : [],
-                 }));
-            case MetadataType_t.LIST:
-                 return _.span({className: 'metadata-field select'}, __(SelectField, {
-                        floatingLabelText: field.label,
-                        value: field.value,
-                        onChange: (event: any, key: number, payload: any) => field.value = payload
-                    }, 
-                    field.options.map((a : any) => __(MenuItem, {value: a.value, primaryText: a.text}))   
-                 ));
-*/
-
             case MetadataType_t.LIST:
                  return _.span({className: 'metadata-field select'}, __(SelectionField, {
-                        field: field
+                        field: field,
+                        disable: disable
                     }));
 
             case MetadataType_t.STRING:
@@ -86,6 +76,7 @@ export function metadataFields (fields: Metadata_t[]) {
                     key: field.name,
                     hintText: "Type value...",
                     onChange: (evt: any) => field.value = evt.target.value,
+                    disabled: disable,
                     floatingLabelText: field.label,
                     defaultValue: field.value,
                     }));
