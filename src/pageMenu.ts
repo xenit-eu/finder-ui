@@ -33,8 +33,8 @@ function MenuItemWrapper({idx, menuItem, onMenuSelected} : MenuItemWrapper_t) : 
         leftIcon: menuItem.iconName !== undefined ? __(FontIcon, {className:`fa ${menuItem.iconName}`}) : undefined,
         rightIcon: menuItem.children !== undefined &&  menuItem.children.length > 0 ?  __(ArrowDropRight) : undefined,
         primaryText: menuItem.label, 
-        onTouchTap: () => onMenuSelected(idx, menuItem.key),
-        menuItems: menuItem.children !== undefined ?  menuItem.children.map((mi, i) => MenuItemWrapper({idx: (idx*100)+i, menuItem: mi, onMenuSelected: onMenuSelected})) : []
+        onTouchTap: () => menuItem.children ? undefined : onMenuSelected(idx, menuItem.key),
+        menuItems: menuItem.children &&  menuItem.children.map((mi, i) => MenuItemWrapper({idx: (idx*100)+i, menuItem: mi, onMenuSelected: onMenuSelected}))
     });
 }
 
