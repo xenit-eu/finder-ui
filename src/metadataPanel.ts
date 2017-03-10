@@ -18,20 +18,21 @@ export type Metadatapanel_style = {
 };
 
 export type MetaDataPanel_t = {
+    allowEdition: boolean,
     editionMode: boolean,
     fields: Metadata_t[],
     onEdit: () => void,
     onSave: (fields: Metadata_t[]) => void
 };
 
-export function MetaDataPanel({editionMode, fields, onEdit, onSave}: MetaDataPanel_t, style? : Metadatapanel_style) {
+export function MetaDataPanel({allowEdition, editionMode, fields, onEdit, onSave}: MetaDataPanel_t, style? : Metadatapanel_style) {
     return _.div({ className: 'metadata' }, [
-        _.div({className: 'metadata-header'}, [
+        allowEdition ? _.div({className: 'metadata-header'}, [
             editionMode 
                 ? __(FlatButton, { label: "Save", primary: true, keyboardFocused: true, onTouchTap: () => onSave(fields) }) 
                 : __(FlatButton, { label: "Edit", primary: true, keyboardFocused: true, onTouchTap: () => onEdit() })
-        ]),
-        _.div({className: 'metadata-content', style: style && style.ContentStyle ? style.ContentStyle : {}}, metadataFields(fields, editionMode))
+        ]) : _.div({className: 'metadata-header'}),
+        _.div({className: 'metadata-content' + (editionMode ? ' edited' : ''), style: style && style.ContentStyle ? style.ContentStyle : {}}, metadataFields(fields, editionMode))
     ]
     );
 
