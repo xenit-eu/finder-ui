@@ -73,7 +73,7 @@ export function metadataFields (fields: Metadata_t[], editable : boolean = true)
 
             case MetadataType_t.STRING:
                 return _.span({className: 'metadata-field'}, __(TextField, {
-                    key: field.name,
+                    key: field.name+field.value,
                     hintText: "Type value...",
                     onChange: (evt: any) => field.value = evt.target.value,
                     disabled: disable,
