@@ -1,4 +1,4 @@
-import { DOM as _, createElement as __, Component } from 'react';
+import { DOM as _, createElement as __, Component, ReactElement } from 'react';
 import TextField from 'material-ui/TextField';
 import DatePicker from 'material-ui/DatePicker';
 import AutoComplete from 'material-ui/AutoComplete';
@@ -45,10 +45,12 @@ class SelectionField extends Component<any, any> {
 
 
 // allows to remove by default alfresco system fields !
-function metadataFilter(a: Metadata_t) {
+function metadataFilter(a: Metadata_t) : boolean {
     return !/\}(store\-protocol|node\-dbid|content|locale|store\-identifier|lastThumbnailModification|node\-uuid)$/.test(a.name);
 }
-function RenderField(field: Metadata_t, editable: boolean){
+
+
+function metadataField (field: Metadata_t, editable: boolean) : ReactElement<any>  {
     let disable = field.disable;
     if (!editable) {
         disable = true;
@@ -90,7 +92,7 @@ const defaultGroup = {
     order: 1000
 };
 
-function GetfieldsInGroups(fields: Metadata_t[],groupInfo: MetadataPanel_GroupInfo){
+function fieldsInGroups (fields: Metadata_t[],groupInfo: MetadataPanel_GroupInfo){
  let groupsWithChildren: { [id: string]: { group: MetaDataPanel_Group, items: Metadata_t[] } } =
         { "default": { group: defaultGroup, items: [] } };
     groupInfo.Groups.forEach(g => groupsWithChildren[g.id] = ({ group: g, items: [] }));
@@ -100,16 +102,18 @@ function GetfieldsInGroups(fields: Metadata_t[],groupInfo: MetadataPanel_GroupIn
     return groupsWithChildrenList;
 }
 
-export function metadataFields(fields: Metadata_t[], editable: boolean = true, groupInfo: MetadataPanel_GroupInfo | undefined = undefined) {
+export function metadataFields (fields: Metadata_t[], editable: boolean = true, groupInfo: MetadataPanel_GroupInfo | undefined = undefined) : ReactElement<any>[] {
     const filteredFields = fields.filter(metadataFilter);
-    if (!groupInfo)
-        return filteredFields.map(f => RenderField(f, editable));
-    let groupsWithChildrenList = GetfieldsInGroups(fields,groupInfo);
-    return groupsWithChildrenList.map(g => {
-        const expandable = g.group.id != "default";
-        const childItems = g.items.map(f => __(CardText, { expandable: expandable }, _.div({},RenderField(f, editable))));
-        const header = __(CardHeader, { title: g.group.label, actAsExpander: expandable, showExpandableButton: expandable });
-        const items = [header,...childItems];
-        return __(Card, {}, items);
-    });
+    if (!groupInfo) {
+        return filteredFields.map(f => metadataField(f, editable));
+    } else {
+        let groupsWithChildrenList = fieldsInGroups(fields,groupInfo);
+        return groupsWithChildrenList.map(g => {
+            const expandable = g.group.id != "default";
+            const childItems = g.items.map(f => __(CardText, { expandable: expandable }, _.div({},metadataField(f, editable))));
+            const header = __(CardHeader, { title: g.group.label, actAsExpander: expandable, showExpandableButton: expandable });
+            const items = [header,...childItems];
+            return __(Card, {}, items);
+        });
+    }
 }

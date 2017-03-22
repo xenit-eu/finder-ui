@@ -33,7 +33,7 @@ export type MetaDataPanel_Group = {
 };
 export type MetadataPanel_GroupInfo = {
     Groups: MetaDataPanel_Group[],
-    ItemToGroup: { [id: string]: string };
+    ItemToGroup: { [id: string]: string }
 }
 
 export function MetaDataPanel({allowEdition, editionMode, fields, onEdit, onSave, groups}: MetaDataPanel_t, style?: Metadatapanel_style) {
