@@ -28,7 +28,8 @@ describe('SearchBox component tests', function () {
             terms: [],
             suggestionList: [],
             onRemove: (idx) => {}, 
-            onEnter: (text) => {}
+            onEnter: (text) => {},
+            onInputChanged: () => {},
         };
 
         spyOn(props, 'onEnter');
@@ -45,7 +46,8 @@ describe('SearchBox component tests', function () {
             terms: [],
             suggestionList: [],
             onRemove: (idx) => {}, 
-            onEnter: (text) => {}
+            onEnter: (text) => {},
+            onInputChanged: () => {},
         };
 
         spyOn(props, 'onEnter');
@@ -75,7 +77,8 @@ describe('SearchBox component tests', function () {
             }],
             suggestionList: [],
             onRemove: (idx) => {}, 
-            onEnter: (text) => {}
+            onEnter: (text) => {},
+            onInputChanged: () => {},
         };
 
         const wrapper = Fixture(SearchBox(props));
@@ -106,7 +109,8 @@ describe('SearchBox component tests', function () {
             }],
             suggestionList: [],
             onRemove: (idx) => {}, 
-            onEnter: (text) => {}
+            onEnter: (text) => {},
+            onInputChanged: () => {},
         };
 
         spyOn(props, 'onRemove');
@@ -138,7 +142,8 @@ describe('SearchBox component tests', function () {
             }],
             suggestionList: ["aaa", "bbb"],
             onRemove: (idx) => {}, 
-            onEnter: (text) => {}
+            onEnter: (text) => {},
+            onInputChanged: () => {},
         };
 
         spyOn(props, 'onRemove');
@@ -146,7 +151,7 @@ describe('SearchBox component tests', function () {
         const wrapper = Fixture(SearchBox(props));
 
         for (let i = 0; i < props.suggestionList.length; i++) {
-            expect(wrapper.find('datalist option').at(i).text()).toBe(props.suggestionList[i] + ':');
+            expect(wrapper.find('datalist option').at(i).text()).toBe(props.suggestionList[i]);
         }
     });
 

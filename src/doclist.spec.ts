@@ -37,7 +37,9 @@ describe('DocList component tests', function () {
             onPageSelected: (pageIndex: number) => { },
             onRowSelected: (rowIndex: number) => { },
             onMenuSelected: (rowIndex: number, menuIndex: number, key?: string) => { },
-            onSortColumnSelected: (columnIndex: number, columnName: string, direction: SortDirection_t) => { }
+            onSortColumnSelected: (columnIndex: number, columnName: string, direction: SortDirection_t) => { },
+            className: '',
+            rowStyle    : (i: number) => {}
         };
 
         //const wrapper = mount(__(TestWrapper, {}, [__(DocList, props)]));
@@ -73,7 +75,9 @@ describe('DocList component tests', function () {
             onPageSelected: (pageIndex: number) => { },
             onRowSelected: (rowIndex: number) => { },
             onMenuSelected: (rowIndex: number, menuIndex: number, key?: string) => { },
-            onSortColumnSelected: (columnIndex: number, columnName: string, direction: SortDirection_t) => { }
+            onSortColumnSelected: (columnIndex: number, columnName: string, direction: SortDirection_t) => { },
+            className: '',
+            rowStyle    : (i: number) => {}
         };
 
         const wrapper = Fixture(DocList(props));
@@ -123,7 +127,9 @@ describe('DocList component tests', function () {
             onPageSelected: (pageIndex: number) => { },
             onRowSelected: (rowIndex: number) => { },
             onMenuSelected: (rowIndex: number, menuIndex: number, key?: string) => { },
-            onSortColumnSelected: (columnIndex: number, columnName: string, direction: SortDirection_t) => { }
+            onSortColumnSelected: (columnIndex: number, columnName: string, direction: SortDirection_t) => { },
+            className: '',
+            rowStyle    : (i: number) => {}
         };
 
         spyOn(props, "onRowSelected");
@@ -133,7 +139,7 @@ describe('DocList component tests', function () {
         expect(wrapper.find('table').length).not.toBe(0);
         const table = wrapper.find('table');
 
-        table.find('tbody tr').at(1).simulate('click');
+        table.find('tbody tr').find('td').at(3).simulate('click');
 
         expect(props.onRowSelected).toHaveBeenCalledWith(1);
     });
@@ -164,7 +170,9 @@ describe('DocList component tests', function () {
             onPageSelected: (pageIndex: number) => { },
             onRowSelected: (rowIndex: number) => { },
             onMenuSelected: (rowIndex: number, menuIndex: number, key?: string) => { },
-            onSortColumnSelected: (columnIndex: number, columnName: string, direction: SortDirection_t) => { }
+            onSortColumnSelected: (columnIndex: number, columnName: string, direction: SortDirection_t) => { },
+            className: '',
+            rowStyle    : (i: number) => {}
         };
 
         spyOn(props, "onMenuSelected");
