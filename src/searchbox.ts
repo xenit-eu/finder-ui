@@ -17,15 +17,16 @@ const iconColor = '#512e5f';
 
 //onEnter(input.value, terms);
 
+const reNameValue = /\w+\s*\:\s*\w+/
+
 function detectEnterKey(evt: KeyboardEvent, onSuccess: (enteredText: string) => void, onInputChanged: (newText: string) => void): void {
     var input = <HTMLInputElement>evt.target;
-    var re = /\w+\s*\:\s*\w+/
-    if (evt.keyCode === 13 && (!input.value || re.test(input.value))) {
+    if (evt.keyCode === 13 && (!input.value || reNameValue.test(input.value))) {
         onSuccess(input.value);
         input.value = "";
         return;
     }
-    onInputChanged(input.value);
+    onInputChanged && onInputChanged(input.value);
 }
 
 export type Term_t = {
@@ -35,11 +36,11 @@ export type Term_t = {
 }
 
 export type SearchBox_t = {
-    searching: boolean,                 // flag indicating that search process is busy => activate spinnger ! 
-    terms: Term_t[],                    // list of existing terms already requested for search.
-    suggestionList: string[],          // suggestions to be proposed on the drop-down list.
-    onRemove: (idx: number) => void,   // remove existing term.
-    onEnter: (text: string) => void,    // add new term.
+    searching: boolean,                     // flag indicating that search process is busy => activate spinnger ! 
+    terms: Term_t[],                        // list of existing terms already requested for search.
+    suggestionList: string[],               // suggestions to be proposed on the drop-down list.
+    onRemove: (idx: number) => void,        // remove existing term.
+    onEnter: (text: string) => void,        // add new term.
     onInputChanged: (text: string) => void
 };
 

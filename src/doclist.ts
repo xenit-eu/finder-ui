@@ -87,9 +87,9 @@ function sortIcon(c: Column_t, onSortColumnSelected: OnSortColumnSelected_t): Re
 export function DocList({columns, data, pager, onPageSelected, rowMenu, onRowSelected, onMenuSelected, onSortColumnSelected, className, rowStyle}: DocList_t): ReactElement<any> {
     const header = _.thead({ key: 'header' }, [_.tr({ key: 'head' }, [_.th({ key: 'Menu' }, ''), ...columns.map(c => _.th({ key: c.name + c.label }, [sortIcon(c, onSortColumnSelected), c.label]))])]);
     const style = rowStyle ? rowStyle : (i: number) => ({});
-    const bodycontent = data.map((row, i) => _.tr({ style: style(i), key: i, onClick: () => onRowSelected(i) }, [
+    const bodycontent = data.map((row, i) => _.tr({ style: style(i), key: i }, [
         _.td({ key: '_menu' }, __(RowMenu, { rowIndex: i, menuItems: rowMenu, onMenuSelected: onMenuSelected })),
-        ...columns.map(col => _.td({ key: col.name + col.label }, col.format ? col.format(row[col.name], row) : row[col.name]))
+        ...columns.map(col => _.td({ key: col.name + col.label, onClick: () => onRowSelected(i) }, col.format ? col.format(row[col.name], row) : row[col.name]))
     ]));
     const body = _.tbody({ key: 'body' }, bodycontent);
     const tableProps = { key: "table", className: className || 'table table-hover table-striped table-mc-purple table-condensed' };
