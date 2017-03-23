@@ -12,7 +12,7 @@ const flatButtonStyle = {
 
 type Page_t = {value: number, isActive: boolean, onClick: () => void};
 function Page ({value, isActive, onClick} : Page_t) : ReactElement<any> {  
-    return __(FlatButton, { style: flatButtonStyle, label: value.toString(), primary: isActive, onClick: onClick });
+    return __(FlatButton, { style: isActive? { minWidth: 36,color:"grey" }:flatButtonStyle, label: value.toString(), primary: isActive, onClick: onClick });
 }
 
 type Ellipsis_t = {onClick: () => void};
