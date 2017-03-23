@@ -39,9 +39,10 @@ export type MetadataPanel_GroupInfo = {
 export function MetaDataPanel({allowEdition, editionMode, fields, onEdit, onSave, groups}: MetaDataPanel_t, style?: Metadatapanel_style) {
     return _.div({ className: 'metadata' }, [
         allowEdition ? _.div({ className: 'metadata-header' }, [
-            editionMode
-                ? __(FlatButton, { label: "Save", primary: true, keyboardFocused: true, onTouchTap: () => onSave(fields) })
-                : __(FlatButton, { label: "Edit", primary: true, keyboardFocused: true, onTouchTap: () => onEdit(),style:(style && style.Button) ? style.Button : {} })
+            __(FlatButton, {
+                label: editionMode ? "Save" : "Edit", primary: true, keyboardFocused: true,
+                onTouchTap: () => editionMode ? onSave(fields) : onEdit(), style: (style && style.Button) ? style.Button : {}
+            })
         ]) : _.div({ className: 'metadata-header' }),
         _.div({ className: 'metadata-content' + (editionMode ? ' edited' : ''), style: style && style.ContentStyle ? style.ContentStyle : {} }, metadataFields(fields, editionMode, groups))
     ]
