@@ -7,6 +7,8 @@ import SearchIcon from 'material-ui/svg-icons/action/search';
 import RefreshIndicator from 'material-ui/RefreshIndicator';
 import CircularProgress from 'material-ui/CircularProgress';
 
+import './searchbox.less';
+
 const searchIconStyle = {
     position: 'relative',
     top: '-12px',
