@@ -1,6 +1,7 @@
 import { createElement as __, Component, DOM as _, ReactElement } from 'react';
 import { Tabs, Tab } from 'material-ui/Tabs';
 
+import './tabspanel.less';
 
 export type TabPanel_t = {
     label: string,

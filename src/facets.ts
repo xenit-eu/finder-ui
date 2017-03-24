@@ -4,6 +4,8 @@ import { List, ListItem } from 'material-ui/List';
 import ActionInfo from 'material-ui/svg-icons/action/info';
 import Badge from 'material-ui/Badge';
 
+import './facets.less';
+
 export type OnFacetSelected = (name: string, label: string, value: string) => void;
 
 export type Facet_t = {
