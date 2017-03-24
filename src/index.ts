@@ -13,3 +13,4 @@ export { DocPreview } from './docpreview';
 export { DocPreviewPdfJs } from './docpreviewPdfjs';
 export { PageMenu, PageMenu_t, PageMenuItem_t } from './pageMenu';
 export { TabPanel_t, TabsPanelOnChange_t, TabsPanel, TabsPanel_t } from './tabspanel'
+export * from './versionhistoryPanel'
