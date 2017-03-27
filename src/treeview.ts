@@ -1,19 +1,18 @@
 
-import { DOM as _, createElement as __, ReactElement, Component } from 'react';
-import { List, ListItem } from 'material-ui/List';
-import ActionInfo from 'material-ui/svg-icons/action/info';
-import Badge from 'material-ui/Badge';
-import ActionGrade from 'material-ui/svg-icons/action/grade';
-import ContentInbox from 'material-ui/svg-icons/content/inbox';
-import ContentDrafts from 'material-ui/svg-icons/content/drafts';
-import ContentSend from 'material-ui/svg-icons/content/send';
-import FileFolder from 'material-ui/svg-icons/file/folder';
-import Subheader from 'material-ui/Subheader';
-import Toggle from 'material-ui/Toggle';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import Avatar from 'material-ui/Avatar';
-import ActionAssignment from 'material-ui/svg-icons/action/assignment';
-
+import Avatar from "material-ui/Avatar";
+import Badge from "material-ui/Badge";
+import { List, ListItem } from "material-ui/List";
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import Subheader from "material-ui/Subheader";
+import ActionAssignment from "material-ui/svg-icons/action/assignment";
+import ActionGrade from "material-ui/svg-icons/action/grade";
+import ActionInfo from "material-ui/svg-icons/action/info";
+import ContentDrafts from "material-ui/svg-icons/content/drafts";
+import ContentInbox from "material-ui/svg-icons/content/inbox";
+import ContentSend from "material-ui/svg-icons/content/send";
+import FileFolder from "material-ui/svg-icons/file/folder";
+import Toggle from "material-ui/Toggle";
+import { Component, createElement as __, DOM as _, ReactElement } from "react";
 
 export type DocumentTreeNode_t = {
     id: any,
@@ -22,8 +21,8 @@ export type DocumentTreeNode_t = {
     Click: (id: any) => void,
     text: string,
     children: DocumentTreeNode_t[],
-    isFolder: boolean
-}
+    isFolder: boolean,
+};
 
 export function DocumentTreeNode({open, Toggle, Click, text, children, isFolder, id}: DocumentTreeNode_t): ReactElement<any> {
     let avatar = __(Avatar, { icon: __(isFolder ? FileFolder : ActionAssignment, {}) });

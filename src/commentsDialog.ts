@@ -1,21 +1,21 @@
-import { DOM as _, createElement as __ } from 'react';
-import Dialog from 'material-ui/Dialog';
-import FlatButton from 'material-ui/FlatButton';
+import Dialog from "material-ui/Dialog";
+import FlatButton from "material-ui/FlatButton";
+import { createElement as __, DOM as _ } from "react";
 
-import { Comment_t, newCommentCard, commentCards } from './comment';
+import { Comment_t, commentCards, newCommentCard } from "./comment";
 
 const customContentStyle = {
-    width: '90%',
-    maxWidth: 'none',
+    width: "90%",
+    maxWidth: "none",
 };
 
 type CommentDialogActions_t = {
-    handleClose: () => void
+    handleClose: () => void;
 };
 
 function CommentDialogActions({ handleClose }: CommentDialogActions_t) {
     return [
-        __(FlatButton, { label: "Close", primary: true, onTouchTap: handleClose })
+        __(FlatButton, { label: "Close", primary: true, onTouchTap: handleClose }),
     ];
 }
 
@@ -28,23 +28,24 @@ export type CommentsDialog_t = {
     onDeleteComment: (commentToDelete: Comment_t) => void,
     onStartEditing: (commentToEdit: Comment_t) => void,
     onSaveEditing: (updatedComment: Comment_t) => void,
-    onCancelEditing: (canceledComment: Comment_t) => void
+    onCancelEditing: (canceledComment: Comment_t) => void,
 };
 
-export function CommentsDialog({ language, opened, comments, onClose, onSaveNewComment, onDeleteComment, onStartEditing, onSaveEditing, onCancelEditing }: CommentsDialog_t) {
+export function CommentsDialog({ language, opened, comments, onClose, onSaveNewComment,
+                                  onDeleteComment, onStartEditing, onSaveEditing, onCancelEditing }: CommentsDialog_t) {
     return __(Dialog, {
         title: "Comments",
         actions: CommentDialogActions({ handleClose: onClose }),
         modal: true,
         open: opened,
         onRequestClose: onClose,
-        className: 'comments-dialog',
-        bodyClassName: 'comments-content',
+        className: "comments-dialog",
+        bodyClassName: "comments-content",
         contentStyle: customContentStyle,
-        autoScrollBodyContent: true
+        autoScrollBodyContent: true,
     }, [
             newCommentCard(onSaveNewComment),
-            ...commentCards(language, comments, onDeleteComment, onStartEditing, onSaveEditing, onCancelEditing)
-        ]
+            ...commentCards(language, comments, onDeleteComment, onStartEditing, onSaveEditing, onCancelEditing),
+        ],
     );
 }

@@ -8,7 +8,8 @@
     "install:all": "npm install && typings install",
     "typings": "typings install",
     "test": "karma start ./karma.conf.js --single-run",
-    "test:watch": "karma start ./karma.conf.js"
+    "test:watch": "karma start ./karma.conf.js",
+    "lint": "tslint -c ./tslint.json 'src/**/*.ts'"
   },
   "repository": {
     "type": "git",
@@ -32,8 +33,10 @@
     "apixjs": "git+ssh://git@bitbucket.org/xenit/apixjs.git#V1.0.16"
   },
   "devDependencies": {
+    "awesome-typescript-loader": "2.1.1",
     "enzyme": "^2.6.0",
     "enzyme-matchers": "^2.0.0",
+    "ignore-loader": "^0.1.2",
     "jasmine": "^2.5.2",
     "jasmine-core": "^2.4.1",
     "jasmine-enzyme": "^2.0.0",
@@ -48,10 +51,9 @@
     "karma-webpack": "^1.8.0",
     "react-addons-test-utils": "^15.4.1",
     "rimraf": "^2.5.4",
-    "typings": "^2.0.0",
-    "webpack": "^1.13.1",
-    "awesome-typescript-loader": "2.1.1",
+    "tslint": "^4.5.1",
     "typescript": "2.0.10",
-    "ignore-loader": "^0.1.2"
+    "typings": "^2.0.0",
+    "webpack": "^1.13.1"
   }
 }

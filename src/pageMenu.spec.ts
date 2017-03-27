@@ -1,14 +1,14 @@
 
-import { DOM as _, createElement as __ } from 'react';
-import * as injectTapEventPlugin from 'react-tap-event-plugin';
-import { Fixture, simulateEvent } from './testUtils';
+import { createElement as __, DOM as _ } from "react";
+import * as injectTapEventPlugin from "react-tap-event-plugin";
+import { Fixture, simulateEvent } from "./testUtils";
 
-import { PageMenu, PageMenu_t } from './pageMenu';
+import { PageMenu, PageMenu_t } from "./pageMenu";
 
-const jasmineEnzyme = require('jasmine-enzyme'); // no typings for jasmine-engine => require instead of import.
+// tslint:disable-next-line:no-var-requires
+const jasmineEnzyme = require("jasmine-enzyme"); // no typings for jasmine-engine => require instead of import.
 
-
-describe('PageMenu component tests', function () {
+describe("PageMenu component tests", () => {
 
     beforeAll(() => {
         injectTapEventPlugin();
@@ -17,7 +17,7 @@ describe('PageMenu component tests', function () {
         jasmineEnzyme();
     });
 
-    it('should display all menu items (labels) when clicking on icon', () => {
+    it("should display all menu items (labels) when clicking on icon", () => {
 
         const props: PageMenu_t = {
             menuItems: [{
@@ -27,27 +27,26 @@ describe('PageMenu component tests', function () {
              }, {
                 label: "M3",
             }],
-            onMenuSelected: (menuIdx: number, key?: string) => { }
+            onMenuSelected: (menuIdx: number, key?: string) => {},
         };
 
         const wrapper = Fixture(PageMenu(props));
 
         // simulate a click on menu icon to open it ==> no necessary to see layer content!
-        //simulateEvent(wrapper.find('IconButton'), 'touchTap');
+        // simulateEvent(wrapper.find('IconButton'), 'touchTap');
 
         const layer = wrapper.find("Popover RenderToLayer");
-        const layerWrapper = Fixture(layer.prop('render')()); // render the popup menu layer content !
+        const layerWrapper = Fixture(layer.prop("render")()); // render the popup menu layer content !
 
-        expect(layerWrapper.find('MenuItem').length).toBe(props.menuItems.length)
+        expect(layerWrapper.find("MenuItem").length).toBe(props.menuItems.length);
 
         for (let i = 0; i < props.menuItems.length; i++) {
-            expect(layerWrapper.find('MenuItem').at(i).text()).toBe(props.menuItems[i].label);
+            expect(layerWrapper.find("MenuItem").at(i).text()).toBe(props.menuItems[i].label);
         }
 
     });
 
-
-    it('should call the callback function corresponding to the menu item clicked', () => {
+    it("should call the callback function corresponding to the menu item clicked", () => {
 
         const props: PageMenu_t = {
             menuItems: [{
@@ -58,28 +57,25 @@ describe('PageMenu component tests', function () {
             }, {
                 label: "M3",
             }],
-            onMenuSelected: (menuIdx: number, key?: string) => { }
+            onMenuSelected: (menuIdx: number, key?: string) => {},
         };
 
         const clickedIndex = 1;
 
-        spyOn(props, 'onMenuSelected');
+        spyOn(props, "onMenuSelected");
 
         const wrapper = Fixture(PageMenu(props));
 
         // simulate a click on menu icon to open it ==> no necessary to see layer content!
-        //simulateEvent(wrapper.find('IconButton'), 'touchTap');
+        // simulateEvent(wrapper.find('IconButton'), 'touchTap');
 
         const layer = wrapper.find("Popover RenderToLayer");
-        const layerWrapper = Fixture(layer.prop('render')()); // render the popup menu layer content !
+        const layerWrapper = Fixture(layer.prop("render")()); // render the popup menu layer content !
 
-        simulateEvent(layerWrapper.find('MenuItem').at(clickedIndex).find('EnhancedButton'), 'touchTap');
+        simulateEvent(layerWrapper.find("MenuItem").at(clickedIndex).find("EnhancedButton"), "touchTap");
 
         expect(props.onMenuSelected).toHaveBeenCalledWith(clickedIndex, undefined);
 
     });
-
-
-
 
 });

@@ -1,8 +1,9 @@
-import { DOM as _, createElement as __ } from 'react';
-import TextField from 'material-ui/TextField';
-import { Card, CardTitle } from 'material-ui/Card';
-import FontIcon from 'material-ui/FontIcon';
-import FlatButton from 'material-ui/FlatButton';
+import { Card, CardTitle } from "material-ui/Card";
+import FlatButton from "material-ui/FlatButton";
+import FontIcon from "material-ui/FontIcon";
+import TextField from "material-ui/TextField";
+import * as moment from "moment";
+import { createElement as __, DOM as _ } from "react";
 
 export type Comment_t = {
     nodeRef: string,
@@ -14,20 +15,23 @@ export type Comment_t = {
     title: string,
     comment: string,
     created: string,
-    modified: string
+    modified: string,
 };
 
-declare var require: any
-var moment = require('moment');
+declare var require: any;
 const calendarTime = (date: string, language?: string, format?: string): string => {
-    if (format) return moment(date, format).calendar();
-    else if (language) return moment(date).locale(language).calendar();
-    else return moment(date).calendar();
-}
+    if (format) {
+        return moment(date, format).calendar();
+    } else if (language) {
+        return moment(date).locale(language).calendar();
+    } else {
+        return moment(date).calendar();
+    }
+};
 
 const iconStyle = {
-    cursor: "pointer"
-}
+    cursor: "pointer",
+};
 
 export function newCommentCard(onSaveNewComment: (newComment: string) => void) {
     let newComment: string;
@@ -36,23 +40,24 @@ export function newCommentCard(onSaveNewComment: (newComment: string) => void) {
         __(CardTitle, {},
             __(TextField, {
                 className: "comment-card-textfield",
-                hintText: "Add a comment...",
                 floatingLabelText: "Add a comment...",
-                onChange: (evt: any) => newComment = evt.target.value
+                hintText: "Add a comment...",
+                onChange: (evt: any) => newComment = evt.target.value,
             }),
         ),
         _.div({ className: "comment-save-icon" }, __(FontIcon, {
             className: `fa fa-floppy-o`,
-            primary: true,
             onTouchTap: () => {
-                if (newComment && newComment.trim() !== "")
+                if (newComment && newComment.trim() !== "") {
                     onSaveNewComment(newComment.trim());
+                }
             },
-            style: iconStyle
-        }))
+            primary: true,
+            style: iconStyle,
+        })),
 
-    )
-    return _.div({ className: 'comment-card' }, __(Card, {}, cardText)
+    );
+    return _.div({ className: "comment-card" }, __(Card, {}, cardText),
     );
 }
 
@@ -62,7 +67,7 @@ export function commentCards(
     onDeleteComment: (commentToDelete: Comment_t) => void,
     onStartEditing: (commentToEdit: Comment_t) => void,
     onSaveEditing: (updatedComment: Comment_t) => void,
-    onCancelEditing: (canceledComment: Comment_t) => void
+    onCancelEditing: (canceledComment: Comment_t) => void,
 ) {
     return comments.map((comment: Comment_t) => {
         let cardText: any;
@@ -70,15 +75,16 @@ export function commentCards(
             cardText = _.div({ className: "comment-card-body" },
                 _.div({ className: "comment-card-title" }, __(CardTitle, {
                     title: comment.comment,
-                    subtitle: (comment.authorDisplayName ? comment.authorDisplayName : comment.author) + " - " + calendarTime(comment.modified, language),
-                    style: { "overflow-wrap": "break-word" }
+                    subtitle: (comment.authorDisplayName ? comment.authorDisplayName : comment.author)
+                                    + " - " + calendarTime(comment.modified, language),
+                    style: { "overflow-wrap": "break-word" },
                 })),
                 comment.editable ?
                     _.div({ className: "comment-delete-icon" }, __(FontIcon, {
                         className: `fa fa-trash`,
                         primary: true,
                         onTouchTap: () => onDeleteComment(comment),
-                        style: iconStyle
+                        style: iconStyle,
                     })) : "",
                 comment.editable ?
                     _.div({ className: "comment-edit-icon" }, __(FontIcon, {
@@ -87,37 +93,36 @@ export function commentCards(
                         onTouchTap: () => onStartEditing(comment),
                         style: iconStyle,
                     })) : "",
-            )
+            );
         } else {
             let backupComment: Comment_t = Object.assign({}, comment);
-
 
             cardText = _.div({ className: "comment-card-body" },
                 __(CardTitle, {},
                     __(TextField, {
                         className: "comment-card-textfield",
                         onChange: (evt: any) => comment.comment = evt.target.value,
-                        defaultValue: comment.comment
+                        defaultValue: comment.comment,
                     }),
                 ),
                 _.div({ className: "comment-save-icon" }, __(FontIcon, {
                     className: `fa fa-floppy-o`,
                     primary: true,
                     onTouchTap: () => onSaveEditing(comment),
-                    style: iconStyle
+                    style: iconStyle,
                 })),
                 _.div({ className: "comment-cancel-icon" }, __(FontIcon, {
                     className: `fa fa-ban`,
                     primary: true,
                     onTouchTap: () => {
                         comment.comment = backupComment.comment;
-                        onCancelEditing(comment)
+                        onCancelEditing(comment);
                     },
-                    style: iconStyle
-                }))
+                    style: iconStyle,
+                })),
 
-            )
+            );
         }
-        return _.div({ className: 'comment-card' }, __(Card, {}, cardText));
-    })
+        return _.div({ className: "comment-card" }, __(Card, {}, cardText));
+    });
 }

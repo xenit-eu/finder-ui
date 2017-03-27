@@ -1,33 +1,33 @@
-import { DOM as _, createElement as __, ReactElement } from 'react';
-import FlatButton from 'material-ui/FlatButton';
-import FlatButtonProps from 'material-ui/FlatButton';
-//import NavigationFirstPage from 'material-ui/svg-icons/navigation/first-page';
-//import NavigationLastPage from 'material-ui/svg-icons/navigation/last-page';
-import NavigationChevronLeft from 'material-ui/svg-icons/navigation/chevron-left';
-import NavigationChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
+import FlatButton from "material-ui/FlatButton";
+import FlatButtonProps from "material-ui/FlatButton";
+import NavigationChevronLeft from "material-ui/svg-icons/navigation/chevron-left";
+import NavigationChevronRight from "material-ui/svg-icons/navigation/chevron-right";
+import { createElement as __, DOM as _, ReactElement } from "react";
+// import NavigationFirstPage from 'material-ui/svg-icons/navigation/first-page';
+// import NavigationLastPage from 'material-ui/svg-icons/navigation/last-page';
 
 const flatButtonStyle = {
-    minWidth: 36
+    minWidth: 36,
 };
 
 type Page_t = {value: number, isActive: boolean, onClick: () => void};
-function Page ({value, isActive, onClick} : Page_t) : ReactElement<any> {  
-    return __(FlatButton, { style: isActive? { minWidth: 36,color:"grey" }:flatButtonStyle, label: value.toString(), primary: isActive, onClick: onClick });
+function Page ({value, isActive, onClick}: Page_t): ReactElement<any> {
+    return __(FlatButton, { style: isActive ? { minWidth: 36, color: "grey" } : flatButtonStyle, label: value.toString(), primary: isActive, onClick });
 }
 
 type Ellipsis_t = {onClick: () => void};
-function Ellipsis ({onClick} : Ellipsis_t) : ReactElement<any> {
-    return __(FlatButton, { style: flatButtonStyle, label: "...", onClick: onClick });
+function Ellipsis ({onClick}: Ellipsis_t): ReactElement<any> {
+    return __(FlatButton, { style: flatButtonStyle, label: "...", onClick });
 }
 
 type PreviousPageLink_t = {isActive: boolean, onClick: () => void};
-function PreviousPageLink ({isActive, onClick} : PreviousPageLink_t) : ReactElement<any> {
-    return __(FlatButton, { style: flatButtonStyle, icon: __(NavigationChevronLeft, undefined), onClick: onClick, disabled: !isActive });
+function PreviousPageLink ({isActive, onClick}: PreviousPageLink_t): ReactElement<any> {
+    return __(FlatButton, { style: flatButtonStyle, icon: __(NavigationChevronLeft, undefined), onClick, disabled: !isActive });
 }
 
 type NextPageLink_t = {isActive: boolean, onClick: () => void};
-function  NextPageLink ({isActive, onClick} : NextPageLink_t)  : ReactElement<any> {
-    return __(FlatButton, { style: flatButtonStyle, icon: __(NavigationChevronRight, undefined), onClick: onClick, disabled: !isActive });
+function  NextPageLink ({isActive, onClick}: NextPageLink_t): ReactElement<any> {
+    return __(FlatButton, { style: flatButtonStyle, icon: __(NavigationChevronRight, undefined), onClick, disabled: !isActive });
 }
 
 /*
@@ -41,17 +41,16 @@ const LastPageLink = ({isActive, onClick}) => (
 );
 */
 
-const range = (n : number) => Array.apply(null, Array(n)).map((skip : number, i : number) => i);
+const range = (n: number) => Array.apply(null, Array(n)).map((skip: number, i: number) => i);
 
 export type Pager_t = {
     totalItems: number,
     pageSize: number,
     selected: number,
-    pageSelected: (page: number, data?:any) => void
+    pageSelected: (page: number, data?: any) => void,
 };
 
-
-export function Pager ({totalItems, pageSize, selected, pageSelected} : Pager_t) : ReactElement<any> {
+export function Pager ({totalItems, pageSize, selected, pageSelected}: Pager_t): ReactElement<any> {
 
     let nbOfPages = Math.floor(totalItems / pageSize) + ((totalItems % pageSize > 0) ? 1 : 0);
 
@@ -62,14 +61,14 @@ export function Pager ({totalItems, pageSize, selected, pageSelected} : Pager_t)
 
     selected = selected || 1;
 
-    let pages = range(nbOfPages).map((i : number) => __(Page, { /*key: 'page' + i,*/ value: i + 1, isActive: selected === i + 1, onClick: () => pageSelected(i + 1) }))
+    let pages = range(nbOfPages).map((i: number) => __(Page, { /*key: 'page' + i,*/ value: i + 1, isActive: selected === i + 1, onClick: () => pageSelected(i + 1) }));
 
-    //__(FirstPageLink, {isActive: true, onClick: onClick}),
-    //__(LastPageLink, {isActive: true, onClick: onClick}),
+    // __(FirstPageLink, {isActive: true, onClick: onClick}),
+    // __(LastPageLink, {isActive: true, onClick: onClick}),
 
-    return _.div({ className: 'pager' }, [
+    return _.div({ className: "pager" }, [
         __(PreviousPageLink, { /*key: 'previous',*/ isActive: selected > 1, onClick: () => pageSelected(selected - 1) }),
-        _.span({key: 'pages'}, pages),
+        _.span({key: "pages"}, pages),
         maxReached ? "..." : "",
         __(NextPageLink, { /*key: 'next',*/ isActive: selected < nbOfPages, onClick: () => pageSelected(selected + 1) }),
     ]);

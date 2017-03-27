@@ -1,14 +1,14 @@
-import { DOM as _, createElement as __ } from 'react';
-import FlatButton from 'material-ui/FlatButton';
-import Dialog from 'material-ui/Dialog';
-import { Metadata_t, metadataFields } from './metadata';
+import Dialog from "material-ui/Dialog";
+import FlatButton from "material-ui/FlatButton";
+import { createElement as __, DOM as _ } from "react";
+import { Metadata_t, metadataFields } from "./metadata";
 
 type DialogActions_t = {
-    handleClose: () => void, 
-    handleSave: () => void
+    handleClose: () => void,
+    handleSave: () => void,
 };
 
-function DialogActions ({handleClose, handleSave} : DialogActions_t) {
+function DialogActions ({handleClose, handleSave}: DialogActions_t) {
     return [
         __(FlatButton, { label: "Cancel", primary: true, onTouchTap: handleClose }),
         __(FlatButton, { label: "Save", primary: true, keyboardFocused: true, onTouchTap: handleSave }),
@@ -16,15 +16,15 @@ function DialogActions ({handleClose, handleSave} : DialogActions_t) {
 }
 
 const customContentStyle = {
-    width: '90%',
-    maxWidth: 'none',
+    width: "90%",
+    maxWidth: "none",
 };
 
 export type MetaDataDialog_t = {
     opened: boolean,
     fields: Metadata_t[],
     onClose: () => void,
-    onSave: (fields: Metadata_t[]) => void
+    onSave: (fields: Metadata_t[]) => void,
 };
 
 export function MetaDataDialog ({opened, fields, onClose, onSave}: MetaDataDialog_t) {
@@ -34,9 +34,9 @@ export function MetaDataDialog ({opened, fields, onClose, onSave}: MetaDataDialo
         modal: true,
         open: opened,
         onRequestClose: onClose,
-        bodyClassName: 'metadata-content',
-        contentStyle: customContentStyle
-    }, 
-    metadataFields(fields)
+        bodyClassName: "metadata-content",
+        contentStyle: customContentStyle,
+    },
+    metadataFields(fields),
     );
 }
