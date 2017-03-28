@@ -1,6 +1,6 @@
 {
   "name": "finder-ui",
-  "version": "1.0.40",
+  "version": "1.0.42",
   "description": "Finder UI components using ReactJS",
   "main": "src/index.ts",
   "types": "src/index.ts",
@@ -28,9 +28,7 @@
     "moment": "^2.17.1",
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
-    "react-tap-event-plugin": "^2.0.1",
-    "finder-repository": "git+ssh://git@bitbucket.org/xenit/finder-repository.git#V1.0.31",
-    "apixjs": "git+ssh://git@bitbucket.org/xenit/apixjs.git#V1.0.16"
+    "react-tap-event-plugin": "^2.0.1"
   },
   "devDependencies": {
     "awesome-typescript-loader": "2.1.1",
