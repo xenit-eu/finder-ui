@@ -31,7 +31,7 @@ describe("DocList component tests", () => {
                 totalItems: 0,
                 pageSize: 15,
                 selected: 0,
-                pageSelected: (page: number) => {},
+                pageSelected: (page: number) => { },
             },
             rowMenu: [],
             onPageSelected: (pageIndex: number) => { },
@@ -39,7 +39,10 @@ describe("DocList component tests", () => {
             onMenuSelected: (rowIndex: number, menuIndex: number, key?: string) => { },
             onSortColumnSelected: (columnIndex: number, columnName: string, direction: SortDirection_t) => { },
             className: "",
-            rowStyle    : (i: number) => {},
+            rowStyle: (i: number) => { },
+            togglable: false,
+            onRowToggled: () => { },
+            onDownloadButtonClick: () => { },
         };
 
         // const wrapper = mount(__(TestWrapper, {}, [__(DocList, props)]));
@@ -64,22 +67,25 @@ describe("DocList component tests", () => {
                 sortDirection: SortDirection_t.ASC,
             }],
             data: [
-                { A: "valueA_0" },
-                { A: "valueA_1" },
+                { props: { A: "valueA_0" }, noderef: "a" },
+                { props: { A: "valueA_1" }, noderef: "a" },
             ],
             pager: {
                 totalItems: 2,
                 pageSize: 5,
                 selected: 1,
-                pageSelected: (page: number) => {},
+                pageSelected: (page: number) => { },
             },
             rowMenu: [],
             onPageSelected: (pageIndex: number) => { },
             onRowSelected: (rowIndex: number) => { },
             onMenuSelected: (rowIndex: number, menuIndex: number, key?: string) => { },
-            onSortColumnSelected: (columnIndex: number, columnName: string, direction: SortDirection_t) => {},
+            onSortColumnSelected: (columnIndex: number, columnName: string, direction: SortDirection_t) => { },
             className: "",
-            rowStyle    : (i: number) => {},
+            rowStyle: (i: number) => { },
+            togglable: false,
+            onRowToggled: () => { },
+            onDownloadButtonClick: () => { },
         };
 
         const wrapper = Fixture(DocList(props));
@@ -88,8 +94,8 @@ describe("DocList component tests", () => {
         const table = wrapper.find("table");
         expect(table.find("thead tr th").at(1).text()).toBe(props.columns[0].label);
         expect(table.find("tbody tr").length).toBe(props.data.length);
-        expect(table.find("tbody tr").at(0).find("td").at(1).text()).toBe(props.data[0][name]);
-        expect(table.find("tbody tr").at(1).find("td").at(1).text()).toBe(props.data[1][name]);
+        expect(table.find("tbody tr").at(0).find("td").at(1).text()).toBe(props.data[0].props[name]);
+        expect(table.find("tbody tr").at(1).find("td").at(1).text()).toBe(props.data[1].props[name]);
 
         expect(wrapper.find("Pager").length).not.toBe(0);
         const pager = wrapper.find("Pager");
@@ -109,22 +115,25 @@ describe("DocList component tests", () => {
                 sortDirection: SortDirection_t.ASC,
             }],
             data: [
-                { A: "valueA_0" },
-                { A: "valueA_1" },
+                { props: { A: "valueA_0" }, noderef: "a" },
+                { props: { A: "valueA_1" }, noderef: "a" },
             ],
             pager: {
                 totalItems: 2,
                 pageSize: 5,
                 selected: 1,
-                pageSelected: (page: number) => {},
+                pageSelected: (page: number) => { },
             },
             rowMenu: [],
-            onPageSelected: (pageIndex: number) => {},
-            onRowSelected: (rowIndex: number) => {},
-            onMenuSelected: (rowIndex: number, menuIndex: number, key?: string) => {},
-            onSortColumnSelected: (columnIndex: number, columnName: string, direction: SortDirection_t) => {},
+            onPageSelected: (pageIndex: number) => { },
+            onRowSelected: (rowIndex: number) => { },
+            onMenuSelected: (rowIndex: number, menuIndex: number, key?: string) => { },
+            onSortColumnSelected: (columnIndex: number, columnName: string, direction: SortDirection_t) => { },
             className: "",
-            rowStyle    : (i: number) => {},
+            rowStyle: (i: number) => { },
+            onDownloadButtonClick: () => { },
+            togglable: false,
+            onRowToggled: () => { },
         };
 
         spyOn(props, "onRowSelected");
@@ -150,22 +159,25 @@ describe("DocList component tests", () => {
                 sortDirection: SortDirection_t.ASC,
             }],
             data: [
-                { A: "valueA_0" },
-                { A: "valueA_1" },
+                { props: { A: "valueA_0" }, noderef: "a" },
+                { props: { A: "valueA_1" }, noderef: "a" },
             ],
             pager: {
                 totalItems: 2,
                 pageSize: 5,
                 selected: 1,
-                pageSelected: (page: number) => {},
+                pageSelected: (page: number) => { },
             },
             rowMenu: [{ key: "aaa", label: "AAA" }, { key: "bbb", label: "BBB" }, { key: "ccc", label: "CCC" }],
-            onPageSelected: (pageIndex: number) => {},
-            onRowSelected: (rowIndex: number) => {},
-            onMenuSelected: (rowIndex: number, menuIndex: number, key?: string) => {},
-            onSortColumnSelected: (columnIndex: number, columnName: string, direction: SortDirection_t) => {},
+            onPageSelected: (pageIndex: number) => { },
+            onRowSelected: (rowIndex: number) => { },
+            onMenuSelected: (rowIndex: number, menuIndex: number, key?: string) => { },
+            onSortColumnSelected: (columnIndex: number, columnName: string, direction: SortDirection_t) => { },
             className: "",
-            rowStyle    : (i: number) => {},
+            rowStyle: (i: number) => { },
+            onDownloadButtonClick: () => { },
+            togglable: false,
+            onRowToggled: () => { },
         };
 
         spyOn(props, "onMenuSelected");
