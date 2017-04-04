@@ -15,10 +15,10 @@ export type TabsPanel_t = {
     tabsInfo: TabPanel_t[],
     onchange: TabsPanelOnChange_t,
     selectedPanel: string,
-    style?: TabsPanelStyle,
+    style?: TabsPanelStyle_t,
 };
 
-export type TabsPanelStyle = {
+export type TabsPanelStyle_t = {
     styleContent?: any,
     styleContentcssKey?: string,
     styleTabs?: any,

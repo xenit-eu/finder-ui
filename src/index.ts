@@ -7,7 +7,7 @@ export { CommentsDialog, CommentsDialog_t } from "./commentsDialog";
 export { Comment_t } from "./comment";
 export { CommentsPanel, CommentsPanel_t } from "./commentsPanel";
 export { Metadata_t, MetadataType_t } from "./metadata";
-export { MetaDataPanel_t, MetaDataPanel, MetadataPanel_GroupInfo } from "./metadataPanel";
+export { MetaDataPanel_t, MetaDataPanel, MetaDataPanelGroupInfo_t } from "./metadataPanel";
 export { Facet_t, Facets_t, Facets } from "./facets";
 export { DocPreview } from "./docpreview";
 export { DocPreviewPdfJs } from "./docpreviewPdfjs";

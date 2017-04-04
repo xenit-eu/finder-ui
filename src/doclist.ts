@@ -10,7 +10,7 @@ import { createElement as __, DOM as _, ReactElement } from "react";
 import "./doclist.less";
 import { Pager, Pager_t } from "./pager";
 
-type OnMenuSelected = (rowIndex: number, menuIndex: number, key?: string) => void;
+type OnMenuSelected_t = (rowIndex: number, menuIndex: number, key?: string) => void;
 
 export type MenuItem_t = {
     key?: string,
@@ -20,7 +20,7 @@ export type MenuItem_t = {
 type RowMenu_t = {
     rowIndex: number,
     menuItems: MenuItem_t[],
-    onMenuSelected: OnMenuSelected,
+    onMenuSelected: OnMenuSelected_t,
 };
 
 function RowMenu({rowIndex, menuItems, onMenuSelected}: RowMenu_t): ReactElement<any> {
@@ -63,7 +63,7 @@ export type DocList_t = {
     onRowSelected: (rowIndex: number) => void,
     togglable: boolean,
     onRowToggled: (checked: boolean, i: number, row: Row_t) => void,
-    onMenuSelected: OnMenuSelected,
+    onMenuSelected: OnMenuSelected_t,
     onSortColumnSelected: OnSortColumnSelected_t,
     className: string,
     onDownloadButtonClick: () => void,
@@ -101,12 +101,14 @@ export function DocList({columns, data, pager, onPageSelected, rowMenu, onRowSel
     const headerelements = [_.th({ key: "Menu" }, "")]
         .concat(togglable ? [_.th({ key: "toggle" }, __(FlatButton, { icon: __(FileDownload, { onClick: onDownloadButtonClick }) }))] : [])
         .concat(columns.map(c => _.th({ key: c.name + c.label }, [sortIcon(c, onSortColumnSelected), c.label])));
+
     const header = _.thead({ key: "header" }, [_.tr({ key: "head" }, headerelements)]);
     const style = rowStyle ? rowStyle : (i: number) => ({});
     const singleRowElements = (row: Row_t, i: number) =>
         [_.td({ key: "_menu" }, __(RowMenu, { rowIndex: i, menuItems: rowMenu, onMenuSelected }))]
             .concat((togglable ? [_.td({ key: "toggle", align: "center" }, __(Checkbox, { checked: row.toggled, onCheck: (ev: any, checked: boolean) => onRowToggled(checked, i, row) }))] : []))
             .concat(columns.map(col => _.td({ key: col.name + col.label, onClick: () => onRowSelected(i) }, col.format ? col.format(row.props[col.name], row) : row.props[col.name])));
+
     const bodycontent = data.map((row, i) => _.tr({ style: style(i), key: i }, singleRowElements(row, i)));
     const body = _.tbody({ key: "body" }, bodycontent);
     const tableProps = { key: "table", className: className || "table table-hover table-striped table-mc-purple table-condensed" };

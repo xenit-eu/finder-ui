@@ -9,11 +9,11 @@ const customContentStyle = {
     maxWidth: "none",
 };
 
-export type Metadatapanel_style = {
-    Style?: any,
-    HeaderStyle?: any,
-    ContentStyle?: any,
-    Button?: any,
+export type MetaDataPanelStyle_t = {
+    style?: any,
+    headerStyle?: any,
+    contentStyle?: any,
+    button?: any,
 };
 
 export type MetaDataPanel_t = {
@@ -22,29 +22,29 @@ export type MetaDataPanel_t = {
     fields: Metadata_t[],
     onEdit: () => void,
     onSave: (fields: Metadata_t[]) => void,
-    groups?: MetadataPanel_GroupInfo,
+    groups?: MetaDataPanelGroupInfo_t,
 };
 
-export type MetaDataPanel_Group = {
+export type MetaDataPanelGroup_t = {
     label: string,
     id: string,
     expanded: boolean,
     order: number,
 };
-export type MetadataPanel_GroupInfo = {
-    Groups: MetaDataPanel_Group[],
-    ItemToGroup: { [id: string]: string },
+export type MetaDataPanelGroupInfo_t = {
+    groups: MetaDataPanelGroup_t[],
+    itemToGroup: { [id: string]: string },
 };
 
-export function MetaDataPanel({allowEdition, editionMode, fields, onEdit, onSave, groups}: MetaDataPanel_t, style?: Metadatapanel_style) {
+export function MetaDataPanel({allowEdition, editionMode, fields, onEdit, onSave, groups}: MetaDataPanel_t, style?: MetaDataPanelStyle_t) {
     return _.div({ className: "metadata" }, [
         allowEdition ? _.div({ className: "metadata-header" }, [
             __(FlatButton, {
                 label: editionMode ? "Save" : "Edit", primary: true, keyboardFocused: true,
-                onTouchTap: () => editionMode ? onSave(fields) : onEdit(), style: (style && style.Button) ? style.Button : {},
+                onTouchTap: () => editionMode ? onSave(fields) : onEdit(), style: (style && style.button) ? style.button : {},
             }),
         ]) : _.div({ className: "metadata-header" }),
-        _.div({ className: "metadata-content" + (editionMode ? " edited" : ""), style: style && style.ContentStyle ? style.ContentStyle : {} }, metadataFields(fields, editionMode, groups)),
+        _.div({ className: "metadata-content" + (editionMode ? " edited" : ""), style: style && style.contentStyle ? style.contentStyle : {} }, metadataFields(fields, editionMode, groups)),
     ],
     );
 

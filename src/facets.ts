@@ -6,7 +6,7 @@ import { createElement as __, DOM as _, ReactElement } from "react";
 
 import "./facets.less";
 
-export type OnFacetSelected = (name: string, label: string, value: string) => void;
+export type OnFacetSelected_t = (name: string, label: string, value: string) => void;
 
 export type Facet_t = {
     name: string,
@@ -18,12 +18,12 @@ export type Facet_t = {
     }>,
 };
 
-type facetSub_t = {
+type FacetSub_t = {
     facet: Facet_t,
-    onFacetSelected: OnFacetSelected,
+    onFacetSelected: OnFacetSelected_t,
 };
 
-function FacetSub({facet, onFacetSelected}: facetSub_t): ReactElement<any> {
+function FacetSub({facet, onFacetSelected}: FacetSub_t): ReactElement<any> {
     return __(ListItem, {
         key: facet.name,
         primaryText: facet.label,
@@ -41,7 +41,7 @@ function FacetSub({facet, onFacetSelected}: facetSub_t): ReactElement<any> {
 
 export type Facets_t = {
     facets: Facet_t[],
-    onFacetSelected: OnFacetSelected,
+    onFacetSelected: OnFacetSelected_t,
 };
 
 export function Facets({facets, onFacetSelected}: Facets_t): ReactElement<any> {

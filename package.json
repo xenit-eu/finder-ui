@@ -1,7 +1,7 @@
 {
   "name": "finder-ui",
-  "version": "1.0.44",
-  "description": "Finder UI components using ReactJS",
+  "version": "1.0.45",
+  "description": "Finder UI components using ReactJS (based on material-ui.com)",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "scripts": {
@@ -50,6 +50,7 @@
     "react-addons-test-utils": "^15.4.1",
     "rimraf": "^2.5.4",
     "tslint": "^4.5.1",
+    "tslint-custom": "git+ssh://git@bitbucket.org/xenit/tslint-custom.git",
     "typescript": "2.0.10",
     "typings": "^2.0.0",
     "webpack": "^1.13.1"

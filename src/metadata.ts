@@ -6,7 +6,7 @@ import MenuItem from "material-ui/MenuItem";
 import SelectField from "material-ui/SelectField";
 import TextField from "material-ui/TextField";
 import { Component, createElement as __, DOM as _, ReactElement } from "react";
-import { MetaDataPanel_Group, MetadataPanel_GroupInfo } from "./metadataPanel";
+import { MetaDataPanelGroup_t, MetaDataPanelGroupInfo_t } from "./metadataPanel";
 
 export enum MetadataType_t {
     STRING,
@@ -90,16 +90,16 @@ const defaultGroup = {
     order: 1000,
 };
 
-function fieldsInGroups (fields: Metadata_t[], groupInfo: MetadataPanel_GroupInfo) {
-    let groupsWithChildren: { [id: string]: { group: MetaDataPanel_Group, items: Metadata_t[] } } = { default: { group: defaultGroup, items: [] } };
-    groupInfo.Groups.forEach(g => groupsWithChildren[g.id] = ({ group: g, items: [] }));
-    fields.forEach(f => groupsWithChildren[groupInfo.ItemToGroup[f.name] ? groupInfo.ItemToGroup[f.name] : "default"].items.push(f));
+function fieldsInGroups (fields: Metadata_t[], groupInfo: MetaDataPanelGroupInfo_t) {
+    let groupsWithChildren: { [id: string]: { group: MetaDataPanelGroup_t, items: Metadata_t[] } } = { default: { group: defaultGroup, items: [] } };
+    groupInfo.groups.forEach(g => groupsWithChildren[g.id] = ({ group: g, items: [] }));
+    fields.forEach(f => groupsWithChildren[groupInfo.itemToGroup[f.name] ? groupInfo.itemToGroup[f.name] : "default"].items.push(f));
     let groupsWithChildrenList = Object.keys(groupsWithChildren).map(id => groupsWithChildren[id]);
     groupsWithChildrenList.sort((a, b) => a.group.order - b.group.order);
     return groupsWithChildrenList;
 }
 
-export function metadataFields (fields: Metadata_t[], editable: boolean = true, groupInfo: MetadataPanel_GroupInfo | undefined = undefined): Array<ReactElement<any>> {
+export function metadataFields (fields: Metadata_t[], editable: boolean = true, groupInfo: MetaDataPanelGroupInfo_t | undefined = undefined): Array<ReactElement<any>> {
     const filteredFields = fields.filter(metadataFilter);
     if (!groupInfo) {
         return filteredFields.map(f => metadataField(f, editable));
