@@ -36,7 +36,7 @@ function RowMenu({rowIndex, menuItems, onMenuSelected}: RowMenu_t): ReactElement
     );
 }
 
-export type Row_t = { props: { [k: string]: string }, toggled?: boolean, noderef: string };
+export type Row_t = { [k: string]: string };
 
 export enum SortDirection_t {
     NONE,
@@ -59,16 +59,18 @@ export type DocList_t = {
     columns: Column_t[],
     data: Row_t[],
     pager: Pager_t,
-    rowMenu: MenuItem_t[],
+    rowMenu: (rowIndex: number) => MenuItem_t[],
+    rowToggled: (rowIndex: number) => boolean,
+    togglable: boolean,
+    className: string,
+    rowStyle: (i: number) => any,
+
     onPageSelected: (pageIndex: number) => void,
     onRowSelected: (rowIndex: number) => void,
-    togglable: boolean,
     onRowToggled: (checked: boolean, i: number, row: Row_t) => void,
     onMenuSelected: OnMenuSelected_t,
     onSortColumnSelected: OnSortColumnSelected_t,
-    className: string,
     onDownloadButtonClick: () => void,
-    rowStyle: (i: number) => any,
 };
 
 function sortIcon(c: Column_t, onSortColumnSelected: OnSortColumnSelected_t): ReactElement<any> | undefined {
@@ -97,7 +99,7 @@ function sortIcon(c: Column_t, onSortColumnSelected: OnSortColumnSelected_t): Re
         : undefined;
 }
 
-export function DocList({columns, data, pager, onPageSelected, rowMenu, onRowSelected, onDownloadButtonClick
+export function DocList({columns, data, pager, onPageSelected, rowMenu, rowToggled, onRowSelected, onDownloadButtonClick
     , onMenuSelected, onSortColumnSelected, togglable, onRowToggled, className, rowStyle}: DocList_t): ReactElement<any> {
     const headerelements = [_.th({ key: "Menu" }, "")]
         .concat(togglable ? [_.th({ key: "toggle" }, __(FlatButton, { icon: __(FileDownload, { onClick: onDownloadButtonClick }) }))] : [])
@@ -106,9 +108,9 @@ export function DocList({columns, data, pager, onPageSelected, rowMenu, onRowSel
     const header = _.thead({ key: "header" }, [_.tr({ key: "head" }, headerelements)]);
     const style = rowStyle ? rowStyle : (i: number) => ({});
     const singleRowElements = (row: Row_t, i: number) =>
-        [_.td({ key: "_menu" }, __(RowMenu, { rowIndex: i, menuItems: rowMenu, onMenuSelected }))]
-            .concat((togglable ? [_.td({ key: "toggle", align: "center" }, __(Checkbox, { checked: row.toggled, onCheck: (ev: any, checked: boolean) => onRowToggled(checked, i, row) }))] : []))
-            .concat(columns.map(col => _.td({ key: col.name + col.label, onClick: () => onRowSelected(i) }, col.format ? col.format(row.props[col.name], row) : row.props[col.name])));
+        [_.td({ key: "_menu" }, __(RowMenu, { rowIndex: i, menuItems: rowMenu(i), onMenuSelected }))]
+            .concat((togglable ? [_.td({ key: "toggle", align: "center" }, __(Checkbox, { checked: rowToggled(i), onCheck: (ev: any, checked: boolean) => onRowToggled(checked, i, row) }))] : []))
+            .concat(columns.map(col => _.td({ key: col.name + col.label, onClick: () => onRowSelected(i) }, col.format ? col.format(row[col.name], row) : row[col.name])));
 
     const bodycontent = data.map((row, i) => _.tr({ style: style(i), key: i }, singleRowElements(row, i)));
     const body = _.tbody({ key: "body" }, bodycontent);

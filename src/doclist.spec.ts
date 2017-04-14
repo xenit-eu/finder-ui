@@ -5,7 +5,7 @@ import { Component, createElement as __, DOM as _, PropTypes } from "react";
 import * as injectTapEventPlugin from "react-tap-event-plugin";
 import { Fixture, simulateEvent } from "./testUtils";
 
-import { DocList, DocList_t, SortDirection_t } from "./doclist";
+import { DocList, DocList_t, MenuItem_t, SortDirection_t } from "./doclist";
 import { Pager_t } from "./pager";
 
 // tslint:disable-next-line:no-var-requires
@@ -33,14 +33,16 @@ describe("DocList component tests", () => {
                 selected: 0,
                 pageSelected: (page: number) => { },
             },
-            rowMenu: [],
+            rowMenu: (i: number) => { return []; },
+            rowToggled: (i: number): boolean  => { return false; },
+            className: "",
+            rowStyle: (i: number) => { },
+            togglable: false,
+
             onPageSelected: (pageIndex: number) => { },
             onRowSelected: (rowIndex: number) => { },
             onMenuSelected: (rowIndex: number, menuIndex: number, key?: string) => { },
             onSortColumnSelected: (columnIndex: number, columnName: string, direction: SortDirection_t) => { },
-            className: "",
-            rowStyle: (i: number) => { },
-            togglable: false,
             onRowToggled: () => { },
             onDownloadButtonClick: () => { },
         };
@@ -67,8 +69,8 @@ describe("DocList component tests", () => {
                 sortDirection: SortDirection_t.ASC,
             }],
             data: [
-                { props: { A: "valueA_0" }, noderef: "a" },
-                { props: { A: "valueA_1" }, noderef: "a" },
+                { A: "valueA_0" },
+                { A: "valueA_1" },
             ],
             pager: {
                 totalItems: 2,
@@ -76,14 +78,16 @@ describe("DocList component tests", () => {
                 selected: 1,
                 pageSelected: (page: number) => { },
             },
-            rowMenu: [],
+            rowMenu: (i: number) => { return []; },
+            rowToggled: (i: number): boolean  => { return false; },
+            className: "",
+            rowStyle: (i: number) => { },
+            togglable: false,
+
             onPageSelected: (pageIndex: number) => { },
             onRowSelected: (rowIndex: number) => { },
             onMenuSelected: (rowIndex: number, menuIndex: number, key?: string) => { },
             onSortColumnSelected: (columnIndex: number, columnName: string, direction: SortDirection_t) => { },
-            className: "",
-            rowStyle: (i: number) => { },
-            togglable: false,
             onRowToggled: () => { },
             onDownloadButtonClick: () => { },
         };
@@ -94,8 +98,8 @@ describe("DocList component tests", () => {
         const table = wrapper.find("table");
         expect(table.find("thead tr th").at(1).text()).toBe(props.columns[0].label);
         expect(table.find("tbody tr").length).toBe(props.data.length);
-        expect(table.find("tbody tr").at(0).find("td").at(1).text()).toBe(props.data[0].props[name]);
-        expect(table.find("tbody tr").at(1).find("td").at(1).text()).toBe(props.data[1].props[name]);
+        expect(table.find("tbody tr").at(0).find("td").at(1).text()).toBe(props.data[0][name]);
+        expect(table.find("tbody tr").at(1).find("td").at(1).text()).toBe(props.data[1][name]);
 
         expect(wrapper.find("Pager").length).not.toBe(0);
         const pager = wrapper.find("Pager");
@@ -115,8 +119,8 @@ describe("DocList component tests", () => {
                 sortDirection: SortDirection_t.ASC,
             }],
             data: [
-                { props: { A: "valueA_0" }, noderef: "a" },
-                { props: { A: "valueA_1" }, noderef: "a" },
+                { A: "valueA_0" },
+                { A: "valueA_1" },
             ],
             pager: {
                 totalItems: 2,
@@ -124,16 +128,18 @@ describe("DocList component tests", () => {
                 selected: 1,
                 pageSelected: (page: number) => { },
             },
-            rowMenu: [],
+            rowMenu: (i: number) => { return []; },
+            rowToggled: (i: number): boolean  => { return false; },
+            className: "",
+            rowStyle: (i: number) => { },
+            togglable: false,
+
             onPageSelected: (pageIndex: number) => { },
             onRowSelected: (rowIndex: number) => { },
             onMenuSelected: (rowIndex: number, menuIndex: number, key?: string) => { },
             onSortColumnSelected: (columnIndex: number, columnName: string, direction: SortDirection_t) => { },
-            className: "",
-            rowStyle: (i: number) => { },
-            onDownloadButtonClick: () => { },
-            togglable: false,
             onRowToggled: () => { },
+            onDownloadButtonClick: () => { },
         };
 
         spyOn(props, "onRowSelected");
@@ -159,8 +165,8 @@ describe("DocList component tests", () => {
                 sortDirection: SortDirection_t.ASC,
             }],
             data: [
-                { props: { A: "valueA_0" }, noderef: "a" },
-                { props: { A: "valueA_1" }, noderef: "a" },
+                { A: "valueA_0" },
+                { A: "valueA_1" },
             ],
             pager: {
                 totalItems: 2,
@@ -168,16 +174,20 @@ describe("DocList component tests", () => {
                 selected: 1,
                 pageSelected: (page: number) => { },
             },
-            rowMenu: [{ key: "aaa", label: "AAA" }, { key: "bbb", label: "BBB" }, { key: "ccc", label: "CCC" }],
+            rowMenu: (i: number): MenuItem_t[]  => {
+                return [{ key: "aaa", label: "AAA", disabled: false }, { key: "bbb", label: "BBB", disabled: false }, { key: "ccc", label: "CCC", disabled: false }];
+            },
+            rowToggled: (i: number): boolean  => { return false; },
+            className: "",
+            rowStyle: (i: number) => { },
+            togglable: false,
+
             onPageSelected: (pageIndex: number) => { },
             onRowSelected: (rowIndex: number) => { },
             onMenuSelected: (rowIndex: number, menuIndex: number, key?: string) => { },
             onSortColumnSelected: (columnIndex: number, columnName: string, direction: SortDirection_t) => { },
-            className: "",
-            rowStyle: (i: number) => { },
-            onDownloadButtonClick: () => { },
-            togglable: false,
             onRowToggled: () => { },
+            onDownloadButtonClick: () => { },
         };
 
         spyOn(props, "onMenuSelected");
