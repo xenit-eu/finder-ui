@@ -15,6 +15,7 @@ type OnMenuSelected_t = (rowIndex: number, menuIndex: number, key?: string) => v
 export type MenuItem_t = {
     key?: string,
     label: string,
+    disabled: boolean,
 };
 
 type RowMenu_t = {
@@ -31,7 +32,7 @@ function RowMenu({rowIndex, menuItems, onMenuSelected}: RowMenu_t): ReactElement
         anchorOrigin: { horizontal: "right", vertical: "top" },
     },
         menuItems.map((mi, i) =>
-            __(MenuItem, { key: i, primaryText: mi.label, onClick: () => onMenuSelected(rowIndex, i, mi.key) })),
+            __(MenuItem, { key: i, primaryText: mi.label, disabled: mi.disabled, onClick: () => onMenuSelected(rowIndex, i, mi.key) })),
     );
 }
 
