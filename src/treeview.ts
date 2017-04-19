@@ -22,20 +22,21 @@ export type DocumentTreeNode_t = {
     text: string,
     children: DocumentTreeNode_t[],
     isFolder: boolean,
+    className?: string,
 };
 
-export function DocumentTreeNode({open, Toggle, Click, text, children, isFolder, id}: DocumentTreeNode_t): ReactElement<any> {
+export function DocumentTreeNode({open, Toggle, Click, text, children, isFolder, id, className}: DocumentTreeNode_t): ReactElement<any> {
     let avatar = __(Avatar, { icon: __(isFolder ? FileFolder : ActionAssignment, {}) });
     return __(ListItem, {
         onNestedListToggle: () => { Toggle(id); },
-        onClick: (e: any) => {Click(id); e.stopPropagation(); },
+        onClick: (e: any) => { Click(id); e.stopPropagation(); },
         initiallyOpen: open,
         leftAvatar: avatar,
         primaryTogglesNestedList: false,
         primaryText: text,
         key: id,
         nestedItems: children.map((v, i) => DocumentTreeNode(v)),
-
+        className: className ? className : "",
     });
 }
 
