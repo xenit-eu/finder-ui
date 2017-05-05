@@ -72,17 +72,7 @@ Display alfresco facets in a hierarchical manner.
 
 ### _SearchBox_
 
-Input box allowing the search by terms (node name, creator, ...).
 
-    SearchBox({param1: value1, param2: value2, ...})
-
-| Parameter   | Description                             |  
-|-------------|-----------                                |
-| searching| flag indicating that search process is busy => activate spinner !| 
-| terms| list of existing terms already requested for search.|
-| suggestionList | suggestions to be proposed on the drop-down list when entering a term name. |
-| onRemove | callback called to remove an existing term. |
-| onEnter | callback called when a new text (eventually a term) has been entered. |   
 
 #### Term structure
 

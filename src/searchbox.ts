@@ -47,7 +47,19 @@ export type SearchBox_t = {
     onInputChanged: (text: string) => void,
 };
 
-export function SearchBox({searching, terms, suggestionList, onRemove, onEnter, onInputChanged}: SearchBox_t): ReactElement<any> {
+
+//@Component SearchBox
+//@ComponentDescription "Input box allowing the search by terms (node name, creator, ...)."
+//@Method SearchBox Returns ReactComponent
+//@MethodDescription "SearchBox({param1: value1, param2: value2, ...})"
+//@Param onEnter (text:string)=>void "callback called when a new text (eventually a term) has been entered."
+//@Param onInputChanged (text:string)=>void ""
+//@Param onRemove (idx:number)=>void "callback called to remove an existing term."
+//@Param searching boolean "flag indicating that search process is busy => activate spinner !"
+//@Param suggestionList string[] "suggestions to be proposed on the drop-down list when entering a term name."
+//@Param terms Term_t[] "list of existing terms already requested for search."
+
+export function SearchBox({ onEnter, onInputChanged,onRemove, searching,suggestionList, terms }: SearchBox_t): ReactElement<any> {
     return _.div({ className: "search-box" }, [
         ...terms.map((t, i) => __(Chip, { key: i, onRequestDelete: () => onRemove(i) }, t.label + ":" + t.value)),
         _.input({ key: "input", list: "dropdown-list", placeholder: "Type search term or 'Enter' to start searching...", onKeyUp: (evt: any) => detectEnterKey(evt, onEnter, onInputChanged) }),
