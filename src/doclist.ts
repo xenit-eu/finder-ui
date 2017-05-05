@@ -99,8 +99,27 @@ function sortIcon(c: Column_t, onSortColumnSelected: OnSortColumnSelected_t): Re
         : undefined;
 }
 
-export function DocList({columns, data, pager, onPageSelected, rowMenu, rowToggled, onRowSelected, onDownloadButtonClick
-    , onMenuSelected, onSortColumnSelected, togglable, onRowToggled, className, rowStyle}: DocList_t): ReactElement<any> {
+
+//@Component DocList
+//@ComponentDescription "Display a paged list of documents, columns can be sorted and each row can have a menu."
+//@Method DocList
+//@MethodDescription "DocList({param1: value1, param2: value2, ...})"
+//@Param className string     "Name of the css class to give to the doclist"
+//@Param columns Column_t[]     "description of columns to be displayed (array of hash, see below for details)   |"
+//@Param data    Row_t[]      "array of hash (name => value) to be displayed. The name here should match the name of the column to be displayed in 'columns' |"
+//@Param onDownloadButtonClick ()=>void   "callback indicating the download button is clicked  |"
+//@Param onMenuSelected  OnMenuSelected_t "callback indicating the menu called on a specific row  |"
+//@Param onPageSelected (pageIndex:number)=>void  "callback function called when a page has been clicked (index of selected page is passed to the callback, starting at 1) |"
+//@Param onRowSelected  (rowIndex:number)=>void "callback function called when a row has been clicked (index of selected row is passed to the callback) |"
+//@Param onSortColumnSelected OnSortColumnSelected_t "callback called when a sort has been requested for a column | 
+//@Param pager   Pager_t      "paging instructions (see below for details) |"
+//@Param rowMenu  MenuItem_t[]     "Array of Menu Item (hash, see below for details) to be displayed on each row. |"
+//@Param rowStyle  (i)=>any     "Function that provides the style of the ith row"
+//@Param rowToggled (i)=>boolean "Function that says whether the row is toggled"
+//@Param togglable boolean "Whether rows are togglable or not"
+
+export function DocList({  className, columns, data, onDownloadButtonClick, onMenuSelected, onPageSelected, onRowSelected, onRowToggled,
+    onSortColumnSelected, pager, rowMenu, rowStyle, rowToggled, togglable}: DocList_t): ReactElement<any> {
     const headerelements = [_.th({ key: "Menu" }, "")]
         .concat(togglable ? [_.th({ key: "toggle" }, __(FlatButton, { icon: __(FileDownload, { onClick: onDownloadButtonClick }) }))] : [])
         .concat(columns.map(c => _.th({ key: c.name + c.label }, [sortIcon(c, onSortColumnSelected), c.label])));

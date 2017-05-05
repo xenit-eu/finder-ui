@@ -19,24 +19,6 @@ Based on:
 
 ## Components
 
-### _DocList_
-
-Display a paged list of documents, columns can be sorted and each row can have a menu.
-
-    DocList({param1: value1, param2: value2, ...})
-
-| Parameter   | Description                             |  
-|-------------|-----------                                |
-| colummns    | description of columns to be displayed (array of hash, see below for details)   |
-| data        | array of hash (name => value) to be displayed. The name here should match the name of the column to be displayed in 'columns' |
-| pager       | paging instructions (see below for details) |
-| rowMenu     | Array of Menu Item (hash, see below for details) to be displayed on each row. |
-| onPageSelected | callback function called when a page has been clicked (index of selected page is passed to the callback, starting at 1) |
-| onRowSelected | callback function called when a row has been clicked (index of selected row is passed to the callback) |
-| onMenuSelected | callback indicating the menu called on a specific row  |
-| onSortColumnSelected| callback called when a sort has been requested for a column | 
-
-
 
 #### columns hash description
 
