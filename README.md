@@ -17,14 +17,6 @@ Based on:
     * npm run install:all
     * npm run test:watch (run all unit tests after each change of sources)
 
-
-### _MetaDataDialog_
-
-
-
-
-
-
 ## Implementation notes
 
 ### Karma build
