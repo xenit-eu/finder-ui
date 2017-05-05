@@ -27,6 +27,15 @@ export type MetaDataDialog_t = {
     onSave: (fields: Metadata_t[]) => void,
 };
 
+//@Component MetaDataDialog
+//@ComponentDescription "Dialog allowing to display and change node metadata (properties)"
+//@Method MetaDataDialog Returns ReactComponent
+//@MethodDescription "MetaDataDialog({param1: value1, param2: value2, ...})"
+//@Param opened boolean "flag indicating whether the dialog must be shown."
+//@Param fields Metadata_t[] "list of metadata fields."
+//@Param onClose ()=>void "callback called when close/cancel button called (without save)"
+//@Param onSave (fields:Metadata_t[])=>void "callback called when save button called"
+
 export function MetaDataDialog ({opened, fields, onClose, onSave}: MetaDataDialog_t) {
     return __(Dialog, {
         title: "Metadata",

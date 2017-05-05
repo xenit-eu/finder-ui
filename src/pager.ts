@@ -43,6 +43,15 @@ const LastPageLink = ({isActive, onClick}) => (
 
 const range = (n: number) => Array.apply(null, Array(n)).map((skip: number, i: number) => i);
 
+/* #### pager hash description
+
+| Key    | Description                             |
+|--------------|-----------                                |
+| totalItems| total number of rows in searched set   |
+| pageSize| number of rows to be displayed on the page   |
+| selected| selected (active) page (default: 1, starting at 1)   |
+
+ */
 export type Pager_t = {
     totalItems: number,
     pageSize: number,

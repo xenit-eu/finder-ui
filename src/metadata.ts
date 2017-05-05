@@ -14,6 +14,15 @@ export enum MetadataType_t {
     LIST,
 }
 
+/* #### Metadata field structure
+
+| Key    | Description                             |
+|--------------|-----------                                |
+| name | internal name of the property (alfresco property name)    |
+| label| displayable name of the property    |
+| value| current value of the property    |
+| type | type : STRING, ...    |
+ */
 export type Metadata_t = {
     name: string,
     label: string,

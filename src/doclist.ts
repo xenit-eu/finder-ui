@@ -12,6 +12,16 @@ import { Pager, Pager_t } from "./pager";
 
 type OnMenuSelected_t = (rowIndex: number, menuIndex: number, key?: string) => void;
 
+/*
+
+#### menu item hash description
+
+| Key    | Description                             |
+|--------------|-----------                                |
+| label | label to be displayed for the menu   |
+| key | (optional) key of the menu that will be passed to the onMenuSelected callback described above |
+ */
+
 export type MenuItem_t = {
     key?: string,
     label: string,
@@ -43,6 +53,19 @@ export enum SortDirection_t {
     ASC,
     DESC,
 };
+
+/*
+#### columns hash description
+
+| Key    | Description                             |
+|--------------|-----------                                |
+| name         | name identifying uniquely the column (the alfresco property name)   |
+| label        | Label to put on top of the table   |
+| alignRight   | (optional) Not used yet (default: false)   |
+| sortable     | (optional) boolean indicating if column can be sorted by user (default: false)   |
+| sortDirection| (optional) default sort direction : NONE(default), ASC, DESC   |
+| format       | (optional) function to call to format the data to be displayed |
+*/
 
 export type Column_t = {
     name: string,

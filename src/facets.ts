@@ -39,11 +39,26 @@ function FacetSub({facet, onFacetSelected}: FacetSub_t): ReactElement<any> {
     });
 }
 
+/* #### facets data structure
+
+| Key    | Description                             |
+|--------------|-----------                                |
+| name | internal name of the facet |
+| label | displayable name of the facet |
+| values | each facet can have a list of values and for each of value we have: count (number of nodes for this facet value), value (value of the facet), label (displayable text for the value) |
+
+ */
 export type Facets_t = {
     facets: Facet_t[],
     onFacetSelected: OnFacetSelected_t,
 };
 
+//@Component Facets
+//@ComponentDescription "Display alfresco facets in a hierarchical manner."
+//@Method Facets
+//@MethodDescription "Facets({param1: value1, param2: value2, ...})"
+//@Param facets     Facet_t[] "facets data to be displayed (see below for more details)"
+//@Param onFacetSelected OnFacetSelected_t "callback called when a specific facet value has been clicked"
 export function Facets({facets, onFacetSelected}: Facets_t): ReactElement<any> {
     return _.div({className: "facets"},
         __(List, { key: "first" }, facets.filter((k) => k.values.length > 0).map((facet) => FacetSub({ facet, onFacetSelected }))),

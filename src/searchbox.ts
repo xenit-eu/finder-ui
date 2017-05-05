@@ -31,11 +31,12 @@ function detectEnterKey(evt: KeyboardEvent, onSuccess: (enteredText: string) => 
         onInputChanged(input.value);
     }
 }
-
+//@Type  "Term structure"
+//@TypeDescription  "Term structure"
 export type Term_t = {
-    name: string,
-    label: string,
-    value: string,
+    name: string, //@TypeParam internal name of the term
+    label: string, //@TypeParam displayable name of the term
+    value: string, //@TypeParam value entered for this term
 };
 
 export type SearchBox_t = {
@@ -46,7 +47,6 @@ export type SearchBox_t = {
     onEnter: (text: string) => void,        // add new term.
     onInputChanged: (text: string) => void,
 };
-
 
 //@Component SearchBox
 //@ComponentDescription "Input box allowing the search by terms (node name, creator, ...)."
@@ -59,7 +59,7 @@ export type SearchBox_t = {
 //@Param suggestionList string[] "suggestions to be proposed on the drop-down list when entering a term name."
 //@Param terms Term_t[] "list of existing terms already requested for search."
 
-export function SearchBox({ onEnter, onInputChanged,onRemove, searching,suggestionList, terms }: SearchBox_t): ReactElement<any> {
+export function SearchBox({ onEnter, onInputChanged, onRemove, searching, suggestionList, terms }: SearchBox_t): ReactElement<any> {
     return _.div({ className: "search-box" }, [
         ...terms.map((t, i) => __(Chip, { key: i, onRequestDelete: () => onRemove(i) }, t.label + ":" + t.value)),
         _.input({ key: "input", list: "dropdown-list", placeholder: "Type search term or 'Enter' to start searching...", onKeyUp: (evt: any) => detectEnterKey(evt, onEnter, onInputChanged) }),
