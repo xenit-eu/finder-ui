@@ -117,28 +117,6 @@ Dialog allowing to display and change node metadata (properties).
 | type | type : STRING, ...    |
 
 
-### _DocPreview_
-
-Preview of a document (using the browser capabilities to display PDF, JPG, PNG, Movies, ...)
-
-    DocPreview({param1: value1, param2: value2, ...})
-
-| Parameter   | Description                             |  
-|-------------|-----------                                |
-| src         | url of the document to be displayed |
-
-### _DocPreviewPdfJs_
-
-Preview of a document (using the PDFJS library).
-
-    DocPreview({param1: value1, param2: value2, ...})
-
-| Parameter   | Description                             |  
-|-------------|-----------                                |
-| src         | url of the document to be displayed |
-
-
-Note: To use this component, the pdfjs library should be accessible at the following URL: _/alfresco/finder/pdfjs_
 
 ## Implementation notes
 
