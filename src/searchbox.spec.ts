@@ -13,6 +13,19 @@ const jasmineEnzyme = require("jasmine-enzyme"); // no typings for jasmine-engin
 
 const ENTER_KEY_CODE: number = 13;
 
+// !!!!! missing function in phantomjs !!!!!! 
+if (!String.prototype.endsWith) {
+  String.prototype.endsWith = (searchString, position) => {
+      let subjectString = this.toString();
+      if (typeof position !== "number" || !isFinite(position) || Math.floor(position) !== position || position > subjectString.length) {
+        position = subjectString.length;
+      }
+      position -= searchString.length;
+      let lastIndex = subjectString.lastIndexOf(searchString, position);
+      return lastIndex !== -1 && lastIndex === position;
+  };
+}
+
 describe("SearchBox component tests", () => {
 
     beforeAll(() => {
@@ -22,11 +35,11 @@ describe("SearchBox component tests", () => {
         jasmineEnzyme();
     });
 
-    it("should call onEnter callback with empty string when enter key pressed without input text", () => {
+    it("should call onEnter callback with null param when enter key pressed without input text", () => {
         const props: SearchBox_t = {
             searching: false,
             terms: [],
-            suggestionList: [],
+            searchableTerms: [],
             onRemove: (idx) => {},
             onEnter: (text) => {},
             onInputChanged: () => {},
@@ -34,17 +47,17 @@ describe("SearchBox component tests", () => {
 
         spyOn(props, "onEnter");
 
-        const wrapper = Fixture(SearchBox(props));
+        const wrapper = Fixture(__(SearchBox, props));
 
         wrapper.find("input").simulate("keyUp", { keyCode: ENTER_KEY_CODE });
-        expect(props.onEnter).toHaveBeenCalledWith("");
+        expect(props.onEnter).toHaveBeenCalledWith(null);
     });
 
     it("should call onEnter with entered text when enter key pressed after entering text in input field", () => {
         const props: SearchBox_t = {
             searching: false,
             terms: [],
-            suggestionList: [],
+            searchableTerms: [{label: "name", name: "name_name", type: "text", values: []}],
             onRemove: (idx) => {},
             onEnter: (text) => {},
             onInputChanged: () => {},
@@ -52,15 +65,15 @@ describe("SearchBox component tests", () => {
 
         spyOn(props, "onEnter");
 
-        const wrapper = Fixture(SearchBox(props));
+        const wrapper = Fixture(__(SearchBox, props));
 
         const text = "name:value";
-
         const input: any = wrapper.find("input").get(0);
         input.value = text;
 
+        wrapper.find("input").simulate("change");
         wrapper.find("input").simulate("keyUp", { keyCode: ENTER_KEY_CODE });
-        expect(props.onEnter).toHaveBeenCalledWith(text);
+        expect(props.onEnter).toHaveBeenCalledWith({name: "name_name", label: "name", value: "value"});
     });
 
     it("should display provided list of terms in chips components", () => {
@@ -75,13 +88,13 @@ describe("SearchBox component tests", () => {
                 label: "L2",
                 value: "V2",
             }],
-            suggestionList: [],
+            searchableTerms: [],
             onRemove: (idx) => {},
             onEnter: (text) => {},
             onInputChanged: () => {},
         };
 
-        const wrapper = Fixture(SearchBox(props));
+        const wrapper = Fixture(__(SearchBox, props));
 
         expect(wrapper.find("Chip").length).toBe(props.terms.length);
         for (let i = 0; i < props.terms.length; i++) {
@@ -106,7 +119,7 @@ describe("SearchBox component tests", () => {
                 label: "L3",
                 value: "V3",
             }],
-            suggestionList: [],
+            searchableTerms: [],
             onRemove: (idx) => {},
             onEnter: (text) => {},
             onInputChanged: () => {},
@@ -114,7 +127,7 @@ describe("SearchBox component tests", () => {
 
         spyOn(props, "onRemove");
 
-        const wrapper = Fixture(SearchBox(props));
+        const wrapper = Fixture(__(SearchBox, props));
 
         expect(wrapper.find("Chip").length).toBe(props.terms.length);
 
@@ -139,7 +152,7 @@ describe("SearchBox component tests", () => {
                 label: "L3",
                 value: "V3",
             }],
-            suggestionList: ["aaa", "bbb"],
+            searchableTerms: [{label: "aaa", name: "naaa", type: "text", values: []}, {label: "bbb", name: "nbbb", type: "text", values: []}],
             onRemove: (idx) => {},
             onEnter: (text) => {},
             onInputChanged: () => {},
@@ -147,10 +160,10 @@ describe("SearchBox component tests", () => {
 
         spyOn(props, "onRemove");
 
-        const wrapper = Fixture(SearchBox(props));
+        const wrapper = Fixture(__(SearchBox, props));
 
-        for (let i = 0; i < props.suggestionList.length; i++) {
-            expect(wrapper.find("datalist option").at(i).text()).toBe(props.suggestionList[i]);
+        for (let i = 0; i < props.searchableTerms.length; i++) {
+            expect(wrapper.find("datalist option").at(i).text()).toBe(props.searchableTerms[i].label + ":");
         }
     });
 

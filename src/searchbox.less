@@ -15,6 +15,9 @@
     display: flex;
     flex-direction: row;
 
+
+
+
     & > div {
         flex: 0 0 auto;
         margin-right: 4px!important;
@@ -50,4 +53,28 @@
             fill:@Blue!important;
         }
     }
+
+
+
+
 }
+
+
+    // adjust style for flatpickr calendar
+
+    .flatpickr-calendar {   /* fix formatting of week days header */
+      white-space: nowrap;  
+    }
+  
+    .flatpickr-input {
+        visibility: hidden;
+    }
+
+
+    /* Remove arrow */
+    .flatpickr-calendar.arrowTop:before {
+         border: 0;
+    }
+    .flatpickr-calendar.arrowTop:after {
+         border: 0;
+    }
