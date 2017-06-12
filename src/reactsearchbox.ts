@@ -15,7 +15,7 @@ const searchIconStyle = {
 
 const iconColor = "#512e5f";
 
-export type SearchBox_t = {
+export type ReactSearchBox_t = {
     translateSearchKeyword: (keyword: string) => string,
     searching: boolean,                     // flag indicating that search process is busy => activate spinnger !
     terms: SearchQuery,                        // list of existing terms already requested for search.
@@ -72,7 +72,7 @@ function buildChip(translateSearchKeyword: (keyword: string) => string, context:
 }
 
 let autocompleteStyle = { style: { flex: "1 1 auto", display: "inline-block", overflow: "hidden", border: 0, height: "90%", width: "100%" } };
-export function SearchBox({translateSearchKeyword, context, searching, searchText, terms, suggestionList, onRemove, onAddChip, onDoSearch, onInputChanged}: SearchBox_t): ReactElement<any> {
+export function ReactSearchBox({translateSearchKeyword, context, searching, searchText, terms, suggestionList, onRemove, onAddChip, onDoSearch, onInputChanged}: ReactSearchBox_t): ReactElement<any> {
     return _.div({ className: "search-box" }, [
         ...terms.elements.map((t, i: number) => buildChip(translateSearchKeyword, context, t, i, onRemove)),
         _.div(autocompleteStyle, __(AutoComplete, {
