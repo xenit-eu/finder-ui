@@ -15,3 +15,4 @@ export { PageMenu, PageMenu_t, PageMenuItem_t } from "./pageMenu";
 export * from "./reactsearchbox";
 export { TabPanel_t, TabsPanelOnChange_t, TabsPanel, TabsPanel_t } from "./tabspanel";
 export * from "./versionhistoryPanel";
+export * from "./searchHistoryList";
