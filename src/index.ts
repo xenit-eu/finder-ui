@@ -1,5 +1,5 @@
 export { Pager_t } from "./pager";
-export { DocumentTreeNode, DocumentTreeNode_t, DocumentTree } from "./treeview";
+export * from "./explorer";
 export { MenuItem_t, DocList_t, DocList, SortDirection_t, Column_t, Row_t } from "./doclist";
 export { SearchBox_t, SearchBox, Term_t, SearchableTerm_t } from "./searchbox";
 export { MetaDataDialog_t, MetaDataDialog } from "./metadataDialog";
