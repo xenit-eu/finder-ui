@@ -1,17 +1,16 @@
 import { mount, shallow, ShallowWrapper } from "enzyme";
-import {DocumentTreeNode_t} from "finder-services";
 import getMuiTheme from "material-ui/styles/getMuiTheme";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import { Component, createElement as __, DOM as _, ReactElement } from "react";
 import * as injectTapEventPlugin from "react-tap-event-plugin";
-import { TreeNode} from "./explorer";
+import { DocumentTreeNode_t, TreeNode } from "./explorer";
 import { Fixture, simulateEvent, TestWrapper } from "./testUtils";
 
 
 const muiTheme = getMuiTheme();
 const childLower: DocumentTreeNode_t = { open: true, id: "c", isFolder: false, Toggle: () => { }, Click: () => { }, text: "ChildBottom", children: [] };
 const childLow: DocumentTreeNode_t = { open: true, id: "c", isFolder: false, Toggle: () => { }, Click: () => { }, text: "Child", children: [childLower] };
-const case1: DocumentTreeNode_t = { open: true, id: "c", isFolder: true, Toggle: () => { }, Click: () => {}, text: "Parent", children: [childLow, childLower] };
+const case1: DocumentTreeNode_t = { open: true, id: "c", isFolder: true, Toggle: () => { }, Click: () => { }, text: "Parent", children: [childLow, childLower] };
 
 const primaryText = "primaryText";
 
