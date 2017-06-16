@@ -23,6 +23,8 @@ import "react-filter-box/lib/react-filter-box.css";
 import * as Colors from "material-ui/styles/colors";
 import getMuiTheme from "material-ui/styles/getMuiTheme";
 
+import { FinderQuery } from "./finderquery";
+
 const muiTheme = getMuiTheme({
     palette: {
         primary1Color: Colors.lightBlue700,
@@ -156,7 +158,7 @@ export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, any> {
             __("div", { key: "div", className: "search-icon" },
                 this.props.searching
                     ? __(CircularProgress, { size: 24 })
-                    : __(SearchIcon, { color: iconColor, onClick: () => this.props.onSearch(advancedQueryToApixQuery(this.query)) }),
+                    : __(SearchIcon, { color: iconColor, onClick: () => this.props.onSearch(FinderQuery.fromAdvancedQuery(this.query)) }),
             ),
         ]);
     }

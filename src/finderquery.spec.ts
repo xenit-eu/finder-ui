@@ -9,7 +9,7 @@ describe("advanced query to apix query ", () => {
             { category: "title", operator: "contains", value: "hi" },
             {
                 expressions: [{ category: "author", operator: "=", value: "hello" },
-                              { category: "size", operator: "=", value: "1000", conditionType: "OR" }], 
+                              { category: "size", operator: "=", value: "1000", conditionType: "OR" }],
                 conditionType: "AND",
             },
         ];
