@@ -1,10 +1,12 @@
 import { mount, shallow, ShallowWrapper } from "enzyme";
+import {DocumentTreeNode_t} from "finder-services";
 import getMuiTheme from "material-ui/styles/getMuiTheme";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import { Component, createElement as __, DOM as _, ReactElement } from "react";
 import * as injectTapEventPlugin from "react-tap-event-plugin";
+import { TreeNode} from "./explorer";
 import { Fixture, simulateEvent, TestWrapper } from "./testUtils";
-import { DocumentTree, DocumentTreeNode_t } from "./treeview";
+
 
 const muiTheme = getMuiTheme();
 const childLower: DocumentTreeNode_t = { open: true, id: "c", isFolder: false, Toggle: () => { }, Click: () => { }, text: "ChildBottom", children: [] };
@@ -19,7 +21,7 @@ describe("Treeview test", () => {
         injectTapEventPlugin();
     });
     it("should display nested items", () => {
-        const wrapper = Fixture(__(DocumentTree, case1));
+        const wrapper = Fixture(__(TreeNode, case1));
         let list = wrapper;
         const topListItems = list.find("ListItem");
         expect(topListItems.get(0).props[primaryText]).toBe("Parent");

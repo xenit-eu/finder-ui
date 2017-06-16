@@ -1,4 +1,4 @@
-
+import { BuildDocumentTreeNodeForNode, DocumentTreeNode_t, FinderAssociationRepository, FinderNodeRepository } from "finder-services";
 import Avatar from "material-ui/Avatar";
 import Badge from "material-ui/Badge";
 import { List, ListItem } from "material-ui/List";
@@ -14,18 +14,7 @@ import FileFolder from "material-ui/svg-icons/file/folder";
 import Toggle from "material-ui/Toggle";
 import { Component, createElement as __, DOM as _, ReactElement } from "react";
 
-export type DocumentTreeNode_t = {
-    id: any,
-    open: boolean,
-    Toggle: (id: any) => void,
-    Click: (id: any) => void,
-    text: string,
-    children: DocumentTreeNode_t[],
-    isFolder: boolean,
-    className?: string,
-};
-
-export function DocumentTreeNode({open, Toggle, Click, text, children, isFolder, id, className}: DocumentTreeNode_t): ReactElement<any> {
+export function TreeNode({open, Toggle, Click, text, children, isFolder, id, className}: DocumentTreeNode_t): ReactElement<any> {
     let avatar = __(Avatar, { icon: __(isFolder ? FileFolder : ActionAssignment, {}) });
     return __(ListItem, {
         onNestedListToggle: () => { Toggle(id); },
@@ -35,11 +24,24 @@ export function DocumentTreeNode({open, Toggle, Click, text, children, isFolder,
         primaryTogglesNestedList: false,
         primaryText: text,
         key: id,
-        nestedItems: children.map((v, i) => DocumentTreeNode(v)),
+        nestedItems: children.map((v, i) => TreeNode(v)),
         className: className ? className : "",
     });
 }
 
-export function DocumentTree(node: DocumentTreeNode_t) {
-    return __(List, {}, [DocumentTreeNode(node)]);
+export function BuildTreeNodeRoot(node: DocumentTreeNode_t) {
+    return __(List, {}, [TreeNode(node)]);
+}
+
+export function BuildDocumentTree(
+    nodeId: string | undefined,
+    AssociationRepository: FinderAssociationRepository,
+    IsToggledOpen: (id: string) => boolean,
+    nodeRepository: FinderNodeRepository,
+    loadNode: DocumentTreeNode_t | undefined,
+    clickNode: (id: string) => void,
+    toggleNode: (id: string) => void,
+    IsSelected: (id: string) => boolean) {
+    return BuildDocumentTreeNodeForNode(nodeId, AssociationRepository, IsToggledOpen, nodeRepository, loadNode, clickNode, toggleNode, IsSelected)
+        .then(viewModel => BuildTreeNodeRoot(viewModel));
 }
