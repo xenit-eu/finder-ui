@@ -1,4 +1,3 @@
-import { BuildDocumentTreeNodeForNode, DocumentTreeNode_t, FinderAssociationRepository, FinderNodeRepository } from "finder-services";
 import Avatar from "material-ui/Avatar";
 import Badge from "material-ui/Badge";
 import { List, ListItem } from "material-ui/List";
@@ -13,6 +12,17 @@ import ContentSend from "material-ui/svg-icons/content/send";
 import FileFolder from "material-ui/svg-icons/file/folder";
 import Toggle from "material-ui/Toggle";
 import { Component, createElement as __, DOM as _, ReactElement } from "react";
+
+export type DocumentTreeNode_t = {
+    id: any,
+    open: boolean,
+    text: string,
+    Toggle: (id: string) => void,
+    Click: (id: string) => void,
+    children: DocumentTreeNode_t[],
+    isFolder: boolean,
+    className?: string,
+};
 
 export function TreeNode({open, Toggle, Click, text, children, isFolder, id, className}: DocumentTreeNode_t): ReactElement<any> {
     let avatar = __(Avatar, { icon: __(isFolder ? FileFolder : ActionAssignment, {}) });
@@ -31,17 +41,4 @@ export function TreeNode({open, Toggle, Click, text, children, isFolder, id, cla
 
 export function BuildTreeNodeRoot(node: DocumentTreeNode_t) {
     return __(List, {}, [TreeNode(node)]);
-}
-
-export function BuildDocumentTree(
-    nodeId: string | undefined,
-    AssociationRepository: FinderAssociationRepository,
-    IsToggledOpen: (id: string) => boolean,
-    nodeRepository: FinderNodeRepository,
-    loadNode: DocumentTreeNode_t | undefined,
-    clickNode: (id: string) => void,
-    toggleNode: (id: string) => void,
-    IsSelected: (id: string) => boolean) {
-    return BuildDocumentTreeNodeForNode(nodeId, AssociationRepository, IsToggledOpen, nodeRepository, loadNode, clickNode, toggleNode, IsSelected)
-        .then(viewModel => BuildTreeNodeRoot(viewModel));
 }
