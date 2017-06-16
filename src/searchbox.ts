@@ -3,7 +3,11 @@ import CircularProgress from "material-ui/CircularProgress";
 import Dialog from "material-ui/Dialog";
 import FlatButton from "material-ui/FlatButton";
 import RefreshIndicator from "material-ui/RefreshIndicator";
+import * as Colors from "material-ui/styles/colors";
 import SearchIcon from "material-ui/svg-icons/action/search";
+import StarIcon from "material-ui/svg-icons/toggle/star-border";
+
+import { FinderQuery } from "./finderquery";
 
 declare var require: any;
 // tslint:disable-next-line:no-var-requires
@@ -26,7 +30,8 @@ const searchIconStyle = {
 
 const iconColor = "#512e5f";
 
-const reNameValue = /\w+\s*\:\s*\w+/;
+const reNameValue: RegExp = /[^\:]+\:\s*(.+)\s*$/;
+const reQuery: RegExp = /\[([\w\s\-\_]+)\]/;
 
 function toDateString(d: Date): string {
     return new Date(d.getTime() + (5 * 3600 * 1000)).toISOString().substring(0, 10);
@@ -57,13 +62,23 @@ export type Term_t = {
     value: string, //@TypeParam value entered for this term
 };
 
+export type Query_t = {
+    label: string,
+    query: any,
+};
+
 export type SearchBox_t = {
-    searching: boolean,                     // flag indicating that search process is busy => activate spinnger !
-    terms: Term_t[],                        // list of existing terms already requested for search.
-    searchableTerms: SearchableTerm_t[],    // suggestions to be proposed on the drop-down list.
-    onRemove: (idx: number) => void,        // remove existing term.
-    onEnter: (text: Term_t|null) => void,        // add new term.
+    searching: boolean,                             // flag indicating that search process is busy => activate spinnger !
+    searchedTerms: Term_t[],                        // list of existing terms already requested for search.
+    searchableTerms: SearchableTerm_t[],            // suggestions to be proposed on the drop-down list.
+    searchedQueries: Query_t[],
+    searchableQueries: Query_t[],
+    onRemoveTerm: (idx: number) => void,            // remove existing term.
+    onRemoveQuery: (idx: number) => void,           // remove existing term.
+    onEnter: (text: Term_t|null) => void,           // add new term or start search (when parameter is null)
+    onAddQuery: (query: Query_t) => void,           // add new query.
     onInputChanged: (text: string) => void,
+    onSaveAsQuery: (name: string) => void,
 };
 
 type State_t = {
@@ -86,26 +101,43 @@ type State_t = {
 export class SearchBox extends Component<SearchBox_t, State_t> {
 
     private textInput: HTMLInputElement;
-    private currentTerm: SearchableTerm_t;
+    private currentTerm: SearchableTerm_t|null;
     private selectedDates: Date[] = [];
 
     constructor(props: SearchBox_t) {
         super(props);
         this.state = {
-            suggestionList: props.searchableTerms.map(t => t.label + ":"),
+            suggestionList: [
+            ...this.props.searchableQueries.sort().map(t => "[" + t.label + "]"),
+            ...this.props.searchableTerms.sort().map(t => t.label + ":"),
+            ],
             calendarOpen: false,
             calendarMode: "single",
         };
     }
 
-    public resetSuggestionList() {
-        this.setState({ suggestionList: this.props.searchableTerms.map(t => t.label + ":") });
+    public componentWillReceiveProps (nextProps: SearchBox_t) {
+        this.resetSuggestionList(nextProps); // triggers a 'recalculate' of the suggestion list when new properties are available.
+    }
+
+    public resetSuggestionList(props: SearchBox_t) {
+        this.setState({ suggestionList: [
+            ...props.searchableQueries.sort().map(t => "[" + t.label + "]"),
+            ...props.searchableTerms.sort().map(t => t.label + ":"),
+        ] });
     }
 
     public addNewTerm(term: Term_t) {
         this.props.onEnter(term);
         this.textInput.value = "";
-        this.resetSuggestionList();
+        this.currentTerm = null;
+        this.resetSuggestionList(this.props);
+    }
+
+    public addNewQuery(query: Query_t) {
+        this.props.onAddQuery(query);
+        this.textInput.value = "";
+        this.resetSuggestionList(this.props);
     }
 
     public handleInputChange(event: KeyboardEvent) {
@@ -141,18 +173,27 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                     this.addNewTerm({ name: this.currentTerm.name, label: this.currentTerm.label, value: match[1] });
                 }
             }
+        } else if (reQuery.test(val)) {  // query has been encoded.
+            const match = reQuery.exec(input.value);
+            if (match) {
+                const label = match[1];
+                const query = this.props.searchableQueries.filter(q => q.label === label)[0];
+                if (query) {
+                    this.addNewQuery(query);
+                }
+            }
         } else {
-            this.resetSuggestionList();
+            this.resetSuggestionList(this.props);
         }
     }
 
     public handleInputKey(evt: KeyboardEvent): void {
         const input = <HTMLInputElement> this.textInput;
-        if (evt.keyCode === 13 && (!input.value || reNameValue.test(input.value))) {
+        if (evt.keyCode === 13 && (!input.value || reNameValue.test(input.value) )) {
             if (!input.value) { // Enter press with empty input => call onEnter with null.
                 this.props.onEnter(null);
             } else if (this.currentTerm) {
-                const m = /[^\:]+\:\s*(.+)\s*$/.exec(input.value);
+                const m = reNameValue.exec(input.value);
                 if (m) {
                     this.addNewTerm({ name: this.currentTerm.name, label: this.currentTerm.label, value: m[1] });
                 }
@@ -177,10 +218,10 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
             if (/\:on\.\.\./.test(inputValue)) {
                 dateRange = toDateString(this.selectedDates[0]) + ".." + toDateString(this.selectedDates[0]);
             }
-            if (/\:after\.\.\./.test(inputValue)) {
+            if (/\:before\.\.\./.test(inputValue)) {
                 dateRange = toDateString(MIN_DATE) + ".." + toDateString(this.selectedDates[0]);
             }
-            if (/\:before\.\.\./.test(inputValue)) {
+            if (/\:after\.\.\./.test(inputValue)) {
                 dateRange = toDateString(this.selectedDates[0]) + ".." + toDateString(MAX_DATE);
             }
             if (/\:between\.\.\./.test(inputValue) && this.selectedDates.length > 1) {
@@ -191,10 +232,15 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
         this.setState({ calendarOpen: false });
     }
 
+    private withTooltip (label: string, tooltip: string): ReactElement<any> {
+        return __("span", {title: tooltip}, label);
+    }
+
     public render() {
 
         const dialogButtons = [
             __(FlatButton, {
+                key: "done-button",
                 label: "Done",
                 primary: true,
                 keyboardFocused: false,
@@ -203,27 +249,36 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
             }),
         ];
 
-        return _.div({ className: "search-box" }, [
-            ...this.props.terms.map((t, i) => __(Chip, { key: i, onRequestDelete: () => this.props.onRemove(i) }, t.label + ":" + t.value)),
+        return _.div({ key: "search-box", className: "search-box" }, [
+            ...this.props.searchedQueries.map((t, i) => __(Chip, {
+                    backgroundColor: Colors.blue100,
+                    key: "Q" + i,
+                    onRequestDelete: () => this.props.onRemoveQuery(i),
+                }, this.withTooltip("[" + t.label + "]", new FinderQuery(t.query).toHumanReadableString()))),
+            ...this.props.searchedTerms.map((t, i) => __(Chip, { key: "T" + i, onRequestDelete: () => this.props.onRemoveTerm(i) }, t.label + ":" + t.value )),
             _.input({ key: "input", list: "dropdown-list",
-                      placeholder: "Type search term or 'Enter' to start searching...",
+                      placeholder: "Type search term/query or 'Enter' to start searching...",
                       onChange: this.handleInputChange.bind(this),
                       onKeyUp: (evt) => this.handleInputKey.bind(this)(evt),
                       ref: (input) => { this.textInput = input; },
                     }),
             _.datalist({ key: "datalist", id: "dropdown-list" }, this.state.suggestionList ? this.state.suggestionList.map(n => _.option({ key: n }, n)) : []),
-            _.div({ key: "div", className: "search-icon" },
+
+            _.div({ key: "save-icon", className: "save-icon" }, __(StarIcon, { color: iconColor, onClick: () => this.props.onSaveAsQuery(prompt("Save query as") || "query") })),
+
+            _.div({ key: "search-icon", className: "search-icon" },
                 this.props.searching
                     ? __(CircularProgress, { size: 24 })
                     : __(SearchIcon, { color: iconColor, onClick: () => this.props.onEnter(null) }),
             ),
             __(Dialog, { // Dialog to display the date (range) selector.
+                key: "dialog",
                 actions: dialogButtons,
                 open: this.state.calendarOpen || false,
                 onRequestClose: this.handleCloseDialog.bind(this),
                 contentStyle: { width: "365px" },
             },
-                __(Flatpickr.default, { options: { inline: true, mode: this.state.calendarMode }, onChange: this.handleDateSelection.bind(this) }),
+                __(Flatpickr.default, { key: "flatpikr", options: { inline: true, mode: this.state.calendarMode }, onChange: this.handleDateSelection.bind(this) }),
             ),
         ]);
 

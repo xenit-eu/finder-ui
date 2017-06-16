@@ -6,7 +6,6 @@ import * as injectTapEventPlugin from "react-tap-event-plugin";
 import { DocumentTreeNode_t, TreeNode } from "./explorer";
 import { Fixture, simulateEvent, TestWrapper } from "./testUtils";
 
-
 const muiTheme = getMuiTheme();
 const childLower: DocumentTreeNode_t = { open: true, id: "c", isFolder: false, Toggle: () => { }, Click: () => { }, text: "ChildBottom", children: [] };
 const childLow: DocumentTreeNode_t = { open: true, id: "c", isFolder: false, Toggle: () => { }, Click: () => { }, text: "Child", children: [childLower] };

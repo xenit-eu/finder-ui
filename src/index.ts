@@ -16,3 +16,6 @@ export * from "./reactsearchbox";
 export { TabPanel_t, TabsPanelOnChange_t, TabsPanel, TabsPanel_t } from "./tabspanel";
 export * from "./versionhistoryPanel";
 export * from "./searchHistoryList";
+export * from "./finderquery";
+export * from "./advancedsearchbox";
+export * from "./columnspicker";

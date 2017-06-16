@@ -13,7 +13,7 @@ const jasmineEnzyme = require("jasmine-enzyme"); // no typings for jasmine-engin
 
 const ENTER_KEY_CODE: number = 13;
 
-// !!!!! missing function in phantomjs !!!!!! 
+// !!!!! missing function in phantomjs !!!!!!
 if (!String.prototype.endsWith) {
   String.prototype.endsWith = (searchString, position) => {
       let subjectString = this.toString();
@@ -38,11 +38,17 @@ describe("SearchBox component tests", () => {
     it("should call onEnter callback with null param when enter key pressed without input text", () => {
         const props: SearchBox_t = {
             searching: false,
-            terms: [],
+            searchedTerms: [],
             searchableTerms: [],
-            onRemove: (idx) => {},
+
+            searchableQueries: [],
+            searchedQueries: [],
+            onRemoveTerm: (idx) => {},
+            onRemoveQuery: (idx) => {},
             onEnter: (text) => {},
+            onAddQuery: (query) => {},
             onInputChanged: () => {},
+            onSaveAsQuery: () => {},
         };
 
         spyOn(props, "onEnter");
@@ -56,11 +62,16 @@ describe("SearchBox component tests", () => {
     it("should call onEnter with entered text when enter key pressed after entering text in input field", () => {
         const props: SearchBox_t = {
             searching: false,
-            terms: [],
+            searchedTerms: [],
             searchableTerms: [{label: "name", name: "name_name", type: "text", values: []}],
-            onRemove: (idx) => {},
+            searchableQueries: [],
+            searchedQueries: [],
+            onRemoveTerm: (idx) => {},
+            onRemoveQuery: (idx) => {},
             onEnter: (text) => {},
+            onAddQuery: (query) => {},
             onInputChanged: () => {},
+            onSaveAsQuery: () => {},
         };
 
         spyOn(props, "onEnter");
@@ -79,7 +90,7 @@ describe("SearchBox component tests", () => {
     it("should display provided list of terms in chips components", () => {
         const props: SearchBox_t = {
             searching: false,
-            terms: [{
+            searchedTerms: [{
                 name: "N1",
                 label: "L1",
                 value: "V1",
@@ -89,24 +100,29 @@ describe("SearchBox component tests", () => {
                 value: "V2",
             }],
             searchableTerms: [],
-            onRemove: (idx) => {},
+            searchableQueries: [],
+            searchedQueries: [],
+            onRemoveTerm: (idx) => {},
+            onRemoveQuery: (idx) => {},
             onEnter: (text) => {},
+            onAddQuery: (query) => {},
             onInputChanged: () => {},
+            onSaveAsQuery: () => {},
         };
 
         const wrapper = Fixture(__(SearchBox, props));
 
-        expect(wrapper.find("Chip").length).toBe(props.terms.length);
-        for (let i = 0; i < props.terms.length; i++) {
-            expect(wrapper.find("Chip").at(i).text()).toBe(props.terms[i].label + ":" + props.terms[i].value);
+        expect(wrapper.find("Chip").length).toBe(props.searchedTerms.length);
+        for (let i = 0; i < props.searchedTerms.length; i++) {
+            expect(wrapper.find("Chip").at(i).text()).toBe(props.searchedTerms[i].label + ":" + props.searchedTerms[i].value);
         }
 
     });
 
-    it("should call onRemove with index of removed item when deleting a specific term", () => {
+    it("should call onRemoveTerm with index of removed item when deleting a specific term", () => {
         const props: SearchBox_t = {
             searching: false,
-            terms: [{
+            searchedTerms: [{
                 name: "N1",
                 label: "L1",
                 value: "V1",
@@ -120,26 +136,31 @@ describe("SearchBox component tests", () => {
                 value: "V3",
             }],
             searchableTerms: [],
-            onRemove: (idx) => {},
+            searchableQueries: [],
+            searchedQueries: [],
+            onRemoveTerm: (idx) => {},
+            onRemoveQuery: (idx) => {},
             onEnter: (text) => {},
+            onAddQuery: (query) => {},
             onInputChanged: () => {},
+            onSaveAsQuery: () => {},
         };
 
-        spyOn(props, "onRemove");
+        spyOn(props, "onRemoveTerm");
 
         const wrapper = Fixture(__(SearchBox, props));
 
-        expect(wrapper.find("Chip").length).toBe(props.terms.length);
+        expect(wrapper.find("Chip").length).toBe(props.searchedTerms.length);
 
         const idxToDelete = 1;
         simulateEvent(wrapper.find("Chip").at(idxToDelete).find("NavigationCancel"), "touchTap");
-        expect(props.onRemove).toHaveBeenCalledWith(idxToDelete);
+        expect(props.onRemoveTerm).toHaveBeenCalledWith(idxToDelete);
     });
 
     it("should display the suggestion list", () => {
         const props: SearchBox_t = {
             searching: false,
-            terms: [{
+            searchedTerms: [{
                 name: "N1",
                 label: "L1",
                 value: "V1",
@@ -153,12 +174,17 @@ describe("SearchBox component tests", () => {
                 value: "V3",
             }],
             searchableTerms: [{label: "aaa", name: "naaa", type: "text", values: []}, {label: "bbb", name: "nbbb", type: "text", values: []}],
-            onRemove: (idx) => {},
+            searchableQueries: [],
+            searchedQueries: [],
+            onRemoveTerm: (idx) => {},
+            onRemoveQuery: (idx) => {},
             onEnter: (text) => {},
+            onAddQuery: (query) => {},
             onInputChanged: () => {},
+            onSaveAsQuery: () => {},
         };
 
-        spyOn(props, "onRemove");
+        spyOn(props, "onRemoveTerm");
 
         const wrapper = Fixture(__(SearchBox, props));
 

@@ -8,6 +8,10 @@
         "arrow-parens": false,
         "no-empty": false,
         "type-name": true,
-        "comment-format" : [false]  
+        "comment-format" : [false],
+        "max-classes-per-file": [false],
+        "member-ordering": [
+            false
+        ]
     }
 }
