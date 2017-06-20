@@ -2,8 +2,10 @@ import CircularProgress from "material-ui/CircularProgress";
 import DatePicker from "material-ui/DatePicker";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import SearchIcon from "material-ui/svg-icons/action/search";
+import StarIcon from "material-ui/svg-icons/toggle/star-border";
 import { Component, createElement as __ } from "react";
 import { render } from "react-dom";
+
 // tslint:disable-next-line:no-var-requires
 const DatePickerDialog = require("material-ui/DatePicker/DatePickerDialog"); // no type description available for this one !
 // tslint:disable-next-line:no-var-requires
@@ -88,6 +90,7 @@ export type AdvancedSearchBox_t = {
     searching: boolean,                     // flag indicating that search process is busy => activate spinnger !
     searchableTerms: SearchableTerm_t[],    // suggestions to be proposed on the drop-down list.
     onSearch: (apixQuery: any) => void,     // to initiate the search based on the last query.
+    onSaveAsQuery: (name: string) => void,
 };
 
 // tslint:disable-next-line:type-name
@@ -155,6 +158,7 @@ export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, any> {
                 onParseOk: this.onParseOk.bind(this),
                 onChange: this.onChange.bind(this),
             }),
+            __("div", { key: "save-icon", className: "save-icon" }, __(StarIcon, { color: iconColor, onClick: () => this.props.onSaveAsQuery(prompt("Save query as") || "query") })),
             __("div", { key: "div", className: "search-icon" },
                 this.props.searching
                     ? __(CircularProgress, { size: 24 })

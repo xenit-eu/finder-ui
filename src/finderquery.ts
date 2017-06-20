@@ -177,7 +177,7 @@ export class FinderQuery {
         switch (name) {
             case "and":
             case "or":
-                return query[name].map((q: ApixQuery_t) => "(" + FinderQuery.toHumanReadable(q) + ")").join(" AND ");
+                return query[name].map((q: ApixQuery_t) => "(" + FinderQuery.toHumanReadable(q) + ")").join(` ${name.toUpperCase()} `);
             case "property":
                 const prop = query[name];
                 return prop.name.replace(/\{[^\{}]+\}/, "") + " = " + (prop.range ? prop.range.start + ".." + prop.range.end : prop.value);
