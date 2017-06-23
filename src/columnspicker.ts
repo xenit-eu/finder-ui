@@ -4,8 +4,8 @@ import FontIcon from "material-ui/FontIcon";
 import IconButton from "material-ui/IconButton";
 import { Component, createElement as __ } from "react";
 
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
+import MenuItem from "material-ui/MenuItem";
+import SelectField from "material-ui/SelectField";
 
 declare var require: any;
 // tslint:disable-next-line:no-var-requires
@@ -47,16 +47,14 @@ type ColumnSet_t = {
     columns: string[], // list of column names.
 };
 
-
 type State_t = {
     opened: boolean, // open dialog.
     selected: string[], // list of labels
-    sets: ColumnSet_t[], 
+    sets: ColumnSet_t[],
     selectedSet: string, // selected ColumnSet label.
 };
 
 const storageKey = "users-column-sets";
-
 
 export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
 
@@ -78,7 +76,6 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
     }
 
     private handleDone () {
-        console.log(this.state.selected.map((c: string) => this.mappingByLabel[c].label).join("\n"));
         this.props.onDone(this.state.selected.map((c: string) => this.mappingByLabel[c].name));
         this.setState({ opened: false} as State_t);
     }
@@ -94,10 +91,10 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
     }
 
     private handleSaveAsNew () {
-        const name : string = prompt("Column set name") || "DEFAULT";
+        const name: string = prompt("Column set name") || "DEFAULT";
         let list = this.state.sets;
 
-        list.push({label: name, columns: this.state.selected.map(l => this.mappingByLabel[l].name  )})
+        list.push({label: name, columns: this.state.selected.map(l => this.mappingByLabel[l].name  )});
         localStorage.setItem(storageKey, JSON.stringify(list));
 
         this.setState({sets: list, selectedSet: name} as State_t);
@@ -122,26 +119,19 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
         localStorage.setItem(storageKey, JSON.stringify(newSets));
     }
 
-
     private handleChangeTargetSortable(items: string[]) {
-        console.log("--- handleChangeTarget ---");
-        console.log(items.join("\n"))
-        this.setState( {selected: items } as State_t )
+        this.setState( {selected: items } as State_t );
     }
 
     private handleChangeSourceSortable(items: string[]) {
-        console.log("--- handleChangeSource ---");
-        console.log(items.join("\n"))
-
         const selected = this.props.allColumns.map(c => c.label).filter(a => items.indexOf(a) === -1);
-        this.setState( {selected: selected } as State_t )
+        this.setState({ selected } as State_t );
     }
-
 
     public render() {
 
-        const selected = this.state.selected.map((val: string) => __("li", {key: val, "data-id": val}, val));
-        const others = this.props.allColumns.filter(a => this.state.selected.indexOf(a.label) === -1).map(c => c.label).map((val: string) => __("li", {key: val, "data-id": val}, val));
+        const selected = this.state.selected.map((val: string) => __("li", {"key": val, "data-id": val}, val));
+        const others = this.props.allColumns.filter(a => this.state.selected.indexOf(a.label) === -1).map(c => c.label).map((val: string) => __("li", {"key": val, "data-id": val}, val));
 
         const dialogButtons = [
             __(FlatButton, {
@@ -172,7 +162,7 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
             __(FlatButton, {key: "bsa", style: saveButtonStyle, label: "Save as new...", onClick: this.handleSaveAsNew.bind(this)}),
             __(FlatButton, {key: "bd", style: saveButtonStyle, label: "Delete", onClick: this.handleDelete.bind(this)}),
 
-            __("hr", {key: "hr-1"}),   
+            __("hr", {key: "hr-1"}),
 
             __("h3", {key: "hdr-2"}, "Columns to display"),
             __("div", {key: "selected"} ),
