@@ -56,6 +56,16 @@ type State_t = {
 
 const storageKey = "users-column-sets";
 
+//@Component ColumnsPicker
+//@ComponentDescription "presents a dialog to select the columns to be displayed in the DocList"
+//@ComponentDescription "this components allows also to save current column sets for later selection."
+//@Method ColumnsPicker Returns ReactComponent
+//@MethodDescription "ColumnsPicker({param1: value1, param2: value2, ...})"
+//@Param visible boolean "controls the display of the dialog, displays it when put to true"
+//@Param allColumns Column_t[] "all possible columns that can be selected"
+//@Param selectedColumns string[] "list of selected column names "
+//@Param onDone (selectedColumns: string[]) => void "'Done' button pressed on the dialog"
+
 export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
 
     private mappingByName: {[k: string]: Column_t};

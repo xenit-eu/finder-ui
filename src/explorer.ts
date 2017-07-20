@@ -39,6 +39,18 @@ export function TreeNode({open, Toggle, Click, text, children, isFolder, id, cla
     });
 }
 
+//@Component BuildTreeNodeRoot
+//@ComponentDescription "Displays a folder structure with document in a tree view."
+//@Method BuildTreeNodeRoot Returns ReactComponent
+//@MethodDescription "BuildTreeNodeRoot({param1: value1, param2: value2, ...})"
+//@Param id any "data associated to the current node (typically: document id)"
+//@Param open boolean "indicates if this node should be opened"
+//@Param text string "text to be displayed for this node"
+//@Param children DocumentTreeNode_t[] "child nodes (same structure as the current node)"
+//@Param isFolder boolean "indicates that the current node is a document"
+//@Param className string "Name of the css class to give to the doclist (optional)"
+//@Param Toggle (id: string) => void "called when node is requested to open/close"
+//@Param Click (id: string) => void "called when clicking on a node"
 export function BuildTreeNodeRoot(node: DocumentTreeNode_t) {
     return __(List, {}, [TreeNode(node)]);
 }

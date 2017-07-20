@@ -12,22 +12,22 @@ const flatButtonStyle = {
 
 type Page_t = {value: number, isActive: boolean, onClick: () => void};
 function Page ({value, isActive, onClick}: Page_t): ReactElement<any> {
-    return __(FlatButton, { style: isActive ? { minWidth: 36, color: "grey" } : flatButtonStyle, label: value.toString(), primary: isActive, onClick });
+    return __(FlatButton, { key: "P-" + value, style: isActive ? { minWidth: 36, color: "grey" } : flatButtonStyle, label: value.toString(), primary: isActive, onClick });
 }
 
 type Ellipsis_t = {onClick: () => void};
 function Ellipsis ({onClick}: Ellipsis_t): ReactElement<any> {
-    return __(FlatButton, { style: flatButtonStyle, label: "...", onClick });
+    return __(FlatButton, { key: "...", style: flatButtonStyle, label: "...", onClick });
 }
 
 type PreviousPageLink_t = {isActive: boolean, onClick: () => void};
 function PreviousPageLink ({isActive, onClick}: PreviousPageLink_t): ReactElement<any> {
-    return __(FlatButton, { style: flatButtonStyle, icon: __(NavigationChevronLeft, undefined), onClick, disabled: !isActive });
+    return __(FlatButton, { key: "previous", style: flatButtonStyle, icon: __(NavigationChevronLeft, undefined), onClick, disabled: !isActive });
 }
 
 type NextPageLink_t = {isActive: boolean, onClick: () => void};
 function  NextPageLink ({isActive, onClick}: NextPageLink_t): ReactElement<any> {
-    return __(FlatButton, { style: flatButtonStyle, icon: __(NavigationChevronRight, undefined), onClick, disabled: !isActive });
+    return __(FlatButton, { key: "next", style: flatButtonStyle, icon: __(NavigationChevronRight, undefined), onClick, disabled: !isActive });
 }
 
 /*
@@ -79,7 +79,7 @@ export function Pager ({totalItems, pageSize, selected, pageSelected}: Pager_t):
         __(PreviousPageLink, { /*key: 'previous',*/ isActive: selected > 1, onClick: () => pageSelected(selected - 1) }),
         _.span({key: "pages"}, pages),
         maxReached ? "..." : "",
-        __(NextPageLink, { /*key: 'next',*/ isActive: selected < nbOfPages, onClick: () => pageSelected(selected + 1) }),
+        __(NextPageLink, { /*key: "next",*/ isActive: selected < nbOfPages, onClick: () => pageSelected(selected + 1) }),
     ]);
 }
 

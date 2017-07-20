@@ -38,6 +38,7 @@ export type MetaDataDialog_t = {
 
 export function MetaDataDialog ({opened, fields, onClose, onSave}: MetaDataDialog_t) {
     return __(Dialog, {
+        key: "dialog",
         title: "Metadata",
         actions: DialogActions({ handleClose: onClose, handleSave: () => onSave(fields) }),
         modal: true,

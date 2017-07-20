@@ -87,7 +87,7 @@ export type SearchableTerm_t = {
 };
 
 export type AdvancedSearchBox_t = {
-    searching: boolean,                     // flag indicating that search process is busy => activate spinnger !
+    searching: boolean,                     // flag indicating that search process is busy => activate spinner !
     searchableTerms: SearchableTerm_t[],    // suggestions to be proposed on the drop-down list.
     onSearch: (apixQuery: any) => void,     // to initiate the search based on the last query.
     onSaveAsQuery: (name: string) => void,
@@ -95,6 +95,15 @@ export type AdvancedSearchBox_t = {
 
 // tslint:disable-next-line:type-name
 type pick_t = (x: string) => void;
+
+//@Component AdvancedSearchBox
+//@ComponentDescription "Allows to type advanced queries using combination of OR and AND combined with parantheses"
+//@Method AdvancedSearchBox Returns ReactComponent
+//@MethodDescription "AdvancedSearchBox({param1: value1, param2: value2, ...})"
+//@Param searching boolean "flag indicating that search process is busy => used to activate spinner"
+//@Param searchableTerms SearchableTerm_t[] "suggestions to be proposed on the drop-down list."
+//@Param onSearch (apixQuery: any) => void "callback called to start the search based on the current query passed as parameter."
+//@Param onSaveAsQuery (name: string) => void "callback called to save the current query"
 
 export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, any> {
 
