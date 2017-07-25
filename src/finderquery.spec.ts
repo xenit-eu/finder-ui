@@ -102,4 +102,19 @@ describe("advanced query to apix query ", () => {
         expect(FinderQuery.fromAdvancedQuery(input).query).toEqual(expected);
     });
 
+    it("less than", () => {
+        const input = [{ category: "date", operator: "<=", value: "2017-01-02" }];
+        const expected = { property: { name: "date", range: {start: "MIN", end: "2017-01-02" } }};
+
+        expect(FinderQuery.fromAdvancedQuery(input).query).toEqual(expected);
+    });
+
+    it("greater than", () => {
+        const input = [{ category: "date", operator: ">=", value: "2017-01-02" }];
+        const expected = { property: { name: "date", range: {start: "2017-01-02", end: "MAX" } }};
+
+        expect(FinderQuery.fromAdvancedQuery(input).query).toEqual(expected);
+    });
+
+
 });

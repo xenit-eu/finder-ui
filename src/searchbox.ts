@@ -69,16 +69,16 @@ export type Query_t = {
 
 export type SearchBox_t = {
     searching: boolean,                             // flag indicating that search process is busy => activate spinnger !
-    searchedTerms: Term_t[],                        // list of existing terms already requested for search.
+    searchedTerms: Term_t[],                        // list of terms requested for search.
     searchableTerms: SearchableTerm_t[],            // suggestions to be proposed on the drop-down list.
-    searchedQueries: Query_t[],
-    searchableQueries: Query_t[],
+    searchedQueries: Query_t[],                     // list of queries requested for search.
+    searchableQueries: Query_t[],                   // suggestions queries.
     onRemoveTerm: (idx: number) => void,            // remove existing term.
     onRemoveQuery: (idx: number) => void,           // remove existing term.
     onEnter: (text: Term_t|null) => void,           // add new term or start search (when parameter is null)
-    onAddQuery: (query: Query_t) => void,           // add new query.
-    onInputChanged: (text: string) => void,
-    onSaveAsQuery: (name: string) => void,
+    onAddQuery: (query: Query_t) => void,           // add new query to the searchedQueries.
+    onInputChanged: (text: string) => void,         // called on any changes in the input box.
+    onSaveAsQuery: (name: string) => void,          // called on request to save the current query as a new saved query.
 };
 
 type State_t = {

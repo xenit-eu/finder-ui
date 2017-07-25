@@ -105,12 +105,26 @@ export class FinderQuery {
         return new FinderQuery(result);
     }
 
-    private static toApix(term: any) {
+    private static toApix(term: any): any {
         let value = term.value;
-        if (term.operator === "contains") {
-            value = "*" + value + "*";
+
+        switch (term.operator) {
+            case "=":
+                return { name: term.category, value };
+
+            case "contains":
+                value = "*" + value + "*";
+                return { name: term.category, value };
+
+            case ">=":
+                return { name: term.category, range: {start: value, end: "MAX"} };
+
+            case "<=":
+                return { name: term.category, range: {start: "MIN", end: value} };
+
+            default:
+                return { name: term.category, value };
         }
-        return { name: term.category, value };
     }
 
     /**
