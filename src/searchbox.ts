@@ -60,6 +60,7 @@ export type Term_t = {
     name: string, //@TypeParam internal name of the term
     label: string, //@TypeParam displayable name of the term
     value: string, //@TypeParam value entered for this term
+    valueLabel?: string,  // to be displayed in place of value when specified (value still to be used for searching!)
 };
 
 export type Query_t = {
@@ -255,7 +256,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                     key: "Q" + i,
                     onRequestDelete: () => this.props.onRemoveQuery(i),
                 }, this.withTooltip("[" + t.label + "]", new FinderQuery(t.query).toHumanReadableString()))),
-            ...this.props.searchedTerms.map((t, i) => __(Chip, { key: "T" + i, onRequestDelete: () => this.props.onRemoveTerm(i) }, t.label + ":" + t.value )),
+            ...this.props.searchedTerms.map((t, i) => __(Chip, { key: "T" + i, onRequestDelete: () => this.props.onRemoveTerm(i) }, t.label + ":" + (t.valueLabel ? t.valueLabel : t.value) )),
             _.input({ key: "input", list: "dropdown-list",
                       placeholder: "Type search term/query or 'Enter' to start searching...",
                       onChange: this.handleInputChange.bind(this),

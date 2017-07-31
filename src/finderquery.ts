@@ -70,7 +70,15 @@ export class FinderQuery {
         if (searchTerms.length) {
             result = {and: []};
             searchTerms.forEach(t => {
-                result.and.push({ property: apixSearchProperty(t) });
+                switch (t.name) {
+                    case "parent":
+                        // specific term specifying the "parent" constraint.
+                        result.and.push({ parent: t.value });
+                        break;
+                    default:
+                        result.and.push({ property: apixSearchProperty(t) });
+                        break;
+                }
             });
         }
         return new FinderQuery(result);
