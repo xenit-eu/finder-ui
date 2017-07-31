@@ -6,7 +6,7 @@ import { createElement as __, DOM as _, ReactElement } from "react";
 
 import "./facets.less";
 
-export type OnFacetSelected_t = (name: string, label: string, value: string) => void;
+export type OnFacetSelected_t = (name: string, label: string, value: string, valueLabel: string) => void;
 
 export type Facet_t = {
     name: string,
@@ -32,7 +32,7 @@ function FacetSub({facet, onFacetSelected}: FacetSub_t): ReactElement<any> {
         nestedItems: facet.values.map(c =>
                 __(ListItem, {
                     key: c.value,
-                    onTouchTap: () => onFacetSelected(facet.name, facet.label, c.value),
+                    onTouchTap: () => onFacetSelected(facet.name, facet.label, c.value, c.label),
                     primaryText: c.label,
                     rightIcon: __(Badge, { className: "badge", badgeContent: c.count }) }),
             ),
