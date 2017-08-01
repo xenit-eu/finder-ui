@@ -3,6 +3,7 @@ import { createElement as __, DOM as _ } from "react";
 import { Comment_t, commentCards, newCommentCard } from "./comment";
 
 export type CommentsPanel_t = {
+    show: boolean,
     language: string,
     comments: Comment_t[],
     onSaveNewComment: (newComment: string) => void,
@@ -24,14 +25,13 @@ export type CommentsPanel_t = {
 //@Param onCancelEditing (canceledComment: Comment_t) => void "called on request to cancel the edition of a comment"
 //@Param onSaveEditing (updatedComment: Comment_t) => void "called when an existing comment has been modified"
 
-export function CommentsPanel({ language, comments,
+export function CommentsPanel({ show, language, comments,
                 onSaveNewComment, onDeleteComment, onStartEditing, onSaveEditing, onCancelEditing }: CommentsPanel_t) {
-    return _.div({ className: "comments-panel" }, [
-        _.div({ className: "comments-content" },
-            [
-                newCommentCard(onSaveNewComment),
-                ...commentCards(language, comments, onDeleteComment, onStartEditing, onSaveEditing, onCancelEditing),
-            ]),
-    ],
+    return _.div({ className: "comments-panel" },
+            _.div({ className: "comments-content" },
+                show ? [
+                    newCommentCard(onSaveNewComment),
+                    ...commentCards(language, comments, onDeleteComment, onStartEditing, onSaveEditing, onCancelEditing),
+                ] : []),
     );
 }
