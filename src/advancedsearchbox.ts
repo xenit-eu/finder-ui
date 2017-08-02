@@ -155,6 +155,7 @@ export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, any> {
     }
 
     public onParseOk(expressions: any) {
+        console.log("****** onParseOk  ******* ", JSON.stringify(expressions));
         this.query = expressions;
     }
 

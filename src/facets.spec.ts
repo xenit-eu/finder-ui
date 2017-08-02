@@ -65,7 +65,7 @@ describe("Facets test", () => {
         // console.log(subListItems[1].debug());
         simulateEvent(subListItems[1].find("EnhancedButton"), "touchTap");
 
-        expect(case1.onFacetSelected).toHaveBeenCalledWith("F1", "Facet1", "V2");
+        expect(case1.onFacetSelected).toHaveBeenCalledWith("F1", "Facet1", "V2", "Label2");
 
     });
 

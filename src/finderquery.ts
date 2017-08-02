@@ -149,37 +149,37 @@ export class FinderQuery {
             if (part.conditionType) {
                 if (part.conditionType.toUpperCase() === "AND") {
                     if (!result.and) {
-                        if (result.property) {
-                            result.and = [{ property: result.property }]; delete result.property;
-                        }
                         if (result.or) {
-                            result.or = [{ or: result.or }]; delete result.or;
+                            result = {and: [{ or: result.or }]};
+                        } else {
+                            result = {and: [result]};
                         }
                     }
                     if (part.expressions) {
-                        result.and.push(FinderQuery.fromAdvancedQuery(part.expressions));
+                        result.and.push(FinderQuery.fromAdvancedQuery(part.expressions).rawQuery);
                     } else {
                         result.and.push({ property: FinderQuery.toApix(part) });
                     }
                 }
                 if (part.conditionType.toUpperCase() === "OR") {
                     if (!result.or) {
-                        if (result.property) {
-                            result.or = [{ property: result.property }]; delete result.property;
-                        }
                         if (result.and) {
-                            result.or = [{ and: result.and }]; delete result.and;
+                            result = {or: [{ and: result.and }]};
+                        } else {
+                            result = {or: [result]};
                         }
                     }
                     if (part.expressions) {
-                        result.or.push(FinderQuery.fromAdvancedQuery(part.expressions));
+                        result.or.push(FinderQuery.fromAdvancedQuery(part.expressions).rawQuery);
                     } else {
                         result.or.push({ property: FinderQuery.toApix(part) });
                     }
 
                 }
+            } else if (part.expressions) {
+                result = FinderQuery.fromAdvancedQuery(part.expressions).rawQuery;
             } else {
-                result.property = FinderQuery.toApix(part);
+                result = {property: FinderQuery.toApix(part)};
             }
         });
         return new FinderQuery(result);

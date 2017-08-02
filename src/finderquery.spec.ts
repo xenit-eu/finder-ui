@@ -52,9 +52,11 @@ describe("advanced query to apix query ", () => {
 
     it("3 parts with AND", () => {
 
-        const input = [{ category: "title", operator: "=", value: "hi" },
-        { category: "author", operator: "=", value: "hello", conditionType: "AND" },
-        { category: "size", operator: "=", value: "1000", conditionType: "AND" }];
+        const input = [
+            { category: "title", operator: "=", value: "hi" },
+            { category: "author", operator: "=", value: "hello", conditionType: "AND" },
+            { category: "size", operator: "=", value: "1000", conditionType: "AND" },
+        ];
 
         const expected = {
             and: [
@@ -116,5 +118,24 @@ describe("advanced query to apix query ", () => {
         expect(FinderQuery.fromAdvancedQuery(input).query).toEqual(expected);
     });
 
+    it("complex query: (name contains fred AND created <= 2017-08-01) OR name contains move2alf", () => {
+        const input = [{expressions: [
+                            {category: "name", operator: "contains", value: "fred"},
+                            {category: "created", operator: "<=", value: "2017-08-01", conditionType: "AND"}
+                            ]},
+                            {category: "name", operator: "contains", value: "move2alf", conditionType: "OR"}];
+
+        const expected = {  or: [
+            {
+                and: [
+                    { property: { name: "name", value: "*fred*" } },
+                    { property: { name: "created", range: {start: "MIN", end: "2017-08-01" } }},
+                ],
+            },
+            { property: { name: "name", value: "*move2alf*" } },
+        ]  };
+
+        expect(FinderQuery.fromAdvancedQuery(input).query).toEqual(expected);
+    });
 
 });
