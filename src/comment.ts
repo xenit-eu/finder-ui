@@ -3,7 +3,7 @@ import FlatButton from "material-ui/FlatButton";
 import FontIcon from "material-ui/FontIcon";
 import TextField from "material-ui/TextField";
 import * as moment from "moment";
-import { createElement as __, DOM as _ } from "react";
+import { Component, createElement as __, DOM as _ } from "react";
 
 export type Comment_t = {
     nodeRef: string,
@@ -33,35 +33,50 @@ const iconStyle = {
     cursor: "pointer",
 };
 
-export function newCommentCard(onSaveNewComment: (newComment: string) => void) {
-    let newComment: string;
+export type NewCommentCard_t = {
+    onSaveNewComment: (newComment: string) => void,
+};
 
-    let cardText = _.div({ className: "comment-card-body" },
-        __(CardTitle, {},
-            __(TextField, {
-                className: "comment-card-textfield",
-                floatingLabelText: "Add a comment...",
-                hintText: "Add a comment...",
-                onChange: (evt: any) => newComment = evt.target.value,
-            }),
-        ),
-        _.div({ className: "comment-save-icon" }, __(FontIcon, {
-            className: `fa fa-floppy-o`,
-            onTouchTap: () => {
-                if (newComment && newComment.trim() !== "") {
-                    onSaveNewComment(newComment.trim());
-                }
-            },
-            primary: true,
-            style: iconStyle,
-        })),
+export type State_t = {
+    newComment: string,
+};
 
-    );
-    return _.div({ className: "comment-card" }, __(Card, {}, cardText),
-    );
+export class NewCommentCard extends Component<NewCommentCard_t, State_t> {
+
+    constructor(props: NewCommentCard_t) {
+        super(props);
+        this.state = {newComment: ""};
+    }
+
+    public render () {
+        const cardContent = _.div({ className: "comment-card-body" },
+            __(CardTitle, {},
+                __(TextField, {
+                    className: "comment-card-textfield",
+                    floatingLabelText: "Add a comment...",
+                    hintText: "Add a comment...",
+                    onChange: (evt: any) => this.setState({newComment: evt.target.value}),
+                    value: this.state.newComment,
+                }),
+            ),
+            _.div({ className: "comment-save-icon" }, __(FontIcon, {
+                className: `fa fa-floppy-o`,
+                onTouchTap: () => {
+                    if (this.state.newComment && this.state.newComment.trim() !== "") {
+                        this.props.onSaveNewComment(this.state.newComment.trim());
+                        this.setState({newComment: ""});
+                    }
+                },
+                primary: true,
+                style: iconStyle,
+            })),
+
+        );
+        return _.div({ className: "comment-card" }, __(Card, {}, cardContent));
+    }
 }
 
-export function commentCards(
+export function CommentCards (
     language: string,
     comments: Comment_t[],
     onDeleteComment: (commentToDelete: Comment_t) => void,

@@ -76,7 +76,7 @@ export function Pager ({totalItems, pageSize, selected, pageSelected}: Pager_t):
     // __(LastPageLink, {isActive: true, onClick: onClick}),
 
     return _.div({ className: "pager" }, [
-        __(PreviousPageLink, { /*key: 'previous',*/ isActive: selected > 1, onClick: () => pageSelected(selected - 1) }),
+        __(PreviousPageLink, { /*key: "previous",*/ isActive: selected > 1, onClick: () => pageSelected(selected - 1) }),
         _.span({key: "pages"}, pages),
         maxReached ? "..." : "",
         __(NextPageLink, { /*key: "next",*/ isActive: selected < nbOfPages, onClick: () => pageSelected(selected + 1) }),

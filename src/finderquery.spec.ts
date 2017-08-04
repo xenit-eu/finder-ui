@@ -121,7 +121,7 @@ describe("advanced query to apix query ", () => {
     it("complex query: (name contains fred AND created <= 2017-08-01) OR name contains move2alf", () => {
         const input = [{expressions: [
                             {category: "name", operator: "contains", value: "fred"},
-                            {category: "created", operator: "<=", value: "2017-08-01", conditionType: "AND"}
+                            {category: "created", operator: "<=", value: "2017-08-01", conditionType: "AND"},
                             ]},
                             {category: "name", operator: "contains", value: "move2alf", conditionType: "OR"}];
 

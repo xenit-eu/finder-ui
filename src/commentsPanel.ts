@@ -1,6 +1,6 @@
 // tslint:disable-next-line:ordered-imports
 import { createElement as __, DOM as _ } from "react";
-import { Comment_t, commentCards, newCommentCard } from "./comment";
+import { Comment_t, CommentCards, NewCommentCard } from "./comment";
 
 export type CommentsPanel_t = {
     show: boolean,
@@ -30,8 +30,8 @@ export function CommentsPanel({ show, language, comments,
     return _.div({ className: "comments-panel" },
             _.div({ className: "comments-content" },
                 show ? [
-                    newCommentCard(onSaveNewComment),
-                    ...commentCards(language, comments, onDeleteComment, onStartEditing, onSaveEditing, onCancelEditing),
+                    __(NewCommentCard, {onSaveNewComment}),
+                    ...CommentCards(language, comments, onDeleteComment, onStartEditing, onSaveEditing, onCancelEditing),
                 ] : []),
     );
 }

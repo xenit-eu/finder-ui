@@ -2,7 +2,7 @@ import Dialog from "material-ui/Dialog";
 import FlatButton from "material-ui/FlatButton";
 import { createElement as __, DOM as _ } from "react";
 
-import { Comment_t, commentCards, newCommentCard } from "./comment";
+import { Comment_t, CommentCards, NewCommentCard } from "./comment";
 
 const customContentStyle = {
     width: "90%",
@@ -44,8 +44,8 @@ export function CommentsDialog({ language, opened, comments, onClose, onSaveNewC
         contentStyle: customContentStyle,
         autoScrollBodyContent: true,
     }, [
-            newCommentCard(onSaveNewComment),
-            ...commentCards(language, comments, onDeleteComment, onStartEditing, onSaveEditing, onCancelEditing),
+            __(NewCommentCard, {onSaveNewComment}),
+            ...CommentCards(language, comments, onDeleteComment, onStartEditing, onSaveEditing, onCancelEditing),
         ],
     );
 }
