@@ -3,4 +3,4 @@ typings/
 .vscode/
 test-results/
 .gradle/
-
+package-lock.json

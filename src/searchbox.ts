@@ -7,7 +7,7 @@ import * as Colors from "material-ui/styles/colors";
 import SearchIcon from "material-ui/svg-icons/action/search";
 import StarIcon from "material-ui/svg-icons/toggle/star-border";
 
-import { FinderQuery } from "./finderquery";
+import { FinderQuery } from "finder-services";
 
 declare var require: any;
 // tslint:disable-next-line:no-var-requires
