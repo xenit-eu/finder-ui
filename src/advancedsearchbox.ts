@@ -49,6 +49,7 @@ function toDateString(d: Date): string {
     return new Date(d.getTime() + (5 * 3600 * 1000)).toISOString().substring(0, 10);
 }
 
+/// TS_IGNORE
 class CustomAutoComplete extends ReactFilterBox.GridDataAutoCompleteHandler {
 
     private searchableTerms: SearchableTerm_t[];

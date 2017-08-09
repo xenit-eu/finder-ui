@@ -74,7 +74,7 @@ function buildChip(translateSearchKeyword: (keyword: string) => string, context:
 let autocompleteStyle = { style: { flex: "1 1 auto", display: "inline-block", overflow: "hidden", border: 0, height: "90%", width: "100%" } };
 export function ReactSearchBox({translateSearchKeyword, context, searching, searchText, terms, suggestionList, onRemove, onAddChip, onDoSearch, onInputChanged}: ReactSearchBox_t): ReactElement<any> {
     return _.div({ className: "search-box" }, [
-        ...terms.elements.map((t, i: number) => buildChip(translateSearchKeyword, context, t, i, onRemove)),
+        ...terms.elements.map((t: any, i: number) => buildChip(translateSearchKeyword, context, t, i, onRemove)),
         _.div(autocompleteStyle, __(AutoComplete, {
             fullWidth: true,
             searchText,
