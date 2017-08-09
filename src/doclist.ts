@@ -67,7 +67,7 @@ export enum SortDirection_t {
 | format       | (optional) function to call to format the data to be displayed |
 */
 
-export type Column_t = {
+export type Doclist_Column_t = {
     name: string,
     label: string,
     alignRight?: boolean,
@@ -79,7 +79,7 @@ export type Column_t = {
 export type OnSortColumnSelected_t = (columnIndex: number, columnName: string, direction: SortDirection_t) => void;
 
 export type DocList_t = {
-    columns: Column_t[],
+    columns: Doclist_Column_t[],
     data: Row_t[],
     pager: Pager_t,
     rowMenu: (rowIndex: number) => MenuItem_t[],
@@ -96,7 +96,7 @@ export type DocList_t = {
     onDownloadButtonClick: () => void,
 };
 
-function sortIcon(c: Column_t, onSortColumnSelected: OnSortColumnSelected_t): ReactElement<any> | undefined {
+function sortIcon(c: Doclist_Column_t, onSortColumnSelected: OnSortColumnSelected_t): ReactElement<any> | undefined {
     let iconName: string = "sort";
     let nextSort: SortDirection_t = SortDirection_t.NONE;
     switch (c.sortDirection) {

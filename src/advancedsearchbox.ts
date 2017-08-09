@@ -5,7 +5,7 @@ import SearchIcon from "material-ui/svg-icons/action/search";
 import StarIcon from "material-ui/svg-icons/toggle/star-border";
 import { Component, createElement as __ } from "react";
 import { render } from "react-dom";
-
+import {SearchableTerm_t} from "./searchbox";
 // tslint:disable-next-line:no-var-requires
 const DatePickerDialog = require("material-ui/DatePicker/DatePickerDialog"); // no type description available for this one !
 // tslint:disable-next-line:no-var-requires
@@ -80,12 +80,6 @@ class CustomAutoComplete extends ReactFilterBox.GridDataAutoCompleteHandler {
     }
 }
 
-export type SearchableTerm_t = {
-    name: string,
-    label: string,
-    type: string, // "text" | "enum" | "date"
-    values: string[],
-};
 
 export type AdvancedSearchBox_t = {
     searching: boolean,                     // flag indicating that search process is busy => activate spinner !
@@ -156,7 +150,6 @@ export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, any> {
     }
 
     public onParseOk(expressions: any) {
-        console.log("****** onParseOk  ******* ", JSON.stringify(expressions));
         this.query = expressions;
     }
 
