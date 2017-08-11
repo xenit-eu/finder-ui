@@ -24,7 +24,7 @@
   "license": "ISC",
   "homepage": "https://bitbucket.org/xenit/finder-ui#README.md",
   "dependencies": {
-    "finder-services": "git+ssh://git@bitbucket.org/xenit/finder-services.git#v1.0.38",
+    "finder-services": "git+ssh://git@bitbucket.org/xenit/finder-services.git#v1.0.39",
     "flatpickr": "^2.6.3",
     "material-ui": "^0.16.4",
     "moment": "^2.17.1",
