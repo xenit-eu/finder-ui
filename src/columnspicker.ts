@@ -90,11 +90,9 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
     public componentWillReceiveProps(props: ColumnsPicker_t) {
         this.init(props);
         this.setState({
-            opened: this.state.opened,
             selected: props.selectedColumns.map(a => this.mappingByName[a].label),
             sets: JSON.parse(localStorage.getItem(storageKey) || "[]"),
-            selectedSet: this.state.selectedSet,
-        });
+        } as State_t);
     }
 
     private handleDone () {
