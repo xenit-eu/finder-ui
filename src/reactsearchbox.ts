@@ -1,4 +1,3 @@
-import { SearchQuery, SearchQueryContext, SearchQueryElement } from "finder-services";
 import AutoComplete from "material-ui/AutoComplete";
 import Chip from "material-ui/Chip";
 import CircularProgress from "material-ui/CircularProgress";
@@ -6,6 +5,37 @@ import DatePicker from "material-ui/DatePicker";
 import RefreshIndicator from "material-ui/RefreshIndicator";
 import SearchIcon from "material-ui/svg-icons/action/search";
 import { createElement as __, DOM as _, KeyboardEvent, ReactElement } from "react";
+
+/* tslint:disable */
+export type SearchQueryElementKeyTranslate = (k: string) => string;
+export type SearchQueryElementValueTranslate = (el: ISearchQueryElement) => string;
+export type SearchQueryElementKeyValueTranslate = { translateValueOfQueryElement: SearchQueryElementValueTranslate, translateKey: SearchQueryElementKeyTranslate };
+export type ISearchQueryContext = {
+    IncludedPropsWithList: { [name: string]: string[] },
+    PropsToShow: string[],
+    translateKey: SearchQueryElementKeyTranslate,
+    translateValueOfQueryElement: SearchQueryElementValueTranslate,
+    IsDate: (k: string) => boolean
+}
+
+export type SearchKey = string;
+/* tslint:enable */
+
+export interface ISearchQueryElement {
+    key: SearchKey | undefined;
+    value: any;
+    GetTranslatedKey(context: ISearchQueryContext): string | undefined;
+    GetTranslatedValue(context: ISearchQueryContext): string | undefined;
+    GetApixQuery(): any;
+}
+
+export interface ISearchQuery {
+    GetApixQuery(): any;
+    AddElement(el: ISearchQueryElement): void;
+    GetDescriptionText(translate: SearchQueryElementKeyValueTranslate): string;
+    clone(): ISearchQuery;
+    elements: ISearchQueryElement[];
+}
 
 const searchIconStyle = {
     position: "relative",
@@ -18,14 +48,14 @@ const iconColor = "#512e5f";
 export type ReactSearchBox_t = {
     translateSearchKeyword: (keyword: string) => string,
     searching: boolean,                     // flag indicating that search process is busy => activate spinnger !
-    terms: SearchQuery,                        // list of existing terms already requested for search.
+    terms: ISearchQuery,                        // list of existing terms already requested for search.
     suggestionList: Array<{ label: string, value: string }>,               // suggestions to be proposed on the drop-down list.
     onRemove: (idx: number) => void,        // remove existing term.
     onDoSearch: () => void,
     onAddChip: (text: string) => void, // add new term.
     onInputChanged: (text: string) => void,
     searchText: string,
-    context: SearchQueryContext,
+    context: ISearchQueryContext,
 };
 function HandleRequest(chosenRequest: any, index: number, onDoSearch: () => void, OnAddChip: (text: string) => void, onInputChanged: (text: string) => void) {
     if (index === -1) {//Enter in text
@@ -47,7 +77,7 @@ function HandleRequest(chosenRequest: any, index: number, onDoSearch: () => void
     }
 }
 
-function buildChip(translateSearchKeyword: (keyword: string) => string, context: SearchQueryContext, term: SearchQueryElement, index: number, onRemove: (index: number) => void) {
+function buildChip(translateSearchKeyword: (keyword: string) => string, context: ISearchQueryContext, term: ISearchQueryElement, index: number, onRemove: (index: number) => void) {
     const buildDatePicker = (keyWord: string) =>
         _.span({ style: { display: "Inline-Block" } }, translateSearchKeyword(keyWord) + " ", __(DatePicker, { style: { display: "inline" }, textFieldStyle: { width: "90px" } }));
     const keyText = term.GetTranslatedKey(context) + ": ";

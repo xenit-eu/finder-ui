@@ -1,4 +1,3 @@
-import { History, SearchQuery, SearchQueryElementKeyValueTranslate } from "finder-services";
 import Avatar from "material-ui/Avatar";
 import { List, ListItem } from "material-ui/List";
 import ActionSearch from "material-ui/svg-icons/action/search";
@@ -8,10 +7,10 @@ let iconsize = 30;
 let avatarSearch = __(Avatar, { size: iconsize, icon: __(ActionSearch, {}) });
 
 export function GetPreviousSearches(
-    translate: SearchQueryElementKeyValueTranslate,
-    previousSearches: History,
-    doSearch: (query: SearchQuery) => void) {
-    return previousSearches.map((previousSearch, i) => {
+    translate: any,
+    previousSearches: any[],
+    doSearch: (query: any) => void) {
+    return previousSearches.map((previousSearch:any, i:any) => {
         let label = previousSearch.GetDescriptionText(translate);
         let ret = __(ListItem, {
             onClick: () => {

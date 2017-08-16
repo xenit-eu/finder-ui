@@ -23,7 +23,7 @@ const ReactFilterBox = <any> require("react-filter-box");
 import * as Colors from "material-ui/styles/colors";
 import getMuiTheme from "material-ui/styles/getMuiTheme";
 
-import { FinderQuery } from "finder-services";
+import { FinderQuery } from "./";
 
 const muiTheme = getMuiTheme({
     palette: {
