@@ -56,7 +56,7 @@ function metadataFilter(a: Metadata_t): boolean {
     return !/\}(store\-protocol|node\-dbid|content|locale|store\-identifier|lastThumbnailModification|node\-uuid)$/.test(a.name);
 }
 
-function metadataField (field: Metadata_t, editable: boolean): ReactElement<any>  {
+export function metadataField (field: Metadata_t, editable: boolean): ReactElement<any>  {
     let disable = field.disable;
     if (!editable) {
         disable = true;
