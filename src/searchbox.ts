@@ -7,7 +7,7 @@ import * as Colors from "material-ui/styles/colors";
 import SearchIcon from "material-ui/svg-icons/action/search";
 import StarIcon from "material-ui/svg-icons/toggle/star-border";
 
-import { FinderQuery } from "./";
+import { FinderQuery,Query_t } from "./";
 
 declare var require: any;
 // tslint:disable-next-line:no-var-requires
@@ -63,10 +63,7 @@ export type Term_t = {
     valueLabel?: string,  // to be displayed in place of value when specified (value still to be used for searching!)
 };
 
-export type Query_t = {
-    label: string,
-    query: any,
-};
+
 
 export type SearchBox_t = {
     searching: boolean,                             // flag indicating that search process is busy => activate spinnger !
