@@ -10,7 +10,7 @@
         "emitDecoratorMetadata": true,
         "declaration": false,
         "noImplicitAny": true,
-        "noImplicitUseStrict": false,
+        "noImplicitUseStrict": true,
         "removeComments": true,
         "noLib": false,
         "preserveConstEnums": true,
