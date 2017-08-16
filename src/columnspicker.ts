@@ -71,24 +71,30 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
     private mappingByName: {[k: string]: Column_t};
     private mappingByLabel: {[k: string]: Column_t};
 
-    private init(props: ColumnsPicker_t) {
-        this.mappingByName = this.props.allColumns.reduce((map, c) => { map[c.name] = c; return map; }, {});
-        this.mappingByLabel = this.props.allColumns.reduce((map, c) => { map[c.label] = c; return map; }, {});
-        this.state = {
-            opened: false,
-            selected: this.props.selectedColumns.map(a => this.mappingByName[a].label),
-            sets: JSON.parse(localStorage.getItem(storageKey) || "[]"),
-            selectedSet: "",
-        };
+    private init (props: ColumnsPicker_t) {
+        this.mappingByName = props.allColumns.reduce((map, c) => { map[c.name] = c; return map; }, {});
+        this.mappingByLabel = props.allColumns.reduce((map, c) => { map[c.label] = c; return map; }, {});
     }
 
     constructor(props: ColumnsPicker_t) {
         super(props);
         this.init(props);
+        this.state = {
+            opened: false,
+            selected: props.selectedColumns.map(a => this.mappingByName[a].label),
+            sets: JSON.parse(localStorage.getItem(storageKey) || "[]"),
+            selectedSet: "",
+        };
     }
 
     public componentWillReceiveProps(props: ColumnsPicker_t) {
         this.init(props);
+        this.setState({
+            opened: this.state.opened,
+            selected: props.selectedColumns.map(a => this.mappingByName[a].label),
+            sets: JSON.parse(localStorage.getItem(storageKey) || "[]"),
+            selectedSet: this.state.selectedSet,
+        });
     }
 
     private handleDone () {
@@ -156,7 +162,7 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
                 primary: true,
                 keyboardFocused: false,
                 onTouchTap: this.handleDone.bind(this),
-                onClick: this.handleDone.bind(this),
+                //onClick: this.handleDone.bind(this),
             }),
         ];
 
@@ -207,7 +213,7 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
                 key: "button",
                 keyboardFocused: false,
                 onTouchTap: this.handleShowDialog.bind(this),
-                onClick: this.handleShowDialog.bind(this),
+                //onClick: this.handleShowDialog.bind(this),
             }, __(FontIcon, {className: "fa fa-gear"})) : undefined,
             dialog,
         ]);
