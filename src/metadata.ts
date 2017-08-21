@@ -103,11 +103,13 @@ function fieldsInGroups (fields: Metadata_t[], groupInfo: MetaDataPanelGroupInfo
     let groupsWithChildren: { [id: string]: { group: MetaDataPanelGroup_t, items: Metadata_t[] } } = { default: { group: defaultGroup, items: [] } };
     groupInfo.groups.forEach(g => groupsWithChildren[g.id] = ({ group: g, items: [] }));
     fields.forEach(f => groupsWithChildren[groupInfo.itemToGroup[f.name] ? groupInfo.itemToGroup[f.name] : "default"].items.push(f));
+    if(groupsWithChildren["default"].items.length == 0){
+      delete groupsWithChildren["default"];
+    }
     let groupsWithChildrenList = Object.keys(groupsWithChildren).map(id => groupsWithChildren[id]);
     groupsWithChildrenList.sort((a, b) => a.group.order - b.group.order);
     return groupsWithChildrenList;
 }
-
 export function metadataFields (fields: Metadata_t[], editable: boolean = true, groupInfo: MetaDataPanelGroupInfo_t | undefined = undefined): Array<ReactElement<any>> {
     const filteredFields = fields.filter(metadataFilter);
     if (!groupInfo) {
@@ -117,9 +119,10 @@ export function metadataFields (fields: Metadata_t[], editable: boolean = true, 
         return groupsWithChildrenList.map(g => {
             const expandable = g.group.id !== "default";
             const childItems = g.items.map(f => __(CardText, { expandable }, _.div({}, metadataField(f, editable))));
-            const header = __(CardHeader, { title: g.group.label, actAsExpander: expandable, showExpandableButton: expandable });
+            const header = __(CardHeader, { title: g.group.label, actAsExpander: expandable, showExpandableButton: expandable, });
             const items = [header, ...childItems];
-            return __(Card, {}, items);
+            return __(Card, {initiallyExpanded: g.group.expanded}, items);
         });
     }
 }
+
