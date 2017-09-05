@@ -88,6 +88,7 @@ export type DocList_t = {
     togglable: boolean,
     className: string,
     rowStyle: (i: number) => any,
+    documentNotFoundText?: string,
 
     onPageSelected: (pageIndex: number) => void,
     onRowSelected: (rowIndex: number) => void,
@@ -143,7 +144,7 @@ function sortIcon(c: Doclist_Column_t, onSortColumnSelected: OnSortColumnSelecte
 //@Param columnsPicker any "Column picker element"
 
 export function DocList({  className, columns, data, onDownloadButtonClick, onMenuSelected, onPageSelected, onRowSelected, onRowToggled,
-    onSortColumnSelected, pager, rowMenu, rowStyle, rowToggled, togglable, columnsPicker}: DocList_t): ReactElement<any> {
+    onSortColumnSelected, pager, rowMenu, rowStyle, rowToggled, togglable, columnsPicker, documentNotFoundText}: DocList_t): ReactElement<any> {
     const headerelements = [_.th({ key: "Menu" }, "")]
         .concat(togglable ? [_.th({ key: "toggle" }, __(FlatButton, { icon: __(FileDownload, { onClick: onDownloadButtonClick }) }))] : [])
         .concat(columns.map(c => _.th({ key: c.name + c.label }, [sortIcon(c, onSortColumnSelected), c.label])));
@@ -160,5 +161,9 @@ export function DocList({  className, columns, data, onDownloadButtonClick, onMe
     const tableProps = { key: "table", className: className || "table table-hover table-striped table-mc-purple table-condensed" };
     const table = _.div({ className: "table-scroll-wrapper"}, _.table(tableProps, [header, body])); // table
     const pagerComponent = __(Pager, { totalItems: pager.totalItems, pageSize: pager.pageSize, selected: pager.selected, pageSelected: onPageSelected });
-    return _.div({ className: "doclist" }, pager.totalItems > 0 ? [_.div({}, [columnsPicker, pagerComponent]), table] : []);
+    return _.div({ className: "doclist" }, pager.totalItems > 0 ? [_.div({}, [columnsPicker, pagerComponent]), table] : [__(DocListEmpty, {documentNotFoundText})]);
+}
+
+function DocListEmpty({documentNotFoundText}) {
+    return _.div({ className: "doclist-message"}, [documentNotFoundText]);
 }
