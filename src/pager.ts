@@ -5,6 +5,7 @@ import NavigationChevronRight from "material-ui/svg-icons/navigation/chevron-rig
 import { createElement as __, DOM as _, ReactElement } from "react";
 // import NavigationFirstPage from 'material-ui/svg-icons/navigation/first-page';
 // import NavigationLastPage from 'material-ui/svg-icons/navigation/last-page';
+import "./pager.less";
 
 const flatButtonStyle = {
     minWidth: 36,
@@ -29,6 +30,16 @@ type NextPageLink_t = {isActive: boolean, onClick: () => void};
 function  NextPageLink ({isActive, onClick}: NextPageLink_t): ReactElement<any> {
     return __(FlatButton, { key: "next", style: flatButtonStyle, icon: __(NavigationChevronRight, undefined), onClick, disabled: !isActive });
 }
+
+function ItemsOnThisPage(pager: Pager_t): ReactElement<any>
+{
+    if(pager.selected < 1)
+        return null;
+    let currentStart = pager.pageSize*(pager.selected - 1)+1;
+    let currentEnd = pager.pageSize*pager.selected;
+    return _.span({className: 'items-on-this-page'}, [_.b({}, [currentStart]), '-', _.b({}, [currentEnd])], ' of ', _.b({}, pager.totalItems)]);
+}
+
 
 /*
 
@@ -80,6 +91,7 @@ export function Pager ({totalItems, pageSize, selected, pageSelected}: Pager_t):
         _.span({key: "pages"}, pages),
         maxReached ? "..." : "",
         __(NextPageLink, { /*key: "next",*/ isActive: selected < nbOfPages, onClick: () => pageSelected(selected + 1) }),
+        __(ItemsOnThisPage, {totalItems, pageSize, selected, pageSelected}),
     ]);
 }
 
