@@ -156,7 +156,7 @@ export function DocList({  className, columns, data, onDownloadButtonClick, onMe
     const bodycontent = data.map((row, i) => _.tr({ style: style(i), key: i }, singleRowElements(row, i)));
     const body = _.tbody({ key: "body" }, bodycontent);
     const tableProps = { key: "table", className: className || "table table-hover table-striped table-mc-purple table-condensed" };
-    const table = _.table(tableProps, [header, body]); // table
+    const table = _.div({ className: "table-scroll-wrapper"}, _.table(tableProps, [header, body])); // table
     const pagerComponent = __(Pager, { totalItems: pager.totalItems, pageSize: pager.pageSize, selected: pager.selected, pageSelected: onPageSelected });
     return _.div({ className: "doclist" }, pager.totalItems > 0 ? [pagerComponent, table] : []);
 }
