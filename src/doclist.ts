@@ -98,7 +98,7 @@ export type DocList_t = {
     onDownloadButtonClick: () => void,
 };
 
-function sortIcon(c: Doclist_Column_t, onSortColumnSelected: OnSortColumnSelected_t): ReactElement<any> | undefined {
+function sortTh(c: Doclist_Column_t, onSortColumnSelected: OnSortColumnSelected_t): ReactElement<any> | undefined {
     let iconName: string = "sort";
     let nextSort: SortDirection_t = SortDirection_t.NONE;
     switch (c.sortDirection) {
@@ -117,11 +117,15 @@ function sortIcon(c: Doclist_Column_t, onSortColumnSelected: OnSortColumnSelecte
         default:
             break;
     }
-    return c.sortable
-        ? __(FontIcon, {
-            onClick: () => { onSortColumnSelected(0, c.name, nextSort); }, className: `header-icon fa fa-${iconName}`,
-        })
-        : undefined;
+    return _.th({
+        key: c.name + c.label,
+        onClick: c.sortable?() => { onSortColumnSelected(0, c.name, nextSort); }:null,
+    }, [
+            c.sortable ? __(FontIcon, {
+                className: `header-icon fa fa-${iconName}`,
+            }) : null,
+            c.label
+        ]);
 }
 
 //@Component DocList
@@ -147,7 +151,7 @@ export function DocList({  className, columns, data, onDownloadButtonClick, onMe
     onSortColumnSelected, pager, rowMenu, rowStyle, rowToggled, togglable, columnsPicker, documentNotFoundText}: DocList_t): ReactElement<any> {
     const headerelements = [_.th({ key: "Menu" }, "")]
         .concat(togglable ? [_.th({ key: "toggle" }, __(FlatButton, { icon: __(FileDownload, { onClick: onDownloadButtonClick }) }))] : [])
-        .concat(columns.map(c => _.th({ key: c.name + c.label }, [sortIcon(c, onSortColumnSelected), c.label])));
+        .concat(columns.map(c => sortTh(c, onSortColumnSelected)));
 
     const header = _.thead({ key: "header" }, [_.tr({ key: "head" }, headerelements)]);
     const style = rowStyle ? rowStyle : (i: number) => ({});
