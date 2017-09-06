@@ -98,7 +98,7 @@ export type DocList_t = {
     onDownloadButtonClick: () => void,
 };
 
-function sortTh(c: Doclist_Column_t, onSortColumnSelected: OnSortColumnSelected_t): ReactElement<any> | undefined {
+function SortableTh(c: Doclist_Column_t, onSortColumnSelected: OnSortColumnSelected_t): ReactElement<any> {
     let iconName: string = "sort";
     let nextSort: SortDirection_t = SortDirection_t.NONE;
     switch (c.sortDirection) {
@@ -119,12 +119,12 @@ function sortTh(c: Doclist_Column_t, onSortColumnSelected: OnSortColumnSelected_
     }
     return _.th({
         key: c.name + c.label,
-        onClick: c.sortable?() => { onSortColumnSelected(0, c.name, nextSort); }:null,
+        onClick: c.sortable ? () => { onSortColumnSelected(0, c.name, nextSort); } : () => { },
     }, [
             c.sortable ? __(FontIcon, {
                 className: `header-icon fa fa-${iconName}`,
             }) : null,
-            c.label
+            c.label,
         ]);
 }
 
@@ -149,9 +149,9 @@ function sortTh(c: Doclist_Column_t, onSortColumnSelected: OnSortColumnSelected_
 
 export function DocList({  className, columns, data, onDownloadButtonClick, onMenuSelected, onPageSelected, onRowSelected, onRowToggled,
     onSortColumnSelected, pager, rowMenu, rowStyle, rowToggled, togglable, columnsPicker, documentNotFoundText}: DocList_t): ReactElement<any> {
-    const headerelements = [_.th({ key: "Menu" }, "")]
+    const headerelements = (<ReactElement<any>[]>[_.th({ key: "Menu" }, "")])
         .concat(togglable ? [_.th({ key: "toggle" }, __(FlatButton, { icon: __(FileDownload, { onClick: onDownloadButtonClick }) }))] : [])
-        .concat(columns.map(c => sortTh(c, onSortColumnSelected)));
+        .concat(columns.map(c => SortableTh(c, onSortColumnSelected)));
 
     const header = _.thead({ key: "header" }, [_.tr({ key: "head" }, headerelements)]);
     const style = rowStyle ? rowStyle : (i: number) => ({});
@@ -165,9 +165,6 @@ export function DocList({  className, columns, data, onDownloadButtonClick, onMe
     const tableProps = { key: "table", className: className || "table table-hover table-striped table-mc-purple table-condensed" };
     const table = _.div({ className: "table-scroll-wrapper"}, _.table(tableProps, [header, body])); // table
     const pagerComponent = __(Pager, { totalItems: pager.totalItems, pageSize: pager.pageSize, selected: pager.selected, pageSelected: onPageSelected });
-    return _.div({ className: "doclist" }, pager.totalItems > 0 ? [_.div({}, [columnsPicker, pagerComponent]), table] : [__(DocListEmpty, {documentNotFoundText})]);
-}
-
-function DocListEmpty({documentNotFoundText}) {
-    return _.div({ className: "doclist-message"}, [documentNotFoundText]);
+    const emptyDocList = _.div({ className: "doclist-message"}, [documentNotFoundText]);
+    return _.div({ className: "doclist" }, pager.totalItems > 0 ? [_.div({}, [columnsPicker, pagerComponent]), table] : [emptyDocList]);
 }
