@@ -78,8 +78,7 @@ export type Doclist_Column_t = {
 
 export type OnSortColumnSelected_t = (columnIndex: number, columnName: string, direction: SortDirection_t) => void;
 
-export type DocList_t = DocList_t_Data & DocList_t_Actions;
-export type Doclist_t_Data = {
+export type DocList_t_Data = {
     columns: Doclist_Column_t[],
     columnsPicker?: ReactElement<any>,
     data: Row_t[],
@@ -100,6 +99,8 @@ export type DocList_t_Actions = {
     onSortColumnSelected: OnSortColumnSelected_t,
     onDownloadButtonClick: () => void,
 };
+export type DocList_t = DocList_t_Data & DocList_t_Actions;
+
 
 function SortableTh(c: Doclist_Column_t, onSortColumnSelected: OnSortColumnSelected_t): ReactElement<any> {
     let iconName: string = "sort";
