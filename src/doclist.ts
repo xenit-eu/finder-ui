@@ -73,7 +73,7 @@ export type Doclist_Column_t = {
     alignRight?: boolean,
     sortable?: boolean,
     sortDirection?: SortDirection_t,
-    format?: (a: any, props: Row_t) => string,
+    format?: (a: any, props: Row_t) => string | ReactElement<any>,
 };
 
 export type OnSortColumnSelected_t = (columnIndex: number, columnName: string, direction: SortDirection_t) => void;
