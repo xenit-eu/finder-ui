@@ -78,7 +78,8 @@ export type Doclist_Column_t = {
 
 export type OnSortColumnSelected_t = (columnIndex: number, columnName: string, direction: SortDirection_t) => void;
 
-export type DocList_t = {
+export type DocList_t = DocList_t_Data & DocList_t_Actions;
+export type Doclist_t_Data = {
     columns: Doclist_Column_t[],
     columnsPicker?: ReactElement<any>,
     data: Row_t[],
@@ -89,7 +90,9 @@ export type DocList_t = {
     className: string,
     rowStyle: (i: number) => any,
     documentNotFoundText?: string,
+};
 
+export type DocList_t_Actions = {
     onPageSelected: (pageIndex: number) => void,
     onRowSelected: (rowIndex: number) => void,
     onRowToggled: (checked: boolean, i: number, row: Row_t) => void,
