@@ -28,7 +28,7 @@ const searchIconStyle = {
     left: "10px",
 };
 
-const iconColor = "#512e5f";
+export const iconColor = "#512e5f";
 
 const reNameValue: RegExp = /[^\:]+\:\s*(.+)\s*$/;
 const reQuery: RegExp = /\[([\w\s\-\_]+)\]/;
@@ -71,6 +71,8 @@ export type SearchBox_t = {
     searchableTerms: SearchableTerm_t[],            // suggestions to be proposed on the drop-down list.
     searchedQueries: Query_t[],                     // list of queries requested for search.
     searchableQueries: Query_t[],                   // suggestions queries.
+    customButtons?: ReactElement<any>[],              // list of custom buttons to add besides search and save icons
+
     onRemoveTerm: (idx: number) => void,            // remove existing term.
     onRemoveQuery: (idx: number) => void,           // remove existing term.
     onEnter: (text: Term_t|null) => void,           // add new term or start search (when parameter is null)
@@ -262,9 +264,11 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                     }),
             _.datalist({ key: "datalist", id: "dropdown-list" }, this.state.suggestionList ? this.state.suggestionList.map(n => _.option({ key: n }, n)) : []),
 
-            _.div({ key: "save-icon", className: "save-icon" }, __(StarIcon, { color: iconColor, onClick: () => this.props.onSaveAsQuery(prompt("Save query as") || "query") })),
+            ...(this.props.customButtons||[]),
 
-            _.div({ key: "search-icon", className: "search-icon" },
+            _.div({ key: "save-icon", className: "save-icon icon" }, __(StarIcon, { color: iconColor, onClick: () => this.props.onSaveAsQuery(prompt("Save query as") || "query") })),
+
+            _.div({ key: "search-icon", className: "search-icon icon" },
                 this.props.searching
                     ? __(CircularProgress, { size: 24 })
                     : __(SearchIcon, { color: iconColor, onClick: () => this.props.onEnter(null) }),
