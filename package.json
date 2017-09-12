@@ -1,31 +1,29 @@
 {
-  "_from": "git+ssh://git@bitbucket.org/xenit/finder-ui.git#v1.5.24",
-  "_id": "finder-ui@1.5.24",
-  "_inBundle": false,
-  "_integrity": "sha1-wFOfSTzLkOuNn4Wao8LAiTacF8k=",
-  "_location": "/finder-ui",
-  "_phantomChildren": {},
-  "_requested": {
+  "name": "finder-ui",
+  "version": "1.5.26",
+  "description": "Finder UI components using ReactJS (based on material-ui.com)",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "install:all": "npm install && typings install",
+    "typings": "typings install",
+    "tsinst": "typings search react-filter-box",
+    "test": "karma start ./karma.conf.js --single-run",
+    "test:watch": "karma start ./karma.conf.js",
+    "lint": "tslint -c ./tslint.json 'src/**/*.ts'"
+  },
+  "repository": {
     "type": "git",
-    "raw": "finder-ui@git+ssh://git@bitbucket.org/xenit/finder-ui.git#v1.5.24",
-    "name": "finder-ui",
-    "escapedName": "finder-ui",
-    "rawSpec": "git+ssh://git@bitbucket.org/xenit/finder-ui.git#v1.5.24",
-    "saveSpec": "git+ssh://git@bitbucket.org/xenit/finder-ui.git#v1.5.24",
-    "fetchSpec": "ssh://git@bitbucket.org/xenit/finder-ui.git",
-    "gitCommittish": "v1.5.24"
+    "url": "git+ssh://git@bitbucket.org/xenit/finder-ui.git"
   },
-  "_requiredBy": [
-    "/",
-    "/finder-services"
+  "keywords": [
+    "finder",
+    "ui",
+    "react"
   ],
-  "_resolved": "git+ssh://git@bitbucket.org/xenit/finder-ui.git#1032700ee04eeeab3bd73d7a44dea99680648455",
-  "_spec": "finder-ui@git+ssh://git@bitbucket.org/xenit/finder-ui.git#v1.5.24",
-  "_where": "/home/lars/Documents/Projects/xenit/finder-usgnl",
-  "author": {
-    "name": "xenit.eu"
-  },
-  "bundleDependencies": false,
+  "author": "xenit.eu",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/xenit/finder-ui#README.md",
   "dependencies": {
     "flatpickr": "^2.6.3",
     "material-ui": "^0.16.4",
@@ -38,8 +36,6 @@
     "react-tap-event-plugin": "^2.0.1",
     "sortablejs": "^1.6.0"
   },
-  "deprecated": false,
-  "description": "Finder UI components using ReactJS (based on material-ui.com)",
   "devDependencies": {
     "awesome-typescript-loader": "2.1.1",
     "css-loader": "^0.28.4",
@@ -72,28 +68,5 @@
     "typescript": "2.0.10",
     "typings": "^2.0.0",
     "webpack": "^1.13.1"
-  },
-  "homepage": "https://bitbucket.org/xenit/finder-ui#README.md",
-  "keywords": [
-    "finder",
-    "ui",
-    "react"
-  ],
-  "license": "ISC",
-  "main": "src/index.ts",
-  "name": "finder-ui",
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@bitbucket.org/xenit/finder-ui.git"
-  },
-  "scripts": {
-    "install:all": "npm install && typings install",
-    "lint": "tslint -c ./tslint.json 'src/**/*.ts'",
-    "test": "karma start ./karma.conf.js --single-run",
-    "test:watch": "karma start ./karma.conf.js",
-    "tsinst": "typings search react-filter-box",
-    "typings": "typings install"
-  },
-  "types": "src/index.ts",
-  "version": "1.5.26"
+  }
 }
