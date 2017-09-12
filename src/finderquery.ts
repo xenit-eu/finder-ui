@@ -9,6 +9,8 @@ type Property_t = { property: { name: string, value: string } } |
 type FinderQuery_t = { or: FinderQuery_t[] } | { and: FinderQuery_t[] } | {not: FinderQuery_t} | Property_t | All_t;
 */
 
+const TYPE_QNAME = "{http://www.alfresco.org/model/content/1.0}type";
+
 export type ApixQuery_t = any; // raw apix query. IE: {and: [{property: {name: "a", value: "b"}}]}
 export type SearchTerm_t = { name: string, value: string };
 export type Query_t = { label: string, query: ApixQuery_t };
@@ -74,6 +76,10 @@ export class FinderQuery {
                     case "parent":
                         // specific term specifying the "parent" constraint.
                         result.and.push({ parent: t.value });
+                        break;
+                    case TYPE_QNAME:
+                        // Specific term specifying document type constraint
+                        result.and.push({type: t.value});
                         break;
                     default:
                         result.and.push({ property: apixSearchProperty(t) });
