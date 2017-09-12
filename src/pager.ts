@@ -36,7 +36,7 @@ function ItemsOnThisPage({selected, pageSize, totalItems}: Pager_t): ReactElemen
         return _.span({});
     }
     let currentStart = pageSize * (selected - 1) + 1;
-    let currentEnd = Math.max(pageSize * selected, totalItems);
+    let currentEnd = Math.min(pageSize * selected, totalItems);
     return _.span({ className: "items-on-this-page" }, [_.b({}, [currentStart]), "-", _.b({}, [currentEnd]), " of ", _.b({}, totalItems)]);
 }
 
@@ -52,7 +52,7 @@ const LastPageLink = ({isActive, onClick}) => (
 );
 */
 
-const range = (n: number) => Array.apply(null, Array(n)).map((skip: number, i: number) => i);
+const range = (start: number, end: number) => Array(end - start + 1).fill(0).map((_: number, i: number) => start + i);
 
 /* #### pager hash description
 
@@ -71,26 +71,32 @@ export type Pager_t = {
 };
 
 export function Pager ({totalItems, pageSize, selected, pageSelected}: Pager_t): ReactElement<any> {
-
-    let nbOfPages = Math.floor(totalItems / pageSize) + ((totalItems % pageSize > 0) ? 1 : 0);
-
-    const maxReached = nbOfPages > 15; // display max 15 pages.
-    if (maxReached) {
-        nbOfPages = 15;
+    const totalPages = Math.floor(totalItems / pageSize) + ((totalItems % pageSize > 0) ? 1 : 0);
+    const pageRange = totalPages < 15 ? totalPages : 15;
+    selected = selected || 1;
+    let delta = Math.ceil(pageRange / 2);
+    let pages;
+    if ((selected - delta) > (totalPages - pageRange)) {
+        pages = range(totalPages - pageRange + 1, totalPages);
+    } else {
+        if (selected - delta < 0) {
+            delta = selected;
+        }
+        const offset = selected - delta;
+        pages = range(offset + 1, offset + pageRange);
     }
 
-    selected = selected || 1;
-
-    let pages = range(nbOfPages).map((i: number) => __(Page, { /*key: 'page' + i,*/ value: i + 1, isActive: selected === i + 1, onClick: () => pageSelected(i + 1) }));
+    let pageElements = pages.map((i: number) => __(Page, { /*key: 'page' + i,*/ value: i, isActive: selected === i, onClick: () => pageSelected(i) }));
 
     // __(FirstPageLink, {isActive: true, onClick: onClick}),
     // __(LastPageLink, {isActive: true, onClick: onClick}),
 
     return _.div({ className: "pager" }, [
         __(PreviousPageLink, { /*key: "previous",*/ isActive: selected > 1, onClick: () => pageSelected(selected - 1) }),
-        _.span({key: "pages"}, pages),
-        maxReached ? "..." : "",
-        __(NextPageLink, { /*key: "next",*/ isActive: selected < nbOfPages, onClick: () => pageSelected(selected + 1) }),
+        pages[0] > 1 ? "..." : "",
+        _.span({key: "pages"}, pageElements),
+        pages.slice(-1)[0] < totalPages ? "..." : "",
+        __(NextPageLink, { /*key: "next",*/ isActive: selected < totalPages, onClick: () => pageSelected(selected + 1) }),
         __(ItemsOnThisPage, {totalItems, pageSize, selected}),
     ]);
 }
