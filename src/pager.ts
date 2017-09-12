@@ -36,7 +36,7 @@ function ItemsOnThisPage({selected, pageSize, totalItems}: Pager_t): ReactElemen
         return _.span({});
     }
     let currentStart = pageSize * (selected - 1) + 1;
-    let currentEnd = pageSize * selected;
+    let currentEnd = Math.max(pageSize * selected, totalItems);
     return _.span({ className: "items-on-this-page" }, [_.b({}, [currentStart]), "-", _.b({}, [currentEnd]), " of ", _.b({}, totalItems)]);
 }
 
