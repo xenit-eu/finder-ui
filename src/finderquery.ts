@@ -71,21 +71,42 @@ export class FinderQuery {
         let result: ApixQuery_t = def;  // default: all
         if (searchTerms.length) {
             result = {and: []};
+
+            let orChunks: {[k: string]: Array<{parent: string}|{type: string}|{property: {[k: string]: any}}>} = {};
+
             searchTerms.forEach(t => {
+                if (!orChunks[t.name]) {
+                    orChunks[t.name] = [];
+                }
                 switch (t.name) {
                     case "parent":
                         // specific term specifying the "parent" constraint.
-                        result.and.push({ parent: t.value });
+                        orChunks[t.name].push({ parent: t.value });
                         break;
                     case TYPE_QNAME:
                         // Specific term specifying document type constraint
-                        result.and.push({type: t.value});
+                        orChunks[t.name].push({type: t.value});
                         break;
                     default:
-                        result.and.push({ property: apixSearchProperty(t) });
+                        orChunks[t.name].push({ property: apixSearchProperty(t) });
                         break;
                 }
             });
+
+            for (let key in orChunks) {
+                if (orChunks.hasOwnProperty(key)) {
+                    switch (orChunks[key].length) {
+                        case 0:
+                            break;
+                        case 1:
+                            result.and.push(orChunks[key][0])
+                            break;
+                        default:
+                            result.and.push({ or: orChunks[key] });
+
+                    }
+                }
+            }
         }
         return new FinderQuery(result);
     }

@@ -1,5 +1,69 @@
 
-import { FinderQuery } from "./finderquery";
+import { FinderQuery, SearchTerm_t } from "./finderquery";
+
+describe("search terms to apix query", () => {
+    it('2 search terms', () => {
+        const input: SearchTerm_t[] = [{
+            name: "author",
+            value: "admin",
+        }, {
+            name: "size",
+            value: "123",
+        }];
+
+        const expected = {
+            and: [{
+                property: { name: "author", value: "admin" }
+            }, {
+                property: { name: "size", value: "123" }
+            }]
+        };
+
+        expect(FinderQuery.fromSearchTerms(input).query).toEqual(expected);
+    });
+
+    it('with a type as search term', () => {
+        const input: SearchTerm_t[] = [{
+            name: "{http://www.alfresco.org/model/content/1.0}type",
+            value: "cm:content"
+        }];
+
+        const expected = {
+            and: [{
+                type: "cm:content",
+            }]
+        };
+        expect(FinderQuery.fromSearchTerms(input).query).toEqual(expected);
+    });
+
+    it('with multiple identical search terms', () => {
+        const input: SearchTerm_t[] = [{
+            name: "author",
+            value: "admin",
+        }, {
+            name: "author",
+            value: "jos",
+
+        }, {
+            name: "size",
+            value: "123"
+        }];
+
+        const expected = {
+            and: [{
+                or: [{
+                    property: { name: "author", value: "admin" },
+                }, {
+                    property: { name: "author", value: "jos" },
+                }],
+            }, {
+                property: { name: "size", value: "123" },
+            }]
+        };
+
+        expect(FinderQuery.fromSearchTerms(input).query).toEqual(expected);
+    })
+})
 
 describe("advanced query to apix query ", () => {
 
