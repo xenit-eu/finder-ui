@@ -257,6 +257,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                 }, this.withTooltip("[" + t.label + "]", new FinderQuery(t.query).toHumanReadableString()))),
             ...this.props.searchedTerms.map((t, i) => __(Chip, { key: "T" + i, onRequestDelete: () => this.props.onRemoveTerm(i) }, t.label + ":" + (t.valueLabel ? t.valueLabel : t.value) )),
             _.input({ key: "input", list: "dropdown-list",
+                      id: "searchbox",
                       placeholder: "Type search term/query or 'Enter' to start searching...",
                       onChange: this.handleInputChange.bind(this),
                       onKeyUp: (evt) => this.handleInputKey.bind(this)(evt),
@@ -266,9 +267,9 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
 
             ...(this.props.customButtons||[]),
 
-            _.div({ key: "save-icon", className: "save-icon icon" }, __(StarIcon, { color: iconColor, onClick: () => this.props.onSaveAsQuery(prompt("Save query as") || "query") })),
+            _.div({ key: "save-icon", className: "save-icon icon", id: "searchbox_save" }, __(StarIcon, { color: iconColor, onClick: () => this.props.onSaveAsQuery(prompt("Save query as") || "query") })),
 
-            _.div({ key: "search-icon", className: "search-icon icon" },
+            _.div({ key: "search-icon", className: "search-icon icon", id: "searchbox_search" },
                 this.props.searching
                     ? __(CircularProgress, { size: 24 })
                     : __(SearchIcon, { color: iconColor, onClick: () => this.props.onEnter(null) }),
