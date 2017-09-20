@@ -7,7 +7,7 @@ import * as Colors from "material-ui/styles/colors";
 import SearchIcon from "material-ui/svg-icons/action/search";
 import StarIcon from "material-ui/svg-icons/toggle/star-border";
 
-import { FinderQuery,Query_t } from "./";
+import { FinderQuery, Query_t } from "./";
 
 declare var require: any;
 // tslint:disable-next-line:no-var-requires
@@ -31,6 +31,7 @@ const searchIconStyle = {
 export const iconColor = "#512e5f";
 
 const reNameValue: RegExp = /[^\:]+\:\s*(.+)\s*$/;
+const reNoNameJustValue: RegExp = /[^\:]/;
 const reQuery: RegExp = /\[([\w\s\-\_]+)\]/;
 
 function toDateString(d: Date): string {
@@ -63,6 +64,7 @@ export type Term_t = {
     valueLabel?: string,  // to be displayed in place of value when specified (value still to be used for searching!)
 };
 
+export const ValueNoKeyTerm = "ValueNoKeyTerm";
 
 
 export type SearchBox_t = {
@@ -71,11 +73,12 @@ export type SearchBox_t = {
     searchableTerms: SearchableTerm_t[],            // suggestions to be proposed on the drop-down list.
     searchedQueries: Query_t[],                     // list of queries requested for search.
     searchableQueries: Query_t[],                   // suggestions queries.
-    customButtons?: ReactElement<any>[],              // list of custom buttons to add besides search and save icons
+    customButtons?: Array<ReactElement<any>>,              // list of custom buttons to add besides search and save icons
+    allowValueNoKeyTerm?: boolean,
 
     onRemoveTerm: (idx: number) => void,            // remove existing term.
     onRemoveQuery: (idx: number) => void,           // remove existing term.
-    onEnter: (text: Term_t|null) => void,           // add new term or start search (when parameter is null)
+    onEnter: (text: Term_t | null) => void,           // add new term or start search (when parameter is null)
     onAddQuery: (query: Query_t) => void,           // add new query to the searchedQueries.
     onInputChanged: (text: string) => void,         // called on any changes in the input box.
     onSaveAsQuery: (name: string) => void,          // called on request to save the current query as a new saved query.
@@ -101,30 +104,32 @@ type State_t = {
 export class SearchBox extends Component<SearchBox_t, State_t> {
 
     private textInput: HTMLInputElement;
-    private currentTerm: SearchableTerm_t|null;
+    private currentTerm: SearchableTerm_t | null;
     private selectedDates: Date[] = [];
 
     constructor(props: SearchBox_t) {
         super(props);
         this.state = {
             suggestionList: [
-            ...this.props.searchableQueries.sort().map(t => "[" + t.label + "]"),
-            ...this.props.searchableTerms.sort().map(t => t.label + ":"),
+                ...this.props.searchableQueries.sort().map(t => "[" + t.label + "]"),
+                ...this.props.searchableTerms.sort().map(t => t.label + ":"),
             ],
             calendarOpen: false,
             calendarMode: "single",
         };
     }
 
-    public componentWillReceiveProps (nextProps: SearchBox_t) {
+    public componentWillReceiveProps(nextProps: SearchBox_t) {
         this.resetSuggestionList(nextProps); // triggers a 'recalculate' of the suggestion list when new properties are available.
     }
 
     public resetSuggestionList(props: SearchBox_t) {
-        this.setState({ suggestionList: [
-            ...props.searchableQueries.sort().map(t => "[" + t.label + "]"),
-            ...props.searchableTerms.sort().map(t => t.label + ":"),
-        ] });
+        this.setState({
+            suggestionList: [
+                ...props.searchableQueries.sort().map(t => "[" + t.label + "]"),
+                ...props.searchableTerms.sort().map(t => t.label + ":"),
+            ],
+        });
     }
 
     public addNewTerm(term: Term_t) {
@@ -189,14 +194,18 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
 
     public handleInputKey(evt: KeyboardEvent): void {
         const input = <HTMLInputElement> this.textInput;
-        if (evt.keyCode === 13 && (!input.value || reNameValue.test(input.value) )) {
+        if (evt.keyCode === 13 && (!input.value || reNameValue.test(input.value))) {
             if (!input.value) { // Enter press with empty input => call onEnter with null.
                 this.props.onEnter(null);
             } else if (this.currentTerm) {
                 const m = reNameValue.exec(input.value);
                 if (m) {
                     this.addNewTerm({ name: this.currentTerm.name, label: this.currentTerm.label, value: m[1] });
+                    return;
                 }
+            } else if (this.props.allowValueNoKeyTerm && reNoNameJustValue.test(input.value)) {
+                this.addNewTerm({ name: ValueNoKeyTerm, label: ValueNoKeyTerm, value: input.value });
+                return;
             }
         } else {
             if (this.props.onInputChanged) {
@@ -232,8 +241,8 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
         this.setState({ calendarOpen: false });
     }
 
-    private withTooltip (label: string, tooltip: string): ReactElement<any> {
-        return __("span", {title: tooltip}, label);
+    private withTooltip(label: string, tooltip: string): ReactElement<any> {
+        return __("span", { title: tooltip }, label);
     }
 
     public render() {
@@ -251,23 +260,25 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
 
         return _.div({ key: "search-box", className: "search-box" }, [
             ...this.props.searchedQueries.map((t, i) => __(Chip, {
-                    backgroundColor: Colors.blue100,
-                    key: "Q" + i,
-                    onRequestDelete: () => this.props.onRemoveQuery(i),
-                }, this.withTooltip("[" + t.label + "]", new FinderQuery(t.query).toHumanReadableString()))),
-            ...this.props.searchedTerms.map((t, i) => __(Chip, { key: "T" + i, onRequestDelete: () => this.props.onRemoveTerm(i) }, t.label + ":" + (t.valueLabel ? t.valueLabel : t.value) )),
-            _.input({ key: "input", list: "dropdown-list",
-                      id: "searchbox",
-                      placeholder: "Type search term/query or 'Enter' to start searching...",
-                      onChange: this.handleInputChange.bind(this),
-                      onKeyUp: (evt) => this.handleInputKey.bind(this)(evt),
-                      ref: (input) => { this.textInput = input; },
-                    }),
+                backgroundColor: Colors.blue100,
+                key: "Q" + i,
+                onRequestDelete: () => this.props.onRemoveQuery(i),
+            }, this.withTooltip("[" + t.label + "]", new FinderQuery(t.query).toHumanReadableString()))),
+            ...this.props.searchedTerms.map((t, i) => __(Chip, { key: "T" + i, onRequestDelete: () => this.props.onRemoveTerm(i) }, t.label + ":" + (t.valueLabel ? t.valueLabel : t.value))),
+            _.input({
+                key: "input", list: "dropdown-list",
+                id: "searchbox",
+                placeholder: "Type search term/query or 'Enter' to start searching...",
+                onChange: this.handleInputChange.bind(this),
+                onKeyUp: (evt) => this.handleInputKey.bind(this)(evt),
+                ref: (input) => { this.textInput = input; },
+            }),
             _.datalist({ key: "datalist", id: "dropdown-list" }, this.state.suggestionList ? this.state.suggestionList.map(n => _.option({ key: n }, n)) : []),
 
-            ...(this.props.customButtons||[]),
+            ...(this.props.customButtons || []),
 
-            _.div({ key: "save-icon", className: "save-icon icon", id: "searchbox_save" }, __(StarIcon, { color: iconColor, onClick: () => this.props.onSaveAsQuery(prompt("Save query as") || "query") })),
+            _.div({ key: "save-icon", className: "save-icon icon", id: "searchbox_save" }, __(StarIcon, { color: iconColor,
+                onClick: () => this.props.onSaveAsQuery(prompt("Save query as") || "query") })),
 
             _.div({ key: "search-icon", className: "search-icon icon", id: "searchbox_search" },
                 this.props.searching

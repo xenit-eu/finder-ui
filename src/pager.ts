@@ -11,23 +11,23 @@ const flatButtonStyle = {
     minWidth: 36,
 };
 
-type Page_t = {value: number, isActive: boolean, onClick: () => void};
-function Page ({value, isActive, onClick}: Page_t): ReactElement<any> {
+type Page_t = { value: number, isActive: boolean, onClick: () => void };
+function Page({value, isActive, onClick}: Page_t): ReactElement<any> {
     return __(FlatButton, { key: "P-" + value, style: isActive ? { minWidth: 36, color: "grey" } : flatButtonStyle, label: value.toString(), primary: isActive, onClick });
 }
 
-type Ellipsis_t = {onClick: () => void};
-function Ellipsis ({onClick}: Ellipsis_t): ReactElement<any> {
+type Ellipsis_t = { onClick: () => void };
+function Ellipsis({onClick}: Ellipsis_t): ReactElement<any> {
     return __(FlatButton, { key: "...", style: flatButtonStyle, label: "...", onClick });
 }
 
-type PreviousPageLink_t = {isActive: boolean, onClick: () => void};
-function PreviousPageLink ({isActive, onClick}: PreviousPageLink_t): ReactElement<any> {
+type PreviousPageLink_t = { isActive: boolean, onClick: () => void };
+function PreviousPageLink({isActive, onClick}: PreviousPageLink_t): ReactElement<any> {
     return __(FlatButton, { key: "previous", style: flatButtonStyle, icon: __(NavigationChevronLeft, undefined), onClick, disabled: !isActive });
 }
 
-type NextPageLink_t = {isActive: boolean, onClick: () => void};
-function  NextPageLink ({isActive, onClick}: NextPageLink_t): ReactElement<any> {
+type NextPageLink_t = { isActive: boolean, onClick: () => void };
+function NextPageLink({isActive, onClick}: NextPageLink_t): ReactElement<any> {
     return __(FlatButton, { key: "next", style: flatButtonStyle, icon: __(NavigationChevronRight, undefined), onClick, disabled: !isActive });
 }
 
@@ -51,8 +51,14 @@ const LastPageLink = ({isActive, onClick}) => (
   __(FlatButton, { style: flatButtonStyle, icon: __(NavigationLastPage, null), onClick: onClick })
 );
 */
-
-const range = (start: number, end: number) => Array(end - start + 1).fill(0).map((_: number, i: number) => start + i);
+function createZeroArr(size: number){
+    var foo = [];
+    for (var i = 1; i <= size; i++) {
+        foo.push(0);
+    }
+    return foo;
+}
+const range = (start: number, end: number) => createZeroArr(end - start + 1).map((_: number, i: number) => start + i);
 
 /* #### pager hash description
 
@@ -70,7 +76,7 @@ export type Pager_t = {
     pageSelected: (page: number, data?: any) => void,
 };
 
-export function Pager ({totalItems, pageSize, selected, pageSelected}: Pager_t): ReactElement<any> {
+export function Pager({totalItems, pageSize, selected, pageSelected}: Pager_t): ReactElement<any> {
     const totalPages = Math.floor(totalItems / pageSize) + ((totalItems % pageSize > 0) ? 1 : 0);
     const pageRange = totalPages < 15 ? totalPages : 15;
     selected = selected || 1;
@@ -94,10 +100,10 @@ export function Pager ({totalItems, pageSize, selected, pageSelected}: Pager_t):
     return _.div({ className: "pager" }, [
         __(PreviousPageLink, { /*key: "previous",*/ isActive: selected > 1, onClick: () => pageSelected(selected - 1) }),
         pages[0] > 1 ? "..." : "",
-        _.span({key: "pages"}, pageElements),
+        _.span({ key: "pages" }, pageElements),
         pages.slice(-1)[0] < totalPages ? "..." : "",
         __(NextPageLink, { /*key: "next",*/ isActive: selected < totalPages, onClick: () => pageSelected(selected + 1) }),
-        __(ItemsOnThisPage, {totalItems, pageSize, selected}),
+        __(ItemsOnThisPage, { totalItems, pageSize, selected }),
     ]);
 }
 
