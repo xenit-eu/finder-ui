@@ -1,5 +1,5 @@
 
-import { FinderQuery, SearchTerm_t } from "./finderquery";
+import { FinderQuery, SearchTerm_t, TYPE_QNAME } from "./finderquery";
 
 describe("search terms to apix query", () => {
     it('2 search terms', () => {
@@ -24,7 +24,7 @@ describe("search terms to apix query", () => {
 
     it('with a type as search term', () => {
         const input: SearchTerm_t[] = [{
-            name: "{http://www.alfresco.org/model/content/1.0}type",
+            name: TYPE_QNAME,
             value: "cm:content"
         }];
 

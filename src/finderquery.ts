@@ -9,7 +9,8 @@ type Property_t = { property: { name: string, value: string } } |
 type FinderQuery_t = { or: FinderQuery_t[] } | { and: FinderQuery_t[] } | {not: FinderQuery_t} | Property_t | All_t;
 */
 
-const TYPE_QNAME = "{http://www.alfresco.org/model/content/1.0}type";
+// This is a fake type. The document type is mapped to this QName to be able to put all document information in a hashmap.
+export const TYPE_QNAME = "{http://www.alfresco.org/model/content/1.0}type";
 
 export type ApixQuery_t = any; // raw apix query. IE: {and: [{property: {name: "a", value: "b"}}]}
 export type SearchTerm_t = { name: string, value: string };
