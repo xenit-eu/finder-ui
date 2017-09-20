@@ -66,7 +66,6 @@ export type Term_t = {
 
 export const ValueNoKeyTerm = "ValueNoKeyTerm";
 
-
 export type SearchBox_data_t = {
     searching: boolean,                             // flag indicating that search process is busy => activate spinnger !
     searchedTerms: Term_t[],                        // list of terms requested for search.
@@ -76,9 +75,9 @@ export type SearchBox_data_t = {
     customButtons?: Array<ReactElement<any>>,              // list of custom buttons to add besides search and save icons
     allowValueNoKeyTerm?: boolean,
 
-}
+};
+
 export type SearchBox_actions_t = {
-    
     onRemoveTerm: (idx: number) => void,            // remove existing term.
     onRemoveQuery: (idx: number) => void,           // remove existing term.
     onEnter: (text: Term_t | null) => void,           // add new term or start search (when parameter is null)
@@ -86,7 +85,7 @@ export type SearchBox_actions_t = {
     onInputChanged: (text: string) => void,         // called on any changes in the input box.
     onSaveAsQuery: (name: string) => void,          // called on request to save the current query as a new saved query.
 };
-export type SearchBox_t = SearchBox_actions_t & SearchBox_data_t; 
+export type SearchBox_t = SearchBox_actions_t & SearchBox_data_t;
 type State_t = {
     suggestionList?: string[],
     calendarOpen?: boolean,
@@ -260,14 +259,16 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                 onClick: this.handleCloseDialog.bind(this),
             }),
         ];
-
+        function termToChip(t:Term_t,i:number){
+            return __(Chip, { key: "T" + i, onRequestDelete: () => this.props.onRemoveTerm(i) }, ((t.label && t.label.length > 0) ? t.label + ":" : "") + (t.valueLabel ? t.valueLabel : t.value));
+        }
         return _.div({ key: "search-box", className: "search-box" }, [
             ...this.props.searchedQueries.map((t, i) => __(Chip, {
                 backgroundColor: Colors.blue100,
                 key: "Q" + i,
                 onRequestDelete: () => this.props.onRemoveQuery(i),
             }, this.withTooltip("[" + t.label + "]", new FinderQuery(t.query).toHumanReadableString()))),
-            ...this.props.searchedTerms.map((t, i) => __(Chip, { key: "T" + i, onRequestDelete: () => this.props.onRemoveTerm(i) }, t.label + ":" + (t.valueLabel ? t.valueLabel : t.value))),
+            ...this.props.searchedTerms.map((t, i) => termToChip(t, i)),
             _.input({
                 key: "input", list: "dropdown-list",
                 id: "searchbox",
