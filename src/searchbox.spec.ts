@@ -5,7 +5,7 @@ import { Component, createElement as __, DOM as _, PropTypes } from "react";
 import * as injectTapEventPlugin from "react-tap-event-plugin";
 import { Fixture, simulateEvent } from "./testUtils";
 
-import {Pager_t} from "./pager";
+import { Pager_t } from "./pager";
 import { SearchBox, SearchBox_t } from "./searchbox";
 
 // tslint:disable-next-line:no-var-requires
@@ -15,15 +15,15 @@ const ENTER_KEY_CODE: number = 13;
 
 // !!!!! missing function in phantomjs !!!!!!
 if (!String.prototype.endsWith) {
-  String.prototype.endsWith = (searchString, position) => {
-      let subjectString = this.toString();
-      if (typeof position !== "number" || !isFinite(position) || Math.floor(position) !== position || position > subjectString.length) {
-        position = subjectString.length;
-      }
-      position -= searchString.length;
-      let lastIndex = subjectString.lastIndexOf(searchString, position);
-      return lastIndex !== -1 && lastIndex === position;
-  };
+    String.prototype.endsWith = (searchString, position) => {
+        let subjectString = this.toString();
+        if (typeof position !== "number" || !isFinite(position) || Math.floor(position) !== position || position > subjectString.length) {
+            position = subjectString.length;
+        }
+        position -= searchString.length;
+        let lastIndex = subjectString.lastIndexOf(searchString, position);
+        return lastIndex !== -1 && lastIndex === position;
+    };
 }
 
 describe("SearchBox component tests", () => {
@@ -43,12 +43,12 @@ describe("SearchBox component tests", () => {
 
             searchableQueries: [],
             searchedQueries: [],
-            onRemoveTerm: (idx) => {},
-            onRemoveQuery: (idx) => {},
-            onEnter: (text) => {},
-            onAddQuery: (query) => {},
-            onInputChanged: () => {},
-            onSaveAsQuery: () => {},
+            onRemoveTerm: (idx) => { },
+            onRemoveQuery: (idx) => { },
+            onEnter: (text) => { },
+            onAddQuery: (query) => { },
+            onInputChanged: () => { },
+            onSaveAsQuery: () => { },
         };
 
         spyOn(props, "onEnter");
@@ -63,15 +63,15 @@ describe("SearchBox component tests", () => {
         const props: SearchBox_t = {
             searching: false,
             searchedTerms: [],
-            searchableTerms: [{label: "name", name: "name_name", type: "text", values: []}],
+            searchableTerms: [{ label: "name", name: "name_name", type: "text", values: [] }],
             searchableQueries: [],
             searchedQueries: [],
-            onRemoveTerm: (idx) => {},
-            onRemoveQuery: (idx) => {},
-            onEnter: (text) => {},
-            onAddQuery: (query) => {},
-            onInputChanged: () => {},
-            onSaveAsQuery: () => {},
+            onRemoveTerm: (idx) => { },
+            onRemoveQuery: (idx) => { },
+            onEnter: (text) => { },
+            onAddQuery: (query) => { },
+            onInputChanged: () => { },
+            onSaveAsQuery: () => { },
         };
 
         spyOn(props, "onEnter");
@@ -84,7 +84,36 @@ describe("SearchBox component tests", () => {
 
         wrapper.find("input").simulate("change");
         wrapper.find("input").simulate("keyUp", { keyCode: ENTER_KEY_CODE });
-        expect(props.onEnter).toHaveBeenCalledWith({name: "name_name", label: "name", value: "value"});
+        expect(props.onEnter).toHaveBeenCalledWith({ name: "name_name", label: "name", value: "value" });
+    });
+
+    it("should make a chip of a query with only value (no ':') when allowValueNoKeyTerm is true", () => {
+        const props: SearchBox_t = {
+                searching: false,
+                searchedTerms: [],
+                searchableTerms: [{ label: "name", name: "name_name", type: "text", values: [] }],
+                searchableQueries: [],
+                searchedQueries: [],
+                allowValueNoKeyTerm: true,
+                onRemoveTerm: (idx) => { },
+                onRemoveQuery: (idx) => { },
+                onEnter: (text) => { },
+                onAddQuery: (query) => { },
+                onInputChanged: () => { },
+                onSaveAsQuery: () => { },
+            };
+
+        spyOn(props, "onEnter");
+
+        const wrapper = Fixture(__(SearchBox, props));
+
+        const text = "value";
+        const input: any = wrapper.find("input").get(0);
+        input.value = text;
+
+        wrapper.find("input").simulate("change");
+        wrapper.find("input").simulate("keyUp", { keyCode: ENTER_KEY_CODE });
+        expect(props.onEnter).toHaveBeenCalledWith({ name: "ValueNoKeyTerm", label: "ValueNoKeyTerm", value: "value" });
     });
 
     it("should display provided list of terms in chips components", () => {
@@ -102,12 +131,12 @@ describe("SearchBox component tests", () => {
             searchableTerms: [],
             searchableQueries: [],
             searchedQueries: [],
-            onRemoveTerm: (idx) => {},
-            onRemoveQuery: (idx) => {},
-            onEnter: (text) => {},
-            onAddQuery: (query) => {},
-            onInputChanged: () => {},
-            onSaveAsQuery: () => {},
+            onRemoveTerm: (idx) => { },
+            onRemoveQuery: (idx) => { },
+            onEnter: (text) => { },
+            onAddQuery: (query) => { },
+            onInputChanged: () => { },
+            onSaveAsQuery: () => { },
         };
 
         const wrapper = Fixture(__(SearchBox, props));
@@ -138,12 +167,12 @@ describe("SearchBox component tests", () => {
             searchableTerms: [],
             searchableQueries: [],
             searchedQueries: [],
-            onRemoveTerm: (idx) => {},
-            onRemoveQuery: (idx) => {},
-            onEnter: (text) => {},
-            onAddQuery: (query) => {},
-            onInputChanged: () => {},
-            onSaveAsQuery: () => {},
+            onRemoveTerm: (idx) => { },
+            onRemoveQuery: (idx) => { },
+            onEnter: (text) => { },
+            onAddQuery: (query) => { },
+            onInputChanged: () => { },
+            onSaveAsQuery: () => { },
         };
 
         spyOn(props, "onRemoveTerm");
@@ -173,15 +202,15 @@ describe("SearchBox component tests", () => {
                 label: "L3",
                 value: "V3",
             }],
-            searchableTerms: [{label: "aaa", name: "naaa", type: "text", values: []}, {label: "bbb", name: "nbbb", type: "text", values: []}],
+            searchableTerms: [{ label: "aaa", name: "naaa", type: "text", values: [] }, { label: "bbb", name: "nbbb", type: "text", values: [] }],
             searchableQueries: [],
             searchedQueries: [],
-            onRemoveTerm: (idx) => {},
-            onRemoveQuery: (idx) => {},
-            onEnter: (text) => {},
-            onAddQuery: (query) => {},
-            onInputChanged: () => {},
-            onSaveAsQuery: () => {},
+            onRemoveTerm: (idx) => { },
+            onRemoveQuery: (idx) => { },
+            onEnter: (text) => { },
+            onAddQuery: (query) => { },
+            onInputChanged: () => { },
+            onSaveAsQuery: () => { },
         };
 
         spyOn(props, "onRemoveTerm");

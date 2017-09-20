@@ -194,7 +194,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
 
     public handleInputKey(evt: KeyboardEvent): void {
         const input = <HTMLInputElement> this.textInput;
-        if (evt.keyCode === 13 && (!input.value || reNameValue.test(input.value))) {
+        if (evt.keyCode === 13) {
             if (!input.value) { // Enter press with empty input => call onEnter with null.
                 this.props.onEnter(null);
             } else if (this.currentTerm) {
