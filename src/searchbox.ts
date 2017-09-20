@@ -67,7 +67,7 @@ export type Term_t = {
 export const ValueNoKeyTerm = "ValueNoKeyTerm";
 
 
-export type SearchBox_t = {
+export type SearchBox_data_t = {
     searching: boolean,                             // flag indicating that search process is busy => activate spinnger !
     searchedTerms: Term_t[],                        // list of terms requested for search.
     searchableTerms: SearchableTerm_t[],            // suggestions to be proposed on the drop-down list.
@@ -76,6 +76,9 @@ export type SearchBox_t = {
     customButtons?: Array<ReactElement<any>>,              // list of custom buttons to add besides search and save icons
     allowValueNoKeyTerm?: boolean,
 
+}
+export type SearchBox_actions_t = {
+    
     onRemoveTerm: (idx: number) => void,            // remove existing term.
     onRemoveQuery: (idx: number) => void,           // remove existing term.
     onEnter: (text: Term_t | null) => void,           // add new term or start search (when parameter is null)
@@ -83,7 +86,7 @@ export type SearchBox_t = {
     onInputChanged: (text: string) => void,         // called on any changes in the input box.
     onSaveAsQuery: (name: string) => void,          // called on request to save the current query as a new saved query.
 };
-
+export type SearchBox_t = SearchBox_actions_t & SearchBox_data_t; 
 type State_t = {
     suggestionList?: string[],
     calendarOpen?: boolean,
