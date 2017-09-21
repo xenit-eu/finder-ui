@@ -19,3 +19,4 @@ export * from "./searchHistoryList";
 export * from "./advancedsearchbox";
 export * from "./columnspicker";
 export * from "./finderquery";
+export * from "./AlfredTheming";
