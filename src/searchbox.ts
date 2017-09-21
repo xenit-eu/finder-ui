@@ -259,8 +259,9 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                 onClick: this.handleCloseDialog.bind(this),
             }),
         ];
+        let me = this;
         function termToChip(t:Term_t,i:number){
-            return __(Chip, { key: "T" + i, onRequestDelete: () => this.props.onRemoveTerm(i) }, ((t.label && t.label.length > 0) ? t.label + ":" : "") + (t.valueLabel ? t.valueLabel : t.value));
+            return __(Chip, { key: "T" + i, onRequestDelete: () => me.props.onRemoveTerm(i) }, ((t.label && t.label.length > 0) ? t.label + ":" : "") + (t.valueLabel ? t.valueLabel : t.value));
         }
         return _.div({ key: "search-box", className: "search-box" }, [
             ...this.props.searchedQueries.map((t, i) => __(Chip, {
