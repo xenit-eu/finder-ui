@@ -1,3 +1,5 @@
+import getMuiTheme from "material-ui/styles/getMuiTheme";
+
 export const APIColorPalette = {
     monoChrome0: "#231F20",
     monoChrome1: "#58595B",
@@ -22,3 +24,17 @@ export const FinderColorPalette = {
     color2: "#7CCCBF",
     color3: "#97D5C9",
 };
+export const FinderMuiTheme = getMuiTheme({
+    appBar: {
+        height: 30,
+        color: FinderColorPalette.color0,
+    },
+    palette: {
+        primary1Color: FinderColorPalette.color0,
+        primary2Color: FinderColorPalette.color1,
+        primary3Color: FinderColorPalette.color2,
+        accent1Color: FinderColorPalette.color3,
+        accent2Color: FinderColorPalette.color3,
+        accent3Color: FinderColorPalette.color3,
+    },
+});
