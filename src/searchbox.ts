@@ -17,6 +17,7 @@ import { Component, createElement as __, DOM as _, KeyboardEvent, ReactElement }
 
 import "flatpickr/dist/themes/material_blue.css";
 import "./searchbox.less";
+import { Paper, Popover, Menu, MenuItem } from "material-ui";
 
 const DAY: number = 24 * 3600 * 1000;
 const MIN_DATE: Date = new Date(1970, 1, 1);
@@ -88,6 +89,7 @@ export type SearchBox_actions_t = {
 export type SearchBox_t = SearchBox_actions_t & SearchBox_data_t;
 type State_t = {
     textValue?: string,
+    suggestionsOpened?: boolean,
     currentTerm?: SearchableTerm_t|null,
     suggestionList?: string[],
     calendarOpen?: boolean,
@@ -107,6 +109,7 @@ type State_t = {
 
 export class SearchBox extends Component<SearchBox_t, State_t> {
 
+    private inputElem: HTMLInputElement|null;
     private selectedDates: Date[] = [];
 
     constructor(props: SearchBox_t) {
@@ -114,6 +117,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
         this.state = {
             textValue: "",
             currentTerm: null,
+            suggestionsOpened: false,
             suggestionList: [
                 ...this.props.searchableQueries.sort().map(t => "[" + t.label + "]"),
                 ...this.props.searchableTerms.sort().map(t => t.label + ":"),
@@ -138,22 +142,25 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
 
     public addNewTerm(term: Term_t) {
         this.props.onEnter(term);
-        this.setState({textValue: "", currentTerm: null});
+        this.setState({textValue: "", currentTerm: null, suggestionsOpened: false});
         this.resetSuggestionList(this.props);
     }
 
     public addNewQuery(query: Query_t) {
         this.props.onAddQuery(query);
-        this.setState({textValue: ""});
+        this.setState({textValue: "", suggestionsOpened: false});
         this.resetSuggestionList(this.props);
     }
 
     public handleInputChange(event: KeyboardEvent) {
         const input: HTMLInputElement = <HTMLInputElement> event.target;
         const val = input.value;
+        this.onInputChange(val);
+    }
 
+    public onInputChange(val: string) {
         let currentTerm = this.props.searchableTerms.filter(t => new RegExp("^\\s*" + t.label + "\\s*\\:", "i").test(val))[0];
-        this.setState({textValue: val, currentTerm: currentTerm});
+        this.setState({textValue: val, currentTerm: currentTerm, suggestionsOpened: true});
 
         if (val.endsWith(":on...") || val.endsWith(":after...") || val.endsWith(":before...")) {
             this.setState({ calendarOpen: true, calendarMode: "single" });
@@ -172,7 +179,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                 this.addNewTerm({ name: currentTerm.name, label: currentTerm.label, value: toDateString(addMonths(new Date(), -1)) + ".." + toDateString(new Date()) });
             }
         } else if (currentTerm && currentTerm.type === "date") {
-            this.setState({ suggestionList: ["today", "last week", "last month", "on...", "after...", "before...", "between..."].map(t => val + (val.endsWith(":") ? "" : ": ") + t) });
+            this.setState({ suggestionList: ["today", "last week", "last month", "on...", "after...", "before...", "between..."].map(t => currentTerm.label + ":" + t) });
         } else if (currentTerm && currentTerm.type === "enum") {
             if (val.endsWith(":")) {
                 this.setState({ suggestionList: currentTerm.values.map(t => val + t) });
@@ -183,7 +190,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                 }
             }
         } else if (reQuery.test(val)) {  // query has been encoded.
-            const match = reQuery.exec(input.value);
+            const match = reQuery.exec(val);
             if (match) {
                 const label = match[1];
                 const query = this.props.searchableQueries.filter(q => q.label === label)[0];
@@ -197,7 +204,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
     }
 
     public handleInputKey(evt: KeyboardEvent): void {
-        const input = <HTMLInputElement>evt.target;
+        const input = <HTMLInputElement> evt.target;
         if (evt.keyCode === 13) {
             if (!input.value) { // Enter press with empty input => call onEnter with null.
                 this.props.onEnter(null);
@@ -211,6 +218,8 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                 this.addNewTerm({ name: ValueNoKeyTerm, label: ValueNoKeyTerm, value: input.value });
                 return;
             }
+        } else if (evt.keyCode === 27) { // Escape key pressed
+            this.setState({suggestionsOpened: false});
         } else {
             if (this.props.onInputChanged) {
                 this.props.onInputChanged(input.value);
@@ -246,7 +255,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
     }
 
     private withTooltip(label: string, tooltip: string): ReactElement<any> {
-        return __("span", { title: tooltip }, label);
+        return _.span({ title: tooltip }, label);
     }
 
     public render() {
@@ -272,15 +281,42 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                 onRequestDelete: () => this.props.onRemoveQuery(i),
             }, this.withTooltip("[" + t.label + "]", new FinderQuery(t.query).toHumanReadableString()))),
             ...this.props.searchedTerms.map((t, i) => termToChip(t, i)),
-            _.input({
-                value: this.state.textValue,
-                key: "input", list: "dropdown-list",
-                id: "searchbox",
-                placeholder: "Type search term/query or 'Enter' to start searching...",
-                onChange: this.handleInputChange.bind(this),
-                onKeyUp: (evt) => this.handleInputKey.bind(this)(evt),
-            }),
-            _.datalist({ key: "datalist", id: "dropdown-list" }, this.state.suggestionList ? this.state.suggestionList.map(n => _.option({ key: n }, n)) : []),
+            _.div({ className: "searchbox-input-wrapper" }, [
+                _.input({
+                    value: this.state.textValue,
+                    key: "input", list: "dropdown-list",
+                    id: "searchbox",
+                    placeholder: "Type search term/query or 'Enter' to start searching...",
+                    onChange: this.handleInputChange.bind(this),
+                    onKeyUp: this.handleInputKey.bind(this),
+                    onFocus: () => this.setState({ suggestionsOpened: true }),
+                    ref: input => { this.inputElem = input; },
+                }),
+                __(Paper, {
+                    className: "searchbox-autocomplete",
+                    style: {
+                        display: this.state.suggestionsOpened ? "block" : "none",
+                    },
+                }, __(Menu, {
+                    width: "100%",
+                    autoWidth: false,
+                    disableAutoFocus: true,
+                    listStyle: {
+                        display: "block",
+                    },
+                }, (this.state.suggestionList || []).map(
+                    option => __(MenuItem, {
+                        key: option,
+                        primaryText: option,
+                        onClick: () => {
+                            if (this.inputElem) {
+                                this.inputElem.focus();
+                            }
+                            this.onInputChange(option);
+                        },
+                    })
+                ))),
+            ]),
 
             ...(this.props.customButtons || []),
 
