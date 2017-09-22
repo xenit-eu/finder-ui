@@ -31,7 +31,7 @@ const searchIconStyle = {
 
 export const iconColor = "#512e5f";
 
-const reNameValue: RegExp = /[^\:]+\:\s*(.+)\s*$/;
+const reNameValue: RegExp = /^([^\:]+)\:\s*(.+)\s*$/;
 const reNoNameJustValue: RegExp = /[^\:]/;
 const reQuery: RegExp = /\[([\w\s\-\_]+)\]/;
 
@@ -71,6 +71,7 @@ export type SearchBox_data_t = {
     searching: boolean,                             // flag indicating that search process is busy => activate spinnger !
     searchedTerms: Term_t[],                        // list of terms requested for search.
     searchableTerms: SearchableTerm_t[],            // suggestions to be proposed on the drop-down list.
+    autocompleteTerms?: Term_t[],
     searchedQueries: Query_t[],                     // list of queries requested for search.
     searchableQueries: Query_t[],                   // suggestions queries.
     customButtons?: Array<ReactElement<any>>,              // list of custom buttons to add besides search and save icons
@@ -118,13 +119,11 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
             textValue: "",
             currentTerm: null,
             suggestionsOpened: false,
-            suggestionList: [
-                ...this.props.searchableQueries.sort().map(t => "[" + t.label + "]"),
-                ...this.props.searchableTerms.sort().map(t => t.label + ":"),
-            ],
+            suggestionList: [],
             calendarOpen: false,
             calendarMode: "single",
         };
+        this.resetSuggestionList(props);
     }
 
     public componentWillReceiveProps(nextProps: SearchBox_t) {
@@ -136,6 +135,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
             suggestionList: [
                 ...props.searchableQueries.sort().map(t => "[" + t.label + "]"),
                 ...props.searchableTerms.sort().map(t => t.label + ":"),
+                ...(props.autocompleteTerms || []).map(t => t.label + ":" + (t.valueLabel || t.value))
             ],
         });
     }
@@ -155,10 +155,10 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
     public handleInputChange(event: KeyboardEvent) {
         const input: HTMLInputElement = <HTMLInputElement> event.target;
         const val = input.value;
-        this.onInputChange(val);
+        this.onInputChange(val, false);
     }
 
-    public onInputChange(val: string) {
+    public onInputChange(val: string, isAutocompleteClick: boolean) {
         let currentTerm = this.props.searchableTerms.filter(t => new RegExp("^\\s*" + t.label + "\\s*\\:", "i").test(val))[0];
         this.setState({textValue: val, currentTerm: currentTerm, suggestionsOpened: true});
 
@@ -198,6 +198,15 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                     this.addNewQuery(query);
                 }
             }
+        } else if (isAutocompleteClick && this.props.autocompleteTerms) {
+            const match = reNameValue.exec(val);
+            if (match) {
+                const autocompleteTerm = this.props.autocompleteTerms.find(term => term.label === match[1] && (term.valueLabel || term.value) === match[2]);
+                if (autocompleteTerm) {
+                    this.addNewTerm(autocompleteTerm);
+                }
+            }
+
         } else {
             this.resetSuggestionList(this.props);
         }
@@ -211,7 +220,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
             } else if (this.state.currentTerm) {
                 const m = reNameValue.exec(input.value);
                 if (m) {
-                    this.addNewTerm({ name: this.state.currentTerm.name, label: this.state.currentTerm.label, value: m[1] });
+                    this.addNewTerm({ name: this.state.currentTerm.name, label: this.state.currentTerm.label, value: m[2] });
                     return;
                 }
             } else if (this.props.allowValueNoKeyTerm && reNoNameJustValue.test(input.value)) {
@@ -298,12 +307,12 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                 __(Paper, {
                     className: "searchbox-autocomplete",
                     style: {
-                        display: this.state.suggestionsOpened && filteredSuggestionsList.length > 0? "block" : "none",
+                        display: this.state.suggestionsOpened && filteredSuggestionsList.length > 0 ? "block" : "none",
                     },
                 }, __(Menu, {
                     width: "100%",
                     autoWidth: false,
-                    maxHeight: <any>"80vh",
+                    maxHeight: <any> "80vh",
                     disableAutoFocus: true,
                     desktop: true,
                     listStyle: {
@@ -316,7 +325,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                         if (this.inputElem) {
                             this.inputElem.focus();
                         }
-                        this.onInputChange(option);
+                        this.onInputChange(option, true);
                     },
                 }))
                 )
