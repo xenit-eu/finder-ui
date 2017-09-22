@@ -274,6 +274,9 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
         function termToChip(t: Term_t, i: number) {
             return __(Chip, { key: "T" + i, onRequestDelete: () => me.props.onRemoveTerm(i) }, ((t.label && t.label.length > 0) ? t.label + ":" : "") + (t.valueLabel ? t.valueLabel : t.value));
         }
+        const filteredSuggestionsList = (this.state.suggestionList || [])
+            .filter(option => option.toLowerCase().includes((this.state.textValue || "").toLowerCase()));
+
         return _.div({ key: "search-box", className: "search-box" }, [
             ...this.props.searchedQueries.map((t, i) => __(Chip, {
                 backgroundColor: Colors.blue100,
@@ -295,27 +298,29 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                 __(Paper, {
                     className: "searchbox-autocomplete",
                     style: {
-                        display: this.state.suggestionsOpened ? "block" : "none",
+                        display: this.state.suggestionsOpened && filteredSuggestionsList.length > 0? "block" : "none",
                     },
                 }, __(Menu, {
                     width: "100%",
                     autoWidth: false,
+                    maxHeight: <any>"80vh",
                     disableAutoFocus: true,
+                    desktop: true,
                     listStyle: {
                         display: "block",
                     },
-                }, (this.state.suggestionList || []).map(
-                    option => __(MenuItem, {
-                        key: option,
-                        primaryText: option,
-                        onClick: () => {
-                            if (this.inputElem) {
-                                this.inputElem.focus();
-                            }
-                            this.onInputChange(option);
-                        },
-                    })
-                ))),
+                }, filteredSuggestionsList.map(option => __(MenuItem, {
+                    key: option,
+                    primaryText: option,
+                    onClick: () => {
+                        if (this.inputElem) {
+                            this.inputElem.focus();
+                        }
+                        this.onInputChange(option);
+                    },
+                }))
+                )
+                ),
             ]),
 
             ...(this.props.customButtons || []),
