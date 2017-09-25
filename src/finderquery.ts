@@ -73,7 +73,7 @@ export class FinderQuery {
         if (searchTerms.length) {
             result = {and: []};
 
-            let orChunks: {[k: string]: Array<{parent: string}|{type: string}|{property: {[k: string]: any}}>} = {};
+            let orChunks: {[k: string]: Array<{parent: string}|{type: string}|{text: string}|{property: {[k: string]: any}}>} = {};
 
             searchTerms.forEach(t => {
                 if (!orChunks[t.name]) {
