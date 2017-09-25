@@ -6,7 +6,8 @@ import IconMenu from "material-ui/IconMenu";
 import MenuItem from "material-ui/MenuItem";
 import FileDownload from "material-ui/svg-icons/file/file-download";
 import MoreHorizIcon from "material-ui/svg-icons/navigation/more-horiz";
-import { createElement as __, DOM as _, ReactElement } from "react";
+import ToggleIndeterminateCheckBox from "material-ui/svg-icons/toggle/indeterminate-check-box";
+import { createElement as __, DOM as _, ReactElement, ReactNode } from "react";
 import "./doclist.less";
 import { Pager, Pager_t } from "./pager";
 
@@ -153,8 +154,33 @@ function SortableTh(c: Doclist_Column_t, onSortColumnSelected: OnSortColumnSelec
 
 export function DocList({  className, columns, data, onDownloadButtonClick, onMenuSelected, onPageSelected, onRowSelected, onRowToggled,
     onSortColumnSelected, pager, rowMenu, rowStyle, rowToggled, togglable, columnsPicker, documentNotFoundText}: DocList_t): ReactElement<any> {
+    let downloadComponents:ReactNode|false = false;
+    if (togglable) {
+        const allRows = data.map((_, key: number) => key);
+        const rowToggleState: boolean[] = data.map((_, key: number) => rowToggled(key));
+        const allRowsToggled = rowToggleState.every(toggled => toggled);
+        const noRowsToggled = rowToggleState.every(toggled => !toggled);
+        const style = {
+            width: "initial",
+        }
+        downloadComponents = _.div({ style: { display: "flex", flexDirection: "row", alignItems: "center" } }, [
+            !allRowsToggled && !noRowsToggled ?
+                __(Checkbox, {
+                    style: style,
+                    checked: true,
+                    checkedIcon: __(ToggleIndeterminateCheckBox),
+                    onCheck: () => data.forEach((row, i) => onRowToggled(true, i, row)),
+                }) :
+                __(Checkbox, {
+                    style: style,
+                    checked: allRowsToggled && !noRowsToggled,
+                    onCheck: (ev: any, checked: boolean) => data.forEach((row, i) => onRowToggled(checked, i, row)),
+                }),
+            __(FlatButton, { disabled: noRowsToggled, icon: __(FileDownload), label: "Download", onClick: onDownloadButtonClick })
+        ]);
+    }
     const headerelements = (<ReactElement<any>[]>[_.th({ key: "Menu" }, "")])
-        .concat(togglable ? [_.th({ key: "toggle" }, __(FlatButton, { icon: __(FileDownload, { onClick: onDownloadButtonClick }) }))] : [])
+        .concat(togglable ? [_.th({ key: "toggle", align: "center" }, downloadComponents)] : [])
         .concat(columns.map(c => SortableTh(c, onSortColumnSelected)));
 
     const header = _.thead({ key: "header" }, [_.tr({ key: "head" }, headerelements)]);
