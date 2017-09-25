@@ -84,6 +84,9 @@ export class FinderQuery {
                         // specific term specifying the "parent" constraint.
                         orChunks[t.name].push({ parent: t.value });
                         break;
+                    case "TEXT":
+                        orChunks[t.name].push({ text: t.value });
+                        break;
                     case TYPE_QNAME:
                         // Specific term specifying document type constraint
                         orChunks[t.name].push({type: t.value});
