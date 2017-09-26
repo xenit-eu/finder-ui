@@ -74,7 +74,7 @@ export type Doclist_Column_t = {
     alignRight?: boolean,
     sortable?: boolean,
     sortDirection?: SortDirection_t,
-    format?: (a: any, props: Row_t) => string | ReactElement<any>,
+    format?: (a: any, props: Row_t, index: number) => string | ReactElement<any>,
 };
 
 export type OnSortColumnSelected_t = (columnIndex: number, columnName: string, direction: SortDirection_t) => void;
@@ -188,7 +188,7 @@ export function DocList({  className, columns, data, onDownloadButtonClick, onMe
     const singleRowElements = (row: Row_t, i: number) =>
         [_.td({ key: "_menu" }, __(RowMenu, { rowIndex: i, menuItems: rowMenu(i), onMenuSelected }))]
             .concat((togglable ? [_.td({ key: "toggle", align: "center" }, __(Checkbox, { checked: rowToggled(i), onCheck: (ev: any, checked: boolean) => onRowToggled(checked, i, row) }))] : []))
-            .concat(columns.map(col => _.td({ key: col.name + col.label, onClick: () => onRowSelected(i) }, col.format ? col.format(row[col.name], row) : row[col.name])));
+            .concat(columns.map(col => _.td({ key: col.name + col.label, onClick: () => onRowSelected(i) }, col.format ? col.format(row[col.name], row, i) : row[col.name])));
 
     const bodycontent = data.map((row, i) => _.tr({ style: style(i), key: i }, singleRowElements(row, i)));
     const body = _.tbody({ key: "body" }, bodycontent);
