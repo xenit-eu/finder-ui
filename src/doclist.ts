@@ -156,8 +156,8 @@ export function DocList({  className, columns, data, onDownloadButtonClick, onMe
     onSortColumnSelected, pager, rowMenu, rowStyle, rowToggled, togglable, columnsPicker, documentNotFoundText}: DocList_t): ReactElement<any> {
     let downloadComponents:ReactNode|false = false;
     if (togglable) {
-        const allRows = data.map((_, key: number) => key);
-        const rowToggleState: boolean[] = data.map((_, key: number) => rowToggled(key));
+        const allRows = data.map((_: any, key: number) => key);
+        const rowToggleState: boolean[] = data.map((_: any, key: number) => rowToggled(key));
         const allRowsToggled = rowToggleState.every(toggled => toggled);
         const noRowsToggled = rowToggleState.every(toggled => !toggled);
         const style = {
