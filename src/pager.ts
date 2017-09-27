@@ -52,7 +52,7 @@ const LastPageLink = ({isActive, onClick}) => (
 );
 */
 function createZeroArr(size: number){
-    var foo = [];
+    var foo:number[] = [];
     for (var i = 1; i <= size; i++) {
         foo.push(0);
     }
@@ -81,7 +81,7 @@ export function Pager({totalItems, pageSize, selected, pageSelected}: Pager_t): 
     const pageRange = totalPages < 15 ? totalPages : 15;
     selected = selected || 1;
     let delta = Math.ceil(pageRange / 2);
-    let pages;
+    let pages: any;
     if ((selected - delta) > (totalPages - pageRange)) {
         pages = range(totalPages - pageRange + 1, totalPages);
     } else {

@@ -40,7 +40,7 @@ export function VersionsHistoryPanel({show, versions}: VersionsHistoryPanel_t): 
         const outerspanStyle = { style: { display: "inline-block", marginTop: "3px", marginBottom: "3px", marginLeft: "8px", marginRight: "8px", width: "165px" } };
         const singleVersion = (v: Version_t) => {
             const momentText = moment(new Date(Number.parseInt(v.editDate))).fromNow();
-            const noderefSpan = { title: v.nodeRef, ...outerspanStyle };
+            const noderefSpan = Object.assign({ title: v.nodeRef}, outerspanStyle);
             let childsToDisplay: any[] = [
                 // __(ListItem, { leftAvatar: person }, "" + v.editor),
                 // __(ListItem, { leftAvatar: actionalarm }, (moment(new Date(Number.parseInt(v.editDate))).fromNow())),
