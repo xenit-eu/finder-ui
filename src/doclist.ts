@@ -176,11 +176,11 @@ export function DocList({  className, columns, data, onDownloadButtonClick, onMe
                     checked: allRowsToggled && !noRowsToggled,
                     onCheck: (ev: any, checked: boolean) => data.forEach((row, i) => onRowToggled(checked, i, row)),
                 }),
-            __(FlatButton, { disabled: noRowsToggled, icon: __(FileDownload), label: "Download", onClick: onDownloadButtonClick })
+            __(IconButton, { disabled: noRowsToggled, onClick: onDownloadButtonClick }, [__(FileDownload)]),
         ]);
     }
     const headerelements = (<ReactElement<any>[]>[_.th({ key: "Menu" }, "")])
-        .concat(togglable ? [_.th({ key: "toggle", align: "center" }, downloadComponents)] : [])
+        .concat(togglable ? [_.th({ key: "toggle", align: "center", width: "1px"}, downloadComponents)] : [])
         .concat(columns.map(c => SortableTh(c, onSortColumnSelected)));
 
     const header = _.thead({ key: "header" }, [_.tr({ key: "head" }, headerelements)]);
@@ -188,7 +188,7 @@ export function DocList({  className, columns, data, onDownloadButtonClick, onMe
     const singleRowElements = (row: Row_t, i: number) =>
         [_.td({ key: "_menu" }, __(RowMenu, { rowIndex: i, menuItems: rowMenu(i), onMenuSelected }))]
             .concat((togglable ? [_.td({ key: "toggle", align: "center" }, __(Checkbox, { checked: rowToggled(i), onCheck: (ev: any, checked: boolean) => onRowToggled(checked, i, row) }))] : []))
-            .concat(columns.map(col => _.td({ key: col.name + col.label, onClick: () => onRowSelected(i) }, col.format ? col.format(row[col.name], row, i) : row[col.name])));
+            .concat(columns.map(col => _.td({ key: col.name + col.label, className: "doclist-col-"+col.name, onClick: () => onRowSelected(i) }, col.format ? col.format(row[col.name], row, i) : row[col.name])));
 
     const bodycontent = data.map((row, i) => _.tr({ style: style(i), key: i }, singleRowElements(row, i)));
     const body = _.tbody({ key: "body" }, bodycontent);
