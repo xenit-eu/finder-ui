@@ -92,7 +92,6 @@ type State_t = {
     textValue?: string,
     suggestionsOpened?: boolean,
     currentTerm?: SearchableTerm_t|null,
-    suggestionList?: string[],
     calendarOpen?: boolean,
     calendarMode?: string,
 };
@@ -119,37 +118,19 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
             textValue: "",
             currentTerm: null,
             suggestionsOpened: false,
-            suggestionList: [],
             calendarOpen: false,
             calendarMode: "single",
         };
-        this.resetSuggestionList(props);
-    }
-
-    public componentWillReceiveProps(nextProps: SearchBox_t) {
-        this.resetSuggestionList(nextProps); // triggers a 'recalculate' of the suggestion list when new properties are available.
-    }
-
-    public resetSuggestionList(props: SearchBox_t) {
-        this.setState({
-            suggestionList: [
-                ...props.searchableQueries.sort().map(t => "[" + t.label + "]"),
-                ...props.searchableTerms.sort().map(t => t.label + ":"),
-                ...(props.autocompleteTerms || []).map(t => t.label + ":" + (t.valueLabel || t.value))
-            ],
-        });
     }
 
     public addNewTerm(term: Term_t) {
         this.props.onEnter(term);
         this.setState({textValue: "", currentTerm: null, suggestionsOpened: false});
-        this.resetSuggestionList(this.props);
     }
 
     public addNewQuery(query: Query_t) {
         this.props.onAddQuery(query);
         this.setState({textValue: "", suggestionsOpened: false});
-        this.resetSuggestionList(this.props);
     }
 
     public handleInputChange(event: KeyboardEvent) {
@@ -178,12 +159,8 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
             if (currentTerm && currentTerm.type === "date") {
                 this.addNewTerm({ name: currentTerm.name, label: currentTerm.label, value: toDateString(addMonths(new Date(), -1)) + ".." + toDateString(new Date()) });
             }
-        } else if (currentTerm && currentTerm.type === "date") {
-            this.setState({ suggestionList: ["today", "last week", "last month", "on...", "after...", "before...", "between..."].map(t => currentTerm.label + ":" + t) });
         } else if (currentTerm && currentTerm.type === "enum") {
-            if (val.endsWith(":")) {
-                this.setState({ suggestionList: currentTerm.values.map(t => val + t) });
-            } else {
+            if (!val.endsWith(":")) {
                 const match = /[^\:]+\:\s*(.*)\s*$/.exec(val);
                 if (match && currentTerm.values.includes(match[1])) {
                     this.addNewTerm({ name: currentTerm.name, label: currentTerm.label, value: match[1] });
@@ -207,9 +184,25 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                 }
             }
 
-        } else {
-            this.resetSuggestionList(this.props);
+        } 
+    }
+
+    private getAutocompleteList(): string[] {
+        if (this.state.currentTerm) {
+            const currentTerm = this.state.currentTerm;
+            switch(currentTerm.type) {
+                case "date":
+                    return ["today", "last week", "last month", "on...", "after...", "before...", "between..."].map(t => currentTerm.label + ":" + t); 
+                case "enum":
+                    return currentTerm.values.map(t => currentTerm.label + ":" + t);
+                default:
+            }
         }
+        return [
+            ...this.props.searchableQueries.sort().map(t => "[" + t.label + "]"),
+            ...this.props.searchableTerms.sort().map(t => t.label + ":"),
+            ...(this.props.autocompleteTerms || []).map(t => t.label + ":" + (t.valueLabel || t.value)),
+        ];
     }
 
     public handleInputKey(evt: KeyboardEvent): void {
@@ -283,7 +276,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
         function termToChip(t: Term_t, i: number) {
             return __(Chip, { key: "T" + i, onRequestDelete: () => me.props.onRemoveTerm(i) }, ((t.label && t.label.length > 0) ? t.label + ":" : "") + (t.valueLabel ? t.valueLabel : t.value));
         }
-        const filteredSuggestionsList = (this.state.suggestionList || [])
+        const filteredSuggestionsList = (this.getAutocompleteList() || [])
             .filter(option => option.toLowerCase().includes((this.state.textValue || "").toLowerCase()));
 
         return _.div({ key: "search-box", className: "search-box" }, [
