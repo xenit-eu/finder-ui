@@ -87,6 +87,7 @@ export type DocList_t_Data = {
     rowMenu: (rowIndex: number) => MenuItem_t[],
     rowToggled: (rowIndex: number) => boolean,
     togglable: boolean,
+    toggledRows: number,
     className: string,
     rowStyle: (i: number) => any,
     documentNotFoundText?: string,
@@ -151,9 +152,10 @@ function SortableTh(c: Doclist_Column_t, onSortColumnSelected: OnSortColumnSelec
 //@Param rowToggled (i)=>boolean "Function that says whether the row is toggled"
 //@Param togglable boolean "Whether rows are togglable or not"
 //@Param columnsPicker any "Column picker element"
+//@Param toggledRows number "The number of rows that have been toggled in total"
 
 export function DocList({  className, columns, data, onDownloadButtonClick, onMenuSelected, onPageSelected, onRowSelected, onRowToggled,
-    onSortColumnSelected, pager, rowMenu, rowStyle, rowToggled, togglable, columnsPicker, documentNotFoundText}: DocList_t): ReactElement<any> {
+    onSortColumnSelected, pager, rowMenu, rowStyle, rowToggled, togglable, columnsPicker, documentNotFoundText, toggledRows}: DocList_t): ReactElement<any> {
     let downloadComponents:ReactNode|false = false;
     if (togglable) {
         const allRows = data.map((_: any, key: number) => key);
@@ -162,7 +164,7 @@ export function DocList({  className, columns, data, onDownloadButtonClick, onMe
         const noRowsToggled = rowToggleState.every(toggled => !toggled);
         const style = {
             width: "initial",
-        }
+        };
         downloadComponents = _.div({ style: { display: "flex", flexDirection: "row", alignItems: "center" } }, [
             !allRowsToggled && !noRowsToggled ?
                 __(Checkbox, {
@@ -176,7 +178,7 @@ export function DocList({  className, columns, data, onDownloadButtonClick, onMe
                     checked: allRowsToggled && !noRowsToggled,
                     onCheck: (ev: any, checked: boolean) => data.forEach((row, i) => onRowToggled(checked, i, row)),
                 }),
-            __(IconButton, { disabled: noRowsToggled, onClick: onDownloadButtonClick }, [__(FileDownload)]),
+            __(IconButton, { disabled: toggledRows == 0, tooltip: toggledRows + " selected", onClick: onDownloadButtonClick }, [__(FileDownload)]),
         ]);
     }
     const headerelements = (<ReactElement<any>[]>[_.th({ key: "Menu" }, "")])
