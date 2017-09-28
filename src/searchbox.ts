@@ -274,67 +274,75 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
         ];
         let me = this;
         function termToChip(t: Term_t, i: number) {
-            return __(Chip, { key: "T" + i, onRequestDelete: () => me.props.onRemoveTerm(i) }, ((t.label && t.label.length > 0) ? t.label + ":" : "") + (t.valueLabel ? t.valueLabel : t.value));
+            return __(Chip, { key: "T" + i, className: "searchbox-chip", onRequestDelete: () => me.props.onRemoveTerm(i) }, ((t.label && t.label.length > 0) ? t.label + ":" : "") + (t.valueLabel ? t.valueLabel : t.value));
         }
         const filteredSuggestionsList = (this.getAutocompleteList() || [])
             .filter(option => option.toLowerCase().includes((this.state.textValue || "").toLowerCase()));
 
         return _.div({ key: "search-box", className: "search-box" }, [
             ...this.props.searchedQueries.map((t, i) => __(Chip, {
+                className: "searchbox-chip",
                 backgroundColor: Colors.blue100,
                 key: "Q" + i,
                 onRequestDelete: () => this.props.onRemoveQuery(i),
             }, this.withTooltip("[" + t.label + "]", new FinderQuery(t.query).toHumanReadableString()))),
             ...this.props.searchedTerms.map((t, i) => termToChip(t, i)),
-            _.div({ className: "searchbox-input-wrapper" }, [
-                _.input({
-                    value: this.state.textValue,
-                    key: "input", list: "dropdown-list",
-                    id: "searchbox",
-                    placeholder: "Type search term/query or 'Enter' to start searching...",
-                    onChange: this.handleInputChange.bind(this),
-                    onKeyUp: this.handleInputKey.bind(this),
-                    onFocus: () => this.setState({ suggestionsOpened: true }),
-                    ref: input => { this.inputElem = input; },
-                }),
-                __(Paper, {
-                    className: "searchbox-autocomplete",
-                    style: {
-                        display: this.state.suggestionsOpened && filteredSuggestionsList.length > 0 ? "block" : "none",
-                    },
-                }, __(Menu, {
-                    width: "100%",
-                    autoWidth: false,
-                    maxHeight: <any> "80vh",
-                    disableAutoFocus: true,
-                    desktop: true,
-                    listStyle: {
-                        display: "block",
-                    },
-                }, filteredSuggestionsList.map(option => __(MenuItem, {
-                    key: option,
-                    primaryText: option,
-                    onClick: () => {
-                        if (this.inputElem) {
-                            this.inputElem.focus();
-                        }
-                        this.onInputChange(option, true);
-                    },
-                }))
-                )
-                ),
+            _.div({ className: "searchbox-input-area" }, [
+                _.div({ className: "searchbox-input-wrapper" }, [
+                    _.input({
+                        value: this.state.textValue,
+                        key: "input", list: "dropdown-list",
+                        id: "searchbox",
+                        placeholder: "Type search term/query or 'Enter' to start searching...",
+                        onChange: this.handleInputChange.bind(this),
+                        onKeyUp: this.handleInputKey.bind(this),
+                        onFocus: () => this.setState({ suggestionsOpened: true }),
+                        ref: input => { this.inputElem = input; },
+                    }),
+                    __(Paper, {
+                        className: "searchbox-autocomplete",
+                        style: {
+                            display: this.state.suggestionsOpened && filteredSuggestionsList.length > 0 ? "block" : "none",
+                        },
+                    }, __(Menu, {
+                        width: "100%",
+                        autoWidth: false,
+                        maxHeight: <any>"80vh",
+                        disableAutoFocus: true,
+                        desktop: true,
+                        listStyle: {
+                            display: "block",
+                        },
+                    }, filteredSuggestionsList.map(option => __(MenuItem, {
+                        key: option,
+                        primaryText: option,
+                        onClick: () => {
+                            if (this.inputElem) {
+                                this.inputElem.focus();
+                            }
+                            this.onInputChange(option, true);
+                        },
+                    }))
+                    )
+                    ),
+                ]),
+
+                _.div({ className: "searchbox-icon-wrapper" }, [
+
+                    ...(this.props.customButtons || []),
+
+                    _.div({ key: "save-icon", className: "save-icon icon", id: "searchbox_save" }, __(StarIcon, {
+                        color: iconColor,
+                        onClick: () => this.props.onSaveAsQuery(prompt("Save query as") || "query")
+                    })),
+
+                    _.div({ key: "search-icon", className: "search-icon icon", id: "searchbox_search" },
+                        this.props.searching
+                            ? __(CircularProgress, { size: 24 })
+                            : __(SearchIcon, { color: iconColor, onClick: () => this.props.onEnter(null) }),
+                    ),
+                ]),
             ]),
-
-            ...(this.props.customButtons || []),
-
-            _.div({ key: "save-icon", className: "save-icon icon", id: "searchbox_save" }, __(StarIcon, { color: iconColor,
-                onClick: () => this.props.onSaveAsQuery(prompt("Save query as") || "query") })),
-
-            _.div({ key: "search-icon", className: "search-icon icon", id: "searchbox_search" },
-                this.props.searching
-                    ? __(CircularProgress, { size: 24 })
-                    : __(SearchIcon, { color: iconColor, onClick: () => this.props.onEnter(null) }),
-            ),
             __(Dialog, { // Dialog to display the date (range) selector.
                 key: "dialog",
                 actions: dialogButtons,
