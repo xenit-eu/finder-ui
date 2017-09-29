@@ -299,32 +299,16 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                         onFocus: () => this.setState({ suggestionsOpened: true }),
                         ref: input => { this.inputElem = input; },
                     }),
-                    __(Paper, {
-                        className: "searchbox-autocomplete",
-                        style: {
-                            display: this.state.suggestionsOpened && filteredSuggestionsList.length > 0 ? "block" : "none",
-                        },
-                    }, __(Menu, {
-                        width: "100%",
-                        autoWidth: false,
-                        maxHeight: <any>"80vh",
-                        disableAutoFocus: true,
-                        desktop: true,
-                        listStyle: {
-                            display: "block",
-                        },
-                    }, filteredSuggestionsList.map(option => __(MenuItem, {
-                        key: option,
-                        primaryText: option,
-                        onClick: () => {
+                    __(SearchboxAutocomplete, {
+                        open: this.state.suggestionsOpened || false,
+                        suggestions: filteredSuggestionsList,
+                        onSuggestionClick: (suggestion: string) => {
                             if (this.inputElem) {
                                 this.inputElem.focus();
                             }
-                            this.onInputChange(option, true);
-                        },
-                    }))
-                    )
-                    ),
+                            this.onInputChange(suggestion, true);
+                        }
+                    }),
                 ]),
 
                 _.div({ className: "searchbox-icon-wrapper" }, [
@@ -354,6 +338,44 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
             ),
         ]);
 
+    }
+
+}
+
+type Autocomplete_t = {
+    open: boolean,
+    suggestions: string[],
+    onSuggestionClick: (suggestion: string) => void
+};
+
+class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
+
+    constructor(props: Autocomplete_t)  {
+        super(props);
+    }
+
+    public render() {
+        return __(Paper, {
+            className: "searchbox-autocomplete",
+            style: {
+                display: this.props.open && this.props.suggestions.length > 0 ? "block" : "none",
+            },
+        }, __(Menu, {
+            width: "100%",
+            autoWidth: false,
+            maxHeight: <any>"80vh",
+            disableAutoFocus: true,
+            desktop: true,
+            listStyle: {
+                display: "block",
+            },
+        }, this.props.suggestions.map(option => __(MenuItem, {
+            key: option,
+            primaryText: option,
+            onClick: () => this.props.onSuggestionClick(option),
+        }))
+        )
+        );
     }
 
 }
