@@ -436,6 +436,13 @@ class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
                     if (this.inputElem) {
                         this.inputElem.focus();
                     }
+                    const timeo = setInterval(() => {
+                        let elem = document.getElementById('searchbox');
+                        if (elem) {
+                            clearInterval(timeo);
+                            elem.focus();
+                        }
+                    }, 10);
                     this.props.onSuggestionClick(item);
                 },
             }, this.props.suggestions.map((option, i) => __(MenuItem, {
