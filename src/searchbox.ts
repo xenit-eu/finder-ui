@@ -288,28 +288,17 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
             }, this.withTooltip("[" + t.label + "]", new FinderQuery(t.query).toHumanReadableString()))),
             ...this.props.searchedTerms.map((t, i) => termToChip(t, i)),
             _.div({ className: "searchbox-input-area" }, [
-                _.div({ className: "searchbox-input-wrapper" }, [
-                    _.input({
-                        value: this.state.textValue,
-                        key: "input", list: "dropdown-list",
-                        id: "searchbox",
-                        placeholder: "Type search term/query or 'Enter' to start searching...",
-                        onChange: this.handleInputChange.bind(this),
-                        onKeyUp: this.handleInputKey.bind(this),
-                        onFocus: () => this.setState({ suggestionsOpened: true }),
-                        ref: input => { this.inputElem = input; },
-                    }),
-                    __(SearchboxAutocomplete, {
-                        open: this.state.suggestionsOpened || false,
-                        suggestions: filteredSuggestionsList,
-                        onSuggestionClick: (suggestion: string) => {
-                            if (this.inputElem) {
-                                this.inputElem.focus();
-                            }
-                            this.onInputChange(suggestion, true);
-                        }
-                    }),
-                ]),
+                __(SearchboxAutocomplete, {
+                    value: <string> this.state.textValue,
+                    onChange: this.handleInputChange.bind(this),
+                    onKeyUp: this.handleInputKey.bind(this),
+
+                    open: <boolean> this.state.suggestionsOpened,
+                    suggestions: filteredSuggestionsList,
+                    onSuggestionClick: (suggestion: string) => this.onInputChange(suggestion, true),
+                    onDismiss: () => this.setState({suggestionsOpened: false}),
+                    onRequestAutocomplete: () => this.setState({suggestionsOpened: true}),
+                }),
 
                 _.div({ className: "searchbox-icon-wrapper" }, [
 
@@ -343,39 +332,111 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
 }
 
 type Autocomplete_t = {
+    value: string,
+    onChange: (ev: any) => void,
+    onKeyUp: (ev: any) => void,
+    onFocus?: () => void,
+
     open: boolean,
     suggestions: string[],
-    onSuggestionClick: (suggestion: string) => void
+    onSuggestionClick: (suggestion: string) => void,
+    onDismiss: () => void,
+    onRequestAutocomplete: () => void,
 };
 
 class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
-
+    private root: HTMLDivElement;
+    private inputElem: HTMLInputElement;
     constructor(props: Autocomplete_t)  {
         super(props);
+        this.handleOutsideClick = this.handleOutsideClick.bind(this);
+        this.handleKeydown = this.handleKeydown.bind(this);
+    }
+
+    public componentDidMount() {
+        document.addEventListener("keydown", this.handleKeydown);
+        document.addEventListener("mouseup", this.handleOutsideClick);
+        document.addEventListener("touchstart", this.handleOutsideClick);
+    }
+
+    public componentWillUnmount() {
+        document.removeEventListener("keydown", this.handleKeydown);
+        document.removeEventListener("mouseup", this.handleOutsideClick);
+        document.removeEventListener("touchstart", this.handleOutsideClick);
+    }
+
+    private handleOutsideClick(e: any) {
+        if (this.props.open) {
+            if (this.root.contains(e.target) || (e.button && e.button !== 0)) {
+                return;
+            }
+            this.props.onDismiss();
+            e.stopPropagation();
+            e.preventDefault();
+        }
+
+    }
+
+    private handleKeydown(e: any) {
+        if (this.props.open) {
+            switch (e.keyCode) {
+                case 27: // ESC
+                    this.props.onDismiss();
+                    if (this.inputElem) {
+                        this.inputElem.focus();
+                    }
+
+                    e.stopPropagation();
+                    e.preventDefault();
+                    break;
+                default:
+            }
+        }
+
     }
 
     public render() {
-        return __(Paper, {
-            className: "searchbox-autocomplete",
-            style: {
-                display: this.props.open && this.props.suggestions.length > 0 ? "block" : "none",
-            },
-        }, __(Menu, {
-            width: "100%",
-            autoWidth: false,
-            maxHeight: <any>"80vh",
-            disableAutoFocus: true,
-            desktop: true,
-            listStyle: {
-                display: "block",
-            },
-        }, this.props.suggestions.map(option => __(MenuItem, {
-            key: option,
-            primaryText: option,
-            onClick: () => this.props.onSuggestionClick(option),
-        }))
-        )
-        );
+        return _.div({ className: "searchbox-input-wrapper",
+                ref: (ref: any) => { this.root = ref; },
+        }, [
+            _.input({
+                value: this.props.value,
+                key: "input",
+                id: "searchbox",
+                placeholder: "Type search term/query or 'Enter' to start searching...",
+                onChange: this.props.onChange,
+                onKeyUp: this.props.onKeyUp,
+                onFocus: this.props.onFocus || this.props.onRequestAutocomplete,
+                ref: input => { this.inputElem = input; },
+            }),
+            __(Paper, {
+                className: "searchbox-autocomplete",
+                style: {
+                    display: this.props.open && this.props.suggestions.length > 0 ? "block" : "none",
+                },
+            }, __(Menu, {
+                width: "100%",
+                autoWidth: false,
+                maxHeight: <any> "80vh",
+                disableAutoFocus: true,
+                desktop: true,
+                listStyle: {
+                    display: "block",
+                },
+                onChange: (event: any, item: string) => {
+                    if (this.inputElem) {
+                        this.inputElem.focus();
+                    }
+                    this.props.onSuggestionClick(item);
+                },
+            }, this.props.suggestions.map((option, i) => __(MenuItem, {
+                key: i,
+                value: option,
+                primaryText: option,
+            })),
+            ),
+            ),
+        ]);
     }
 
 }
