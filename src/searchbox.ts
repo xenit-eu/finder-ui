@@ -207,25 +207,34 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
 
     public handleInputKey(evt: KeyboardEvent): void {
         const input = <HTMLInputElement> evt.target;
-        if (evt.keyCode === 13) {
-            if (!input.value) { // Enter press with empty input => call onEnter with null.
-                this.props.onEnter(null);
-            } else if (this.state.currentTerm) {
-                const m = reNameValue.exec(input.value);
-                if (m) {
-                    this.addNewTerm({ name: this.state.currentTerm.name, label: this.state.currentTerm.label, value: m[2] });
+        switch (evt.keyCode) {
+            case 13: // ENTER
+                if (!input.value) { // Enter press with empty input => call onEnter with null.
+                    this.props.onEnter(null);
+                } else if (this.state.currentTerm) {
+                    const m = reNameValue.exec(input.value);
+                    if (m) {
+                        this.addNewTerm({ name: this.state.currentTerm.name, label: this.state.currentTerm.label, value: m[2] });
+                        return;
+                    }
+                } else if (this.props.allowValueNoKeyTerm && reNoNameJustValue.test(input.value)) {
+                    this.addNewTerm({ name: ValueNoKeyTerm, label: ValueNoKeyTerm, value: input.value });
                     return;
                 }
-            } else if (this.props.allowValueNoKeyTerm && reNoNameJustValue.test(input.value)) {
-                this.addNewTerm({ name: ValueNoKeyTerm, label: ValueNoKeyTerm, value: input.value });
-                return;
-            }
-        } else if (evt.keyCode === 27) { // Escape key pressed
-            this.setState({suggestionsOpened: false});
-        } else {
-            if (this.props.onInputChanged) {
-                this.props.onInputChanged(input.value);
-            }
+                this.setState({ suggestionsOpened: false });
+                break;
+            case 27: //ESC
+                this.setState({ suggestionsOpened: false });
+                break;
+            case 9: //TAB
+            case 40: //ARROW_DOWN
+                this.setState({ suggestionsOpened: true });
+                break;
+
+            default:
+                if (this.props.onInputChanged) {
+                    this.props.onInputChanged(input.value);
+                }
         }
     }
 
