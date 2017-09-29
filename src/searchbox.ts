@@ -215,13 +215,12 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                     const m = reNameValue.exec(input.value);
                     if (m) {
                         this.addNewTerm({ name: this.state.currentTerm.name, label: this.state.currentTerm.label, value: m[2] });
-                        return;
+                        this.setState({ suggestionsOpened: false });
                     }
                 } else if (this.props.allowValueNoKeyTerm && reNoNameJustValue.test(input.value)) {
                     this.addNewTerm({ name: ValueNoKeyTerm, label: ValueNoKeyTerm, value: input.value });
-                    return;
+                    this.setState({ suggestionsOpened: false });
                 }
-                this.setState({ suggestionsOpened: false });
                 break;
             case 27: //ESC
                 this.setState({ suggestionsOpened: false });
