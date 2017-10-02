@@ -91,6 +91,7 @@ export type SearchBox_t = SearchBox_actions_t & SearchBox_data_t;
 type State_t = {
     textValue?: string,
     suggestionsOpened?: boolean,
+    focusSuggestions?: boolean,
     currentTerm?: SearchableTerm_t|null,
     calendarOpen?: boolean,
     calendarMode?: string,
@@ -118,6 +119,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
             textValue: "",
             currentTerm: null,
             suggestionsOpened: false,
+            focusSuggestions: false,
             calendarOpen: false,
             calendarMode: "single",
         };
@@ -125,12 +127,14 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
 
     public addNewTerm(term: Term_t) {
         this.props.onEnter(term);
-        this.setState({textValue: "", currentTerm: null, suggestionsOpened: false});
+        this.setState({textValue: "", currentTerm: null});
+        this.hideSuggestions();
     }
 
     public addNewQuery(query: Query_t) {
         this.props.onAddQuery(query);
-        this.setState({textValue: "", suggestionsOpened: false});
+        this.setState({textValue: ""});
+        this.hideSuggestions();
     }
 
     public handleInputChange(event: KeyboardEvent) {
@@ -184,7 +188,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                 }
             }
 
-        } 
+        }
     }
 
     private getAutocompleteList(): string[] {
@@ -205,6 +209,11 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
         ];
     }
 
+    private hideSuggestions()
+    {
+        this.setState({ suggestionsOpened: false, focusSuggestions: false });
+    }
+
     public handleInputKey(evt: KeyboardEvent): void {
         const input = <HTMLInputElement> evt.target;
         switch (evt.keyCode) {
@@ -215,21 +224,13 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                     const m = reNameValue.exec(input.value);
                     if (m && !(["on...", "after...", "before...", "between..."].includes(m[2]))) {
                         this.addNewTerm({ name: this.state.currentTerm.name, label: this.state.currentTerm.label, value: m[2] });
-                        this.setState({ suggestionsOpened: false });
+                        this.hideSuggestions();
                     }
                 } else if (this.props.allowValueNoKeyTerm && reNoNameJustValue.test(input.value)) {
                     this.addNewTerm({ name: ValueNoKeyTerm, label: ValueNoKeyTerm, value: input.value });
-                    this.setState({ suggestionsOpened: false });
+                    this.hideSuggestions();
                 }
                 break;
-            case 27: //ESC
-                this.setState({ suggestionsOpened: false });
-                break;
-            case 9: //TAB
-            case 40: //ARROW_DOWN
-                this.setState({ suggestionsOpened: true });
-                break;
-
             default:
                 if (this.props.onInputChanged) {
                     this.props.onInputChanged(input.value);
@@ -300,12 +301,14 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                     value: <string> this.state.textValue,
                     onChange: this.handleInputChange.bind(this),
                     onKeyUp: this.handleInputKey.bind(this),
+                    onFocus: () => this.setState({suggestionsOpened: true, focusSuggestions: false}),
 
                     open: <boolean> this.state.suggestionsOpened,
+                    focusAutocomplete: <boolean> this.state.focusSuggestions,
                     suggestions: filteredSuggestionsList,
                     onSuggestionClick: (suggestion: string) => this.onInputChange(suggestion, true),
-                    onDismiss: () => this.setState({suggestionsOpened: false}),
-                    onRequestAutocomplete: () => this.setState({suggestionsOpened: true}),
+                    onDismiss: () => this.hideSuggestions(),
+                    onRequestAutocomplete: () => this.setState({suggestionsOpened: true, focusSuggestions: true}),
                 }),
 
                 _.div({ className: "searchbox-icon-wrapper" }, [
@@ -343,9 +346,10 @@ type Autocomplete_t = {
     value: string,
     onChange: (ev: any) => void,
     onKeyUp: (ev: any) => void,
-    onFocus?: () => void,
+    onFocus: () => void,
 
     open: boolean,
+    focusAutocomplete: boolean,
     suggestions: string[],
     onSuggestionClick: (suggestion: string) => void,
     onDismiss: () => void,
@@ -355,20 +359,18 @@ type Autocomplete_t = {
 class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
     private root: HTMLDivElement;
     private inputElem: HTMLInputElement;
+    private menu: Menu;
     constructor(props: Autocomplete_t)  {
         super(props);
         this.handleOutsideClick = this.handleOutsideClick.bind(this);
-        this.handleKeydown = this.handleKeydown.bind(this);
     }
 
     public componentDidMount() {
-        document.addEventListener("keydown", this.handleKeydown);
         document.addEventListener("mouseup", this.handleOutsideClick);
         document.addEventListener("touchstart", this.handleOutsideClick);
     }
 
     public componentWillUnmount() {
-        document.removeEventListener("keydown", this.handleKeydown);
         document.removeEventListener("mouseup", this.handleOutsideClick);
         document.removeEventListener("touchstart", this.handleOutsideClick);
     }
@@ -385,22 +387,29 @@ class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
 
     }
 
-    private handleKeydown(e: any) {
-        if (this.props.open) {
-            switch (e.keyCode) {
-                case 27: // ESC
-                    this.props.onDismiss();
-                    if (this.inputElem) {
-                        this.inputElem.focus();
-                    }
-
-                    e.stopPropagation();
-                    e.preventDefault();
-                    break;
-                default:
-            }
+    private handleKeyUp(e: any) {
+        switch (e.keyCode) {
+            case 40: // ARROWKEY_DOWN
+                if (this.menu) {
+                    this.props.onRequestAutocomplete();
+                    this.menu.setFocusIndex(e, 0, true);
+                }
+                break;
+            case 27: //ESC
+                this.handleDismiss();
+                break;
+            default:
         }
 
+        this.props.onKeyUp(e);
+    }
+
+    private handleDismiss()
+    {
+        if (this.props.focusAutocomplete && this.inputElem) {
+            this.inputElem.focus();
+        }
+        this.props.onDismiss();
     }
 
     public render() {
@@ -413,8 +422,8 @@ class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
                 id: "searchbox",
                 placeholder: "Type search term/query or 'Enter' to start searching...",
                 onChange: this.props.onChange,
-                onKeyUp: this.props.onKeyUp,
-                onFocus: this.props.onFocus || this.props.onRequestAutocomplete,
+                onKeyUp: this.handleKeyUp.bind(this),
+                onFocus: this.props.onFocus,
                 ref: input => { this.inputElem = input; },
             }),
             __(Paper, {
@@ -423,11 +432,14 @@ class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
                     display: this.props.open && this.props.suggestions.length > 0 ? "block" : "none",
                 },
             }, __(Menu, {
+                ref: (menu) => { this.menu = menu; },
                 width: "100%",
                 autoWidth: false,
                 maxHeight: <any> "80vh",
-                disableAutoFocus: true,
+                disableAutoFocus: !this.props.focusAutocomplete,
+                initiallyKeyboardFocused: true,
                 desktop: true,
+                onEscKeyDown: this.handleDismiss.bind(this),
                 listStyle: {
                     display: "block",
                 },
