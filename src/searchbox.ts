@@ -213,7 +213,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                     this.props.onEnter(null);
                 } else if (this.state.currentTerm) {
                     const m = reNameValue.exec(input.value);
-                    if (m) {
+                    if (m && !(["on...", "after...", "before...", "between..."].includes(m[2]))) {
                         this.addNewTerm({ name: this.state.currentTerm.name, label: this.state.currentTerm.label, value: m[2] });
                         this.setState({ suggestionsOpened: false });
                     }
