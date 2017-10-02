@@ -38,6 +38,7 @@
   },
   "devDependencies": {
     "awesome-typescript-loader": "2.1.1",
+    "core-js": "^2.5.1",
     "css-loader": "^0.28.4",
     "enzyme": "^2.6.0",
     "enzyme-matchers": "^2.0.0",

@@ -1,3 +1,4 @@
+import "core-js";
 
 import { mount, shallow } from "enzyme";
 import { Component, createElement as __, DOM as _, PropTypes } from "react";
@@ -218,7 +219,7 @@ describe("SearchBox component tests", () => {
         const wrapper = Fixture(__(SearchBox, props));
 
         for (let i = 0; i < props.searchableTerms.length; i++) {
-            expect(wrapper.find("datalist option").at(i).text()).toBe(props.searchableTerms[i].label + ":");
+            expect(wrapper.find("MenuItem").at(i).text()).toBe(props.searchableTerms[i].label + ":");
         }
     });
 
