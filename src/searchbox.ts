@@ -91,6 +91,7 @@ export type SearchBox_t = SearchBox_actions_t & SearchBox_data_t;
 type State_t = {
     textValue?: string,
     suggestionsOpened?: boolean,
+    focusSuggestions?: boolean,
     currentTerm?: SearchableTerm_t|null,
     calendarOpen?: boolean,
     calendarMode?: string,
@@ -118,6 +119,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
             textValue: "",
             currentTerm: null,
             suggestionsOpened: false,
+            focusSuggestions: false,
             calendarOpen: false,
             calendarMode: "single",
         };
@@ -125,12 +127,14 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
 
     public addNewTerm(term: Term_t) {
         this.props.onEnter(term);
-        this.setState({textValue: "", currentTerm: null, suggestionsOpened: false});
+        this.setState({textValue: "", currentTerm: null});
+        this.hideSuggestions();
     }
 
     public addNewQuery(query: Query_t) {
         this.props.onAddQuery(query);
-        this.setState({textValue: "", suggestionsOpened: false});
+        this.setState({textValue: ""});
+        this.hideSuggestions();
     }
 
     public handleInputChange(event: KeyboardEvent) {
@@ -184,7 +188,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                 }
             }
 
-        } 
+        }
     }
 
     private getAutocompleteList(): string[] {
@@ -205,27 +209,32 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
         ];
     }
 
+    private hideSuggestions()
+    {
+        this.setState({ suggestionsOpened: false, focusSuggestions: false });
+    }
+
     public handleInputKey(evt: KeyboardEvent): void {
         const input = <HTMLInputElement> evt.target;
-        if (evt.keyCode === 13) {
-            if (!input.value) { // Enter press with empty input => call onEnter with null.
-                this.props.onEnter(null);
-            } else if (this.state.currentTerm) {
-                const m = reNameValue.exec(input.value);
-                if (m) {
-                    this.addNewTerm({ name: this.state.currentTerm.name, label: this.state.currentTerm.label, value: m[2] });
-                    return;
+        switch (evt.keyCode) {
+            case 13: // ENTER
+                if (!input.value) { // Enter press with empty input => call onEnter with null.
+                    this.props.onEnter(null);
+                } else if (this.state.currentTerm) {
+                    const m = reNameValue.exec(input.value);
+                    if (m && !(["on...", "after...", "before...", "between..."].includes(m[2]))) {
+                        this.addNewTerm({ name: this.state.currentTerm.name, label: this.state.currentTerm.label, value: m[2] });
+                        this.hideSuggestions();
+                    }
+                } else if (this.props.allowValueNoKeyTerm && reNoNameJustValue.test(input.value)) {
+                    this.addNewTerm({ name: ValueNoKeyTerm, label: ValueNoKeyTerm, value: input.value });
+                    this.hideSuggestions();
                 }
-            } else if (this.props.allowValueNoKeyTerm && reNoNameJustValue.test(input.value)) {
-                this.addNewTerm({ name: ValueNoKeyTerm, label: ValueNoKeyTerm, value: input.value });
-                return;
-            }
-        } else if (evt.keyCode === 27) { // Escape key pressed
-            this.setState({suggestionsOpened: false});
-        } else {
-            if (this.props.onInputChanged) {
-                this.props.onInputChanged(input.value);
-            }
+                break;
+            default:
+                if (this.props.onInputChanged) {
+                    this.props.onInputChanged(input.value);
+                }
         }
     }
 
@@ -288,44 +297,19 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
             }, this.withTooltip("[" + t.label + "]", new FinderQuery(t.query).toHumanReadableString()))),
             ...this.props.searchedTerms.map((t, i) => termToChip(t, i)),
             _.div({ className: "searchbox-input-area" }, [
-                _.div({ className: "searchbox-input-wrapper" }, [
-                    _.input({
-                        value: this.state.textValue,
-                        key: "input", list: "dropdown-list",
-                        id: "searchbox",
-                        placeholder: "Type search term/query or 'Enter' to start searching...",
-                        onChange: this.handleInputChange.bind(this),
-                        onKeyUp: this.handleInputKey.bind(this),
-                        onFocus: () => this.setState({ suggestionsOpened: true }),
-                        ref: input => { this.inputElem = input; },
-                    }),
-                    __(Paper, {
-                        className: "searchbox-autocomplete",
-                        style: {
-                            display: this.state.suggestionsOpened && filteredSuggestionsList.length > 0 ? "block" : "none",
-                        },
-                    }, __(Menu, {
-                        width: "100%",
-                        autoWidth: false,
-                        maxHeight: <any>"80vh",
-                        disableAutoFocus: true,
-                        desktop: true,
-                        listStyle: {
-                            display: "block",
-                        },
-                    }, filteredSuggestionsList.map(option => __(MenuItem, {
-                        key: option,
-                        primaryText: option,
-                        onClick: () => {
-                            if (this.inputElem) {
-                                this.inputElem.focus();
-                            }
-                            this.onInputChange(option, true);
-                        },
-                    }))
-                    )
-                    ),
-                ]),
+                __(SearchboxAutocomplete, {
+                    value: <string> this.state.textValue,
+                    onChange: this.handleInputChange.bind(this),
+                    onKeyUp: this.handleInputKey.bind(this),
+                    onFocus: () => this.setState({suggestionsOpened: true, focusSuggestions: false}),
+
+                    open: <boolean> this.state.suggestionsOpened,
+                    focusAutocomplete: <boolean> this.state.focusSuggestions,
+                    suggestions: filteredSuggestionsList,
+                    onSuggestionClick: (suggestion: string) => this.onInputChange(suggestion, true),
+                    onDismiss: () => this.hideSuggestions(),
+                    onRequestAutocomplete: () => this.setState({suggestionsOpened: true, focusSuggestions: true}),
+                }),
 
                 _.div({ className: "searchbox-icon-wrapper" }, [
 
@@ -354,6 +338,132 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
             ),
         ]);
 
+    }
+
+}
+
+type Autocomplete_t = {
+    value: string,
+    onChange: (ev: any) => void,
+    onKeyUp: (ev: any) => void,
+    onFocus: () => void,
+
+    open: boolean,
+    focusAutocomplete: boolean,
+    suggestions: string[],
+    onSuggestionClick: (suggestion: string) => void,
+    onDismiss: () => void,
+    onRequestAutocomplete: () => void,
+};
+
+class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
+    private root: HTMLDivElement;
+    private inputElem: HTMLInputElement;
+    private menu: Menu;
+    constructor(props: Autocomplete_t)  {
+        super(props);
+        this.handleOutsideClick = this.handleOutsideClick.bind(this);
+    }
+
+    public componentDidMount() {
+        document.addEventListener("mouseup", this.handleOutsideClick);
+        document.addEventListener("touchstart", this.handleOutsideClick);
+    }
+
+    public componentWillUnmount() {
+        document.removeEventListener("mouseup", this.handleOutsideClick);
+        document.removeEventListener("touchstart", this.handleOutsideClick);
+    }
+
+    private handleOutsideClick(e: any) {
+        if (this.props.open) {
+            if (this.root.contains(e.target) || (e.button && e.button !== 0)) {
+                return;
+            }
+            this.props.onDismiss();
+            e.stopPropagation();
+            e.preventDefault();
+        }
+
+    }
+
+    private handleKeyUp(e: any) {
+        switch (e.keyCode) {
+            case 40: // ARROWKEY_DOWN
+                if (this.menu) {
+                    this.props.onRequestAutocomplete();
+                    this.menu.setFocusIndex(e, 0, true);
+                }
+                break;
+            case 27: //ESC
+                this.handleDismiss();
+                break;
+            default:
+        }
+
+        this.props.onKeyUp(e);
+    }
+
+    private handleDismiss()
+    {
+        if (this.props.focusAutocomplete && this.inputElem) {
+            this.inputElem.focus();
+        }
+        this.props.onDismiss();
+    }
+
+    public render() {
+        return _.div({ className: "searchbox-input-wrapper",
+                ref: (ref: any) => { this.root = ref; },
+        }, [
+            _.input({
+                value: this.props.value,
+                key: "input",
+                id: "searchbox",
+                placeholder: "Type search term/query or 'Enter' to start searching...",
+                onChange: this.props.onChange,
+                onKeyUp: this.handleKeyUp.bind(this),
+                onFocus: this.props.onFocus,
+                ref: input => { this.inputElem = input; },
+            }),
+            __(Paper, {
+                className: "searchbox-autocomplete",
+                style: {
+                    display: this.props.open && this.props.suggestions.length > 0 ? "block" : "none",
+                },
+            }, __(Menu, {
+                ref: (menu) => { this.menu = menu; },
+                width: "100%",
+                autoWidth: false,
+                maxHeight: <any> "80vh",
+                disableAutoFocus: !this.props.focusAutocomplete,
+                initiallyKeyboardFocused: true,
+                desktop: true,
+                onEscKeyDown: this.handleDismiss.bind(this),
+                listStyle: {
+                    display: "block",
+                },
+                onChange: (event: any, item: string) => {
+                    if (this.inputElem) {
+                        this.inputElem.focus();
+                    }
+                    const timeo = setInterval(() => {
+                        let elem = document.getElementById('searchbox');
+                        if (elem) {
+                            clearInterval(timeo);
+                            elem.focus();
+                        }
+                    }, 10);
+                    this.props.onSuggestionClick(item);
+                },
+            }, this.props.suggestions.map((option, i) => __(MenuItem, {
+                key: i,
+                value: option,
+                primaryText: option,
+            })),
+            ),
+            ),
+        ]);
     }
 
 }
