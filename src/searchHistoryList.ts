@@ -10,7 +10,7 @@ export function GetPreviousSearches(
     translate: any,
     previousSearches: any[],
     doSearch: (query: any) => void) {
-    return previousSearches.map((previousSearch:any, i:any) => {
+    return previousSearches.map((previousSearch: any, i: any) => {
         let label = previousSearch.GetDescriptionText(translate);
         let ret = __(ListItem, {
             onClick: () => {

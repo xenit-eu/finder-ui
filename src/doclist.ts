@@ -103,7 +103,6 @@ export type DocList_t_Actions = {
 };
 export type DocList_t = DocList_t_Data & DocList_t_Actions;
 
-
 function SortableTh(c: Doclist_Column_t, onSortColumnSelected: OnSortColumnSelected_t): ReactElement<any> {
     let iconName: string = "sort";
     let nextSort: SortDirection_t = SortDirection_t.NONE;
@@ -156,7 +155,7 @@ function SortableTh(c: Doclist_Column_t, onSortColumnSelected: OnSortColumnSelec
 
 export function DocList({  className, columns, data, onDownloadButtonClick, onMenuSelected, onPageSelected, onRowSelected, onRowToggled,
     onSortColumnSelected, pager, rowMenu, rowStyle, rowToggled, togglable, columnsPicker, documentNotFoundText, toggledRows}: DocList_t): ReactElement<any> {
-    let downloadComponents:ReactNode|false = false;
+    let downloadComponents: ReactNode | false = false;
     if (togglable) {
         const allRows = data.map((_: any, key: number) => key);
         const rowToggleState: boolean[] = data.map((_: any, key: number) => rowToggled(key));
@@ -168,21 +167,21 @@ export function DocList({  className, columns, data, onDownloadButtonClick, onMe
         downloadComponents = _.div({ style: { display: "flex", flexDirection: "row", alignItems: "center" } }, [
             !allRowsToggled && !noRowsToggled ?
                 __(Checkbox, {
-                    style: style,
+                    style,
                     checked: true,
                     checkedIcon: __(ToggleIndeterminateCheckBox),
                     onCheck: () => data.forEach((row, i) => onRowToggled(true, i, row)),
                 }) :
                 __(Checkbox, {
-                    style: style,
+                    style,
                     checked: allRowsToggled && !noRowsToggled,
                     onCheck: (ev: any, checked: boolean) => data.forEach((row, i) => onRowToggled(checked, i, row)),
                 }),
-            __(IconButton, { disabled: toggledRows == 0, tooltip: toggledRows + " selected", onClick: onDownloadButtonClick }, [__(FileDownload)]),
+            __(IconButton, { disabled: toggledRows === 0, tooltip: toggledRows + " selected", onClick: onDownloadButtonClick }, [__(FileDownload)]),
         ]);
     }
-    const headerelements = (<ReactElement<any>[]>[_.th({ key: "Menu" }, "")])
-        .concat(togglable ? [_.th({ key: "toggle", align: "center", width: "1px"}, downloadComponents)] : [])
+    const headerelements = (<ReactElement<any>[]> [_.th({ key: "Menu" }, "")])
+        .concat(togglable ? [_.th({ key: "toggle", align: "center", width: "1px" }, downloadComponents)] : [])
         .concat(columns.map(c => SortableTh(c, onSortColumnSelected)));
 
     const header = _.thead({ key: "header" }, [_.tr({ key: "head" }, headerelements)]);
@@ -190,13 +189,18 @@ export function DocList({  className, columns, data, onDownloadButtonClick, onMe
     const singleRowElements = (row: Row_t, i: number) =>
         [_.td({ key: "_menu" }, __(RowMenu, { rowIndex: i, menuItems: rowMenu(i), onMenuSelected }))]
             .concat((togglable ? [_.td({ key: "toggle", align: "center" }, __(Checkbox, { checked: rowToggled(i), onCheck: (ev: any, checked: boolean) => onRowToggled(checked, i, row) }))] : []))
-            .concat(columns.map(col => _.td({ key: col.name + col.label, className: "doclist-col-"+col.name, onClick: () => onRowSelected(i) }, col.format ? col.format(row[col.name], row, i) : row[col.name])));
+            .concat(columns.map(col => _.td(
+                {
+                    key: col.name + col.label, className: "doclist-col-" + col.name,
+                    onClick: () => onRowSelected(i),
+                },
+                col.format ? col.format(row[col.name], row, i) : row[col.name])));
 
     const bodycontent = data.map((row, i) => _.tr({ style: style(i), key: i }, singleRowElements(row, i)));
     const body = _.tbody({ key: "body" }, bodycontent);
     const tableProps = { key: "table", className: className || "table table-hover table-striped table-mc-purple table-condensed", id: "doclist-table" };
-    const table = _.div({ className: "table-scroll-wrapper"}, _.table(tableProps, [header, body])); // table
+    const table = _.div({ className: "table-scroll-wrapper" }, _.table(tableProps, [header, body])); // table
     const pagerComponent = __(Pager, { totalItems: pager.totalItems, pageSize: pager.pageSize, selected: pager.selected, pageSelected: onPageSelected });
-    const emptyDocList = _.div({ className: "doclist-message"}, [documentNotFoundText]);
+    const emptyDocList = _.div({ className: "doclist-message" }, [documentNotFoundText]);
     return _.div({ className: "doclist" }, pager.totalItems > 0 ? [_.div({}, [columnsPicker, pagerComponent]), table] : [emptyDocList]);
 }

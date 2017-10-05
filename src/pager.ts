@@ -40,7 +40,6 @@ function ItemsOnThisPage({selected, pageSize, totalItems}: Pager_t): ReactElemen
     return _.span({ className: "items-on-this-page" }, [_.b({}, [currentStart]), "-", _.b({}, [currentEnd]), " of ", _.b({}, totalItems)]);
 }
 
-
 /*
 
 const FirstPageLink = ({isActive, onClick}) => (
@@ -51,9 +50,9 @@ const LastPageLink = ({isActive, onClick}) => (
   __(FlatButton, { style: flatButtonStyle, icon: __(NavigationLastPage, null), onClick: onClick })
 );
 */
-function createZeroArr(size: number){
-    var foo:number[] = [];
-    for (var i = 1; i <= size; i++) {
+function createZeroArr(size: number) {
+    let foo: number[] = [];
+    for (let i = 1; i <= size; i++) {
         foo.push(0);
     }
     return foo;

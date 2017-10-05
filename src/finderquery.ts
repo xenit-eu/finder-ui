@@ -103,7 +103,7 @@ export class FinderQuery {
                         case 0:
                             break;
                         case 1:
-                            result.and.push(orChunks[key][0])
+                            result.and.push(orChunks[key][0]);
                             break;
                         default:
                             result.and.push({ or: orChunks[key] });

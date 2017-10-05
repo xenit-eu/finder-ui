@@ -1,3 +1,4 @@
+import { Menu, MenuItem, Paper, Popover } from "material-ui";
 import Chip from "material-ui/Chip";
 import CircularProgress from "material-ui/CircularProgress";
 import Dialog from "material-ui/Dialog";
@@ -17,7 +18,6 @@ import { Component, createElement as __, DOM as _, KeyboardEvent, ReactElement }
 
 import "flatpickr/dist/themes/material_blue.css";
 import "./searchbox.less";
-import { Paper, Popover, Menu, MenuItem } from "material-ui";
 
 const DAY: number = 24 * 3600 * 1000;
 const MIN_DATE: Date = new Date(1970, 1, 1);
@@ -92,7 +92,7 @@ type State_t = {
     textValue?: string,
     suggestionsOpened?: boolean,
     focusSuggestions?: boolean,
-    currentTerm?: SearchableTerm_t|null,
+    currentTerm?: SearchableTerm_t | null,
     calendarOpen?: boolean,
     calendarMode?: string,
 };
@@ -110,7 +110,7 @@ type State_t = {
 
 export class SearchBox extends Component<SearchBox_t, State_t> {
 
-    private inputElem: HTMLInputElement|null;
+    private inputElem: HTMLInputElement | null;
     private selectedDates: Date[] = [];
 
     constructor(props: SearchBox_t) {
@@ -127,25 +127,25 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
 
     public addNewTerm(term: Term_t) {
         this.props.onEnter(term);
-        this.setState({textValue: "", currentTerm: null});
+        this.setState({ textValue: "", currentTerm: null });
         this.hideSuggestions();
     }
 
     public addNewQuery(query: Query_t) {
         this.props.onAddQuery(query);
-        this.setState({textValue: ""});
+        this.setState({ textValue: "" });
         this.hideSuggestions();
     }
 
     public handleInputChange(event: KeyboardEvent) {
-        const input: HTMLInputElement = <HTMLInputElement> event.target;
+        const input: HTMLInputElement = < HTMLInputElement > event.target;
         const val = input.value;
         this.onInputChange(val, false);
     }
 
     public onInputChange(val: string, isAutocompleteClick: boolean) {
         let currentTerm = this.props.searchableTerms.filter(t => new RegExp("^\\s*" + t.label + "\\s*\\:", "i").test(val))[0];
-        this.setState({textValue: val, currentTerm: currentTerm, suggestionsOpened: true});
+        this.setState({ textValue: val, currentTerm, suggestionsOpened: true });
 
         if (val.endsWith(":on...") || val.endsWith(":after...") || val.endsWith(":before...")) {
             this.setState({ calendarOpen: true, calendarMode: "single" });
@@ -194,9 +194,9 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
     private getAutocompleteList(): string[] {
         if (this.state.currentTerm) {
             const currentTerm = this.state.currentTerm;
-            switch(currentTerm.type) {
+            switch (currentTerm.type) {
                 case "date":
-                    return ["today", "last week", "last month", "on...", "after...", "before...", "between..."].map(t => currentTerm.label + ":" + t); 
+                    return ["today", "last week", "last month", "on...", "after...", "before...", "between..."].map(t => currentTerm.label + ":" + t);
                 case "enum":
                     return currentTerm.values.map(t => currentTerm.label + ":" + t);
                 default:
@@ -209,13 +209,12 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
         ];
     }
 
-    private hideSuggestions()
-    {
+    private hideSuggestions() {
         this.setState({ suggestionsOpened: false, focusSuggestions: false });
     }
 
     public handleInputKey(evt: KeyboardEvent): void {
-        const input = <HTMLInputElement> evt.target;
+        const input = <HTMLInputElement>evt.target;
         switch (evt.keyCode) {
             case 13: // ENTER
                 if (!input.value) { // Enter press with empty input => call onEnter with null.
@@ -283,7 +282,10 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
         ];
         let me = this;
         function termToChip(t: Term_t, i: number) {
-            return __(Chip, { key: "T" + i, className: "searchbox-chip", onRequestDelete: () => me.props.onRemoveTerm(i) }, ((t.label && t.label.length > 0) ? t.label + ":" : "") + (t.valueLabel ? t.valueLabel : t.value));
+            return __(
+                Chip,
+                { key: "T" + i, className: "searchbox-chip", onRequestDelete: () => me.props.onRemoveTerm(i) },
+                ((t.label && t.label.length > 0) ? t.label + ":" : "") + (t.valueLabel ? t.valueLabel : t.value));
         }
         const filteredSuggestionsList = (this.getAutocompleteList() || [])
             .filter(option => option.toLowerCase().includes((this.state.textValue || "").toLowerCase()));
@@ -298,17 +300,17 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
             ...this.props.searchedTerms.map((t, i) => termToChip(t, i)),
             _.div({ className: "searchbox-input-area" }, [
                 __(SearchboxAutocomplete, {
-                    value: <string> this.state.textValue,
+                    value: <string>this.state.textValue,
                     onChange: this.handleInputChange.bind(this),
                     onKeyUp: this.handleInputKey.bind(this),
-                    onFocus: () => this.setState({suggestionsOpened: true, focusSuggestions: false}),
+                    onFocus: () => this.setState({ suggestionsOpened: true, focusSuggestions: false }),
 
-                    open: <boolean> this.state.suggestionsOpened,
-                    focusAutocomplete: <boolean> this.state.focusSuggestions,
+                    open: <boolean>this.state.suggestionsOpened,
+                    focusAutocomplete: <boolean>this.state.focusSuggestions,
                     suggestions: filteredSuggestionsList,
                     onSuggestionClick: (suggestion: string) => this.onInputChange(suggestion, true),
                     onDismiss: () => this.hideSuggestions(),
-                    onRequestAutocomplete: () => this.setState({suggestionsOpened: true, focusSuggestions: true}),
+                    onRequestAutocomplete: () => this.setState({ suggestionsOpened: true, focusSuggestions: true }),
                 }),
 
                 _.div({ className: "searchbox-icon-wrapper" }, [
@@ -317,7 +319,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
 
                     _.div({ key: "save-icon", className: "save-icon icon", id: "searchbox_save" }, __(StarIcon, {
                         color: iconColor,
-                        onClick: () => this.props.onSaveAsQuery(prompt("Save query as") || "query")
+                        onClick: () => this.props.onSaveAsQuery(prompt("Save query as") || "query"),
                     })),
 
                     _.div({ key: "search-icon", className: "search-icon icon", id: "searchbox_search" },
@@ -360,7 +362,7 @@ class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
     private root: HTMLDivElement;
     private inputElem: HTMLInputElement;
     private menu: Menu;
-    constructor(props: Autocomplete_t)  {
+    constructor(props: Autocomplete_t) {
         super(props);
         this.handleOutsideClick = this.handleOutsideClick.bind(this);
     }
@@ -392,7 +394,7 @@ class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
             case 40: // ARROWKEY_DOWN
                 if (this.menu) {
                     this.props.onRequestAutocomplete();
-                    (<any> this.menu).setFocusIndex(e, 0, true); //TODO @Lars are sure this worksies?
+                    (<any>this.menu).setFocusIndex(e, 0, true);
                 }
                 break;
             case 27: //ESC
@@ -404,8 +406,7 @@ class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
         this.props.onKeyUp(e);
     }
 
-    private handleDismiss()
-    {
+    private handleDismiss() {
         if (this.props.focusAutocomplete && this.inputElem) {
             this.inputElem.focus();
         }
@@ -413,57 +414,57 @@ class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
     }
 
     public render() {
-        return _.div({ className: "searchbox-input-wrapper",
-                ref: (ref: any) => { this.root = ref; },
+        return _.div({
+            className: "searchbox-input-wrapper",
+            ref: (ref: any) => { this.root = ref; },
         }, [
-            _.input({
-                value: this.props.value,
-                key: "input",
-                id: "searchbox",
-                placeholder: "Type search term/query or 'Enter' to start searching...",
-                onChange: this.props.onChange,
-                onKeyUp: this.handleKeyUp.bind(this),
-                onFocus: this.props.onFocus,
-                ref: input => { this.inputElem = input; },
-            }),
-            __(Paper, {
-                className: "searchbox-autocomplete",
-                style: {
-                    display: this.props.open && this.props.suggestions.length > 0 ? "block" : "none",
-                },
-            }, __(Menu, {
-                ref: (menu) => { this.menu = menu; },
-                width: "100%",
-                autoWidth: false,
-                maxHeight: <any> "80vh",
-                disableAutoFocus: !this.props.focusAutocomplete,
-                initiallyKeyboardFocused: true,
-                desktop: true,
-                onEscKeyDown: this.handleDismiss.bind(this),
-                listStyle: {
-                    display: "block",
-                },
-                onChange: (event: any, item: string) => {
-                    if (this.inputElem) {
-                        this.inputElem.focus();
-                    }
-                    const timeo = setInterval(() => {
-                        let elem = document.getElementById('searchbox');
-                        if (elem) {
-                            clearInterval(timeo);
-                            elem.focus();
+                _.input({
+                    value: this.props.value,
+                    key: "input",
+                    id: "searchbox",
+                    placeholder: "Type search term/query or 'Enter' to start searching...",
+                    onChange: this.props.onChange,
+                    onKeyUp: this.handleKeyUp.bind(this),
+                    onFocus: this.props.onFocus,
+                    ref: input => { this.inputElem = input; },
+                }),
+                __(Paper, {
+                    className: "searchbox-autocomplete",
+                    style: {
+                        display: this.props.open && this.props.suggestions.length > 0 ? "block" : "none",
+                    },
+                }, __(Menu, {
+                    ref: (menu) => { this.menu = menu; },
+                    width: "100%",
+                    autoWidth: false,
+                    maxHeight: <any>"80vh",
+                    disableAutoFocus: !this.props.focusAutocomplete,
+                    initiallyKeyboardFocused: true,
+                    desktop: true,
+                    onEscKeyDown: this.handleDismiss.bind(this),
+                    listStyle: {
+                        display: "block",
+                    },
+                    onChange: (event: any, item: string) => {
+                        if (this.inputElem) {
+                            this.inputElem.focus();
                         }
-                    }, 10);
-                    this.props.onSuggestionClick(item);
-                },
-            }, this.props.suggestions.map((option, i) => __(MenuItem, {
-                key: i,
-                value: option,
-                primaryText: option,
-            })),
-            ),
-            ),
-        ]);
+                        const timeo = setInterval(() => {
+                            let elem = document.getElementById("searchbox");
+                            if (elem) {
+                                clearInterval(timeo);
+                                elem.focus();
+                            }
+                        }, 10);
+                        this.props.onSuggestionClick(item);
+                    },
+                }, this.props.suggestions.map((option, i) => __(MenuItem, {
+                    key: i,
+                    value: option,
+                    primaryText: option,
+                })),
+                    ),
+                ),
+            ]);
     }
-
 }

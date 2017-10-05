@@ -9,12 +9,12 @@ node {
 
     try {
         stage 'Node setup + npm install + TESTS'
-        sh "./gradlew npmInstall npm_run_typings npm_run_lint npm_test --continue -i"
+        sh "./gradlew npmInstall npm_run_typings npm_run_lint npm_test --stacktrace --debug --continue -i"
 
     } catch (err) {
         currentBuild.result = "FAILED"
+        echo err
     } finally {
         step([$class: "JUnitResultArchiver", testResults: "**/test-results/**/*.xml"])
     }
-
 }

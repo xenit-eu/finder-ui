@@ -8,10 +8,14 @@
         "arrow-parens": false,
         "no-empty": false,
         "type-name": true,
-        "comment-format" : [false],
+        "comment-format": [false],
         "max-classes-per-file": [false],
         "member-ordering": [
             false
-        ]
+        ],
+        "array-type": false,
+        "whitespace": {
+            "options": ["check-branch", "check-decl", "check-operator", "check-module", "check-separator", "check-rest-spread", "check-type",  "check-type-operator", "check-preblock"]
+        }
     }
 }
