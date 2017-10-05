@@ -23,6 +23,7 @@ describe("DocList component tests", () => {
     it("should not display table if no data passed in props", () => {
 
         const props: DocList_t = {
+            toggledRows: 0,
             columns: [
 
             ],
@@ -34,7 +35,7 @@ describe("DocList component tests", () => {
                 pageSelected: (page: number) => { },
             },
             rowMenu: (i: number) => { return []; },
-            rowToggled: (i: number): boolean  => { return false; },
+            rowToggled: (i: number): boolean => { return false; },
             className: "",
             rowStyle: (i: number) => { },
             togglable: false,
@@ -68,6 +69,7 @@ describe("DocList component tests", () => {
                 sortable: false,
                 sortDirection: SortDirection_t.ASC,
             }],
+            toggledRows: 0,
             data: [
                 { A: "valueA_0" },
                 { A: "valueA_1" },
@@ -79,7 +81,7 @@ describe("DocList component tests", () => {
                 pageSelected: (page: number) => { },
             },
             rowMenu: (i: number) => { return []; },
-            rowToggled: (i: number): boolean  => { return false; },
+            rowToggled: (i: number): boolean => { return false; },
             className: "",
             rowStyle: (i: number) => { },
             togglable: false,
@@ -129,10 +131,11 @@ describe("DocList component tests", () => {
                 pageSelected: (page: number) => { },
             },
             rowMenu: (i: number) => { return []; },
-            rowToggled: (i: number): boolean  => { return false; },
+            rowToggled: (i: number): boolean => { return false; },
             className: "",
             rowStyle: (i: number) => { },
             togglable: false,
+            toggledRows: 0,
 
             onPageSelected: (pageIndex: number) => { },
             onRowSelected: (rowIndex: number) => { },
@@ -174,10 +177,11 @@ describe("DocList component tests", () => {
                 selected: 1,
                 pageSelected: (page: number) => { },
             },
-            rowMenu: (i: number): MenuItem_t[]  => {
+            rowMenu: (i: number): MenuItem_t[] => {
                 return [{ key: "aaa", label: "AAA", disabled: false }, { key: "bbb", label: "BBB", disabled: false }, { key: "ccc", label: "CCC", disabled: false }];
             },
-            rowToggled: (i: number): boolean  => { return false; },
+            toggledRows: 0,
+            rowToggled: (i: number): boolean => { return false; },
             className: "",
             rowStyle: (i: number) => { },
             togglable: false,

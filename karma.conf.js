@@ -62,7 +62,20 @@ module.exports = function (config) {
                 'react/addons': true,
                 'react/lib/ExecutionEnvironment': true,
                 'react/lib/ReactContext': true
-            }
+            },
+            plugins: [
+                // ...
+                function () {
+                    this.plugin("done", function (stats) {
+                        if (stats.compilation.errors && stats.compilation.errors.length) {
+                            console.log(stats.compilation.errors);
+                            process.exit(1);
+                        }
+                        // ...
+                    });
+                }
+                // ...
+            ]
         },
 
     });

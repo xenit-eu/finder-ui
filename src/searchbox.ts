@@ -392,7 +392,7 @@ class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
             case 40: // ARROWKEY_DOWN
                 if (this.menu) {
                     this.props.onRequestAutocomplete();
-                    this.menu.setFocusIndex(e, 0, true);
+                    (<any> this.menu).setFocusIndex(e, 0, true); //TODO @Lars are sure this worksies?
                 }
                 break;
             case 27: //ESC

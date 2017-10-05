@@ -10,7 +10,8 @@
     "tsinst": "typings search react-filter-box",
     "test": "karma start ./karma.conf.js --single-run",
     "test:watch": "karma start ./karma.conf.js",
-    "lint": "tslint -c ./tslint.json 'src/**/*.ts'"
+    "lint": "tslint -c ./tslint.json 'src/**/*.ts'",
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
@@ -43,6 +44,7 @@
     "enzyme": "^2.6.0",
     "enzyme-matchers": "^2.0.0",
     "extract-text-webpack-plugin": "^3.0.0",
+    "html-webpack-plugin": "^2.30.1",
     "ignore-loader": "^0.1.2",
     "jasmine": "^2.5.2",
     "jasmine-core": "^2.4.1",
