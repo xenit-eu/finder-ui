@@ -11,6 +11,7 @@ export type OnFacetSelected_t = (name: string, label: string, value: string, val
 export type Facet_t = {
     name: string,
     label: string,
+    secondaryLabel?: string,
     values: Array<{
         count: number,
         label: string,
@@ -27,6 +28,7 @@ function FacetSub({facet, onFacetSelected}: FacetSub_t): ReactElement<any> {
     return __(ListItem, {
         key: facet.name,
         primaryText: facet.label,
+        secondaryText: facet.secondaryLabel,
         initiallyOpen: false,
         primaryTogglesNestedList: true,
         nestedItems: facet.values.map(c =>
