@@ -1,9 +1,6 @@
 import { Component, createElement as __, DOM as _, ReactElement } from "react";
 import "./resizer.less";
 
-declare var require: (moduleId: string) => any;
-const ReactResizer = require("react-resizer");
-
 type State_t = {
     width: number,
     displayContent: boolean,
@@ -14,6 +11,7 @@ type Resizable_t = {
     width?: number,
     minWidth?: number,
     maxWidth?: number,
+    ReactResizer: any,
     children?: ReactElement<any>[],
 
     onResize?: (width: number) => boolean,
@@ -66,10 +64,11 @@ export class Resizer extends Component<Resizable_t, State_t> {
             flexBase: this.state.width,
         };
         const widthElem = _.span({}, [_.i({className: "fa fa-arrow-left"}), " " + this.state.width + "px ", _.i({className: "fa fa-arrow-right"})]);
-        return __(ReactResizer, {
+        const children = this.state.displayContent ? this.props.children : [_.div({ key: "placeholder", className: "place-holder" }, widthElem)];
+        return __(this.props.ReactResizer, {
             onResize: this.onResize,
             onResizeStart: this.onResizeStart,
             onResizeEnd: this.onResizeEnd,
-        }, _.div({ className: "resizable", style: resizableStyle }, this.state.displayContent ? this.props.children : [  _.div({key: "placeholder", className: "place-holder"}, widthElem) ]));
+        }, _.div({ className: "resizable", style: resizableStyle }, <any>children));
     }
 }
