@@ -22,7 +22,7 @@ export class Resizer extends Component<Resizable_t, State_t> {
     constructor(props: Resizable_t) {
         super(props);
         this.state = {
-            width: props.width || props.initialWidth,
+            width: props.width === undefined ? props.initialWidth : props.width,
             displayContent: true,
         };
         this.onResize = this.onResize.bind(this);
@@ -39,12 +39,12 @@ export class Resizer extends Component<Resizable_t, State_t> {
     private onResize(diff: number) {
         // avoid to resize more that what's allowed by the available screen width (avoid horizontal scroll bar)
         const newWidth = this.state.width + diff;
-        const ok = (newWidth >= (this.props.minWidth || 0)) && (newWidth <= (this.props.maxWidth || Infinity));
-        if (ok) {
-            const onResize = this.props.onResize ? this.props.onResize : (x: number) => true;
-            if(onResize(newWidth)) {
+        const minWidth = this.props.minWidth || 0;
+        const maxWidth = this.props.maxWidth === undefined ? Infinity : this.props.maxWidth;
+        const onResize = this.props.onResize ? this.props.onResize : (x: number) => true;
+        const ok = (newWidth >= minWidth) && (newWidth <= maxWidth);
+        if (ok && onResize(newWidth)) {
                 this.setState({ width: newWidth } as State_t);
-            }
         }
     }
 
