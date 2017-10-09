@@ -44,7 +44,11 @@ export class Resizer extends Component<Resizable_t, State_t> {
         const onResize = this.props.onResize ? this.props.onResize : (x: number) => true;
         const ok = (newWidth >= minWidth) && (newWidth <= maxWidth);
         if (ok && onResize(newWidth)) {
-                this.setState({ width: newWidth } as State_t);
+            this.setState({ width: newWidth } as State_t);
+        }
+        if(!ok) {
+            const clampedWidth = Math.min(Math.max(newWidth, minWidth), maxWidth);
+            this.setState({width: clampedWidth} as State_t);
         }
     }
 
