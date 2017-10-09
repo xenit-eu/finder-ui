@@ -66,9 +66,11 @@ export type Term_t = {
 };
 
 export const ValueNoKeyTerm = "ValueNoKeyTerm";
+export const PLACEHOLDERTRANSLATION = "PLACEHOLDERTRANSLATION";
+export const PLACEHOLDERDEFAULT = "Type search term/query or 'Enter' to start searching...";
 
 export type SearchBox_data_t = {
-    searching: boolean,                             // flag indicating that search process is busy => activate spinnger !
+    searching: boolean,                             // flag indicating that search process is busy => activate spinner !
     searchedTerms: Term_t[],                        // list of terms requested for search.
     searchableTerms: SearchableTerm_t[],            // suggestions to be proposed on the drop-down list.
     autocompleteTerms?: Term_t[],
@@ -76,7 +78,7 @@ export type SearchBox_data_t = {
     searchableQueries: Query_t[],                   // suggestions queries.
     customButtons?: Array<ReactElement<any>>,              // list of custom buttons to add besides search and save icons
     allowValueNoKeyTerm?: boolean,
-
+    translations?: any,
 };
 
 export type SearchBox_actions_t = {
@@ -138,7 +140,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
     }
 
     public handleInputChange(event: KeyboardEvent) {
-        const input: HTMLInputElement = < HTMLInputElement > event.target;
+        const input: HTMLInputElement = <HTMLInputElement>event.target;
         const val = input.value;
         this.onInputChange(val, false);
     }
@@ -311,6 +313,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                     onSuggestionClick: (suggestion: string) => this.onInputChange(suggestion, true),
                     onDismiss: () => this.hideSuggestions(),
                     onRequestAutocomplete: () => this.setState({ suggestionsOpened: true, focusSuggestions: true }),
+                    translations: this.props.translations,
                 }),
 
                 _.div({ className: "searchbox-icon-wrapper" }, [
@@ -349,7 +352,7 @@ type Autocomplete_t = {
     onChange: (ev: any) => void,
     onKeyUp: (ev: any) => void,
     onFocus: () => void,
-
+    translations?: any,
     open: boolean,
     focusAutocomplete: boolean,
     suggestions: string[],
@@ -412,7 +415,10 @@ class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
         }
         this.props.onDismiss();
     }
-
+    private getPlaceHolder() {
+        const translated: string | undefined = this.props.translations ? this.props.translations[PLACEHOLDERTRANSLATION] : undefined;
+        return translated ? translated : PLACEHOLDERDEFAULT;
+    }
     public render() {
         return _.div({
             className: "searchbox-input-wrapper",
@@ -422,7 +428,7 @@ class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
                     value: this.props.value,
                     key: "input",
                     id: "searchbox",
-                    placeholder: "Type search term/query or 'Enter' to start searching...",
+                    placeholder: this.getPlaceHolder(),
                     onChange: this.props.onChange,
                     onKeyUp: this.handleKeyUp.bind(this),
                     onFocus: this.props.onFocus,
