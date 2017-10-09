@@ -31,7 +31,7 @@ export class Resizer extends Component<Resizable_t, State_t> {
     }
 
     public componentWillReceiveProps(newProps: Resizable_t) {
-        if(newProps.width && newProps.width !== this.state.width) {
+        if(newProps.width !== undefined && newProps.width !== this.state.width) {
             this.setState({ width: newProps.width } as State_t);
         }
     }
