@@ -16,7 +16,7 @@ type Resizable_t = {
     maxWidth?: number,
     children?: ReactElement<any>[],
 
-    onResize?: (width: number) => void,
+    onResize?: (width: number) => boolean,
 };
 
 export class Resizer extends Component<Resizable_t, State_t> {
@@ -32,14 +32,20 @@ export class Resizer extends Component<Resizable_t, State_t> {
         this.onResizeEnd = this.onResizeEnd.bind(this);
     }
 
+    public componentWillReceiveProps(newProps: Resizable_t) {
+        if(newProps.width && newProps.width !== this.state.width) {
+            this.setState({ width: newProps.width } as State_t);
+        }
+    }
+
     private onResize(diff: number) {
         // avoid to resize more that what's allowed by the available screen width (avoid horizontal scroll bar)
         const newWidth = this.state.width + diff;
         const ok = (newWidth >= (this.props.minWidth || 0)) && (newWidth <= (this.props.maxWidth || Infinity));
         if (ok) {
-            this.setState({ width: newWidth } as State_t);
-            if(this.props.onResize) {
-                this.props.onResize(newWidth);
+            const onResize = this.props.onResize ? this.props.onResize : (x: number) => true;
+            if(onResize(newWidth)) {
+                this.setState({ width: newWidth } as State_t);
             }
         }
     }
