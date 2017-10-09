@@ -20,3 +20,4 @@ export * from "./advancedsearchbox";
 export * from "./columnspicker";
 export * from "./finderquery";
 export * from "./AlfredTheming";
+export * from "./resizer";

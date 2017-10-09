@@ -1,0 +1,42 @@
+.resizer {
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    /*height: 100%;*/
+    .handle {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 8px;
+        height: 100%;
+        background: grey;
+    }
+    .handle:hover {
+        cursor: col-resize;
+    }
+    .resizable {
+        height: 100%;
+        padding-left: 8px;
+        flex-grow: 1;
+        overflow: hidden;
+        > div {
+            height: 100%;
+            width: 100%;
+        }
+
+        .place-holder {
+            height: 100%;
+            width: 100%;
+            text-align: center;
+            span {
+                position: relative;
+                top: 50%;
+                -ms-transform: translateY(-50%);
+                -webkit-transform: translateY(-50%);
+                transform: translateY(-50%);
+            }
+            font-size: 2em;
+            background-color: lightgrey;
+        }
+    }
+}
