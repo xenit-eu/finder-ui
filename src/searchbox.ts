@@ -68,6 +68,8 @@ export type Term_t = {
 export const ValueNoKeyTerm = "ValueNoKeyTerm";
 export const PLACEHOLDERTRANSLATION = "PLACEHOLDERTRANSLATION";
 export const PLACEHOLDERDEFAULT = "Type search term/query or 'Enter' to start searching...";
+export const DATEPICKERLOCALE = "DATEPICKERLOCALE";
+export const DATEPICKERDEFAULT = {};
 
 export type SearchBox_data_t = {
     searching: boolean,                             // flag indicating that search process is busy => activate spinner !
@@ -339,7 +341,15 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                 onRequestClose: this.handleCloseDialog.bind(this),
                 contentStyle: { width: "365px" },
             },
-                __(Flatpickr.default, { key: "flatpikr", options: { inline: true, mode: this.state.calendarMode }, onChange: this.handleDateSelection.bind(this) }),
+                __(Flatpickr.default, {
+                    key: "flatpikr",
+                    options: {
+                        inline: true,
+                        mode: this.state.calendarMode,
+                        locale: this.props.translations && this.props.translations[DATEPICKERLOCALE] || DATEPICKERDEFAULT,
+                    },
+                    onChange: this.handleDateSelection.bind(this)
+                }),
             ),
         ]);
 
