@@ -348,7 +348,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                         mode: this.state.calendarMode,
                         locale: this.props.translations && this.props.translations[DATEPICKERLOCALE] || DATEPICKERDEFAULT,
                     },
-                    onChange: this.handleDateSelection.bind(this)
+                    onChange: this.handleDateSelection.bind(this),
                 }),
             ),
         ]);
