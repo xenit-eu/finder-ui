@@ -236,6 +236,8 @@ export class FinderQuery {
                 return prop.name.replace(/\{[^\{}]+\}/, "") + " = " + (prop.range ? prop.range.start + ".." + prop.range.end : prop.value);
             case "all":
                 return "ALL";
+            case "parent":
+                return "Explorer node";
             default:
                 return "!bad: " + name;
         }
