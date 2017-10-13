@@ -149,7 +149,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
 
     public onInputChange(val: string, isAutocompleteClick: boolean) {
         let currentTerm = this.props.searchableTerms.filter(t => new RegExp("^\\s*" + t.label + "\\s*\\:", "i").test(val))[0];
-        this.setState({ textValue: val, currentTerm, suggestionsOpened: true });
+        this.setState({ textValue: val, currentTerm, suggestionsOpened: val.length > 0 });
 
         if (val.endsWith(":on...") || val.endsWith(":after...") || val.endsWith(":before...")) {
             this.setState({ calendarOpen: true, calendarMode: "single" });
@@ -307,7 +307,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                     value: <string>this.state.textValue,
                     onChange: this.handleInputChange.bind(this),
                     onKeyUp: this.handleInputKey.bind(this),
-                    onFocus: () => this.setState({ suggestionsOpened: true, focusSuggestions: false }),
+                    onFocus: () => this.setState({ focusSuggestions: false }),
 
                     open: <boolean>this.state.suggestionsOpened,
                     focusAutocomplete: <boolean>this.state.focusSuggestions,
