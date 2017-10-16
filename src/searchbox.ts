@@ -20,8 +20,6 @@ import "flatpickr/dist/themes/material_blue.css";
 import "./searchbox.less";
 
 const DAY: number = 24 * 3600 * 1000;
-const MIN_DATE: Date = new Date(1970, 1, 1);
-const MAX_DATE: Date = new Date(3000, 1, 1);
 
 const searchIconStyle = {
     position: "relative",
@@ -247,23 +245,29 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
 
     public handleCloseDialog() {
         const inputValue = <string>this.state.textValue;
+        const arrow = "\u2192";
 
         if (this.state.currentTerm && this.state.currentTerm.type === "date") {
             let dateRange = toDateString(this.selectedDates[0]) + ".." + toDateString(this.selectedDates[0]);
+            let dateRangeLabel = dateRange;
 
             if (/\:on\.\.\./.test(inputValue)) {
                 dateRange = toDateString(this.selectedDates[0]) + ".." + toDateString(this.selectedDates[0]);
+                dateRangeLabel = toDateString(this.selectedDates[0]);
             }
             if (/\:before\.\.\./.test(inputValue)) {
-                dateRange = toDateString(MIN_DATE) + ".." + toDateString(this.selectedDates[0]);
+                dateRange = "MIN.." + toDateString(this.selectedDates[0]);
+                dateRangeLabel = arrow + toDateString(this.selectedDates[0]);
             }
             if (/\:after\.\.\./.test(inputValue)) {
-                dateRange = toDateString(this.selectedDates[0]) + ".." + toDateString(MAX_DATE);
+                dateRange = toDateString(this.selectedDates[0]) + "..MAX";
+                dateRangeLabel = toDateString(this.selectedDates[0]) + arrow;
             }
             if (/\:between\.\.\./.test(inputValue) && this.selectedDates.length > 1) {
                 dateRange = toDateString(this.selectedDates[0]) + ".." + toDateString(this.selectedDates[1]);
+                dateRangeLabel = toDateString(this.selectedDates[0]) + arrow + toDateString(this.selectedDates[1]);
             }
-            this.addNewTerm({ name: this.state.currentTerm.name, label: this.state.currentTerm.label, value: dateRange });
+            this.addNewTerm({ name: this.state.currentTerm.name, label: this.state.currentTerm.label, value: dateRange, valueLabel: dateRangeLabel });
         }
         this.setState({ calendarOpen: false });
     }
