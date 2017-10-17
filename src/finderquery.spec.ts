@@ -169,14 +169,14 @@ describe("advanced query to apix query ", () => {
     });
 
     it("less than", () => {
-        const input = [{ category: "date", operator: "<=", value: "2017-01-02" }];
+        const input = [{ category: "date", operator: "before", value: "2017-01-02" }];
         const expected = { property: { name: "date", range: { start: "MIN", end: "2017-01-02" } } };
 
         expect(FinderQuery.fromAdvancedQuery(input).query).toEqual(expected);
     });
 
     it("greater than", () => {
-        const input = [{ category: "date", operator: ">=", value: "2017-01-02" }];
+        const input = [{ category: "date", operator: "after", value: "2017-01-02" }];
         const expected = { property: { name: "date", range: { start: "2017-01-02", end: "MAX" } } };
 
         expect(FinderQuery.fromAdvancedQuery(input).query).toEqual(expected);
@@ -186,7 +186,7 @@ describe("advanced query to apix query ", () => {
         const input = [{
             expressions: [
                 { category: "name", operator: "contains", value: "fred" },
-                { category: "created", operator: "<=", value: "2017-08-01", conditionType: "AND" },
+                { category: "created", operator: "before", value: "2017-08-01", conditionType: "AND" },
             ],
         },
         { category: "name", operator: "contains", value: "move2alf", conditionType: "OR" }];

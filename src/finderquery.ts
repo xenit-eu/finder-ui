@@ -1,4 +1,4 @@
-
+import { traverseAndReplace } from "./utils";
 /*
 type All_t = {all: string};
 enum DateKeyword_t { TODAY, LASTWEEK, LASTMONTH, LASTYEAR  }
@@ -18,20 +18,6 @@ export type Query_t = { label: string, query: ApixQuery_t };
 
 function clone (obj: any): any {
     return JSON.parse(JSON.stringify(obj));
-}
-
-function traverseAndReplace (o: any, func: (k: string, v: any) => any) {
-    Object.getOwnPropertyNames(o).forEach((i: string) => {
-        const result = func.apply(this, [i, o[i]]);
-        if (result) {
-            o[i] = result;
-        } else {
-            if (o[i] !== null && typeof(o[i]) === "object") {
-                //going one step down in the object tree!!
-                traverseAndReplace(o[i], func);
-            }
-        }
-    });
 }
 
 export function usersQueries (queries?: Query_t[]): Query_t[] {
@@ -155,10 +141,13 @@ export class FinderQuery {
                 value = "*" + value + "*";
                 return { name: term.category, value };
 
-            case ">=":
+            case "on":
+                return { name: term.category, range: {start: value, end: value} };
+
+            case "after":
                 return { name: term.category, range: {start: value, end: "MAX"} };
 
-            case "<=":
+            case "before":
                 return { name: term.category, range: {start: "MIN", end: value} };
 
             default:

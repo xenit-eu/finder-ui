@@ -1,11 +1,17 @@
+/**
+ *  This component is based on react-filter-box component (https://www.npmjs.com/package/react-filter-box)
+ *      example: https://github.com/nhabuiduc/react-filter-box/blob/master/js-example/src/demo3.js
+ *
+ */
+
 import CircularProgress from "material-ui/CircularProgress";
 import DatePicker from "material-ui/DatePicker";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import SearchIcon from "material-ui/svg-icons/action/search";
 import StarIcon from "material-ui/svg-icons/toggle/star-border";
 import { Component, createElement as __ } from "react";
-import { render } from "react-dom";
 import { SearchableTerm_t } from "./searchbox";
+import { traverseAndReplace } from "./utils";
 // tslint:disable-next-line:no-var-requires
 const DatePickerDialog = require("material-ui/DatePicker/DatePickerDialog"); // no type description available for this one !
 // tslint:disable-next-line:no-var-requires
@@ -15,7 +21,6 @@ const Calendar = require("material-ui/DatePicker/Calendar"); // no type descript
 declare var require: any;
 // tslint:disable-next-line:no-var-requires
 const ReactFilterBox = <any> require("react-filter-box");
-//import { searchableTerms } from "./config";
 
 //import 'flatpickr/dist/themes/material_blue.css'
 //import Flatpickr from 'react-flatpickr'
@@ -23,7 +28,7 @@ const ReactFilterBox = <any> require("react-filter-box");
 import * as Colors from "material-ui/styles/colors";
 import getMuiTheme from "material-ui/styles/getMuiTheme";
 
-import { FinderQuery } from "./";
+import { FinderQuery } from "./finderquery";
 
 const muiTheme = getMuiTheme({
     palette: {
@@ -36,37 +41,42 @@ const muiTheme = getMuiTheme({
     },
 });
 
-const iconColor = "white";
-
-import "./advancedsearchbox.less"; // to be imported after other css, to fix problems.
-
-// doc: https://www.npmjs.com/package/react-filter-box
-// example: https://github.com/nhabuiduc/react-filter-box/blob/master/js-example/src/demo3.js
+const iconColor = "#09A89E";
+import "react-filter-box/lib/react-filter-box.css";
+import "./advancedsearchbox.less"; // to be imported after other css, to fix layout problems.
 
 function toDateString(d: Date): string {
     return new Date(d.getTime() + (5 * 3600 * 1000)).toISOString().substring(0, 10);
 };
 
-const CustomAutoComplete = (data: any, options: any, searchableTerms: SearchableTerm_t[]): void => {
-    this.searchableTerms = searchableTerms;
-    ReactFilterBox.GridDataAutoCompleteHandler.apply(data, options);
-};
-CustomAutoComplete.prototype = Object.create(ReactFilterBox.GridDataAutoCompleteHandler.prototype);
-CustomAutoComplete.prototype.constructor = CustomAutoComplete;
-CustomAutoComplete.prototype.needOperators = (parsedCategory: string) => {
-    const term = this.searchableTerms.filter((t: SearchableTerm_t) => t.label === parsedCategory)[0];
-    const type = term ? term.type : "text";
-    return type === "date" ? ["=", ">=", "<="] : ["=", "contains"];
-};
-//override to custom to indicate you want to show your custom date time
-CustomAutoComplete.prototype.needValues = (parsedCategory: string, parsedOperator: string) => {
-    const term = this.searchableTerms.filter((t: SearchableTerm_t) => t.label === parsedCategory)[0];
-    const type = term ? term.type : "text";
-    if (type === "date") {
-        return [{ customType: "date" }];
+// workaround for error: "TS2507: Type 'any' is not a constructor function type." (cfr https://github.com/Microsoft/TypeScript/issues/12971)
+declare class GridDataAutoCompleteHandlerClass { constructor(data: any, options: any) }
+const GridDataAutoCompleteHandler = ReactFilterBox.GridDataAutoCompleteHandler as typeof GridDataAutoCompleteHandlerClass;
+
+class CustomAutoComplete extends GridDataAutoCompleteHandler {
+
+    private searchableTerms: SearchableTerm_t[];
+
+    public constructor (data: any, options: any, searchableTerms: SearchableTerm_t[]) {
+        super(data, options);
+        this.searchableTerms = searchableTerms;
     }
-    return Object.getPrototypeOf(CustomAutoComplete.prototype).needValues(parsedCategory, parsedOperator);
-};
+
+    public needOperators (parsedCategory: string) {
+        const term = this.searchableTerms.filter((t: SearchableTerm_t) => t.label === parsedCategory)[0];
+        const type = term ? term.type : "text";
+        return type === "date" ? ["on", "after", "before"] : ["=", "contains"];
+    }
+
+    public needValues (parsedCategory: string, parsedOperator: string) {
+        const term = this.searchableTerms.filter((t: SearchableTerm_t) => t.label === parsedCategory)[0];
+        const type = term ? term.type : "text";
+        if (type === "date") {
+            return [{ customType: "date" }];
+        }
+        return Object.getPrototypeOf(CustomAutoComplete.prototype).needValues(parsedCategory, parsedOperator);
+    }
+}
 
 export type AdvancedSearchBox_t = {
     searching: boolean,                     // flag indicating that search process is busy => activate spinner !
@@ -94,17 +104,19 @@ export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, any> {
     private options: Array<{}>;
     private data: Array<{ [k: string]: string }>;
 
+    private searcheableTermsByLabel: {[label: string]: SearchableTerm_t};
+
     constructor(props: AdvancedSearchBox_t) {
         super(props);
         // Extract from searchableTerms lists of values that should appear in the suggestion list.
-        this.data = this.props.searchableTerms
+        this.data = props.searchableTerms
             .filter((d: SearchableTerm_t) => d.type === "enum")
             .map((d: SearchableTerm_t) => d.values.map(v => { let x = {}; x[d.label] = v; return x; }))
             .reduce((result, item) => result.concat(item), []);
-        this.options = this.props.searchableTerms.map(d => ({ columnField: d.name, columnText: d.label, type: d.type === "enum" ? "selection" : "text" }));
-        /* tslint:disable */
-        this.customAutoComplete = new (<any> CustomAutoComplete(this.data, this.options, this.props.searchableTerms));
-        /* tslint:enable */
+        this.options = props.searchableTerms.map(d => ({ columnField: d.name, columnText: d.label, type: d.type === "enum" ? "selection" : "text" }));
+        this.customAutoComplete = new CustomAutoComplete(this.data, this.options, props.searchableTerms);
+
+        this.searcheableTermsByLabel = props.searchableTerms.reduce((obj, item) => { obj[item.label] = item; return obj; }, {});
     }
 
     public onDateSelected(selection: Date, pick: pick_t) {
@@ -140,6 +152,12 @@ export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, any> {
 
     public onParseOk(expressions: any) {
         this.query = expressions;
+        // traverse the query to replace the labels to names necessary for the query.
+        traverseAndReplace(this.query, (prop: string, val: any) => {
+            if (prop === "category" && this.searcheableTermsByLabel[val]) {
+                return this.searcheableTermsByLabel[val].name;
+            }
+        });
     }
 
     public render() {
