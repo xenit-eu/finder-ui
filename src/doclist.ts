@@ -164,6 +164,7 @@ export function DocList({  className, columns, data, onDownloadButtonClick, onMe
         const style = {
             width: "initial",
         };
+
         downloadComponents = _.div({ style: { display: "flex", flexDirection: "row", alignItems: "center" } }, [
             !allRowsToggled && !noRowsToggled ?
                 __(Checkbox, {
@@ -201,7 +202,7 @@ export function DocList({  className, columns, data, onDownloadButtonClick, onMe
 }
 function buildSingleTD(col: Doclist_Column_t, row: Row_t, onRowSelected: (i: number) => void, i: number) {
     const formattedData = col.format ? col.format(row[col.name], row, i) : row[col.name];
-    const title = row[col.name];
+    let title = (typeof formattedData === "string") && (formattedData.indexOf("...") < 0) ? formattedData : row[col.name];
     return _.td(
         {
             key: col.name + col.label, className: "doclist-col-" + col.name,
