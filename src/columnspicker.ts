@@ -27,7 +27,7 @@ export type ColumnsPicker_t = {
 
 const sortableOptions = {
     animation: 150,
-    sort: false,
+    sort: true,
     group: {
         name: "clone2",
         pull: true,
