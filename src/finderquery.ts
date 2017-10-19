@@ -144,10 +144,10 @@ export class FinderQuery {
             case "on":
                 return { name: term.category, range: {start: value, end: value} };
 
-            case "after":
+            case "from":
                 return { name: term.category, range: {start: value, end: "MAX"} };
 
-            case "before":
+            case "till":
                 return { name: term.category, range: {start: "MIN", end: value} };
 
             default:

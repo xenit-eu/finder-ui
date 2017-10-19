@@ -65,7 +65,7 @@ class CustomAutoComplete extends GridDataAutoCompleteHandler {
     public needOperators (parsedCategory: string) {
         const term = this.searchableTerms.filter((t: SearchableTerm_t) => t.label === parsedCategory)[0];
         const type = term ? term.type : "text";
-        return type === "date" ? ["on", "after", "before"] : ["=", "contains"];
+        return type === "date" ? ["on", "from", "till"] : ["=", "contains"];
     }
 
     public needValues (parsedCategory: string, parsedOperator: string) {
