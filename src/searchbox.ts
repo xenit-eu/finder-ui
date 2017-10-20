@@ -344,6 +344,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                 open: this.state.calendarOpen || false,
                 onRequestClose: this.handleCloseDialog.bind(this),
                 contentStyle: { width: "365px" },
+                contentClassName: "searchbox-datepicker-dialog",
             },
                 __(Flatpickr.default, {
                     key: "flatpikr",
