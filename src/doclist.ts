@@ -198,7 +198,7 @@ export function DocList({  className, columns, data, onDownloadButtonClick, onMe
     const table = _.div({ className: "table-scroll-wrapper" }, _.table(tableProps, [header, body])); // table
     const pagerComponent = __(Pager, { totalItems: pager.totalItems, pageSize: pager.pageSize, selected: pager.selected, pageSelected: onPageSelected });
     const emptyDocList = _.div({ className: "doclist-message" }, [documentNotFoundText]);
-    return _.div({ className: "doclist" }, pager.totalItems > 0 ? [_.div({}, [columnsPicker, pagerComponent]), table] : [emptyDocList]);
+    return _.div({ className: "doclist" }, pager.totalItems > 0 ? [_.div({ className: "doclist-header" }, [pagerComponent, columnsPicker]), table] : [emptyDocList]);
 }
 function buildSingleTD(col: Doclist_Column_t, row: Row_t, onRowSelected: (i: number) => void, i: number) {
     const formattedData = col.format ? col.format(row[col.name], row, i) : row[col.name];
