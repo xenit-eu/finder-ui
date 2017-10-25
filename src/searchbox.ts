@@ -492,7 +492,7 @@ class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
 
 type AutocompleteSearchBox_State_t = {
     autocompleteText?: string,
-    autocompleteTimer?: NodeJS.Timer|null,
+    autocompleteTimer?: any,
     autocompleteTerms?: Term_t[],
 };
 
