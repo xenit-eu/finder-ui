@@ -114,7 +114,7 @@ export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, any> {
         super(props);
         // Extract from searchableTerms lists of values that should appear in the suggestion list.
         this.data = props.searchableTerms
-            .filter((d: SearchableTerm_t) => d.type === "enum")
+            .filter((d: SearchableTerm_t) => d.values)
             .map((d: SearchableTerm_t) => d.values.map(v => { let x = {}; x[d.label] = v; return x; }))
             .reduce((result, item) => result.concat(item), []);
         this.options = props.searchableTerms.map(d => ({ columnField: d.name, columnText: d.label, type: d.values && d.values.length > 0 ? "selection" : "text" }));
