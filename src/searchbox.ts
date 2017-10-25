@@ -489,3 +489,57 @@ class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
             ]);
     }
 }
+
+type AutocompleteSearchBox_State_t = {
+    autocompleteText?: string,
+    autocompleteTimer?: NodeJS.Timer|null,
+    autocompleteTerms?: Term_t[],
+};
+
+export type AutocompleteSearchBox_t = SearchBox_t & {
+    fetchAutocomplete: (text: string) => Promise<Term_t[]>,
+};
+
+export class AutocompleteSearchBox extends Component<AutocompleteSearchBox_t, AutocompleteSearchBox_State_t> {
+    private onInputChanged: (text: string) => void;
+    constructor(props: AutocompleteSearchBox_t) {
+        super(props);
+        this.state = {
+            autocompleteText: "",
+            autocompleteTimer: null,
+            autocompleteTerms: [],
+        };
+
+        this.onInputChanged = (text: string) => {
+            this._onInputChanged(text);
+            this.props.onInputChanged(text);
+        };
+    }
+
+    private _onInputChanged(text: string) {
+        this.setState((prevState: AutocompleteSearchBox_State_t, props: AutocompleteSearchBox_t) => {
+            if(prevState.autocompleteTimer) {
+                clearTimeout(prevState.autocompleteTimer);
+            }
+
+            let timer = setTimeout(() => {
+                props.fetchAutocomplete(text).then((terms: Term_t[]) => {
+                    this.setState({
+                        autocompleteTerms: terms,
+                    });
+                });
+            }, 200);
+            return Object.assign({}, prevState, { autocompleteText: text, autocompleteTimer: timer });
+        });
+    }
+
+    public render() {
+        let props = Object.assign({}, this.props, {
+            onInputChanged: this.onInputChanged,
+            autocompleteTerms: (this.props.autocompleteTerms || []).concat(this.state.autocompleteTerms || []),
+        });
+        delete props.fetchAutocomplete;
+
+        return __(SearchBox, <SearchBox_t>props);
+    }
+}
