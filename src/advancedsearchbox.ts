@@ -50,7 +50,11 @@ function toDateString(d: Date): string {
 };
 
 // workaround for error: "TS2507: Type 'any' is not a constructor function type." (cfr https://github.com/Microsoft/TypeScript/issues/12971)
-declare class GridDataAutoCompleteHandlerClass { constructor(data: any, options: any) }
+declare class GridDataAutoCompleteHandlerClass {
+    constructor(data: any, options: any);
+    public needOperators (parsedCategory: string): any;
+    public needValues (parsedCategory: string, parsedOperator: string): any;
+}
 const GridDataAutoCompleteHandler = ReactFilterBox.GridDataAutoCompleteHandler as typeof GridDataAutoCompleteHandlerClass;
 
 class CustomAutoComplete extends GridDataAutoCompleteHandler {
@@ -74,7 +78,7 @@ class CustomAutoComplete extends GridDataAutoCompleteHandler {
         if (type === "date") {
             return [{ customType: "date" }];
         }
-        return Object.getPrototypeOf(CustomAutoComplete.prototype).needValues(parsedCategory, parsedOperator);
+        return super.needValues(parsedCategory, parsedOperator);
     }
 }
 
@@ -113,7 +117,7 @@ export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, any> {
             .filter((d: SearchableTerm_t) => d.type === "enum")
             .map((d: SearchableTerm_t) => d.values.map(v => { let x = {}; x[d.label] = v; return x; }))
             .reduce((result, item) => result.concat(item), []);
-        this.options = props.searchableTerms.map(d => ({ columnField: d.name, columnText: d.label, type: d.type === "enum" ? "selection" : "text" }));
+        this.options = props.searchableTerms.map(d => ({ columnField: d.name, columnText: d.label, type: d.values && d.values.length > 0 ? "selection" : "text" }));
         this.customAutoComplete = new CustomAutoComplete(this.data, this.options, props.searchableTerms);
 
         this.searcheableTermsByLabel = props.searchableTerms.reduce((obj, item) => { obj[item.label] = item; return obj; }, {});
