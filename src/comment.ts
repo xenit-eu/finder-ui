@@ -93,6 +93,7 @@ export function CommentCards (
                     subtitle: (comment.authorDisplayName ? comment.authorDisplayName : comment.author)
                                     + " - " + calendarTime(comment.modified, language),
                     style: { "overflow-wrap": "break-word" },
+					titleStyle: { "font-size" : "15px", "line-height" : "1.5em", "display" : "block", "margin-bottom" : "10px"},					
                 })),
                 comment.editable ?
                     _.div({ className: "comment-delete-icon" }, __(FontIcon, {

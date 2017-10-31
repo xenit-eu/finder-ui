@@ -37,9 +37,7 @@ const sortableOptions = {
 
 const saveButtonStyle = {
     position: "relative",
-    top: -30,
-    left: 20,
-
+    float: "right"
 };
 
 type ColumnSet_t = {
@@ -172,15 +170,18 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
             open: this.state.opened,
             className: "columns-picker-dialog",
             bodyClassName: "columns-picker-content",
+			actionsContainerClassName: "actions-container",			
             autoScrollBodyContent: true,
         }, [
 
             __("h3", {key: "hdr-1"}, "Saved column sets"),
 
-            __(SelectField, {key: "sf", value: this.state.selectedSet, onChange: this.handleChangeSet.bind(this)}, this.state.sets.map(o => __(MenuItem, {value: o.label, primaryText: o.label}) )),
-            __(FlatButton, {key: "bs", style: saveButtonStyle, label: "Save", onClick: this.handleSave.bind(this)}),
-            __(FlatButton, {key: "bsa", style: saveButtonStyle, label: "Save as new...", onClick: this.handleSaveAsNew.bind(this)}),
-            __(FlatButton, {key: "bd", style: saveButtonStyle, label: "Delete", onClick: this.handleDelete.bind(this)}),
+            __(SelectField, {key: "sf", className: "select-display", value: this.state.selectedSet, onChange: this.handleChangeSet.bind(this)}, this.state.sets.map(o => __(MenuItem, {value: o.label, primaryText: o.label}) )),
+			__("div", {key: "columns-actions", className: "columns-actions"},
+				__(FlatButton, {key: "bs", style: saveButtonStyle, label: "Save", onClick: this.handleSave.bind(this)}),
+				__(FlatButton, {key: "bsa", style: saveButtonStyle, label: "Save as new...", onClick: this.handleSaveAsNew.bind(this)}),
+				__(FlatButton, {key: "bd", style: saveButtonStyle, label: "Delete", onClick: this.handleDelete.bind(this)}),
+			),
 
             __("hr", {key: "hr-1"}),
 
