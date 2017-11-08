@@ -11,6 +11,9 @@ import SocialPerson from "material-ui/svg-icons/social/person";
 
 import * as moment from "moment";
 import { Component, createElement as __, DOM as _, ReactElement } from "react";
+
+import "./versionhistoryPanel.less";
+
 export type Version_t = {
     title: string
     editor: string,
@@ -24,41 +27,64 @@ export type VersionsHistoryPanel_t = {
     show: boolean,
     versions: Version_t[],
 };
+
 const iconsize = 30;
-const changeHistory = __(Avatar, { size: iconsize, icon: __(ChangeHistory, {}) });
-const actionalarm = __(Avatar, { size: iconsize, icon: __(ActionAlarm, {}) });
-const person = __(Avatar, { size: iconsize, icon: __(SocialPerson, {}) });
-const input = __(Avatar, { size: iconsize, icon: __(Input) });
-const actionassignment = __(Avatar, { size: iconsize, icon: __(ActionAssignment, {}) });
-const subtitles = __(Avatar, { size: iconsize, icon: __(Subtitles) });
+
+const avatarStyle = {
+    color: "rgb(255, 255, 255)",
+    backgroundColor: "rgb(188, 188, 188)",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: "15px",
+    borderRadius: "50%",
+    height: "30px",
+    µwidth: "30px",
+};
+
+const avatarSvgStyle = {
+    display: "inline-block",
+    color: "rgb(255, 255, 255)",
+    fill: "rgb(255, 255, 255)",
+    height: "18px",
+    width: "18px",
+    transition: "all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms",
+    fontSize: "18px",
+    margin: "6px",
+};
+
+const avatar = _.div({size: iconsize, style: avatarStyle}, [
+   _.svg({viewBox: "0 0 24 24", style: avatarSvgStyle}, [
+      _.path({d: "M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"}),
+   ]),
+]);
+
 export function VersionsHistoryPanel({show, versions}: VersionsHistoryPanel_t): ReactElement<any> {
     if (show) {
         if (versions.length === 0) {
             return _.div({ className: "docversions" }, "Document has no version history.");
         }
-        const textcenteredstyle = { style: { display: "inline-block", position: "relative", top: "-4px", left: "8px", width: "125px" } };
-        const outerspanStyle = { style: { display: "inline-block", marginTop: "3px", marginBottom: "3px", marginLeft: "8px", marginRight: "8px", width: "165px" } };
-        const singleVersion = (v: Version_t) => {
-            const momentText = moment(new Date(Number.parseInt(v.editDate))).fromNow();
-            const noderefSpan = Object.assign({ title: v.nodeRef}, outerspanStyle);
-            let childsToDisplay: any[] = [
-                // __(ListItem, { leftAvatar: person }, "" + v.editor),
-                // __(ListItem, { leftAvatar: actionalarm }, (moment(new Date(Number.parseInt(v.editDate))).fromNow())),
-                // __(ListItem, { leftAvatar: input }, "" + v.nodeRef),
-                _.span(outerspanStyle, [person, _.span(textcenteredstyle, "" + v.editor)]),
-                _.span(outerspanStyle, [actionalarm, _.span(textcenteredstyle, "" + momentText)]),
-                _.span(noderefSpan, input),
-            ];
-            childsToDisplay = ((v.title && v.title.trim().length > 0) ? [_.span(outerspanStyle,[subtitles,_.span(textcenteredstyle, v.title)])] : []).concat(childsToDisplay);
-            childsToDisplay = childsToDisplay.concat(v.editComment ?
-                [_.span(outerspanStyle, [actionassignment, _.span(textcenteredstyle, "" + v.editComment)])] : []);
-            childsToDisplay = [_.span(outerspanStyle, [changeHistory, _.span(textcenteredstyle, v.versionNumber)])].concat(childsToDisplay);
 
-            //return __(ListItem, { nestedItems: childsToDisplay }, v.versionNumber);
-            return childsToDisplay;
-        };
-        const elements = versions.map(a => __(Paper, { style: { margin: "3px", padding: "3px" }, zDepth: 1, children: singleVersion(a) }));
-        return _.div({ className: "docversions" }, __(List, {}, elements));
+        const versionItem = (v: Version_t) =>  _.div({className: "history-item"}, [
+            _.div({}, [
+                _.div({className: "history-version"}, [v.versionNumber]),
+            ]),
+            _.div({className: "history-meta-data"}, [
+                _.div({className: "history-doc-name"}, [v.title]),
+                _.div({className: "history-details"}, [
+                    _.div({className: "history-avatar"}, [
+                        avatar,
+                    ]),
+                    _.div({}, [
+                        _.span({className: "history-user"}, [v.editor]),
+                        _.span({className: "history-edited"}, [moment(new Date(Number.parseInt(v.editDate))).fromNow()]),
+                        _.span({className: "history-comment"}, [v.editComment]),
+                    ]),
+                ]),
+            ]),
+        ]);
+
+        return _.div({ className: "docversions" }, versions.map(v => versionItem(v)));
     } else {
         return _.div({});
     }
