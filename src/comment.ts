@@ -11,6 +11,7 @@ export type Comment_t = {
     author: string,
     authorDisplayName: string,
     editable: boolean,
+    deletable: boolean,
     editing: boolean,
     title: string,
     comment: string,
@@ -93,9 +94,9 @@ export function CommentCards (
                     subtitle: (comment.authorDisplayName ? comment.authorDisplayName : comment.author)
                                     + " - " + calendarTime(comment.modified, language),
                     style: { "overflow-wrap": "break-word" },
-					titleStyle: { "font-size" : "15px", "line-height" : "1.5em", "display" : "block", "margin-bottom" : "10px"},					
+                    titleStyle: { "font-size" : "15px", "line-height" : "1.5em", "display" : "block", "margin-bottom" : "10px"},
                 })),
-                comment.editable ?
+                comment.deletable ?
                     _.div({ className: "comment-delete-icon" }, __(FontIcon, {
                         className: `fa fa-trash`,
                         primary: true,
