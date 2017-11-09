@@ -2,7 +2,7 @@ import Dialog from "material-ui/Dialog";
 import FlatButton from "material-ui/FlatButton";
 import FontIcon from "material-ui/FontIcon";
 import IconButton from "material-ui/IconButton";
-import { Component, createElement as __ } from "react";
+import { Component, createElement as __, DOM as _ } from "react";
 
 import MenuItem from "material-ui/MenuItem";
 import SelectField from "material-ui/SelectField";
@@ -37,7 +37,7 @@ const sortableOptions = {
 
 const saveButtonStyle = {
     position: "relative",
-    float: "right"
+    float: "right",
 };
 
 type ColumnSet_t = {
@@ -170,20 +170,25 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
             open: this.state.opened,
             className: "columns-picker-dialog",
             bodyClassName: "columns-picker-content",
-			actionsContainerClassName: "actions-container",			
+            actionsContainerClassName: "actions-container",
             autoScrollBodyContent: true,
         }, [
 
             __("h3", {key: "hdr-1"}, "Saved column sets"),
 
-            __(SelectField, {key: "sf", className: "select-display", value: this.state.selectedSet, onChange: this.handleChangeSet.bind(this)}, this.state.sets.map(o => __(MenuItem, {value: o.label, primaryText: o.label}) )),
-			__("div", {key: "columns-actions", className: "columns-actions"},
-				__(FlatButton, {key: "bs", style: saveButtonStyle, label: "Save", onClick: this.handleSave.bind(this)}),
-				__(FlatButton, {key: "bsa", style: saveButtonStyle, label: "Save as new...", onClick: this.handleSaveAsNew.bind(this)}),
-				__(FlatButton, {key: "bd", style: saveButtonStyle, label: "Delete", onClick: this.handleDelete.bind(this)}),
-			),
+            __(SelectField, {
+                key: "sf",
+                className: "select-display",
+                value: this.state.selectedSet,
+                onChange: this.handleChangeSet.bind(this),
+            }, this.state.sets.map(o => __(MenuItem, { value: o.label, primaryText: o.label }))),
+            _.div({ key: "columns-actions", className: "columns-actions" },
+                __(FlatButton, { key: "bs", style: saveButtonStyle, label: "Save", onClick: this.handleSave.bind(this) }),
+                __(FlatButton, { key: "bsa", style: saveButtonStyle, label: "Save as new...", onClick: this.handleSaveAsNew.bind(this) }),
+                __(FlatButton, { key: "bd", style: saveButtonStyle, label: "Delete", onClick: this.handleDelete.bind(this) }),
+            ),
 
-            __("hr", {key: "hr-1"}),
+            __("hr", { key: "hr-1" }),
 
             __("h3", {key: "hdr-2"}, "Columns to display"),
             __("div", {key: "selected"} ),
@@ -207,7 +212,7 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
             ],
         );
 
-        return __("div", {className: "columns-picker"}, [
+        return _.div({ className: "columns-picker" }, [
             this.props.visible ? __(IconButton, {
                 key: "button",
                 keyboardFocused: false,
