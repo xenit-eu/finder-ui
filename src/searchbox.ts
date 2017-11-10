@@ -299,6 +299,10 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
             .filter(option => option.toLowerCase().includes((this.state.textValue || "").toLowerCase()));
 
         return _.div({ key: "search-box", className: "search-box" }, [
+            (this.props.searchedQueries.length === 0 && this.props.searchedTerms.length === 0)?__(Chip, {
+                className: "searchbox-chip searchbox-chip-default",
+                key: "Default",
+            }, "All:*"):undefined,
             ...this.props.searchedQueries.map((t, i) => __(Chip, {
                 className: "searchbox-chip",
                 backgroundColor: Colors.blue100,
