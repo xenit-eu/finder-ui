@@ -106,14 +106,17 @@ export type DocList_t = DocList_t_Data & DocList_t_Actions;
 function SortableTh(c: Doclist_Column_t, onSortColumnSelected: OnSortColumnSelected_t): ReactElement<any> {
     let iconName: string = "sort";
     let nextSort: SortDirection_t = SortDirection_t.NONE;
+    let title = "not sorted (click to sort)";
     switch (c.sortDirection) {
         case SortDirection_t.ASC:
             iconName = "sort-asc";
             nextSort = SortDirection_t.DESC;
+            title = "sorted in ascending order";
             break;
         case SortDirection_t.DESC:
             iconName = "sort-desc";
             nextSort = SortDirection_t.NONE;
+            title = "sorted in descending order";
             break;
         case SortDirection_t.NONE:
             iconName = "sort";
@@ -126,9 +129,10 @@ function SortableTh(c: Doclist_Column_t, onSortColumnSelected: OnSortColumnSelec
         key: c.name + c.label,
         onClick: c.sortable ? () => { onSortColumnSelected(0, c.name, nextSort); } : () => { },
     }, [
-            c.sortable ? __(FontIcon, {
+            c.sortable ? _.span({title: "hello"}, __(FontIcon, {
                 className: `header-icon fa fa-${iconName}`,
-            }) : null,
+                title,
+            })) : null,
             c.label,
         ]);
 }
