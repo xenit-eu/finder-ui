@@ -129,10 +129,10 @@ function SortableTh(c: Doclist_Column_t, onSortColumnSelected: OnSortColumnSelec
         key: c.name + c.label,
         onClick: c.sortable ? () => { onSortColumnSelected(0, c.name, nextSort); } : () => { },
     }, [
-            c.sortable ? _.span({title: "hello"}, __(FontIcon, {
+            c.sortable ? __(FontIcon, {
                 className: `header-icon fa fa-${iconName}`,
                 title,
-            })) : null,
+            }) : null,
             c.label,
         ]);
 }
