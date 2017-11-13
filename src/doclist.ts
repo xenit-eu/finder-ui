@@ -87,16 +87,16 @@ export const DOCLIST_TRANSLATIONS = {
 
 type Translations_t = {
     [k: string]: string,
-};
+} | undefined;
 
-const defaultTranslations: Translations_t = {
+const defaultTranslations = {
     [DOCLIST_TRANSLATIONS.SORT_ASC]: "sorted in ascending order",
     [DOCLIST_TRANSLATIONS.SORT_DESC]: "sorted in descending order",
     [DOCLIST_TRANSLATIONS.SORT]: "not sorted",
 };
 
 function translate(translations: Translations_t, key: string) {
-    return translations[key] !== undefined ? translations[key] : defaultTranslations[key];
+    return translations && translations[key] !== undefined ? translations[key] : defaultTranslations[key];
 }
 
 export type DocList_t_Data = {
