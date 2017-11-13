@@ -79,6 +79,26 @@ export type Doclist_Column_t = {
 
 export type OnSortColumnSelected_t = (columnIndex: number, columnName: string, direction: SortDirection_t) => void;
 
+export const DOCLIST_TRANSLATIONS = {
+    SORT_ASC: "finder-ui.doclist.TRANSLATION_SORT_ASC",
+    SORT_DESC: "finder-ui.doclist.TRANSLATION_SORT_DESC",
+    SORT: "finder-ui.doclist.TRANSLATION_SORT",
+};
+
+type Translations_t = {
+    [k: string]: string,
+};
+
+const defaultTranslations: Translations_t = {
+    [DOCLIST_TRANSLATIONS.SORT_ASC]: "sorted in ascending order",
+    [DOCLIST_TRANSLATIONS.SORT_DESC]: "sorted in descending order",
+    [DOCLIST_TRANSLATIONS.SORT]: "not sorted",
+};
+
+function translate(translations: Translations_t, key: string) {
+    return translations[key] !== undefined ? translations[key] : defaultTranslations[key];
+}
+
 export type DocList_t_Data = {
     columns: Doclist_Column_t[],
     columnsPicker?: ReactElement<any>,
@@ -91,6 +111,7 @@ export type DocList_t_Data = {
     className: string,
     rowStyle: (i: number) => any,
     documentNotFoundText?: string,
+    translations?: Translations_t,
 };
 
 export type DocList_t_Actions = {
@@ -103,24 +124,25 @@ export type DocList_t_Actions = {
 };
 export type DocList_t = DocList_t_Data & DocList_t_Actions;
 
-function SortableTh(c: Doclist_Column_t, onSortColumnSelected: OnSortColumnSelected_t): ReactElement<any> {
+function SortableTh(c: Doclist_Column_t, onSortColumnSelected: OnSortColumnSelected_t, translations: Translations_t): ReactElement<any> {
     let iconName: string = "sort";
     let nextSort: SortDirection_t = SortDirection_t.NONE;
-    let title = "not sorted (click to sort)";
+    let title = "";
     switch (c.sortDirection) {
         case SortDirection_t.ASC:
             iconName = "sort-asc";
             nextSort = SortDirection_t.DESC;
-            title = "sorted in ascending order";
+            title = translate(translations, DOCLIST_TRANSLATIONS.SORT_ASC);
             break;
         case SortDirection_t.DESC:
             iconName = "sort-desc";
             nextSort = SortDirection_t.NONE;
-            title = "sorted in descending order";
+            title = translate(translations, DOCLIST_TRANSLATIONS.SORT_DESC);
             break;
         case SortDirection_t.NONE:
             iconName = "sort";
             nextSort = SortDirection_t.ASC;
+            title = translate(translations, DOCLIST_TRANSLATIONS.SORT);
             break;
         default:
             break;
@@ -158,7 +180,7 @@ function SortableTh(c: Doclist_Column_t, onSortColumnSelected: OnSortColumnSelec
 //@Param toggledRows number "The number of rows that have been toggled in total"
 
 export function DocList({  className, columns, data, onDownloadButtonClick, onMenuSelected, onPageSelected, onRowSelected, onRowToggled,
-    onSortColumnSelected, pager, rowMenu, rowStyle, rowToggled, togglable, columnsPicker, documentNotFoundText, toggledRows}: DocList_t): ReactElement<any> {
+    onSortColumnSelected, pager, rowMenu, rowStyle, rowToggled, togglable, columnsPicker, documentNotFoundText, toggledRows, translations}: DocList_t): ReactElement<any> {
     let downloadComponents: ReactNode | false = false;
     if (togglable) {
         const allRows = data.map((_: any, key: number) => key);
@@ -187,7 +209,7 @@ export function DocList({  className, columns, data, onDownloadButtonClick, onMe
     }
     const headerelements = (<ReactElement<any>[]>[_.th({ key: "Menu" }, "")])
         .concat(togglable ? [_.th({ key: "toggle", align: "center", width: "1px" }, downloadComponents)] : [])
-        .concat(columns.map(c => SortableTh(c, onSortColumnSelected)));
+        .concat(columns.map(c => SortableTh(c, onSortColumnSelected, translations)));
 
     const header = _.thead({ key: "header" }, [_.tr({ key: "head" }, headerelements)]);
     const style = rowStyle ? rowStyle : (i: number) => ({});
