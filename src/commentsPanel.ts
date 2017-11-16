@@ -6,6 +6,7 @@ export type CommentsPanel_t = {
     show: boolean,
     language: string,
     comments: Comment_t[],
+    canAdd: boolean,
     onSaveNewComment: (newComment: string) => void,
     onDeleteComment: (commentToDelete: Comment_t) => void,
     onStartEditing: (commentToEdit: Comment_t) => void,
@@ -26,11 +27,11 @@ export type CommentsPanel_t = {
 //@Param onSaveEditing (updatedComment: Comment_t) => void "called when an existing comment has been modified"
 
 export function CommentsPanel({ show, language, comments,
-                onSaveNewComment, onDeleteComment, onStartEditing, onSaveEditing, onCancelEditing }: CommentsPanel_t) {
+                onSaveNewComment, onDeleteComment, onStartEditing, onSaveEditing, onCancelEditing, canAdd }: CommentsPanel_t) {
     return _.div({ className: "comments-panel" },
             _.div({ className: "comments-content" },
                 show ? [
-                    __(NewCommentCard, {onSaveNewComment}),
+                    canAdd ? __(NewCommentCard, {onSaveNewComment}) : undefined,
                     ...CommentCards(language, comments, onDeleteComment, onStartEditing, onSaveEditing, onCancelEditing),
                 ] : []),
     );
