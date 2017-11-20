@@ -9,7 +9,7 @@ import DatePicker from "material-ui/DatePicker";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import SearchIcon from "material-ui/svg-icons/action/search";
 import StarIcon from "material-ui/svg-icons/toggle/star-border";
-import { Component, createElement as __ } from "react";
+import { Component, createElement as __, DOM as _ } from "react";
 import { SearchableTerm_t } from "./searchbox";
 import { traverseAndReplace } from "./utils";
 // tslint:disable-next-line:no-var-requires
@@ -131,7 +131,7 @@ export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, any> {
     public customRenderCompletionItem(self: any, data: any, registerAndGetPickFunc: () => pick_t) {
         if (data.value && data.value.customType && data.value.customType === "date") {
             const pick: pick_t = registerAndGetPickFunc();
-            return __("div", { className: "day-picker-selection" },
+            return _.div({ className: "day-picker-selection" },
                 __(MuiThemeProvider, { muiTheme },
                     //__(DatePicker, {container: "inline", onChange: (dummy: any, date: Date) => this.onDateSelected(date, pick), defaultDate: new Date()})
                     __(Calendar.default, {
@@ -146,7 +146,7 @@ export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, any> {
         }
 
         const className = ` hint-value cm-${data.type}`;
-        return __("div", { className }, __("span", { style: { fontWeight: "bold" } }, data.value));
+        return _.div({ className }, _.span({ style: { fontWeight: "bold" } }, data.value));
         //           <span style={{color:"gray", fontSize:10}}> [{data.type}] </span>
     }
 
@@ -165,7 +165,7 @@ export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, any> {
     }
 
     public render() {
-        return __("div", { className: "search-box" }, [__(ReactFilterBox.default, {
+        return _.div({ className: "search-box" }, [__(ReactFilterBox.default, {
             options: this.options,
             data: this.data,
             autoCompleteHandler: this.customAutoComplete,
@@ -173,8 +173,8 @@ export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, any> {
             onParseOk: this.onParseOk.bind(this),
             onChange: this.onChange.bind(this),
         }),
-        __("div", { key: "save-icon", className: "save-icon" }, __(StarIcon, { color: iconColor, onClick: () => this.props.onSaveAsQuery(prompt("Save query as") || "query") })),
-        __("div", { key: "div", className: "search-icon" },
+        _.div({ key: "save-icon", className: "save-icon icon" },__(StarIcon, { color: iconColor, onClick: () => this.props.onSaveAsQuery(prompt("Save query as") || "query") })),
+        _.div({ key: "div", className: "search-icon icon" },
             this.props.searching
                 ? __(CircularProgress, { size: 24 })
                 : __(SearchIcon, { color: iconColor, onClick: () => this.props.onSearch(FinderQuery.fromAdvancedQuery(this.query)) }),
