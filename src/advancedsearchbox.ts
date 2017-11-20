@@ -9,7 +9,7 @@ import DatePicker from "material-ui/DatePicker";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import SearchIcon from "material-ui/svg-icons/action/search";
 import StarIcon from "material-ui/svg-icons/toggle/star-border";
-import { Component, createElement as __, DOM as _ } from "react";
+import { cloneElement, Component, createElement as __, DOM as _ } from "react";
 import { SearchableTerm_t } from "./searchbox";
 import { traverseAndReplace } from "./utils";
 // tslint:disable-next-line:no-var-requires
@@ -80,6 +80,35 @@ class CustomAutoComplete extends GridDataAutoCompleteHandler {
         }
         return super.needValues(parsedCategory, parsedOperator);
     }
+}
+
+// workaround for error: "TS2507: Type 'any' is not a constructor function type." (cfr https://github.com/Microsoft/TypeScript/issues/12971)
+declare class ReactFilterBoxClass extends Component<any, any> {
+    constructor(props: any);
+    protected needAutoCompleteValues(codeMirror: any, text: string);
+}
+const ReactFilterBox1 = ReactFilterBox.default as typeof ReactFilterBoxClass;
+
+class CustomReactFilterBox extends ReactFilterBox1 {
+    private cmHijacked: any = null;
+    private filterInput: any;
+    protected needAutoCompleteValues(codeMirror: any, text: string) {
+        if(codeMirror !== this.cmHijacked) {
+            this.props.onHijackCodeMirror(codeMirror, this.filterInput);
+            this.cmHijacked = codeMirror;
+        }
+        return super.needAutoCompleteValues(codeMirror, text);
+    }
+
+    public render() {
+        let parent = super.render();
+        let filterInput = parent.props.children;
+
+        return cloneElement(parent, {}, [
+            cloneElement(filterInput, { ref: (fi) => { this.filterInput = fi; } }),
+        ]);
+    }
+
 }
 
 export type AdvancedSearchBox_t = {
@@ -164,14 +193,43 @@ export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, any> {
         });
     }
 
+    public onHijackCodeMirror(codeMirror: any, filterInput: any) {
+        codeMirror.getDoc().on("cursorActivity", (doc: any) => {
+            let cursorPos = doc.getCursor();
+            if(cursorPos.sticky === null) {
+                // We are just inserting stuff, not clicking on anything
+                return;
+            }
+            let token = doc.getEditor().getTokenAt(cursorPos, true); // Fetch token type at our position
+            if(token.type === "value" && token.state.fieldState === "category") { // Only trigger the autocomplete on categories (values)
+                let beforeText = doc.getValue().trim();
+                doc.setSelection({line: cursorPos.line, ch: token.start}, {line: cursorPos.line, ch: token.end}); // Select current token
+                filterInput.handlePressingSpace(); // Trigger an autocomplete event
+                let replaceSelection = () => {
+                    if(doc.getValue().trim() !== beforeText) { // Remove the selection when something changed (if nothing changed, the autocomplete got cancelled)
+                        doc.replaceSelection("");
+                    }
+                    doc.setCursor({line: cursorPos.line, ch: doc.getLine(cursorPos.line).length}); // Move cursor to the end of the line
+                    codeMirror.off("endCompletion", replaceSelection);
+                };
+                setTimeout(() => {
+                    codeMirror.on("endCompletion", replaceSelection);
+                }, 100);
+
+            }
+        });
+    }
+
     public render() {
-        return _.div({ className: "search-box" }, [__(ReactFilterBox.default, {
+        return _.div({ className: "search-box" }, [__(CustomReactFilterBox, {
+           // ref: () => {debugger;}
             options: this.options,
             data: this.data,
             autoCompleteHandler: this.customAutoComplete,
             customRenderCompletionItem: this.customRenderCompletionItem.bind(this),
             onParseOk: this.onParseOk.bind(this),
             onChange: this.onChange.bind(this),
+            onHijackCodeMirror: this.onHijackCodeMirror.bind(this),
         }),
         _.div({ key: "save-icon", className: "save-icon icon" },__(StarIcon, { color: iconColor, onClick: () => this.props.onSaveAsQuery(prompt("Save query as") || "query") })),
         _.div({ key: "div", className: "search-icon icon" },
