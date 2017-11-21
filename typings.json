@@ -1,6 +1,5 @@
 {
   "name": "ts",
-  "dependencies": {},
   "globalDependencies": {
     "core-js": "registry:dt/core-js#0.0.0+20160725163759",
     "enzyme": "registry:dt/enzyme#2.5.1+20161025153540",

@@ -26,6 +26,8 @@
   "license": "ISC",
   "homepage": "https://bitbucket.org/xenit/finder-ui#README.md",
   "dependencies": {
+    "@types/codemirror": "0.0.51",
+    "codemirror": "^5.31.0",
     "flatpickr": "^2.6.3",
     "material-ui": "^0.16.4",
     "moment": "^2.17.1",
