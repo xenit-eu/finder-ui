@@ -1,5 +1,5 @@
 import {Editor, Pos, StringStream} from "codemirror";
-import { expectedNextType, initialState, parseIncremental, parseUntil, Token, TokenType } from "./parser";
+import { initialState, parseIncremental, parseUntil, Token, TokenType, expectedNextType } from "./parser";
 import getHints, { IAutocompleteProvider } from "./typeahead";
 
 export function createHinter(autocomplete: IAutocompleteProvider) {

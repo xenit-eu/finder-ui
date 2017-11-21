@@ -1,16 +1,15 @@
 import {expectedNextType, parseUntil, Token, TokenType} from "./parser";
 
 export type AutocompleteValue_t = string|{
-    text: string;
     render?: (element: HTMLLIElement, data: any, cur: any) => void;
 };
 
 export interface IAutocompleteProvider {
-    needFields(): Promise<AutocompleteValue_t[]>;
+    needFields(value: string): Promise<AutocompleteValue_t[]>;
 
-    needOperators(field: string): Promise<AutocompleteValue_t[]>;
+    needOperators(field: string, value: string): Promise<AutocompleteValue_t[]>;
 
-    needValues(field: string, operator: string): Promise<AutocompleteValue_t[]>;
+    needValues(field: string, operator: string, value: string): Promise<AutocompleteValue_t[]>;
 }
 
 export default function getHints(autocomplete: IAutocompleteProvider, tokens: Token[]): Promise<AutocompleteValue_t[]> {
@@ -19,7 +18,7 @@ export default function getHints(autocomplete: IAutocompleteProvider, tokens: To
             return Promise.resolve([]);
         }
         let lastField = tokens.filter(t => t.type === TokenType.FIELD).pop();
-        let lastCondition = tokens.filter(t => t.type === TokenType.CONDITION).pop();
+        let lastOperator = tokens.filter(t => t.type === TokenType.OPERATOR).pop();
         let nonWhitespaceTokens = tokens.filter(t => t.type !== TokenType.WHITESPACE);
 
         let predictedTokenTypes = expectedNextType(nonWhitespaceTokens[nonWhitespaceTokens.length-2]);
@@ -31,16 +30,16 @@ export default function getHints(autocomplete: IAutocompleteProvider, tokens: To
         let valuePromise: Promise<AutocompleteValue_t[]> = Promise.resolve([]);
         switch(lastToken.type) {
             case TokenType.FIELD:
-                valuePromise = autocomplete.needFields();
+                valuePromise = autocomplete.needFields(lastToken.value);
                 break;
             case TokenType.OPERATOR:
                 if(lastField) {
-                    valuePromise = autocomplete.needOperators(lastField.value);
+                    valuePromise = autocomplete.needOperators(lastField.value, lastToken.value);
                 }
                 break;
             case TokenType.VALUE:
-                if(lastField && lastCondition) {
-                    valuePromise = autocomplete.needValues(lastField.value, lastCondition.value);
+                if(lastField && lastOperator) {
+                    valuePromise = autocomplete.needValues(lastField.value, lastOperator.value, lastToken.value);
                 }
                 break;
             case TokenType.CONDITION:
