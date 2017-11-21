@@ -14,18 +14,23 @@ export interface IAutocompleteProvider {
 
 export default function getHints(autocomplete: IAutocompleteProvider, tokens: Token[]): Promise<AutocompleteValue_t[]> {
         let lastToken = tokens[tokens.length-1];
-        if(lastToken.type === TokenType.WHITESPACE) {
-            return Promise.resolve([]);
-        }
+        let isGuessed = lastToken.value === "";
+        let realToken = !isGuessed?lastToken:tokens.filter(t => t.type !== TokenType.WHITESPACE && t.value !== "").pop();
         let lastField = tokens.filter(t => t.type === TokenType.FIELD).pop();
         let lastOperator = tokens.filter(t => t.type === TokenType.OPERATOR).pop();
-        let nonWhitespaceTokens = tokens.filter(t => t.type !== TokenType.WHITESPACE);
 
-        let predictedTokenTypes = expectedNextType(nonWhitespaceTokens[nonWhitespaceTokens.length-2]);
+        let nextTokenTypes = expectedNextType(realToken);
 
-        if(predictedTokenTypes.includes(TokenType.CONDITION)) {
-            return Promise.resolve(["AND", "OR"]);
-        }
+        let bracketDepth = 0;
+
+        tokens.filter(t => t.type === TokenType.BRACKET_CLOSE || t.type === TokenType.BRACKET_OPEN)
+            .forEach(t => {
+                if(t.type === TokenType.BRACKET_CLOSE) {
+                    bracketDepth = Math.max(0, bracketDepth+1);
+                } else {
+                    bracketDepth++;
+                }
+            });
 
         let valuePromise: Promise<AutocompleteValue_t[]> = Promise.resolve([]);
         switch(lastToken.type) {
@@ -54,5 +59,15 @@ export default function getHints(autocomplete: IAutocompleteProvider, tokens: To
             default:
                 valuePromise = Promise.resolve([]);
         }
-        return valuePromise;
+
+        return valuePromise.then(list => {
+            if(isGuessed && nextTokenTypes.includes(TokenType.BRACKET_OPEN)) {
+                list = list.concat(["("]);
+            }
+            if(isGuessed && nextTokenTypes.includes(TokenType.BRACKET_CLOSE) && bracketDepth > 0) {
+                list = list.concat(")");
+            }
+            return list;
+        });
+
 }
