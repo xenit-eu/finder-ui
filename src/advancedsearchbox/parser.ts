@@ -1,5 +1,7 @@
 import {StringStream} from "codemirror";
 
+const CodeMirror = require('codemirror');
+
 export enum TokenType {
     FIELD,
     OPERATOR,
@@ -121,7 +123,7 @@ export function parseIncremental(stream: StringStream, state: ParseState_t): Tok
 export function parse(str: string): Token[] {
     let state = initialState();
     let tokens: Token[] = [];
-    let stream = new StringStream(str);
+    let stream = new CodeMirror.StringStream(str);
 
     while(!stream.eol()) {
         tokens.push(parseIncremental(stream, state));
@@ -132,7 +134,7 @@ export function parse(str: string): Token[] {
 export function parseUntil(str: string, pos: number): Token[] {
     let state = initialState();
     let tokens: Token[] = [];
-    let stream: StringStream = new StringStream(str);
+    let stream: StringStream = new CodeMirror.StringStream(str);
 
     while(stream.pos < pos && ! stream.eol()) {
         tokens.push(parseIncremental(stream, state));

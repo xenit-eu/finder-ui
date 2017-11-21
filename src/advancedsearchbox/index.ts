@@ -27,7 +27,7 @@ const iconColor = "#09A89E";
 
 // Codemirror
 import {defineMode, Editor} from "codemirror";
-import CodeMirror from "react-codemirror";
+const CodeMirror = require('react-codemirror');
 import "codemirror/lib/codemirror.css";
 import { DatepickerAutocomplete} from "./datepickerautocomplete";
 import { AutocompleteValue_t, IAutocompleteProvider } from "./typeahead";
@@ -62,7 +62,7 @@ class CustomAutoComplete implements IAutocompleteProvider {
         const type = term ? term.type : "text";
         if (type === "date") {
             return Promise.resolve([{
-                render: (element, self) => this.datepicker.render(element, self, new Date(value)),
+                render: (element, self) => this.datepicker.render(element, self, isNaN(Date.parse(value))?new Date():new Date(value)),
             }]);
         }
         return Promise.resolve([]);
@@ -101,17 +101,18 @@ export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, any> {
     public onChange(query: any) {
         this.query = query;
         // traverse the query to replace the labels to names necessary for the query.
+        /*
         traverseAndReplace(this.query, (prop: string, val: any) => {
             if (prop === "category" && this.searcheableTermsByLabel[val]) {
                 return this.searcheableTermsByLabel[val].name;
             }
-        });
+        });*/
     }
 
     public render() {
         return _.div({ className: "search-box" }, [
             __(CodeMirror, {
-                ref: (elem) => { this.codemirror = elem.getCodeMirror(); },
+                ref: (elem) => { this.codemirror = elem?elem.getCodeMirror():null; },
                 options: {
                     hintOptions: {
                         hint: createHinter(this.customAutoComplete),

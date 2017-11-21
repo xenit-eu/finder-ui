@@ -14,6 +14,10 @@ export function createHinter(autocomplete: IAutocompleteProvider) {
 
         let tokens = parseUntil(lineContents, cursorPos.ch);
 
+        if(tokens.length < 1 || cmTokens.length < 1) {
+            return resolve({list: []});
+        }
+
         let lastCmToken = cmTokens[cmTokens.length - 1];
 
         let insertedTok = 0;

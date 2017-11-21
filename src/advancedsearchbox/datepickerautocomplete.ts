@@ -11,7 +11,7 @@ export class DatepickerAutocomplete {
         let fp = new Flatpickr(element, {
             inline: true,
             static: true,
-            defaultDate: currentValue,
+            defaultDate: currentValue || new Date(),
             onClose: (selectedDate)  => this.pick(selectedDate[0], self),
         });
 
