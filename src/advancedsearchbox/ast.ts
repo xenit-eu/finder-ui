@@ -106,11 +106,21 @@ export function expectedNextType(token?: Token|null): TokenType[] {
 export function validateStream(tokens: Token[]) {
     let currentToken: Token|null = null;
     let depth = 0;
-    tokens = tokens.concat([new Token(TokenType.END, "")]);
+    tokens = tokens.filter(t => t.type !== TokenType.WHITESPACE).concat([new Token(TokenType.END, "")]);
 
     for(let i = 0; i < tokens.length; i++) {
         let expectedTypes = expectedNextType(currentToken);
         currentToken = tokens[i];
+
+        if (i === tokens.length - 1) {
+            // Condition can not be at the end of the string
+            expectedTypes = expectedTypes.filter(t => t !== TokenType.CONDITION);
+        }
+        if(depth <= 0) {
+            // Can not close more braces than there are opened
+            expectedTypes = expectedTypes.filter(t => t !== TokenType.BRACKET_CLOSE);
+        }
+
         switch(currentToken.type) {
             case TokenType.BRACKET_OPEN:
                 depth++;
@@ -121,14 +131,6 @@ export function validateStream(tokens: Token[]) {
             default:
         }
 
-        if (i === tokens.length - 1) {
-            // Condition can not be at the end of the string
-            expectedTypes = expectedTypes.filter(t => t !== TokenType.CONDITION);
-        }
-        if(depth < 0) {
-            // Can not close more braces than there are opened
-            expectedTypes = expectedTypes.filter(t => t !== TokenType.BRACKET_CLOSE);
-        }
         if(depth > 0) {
             // Can not have EOL before all braces are closed
             expectedTypes = expectedTypes.filter(t => t !== TokenType.END);

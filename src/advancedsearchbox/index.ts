@@ -33,7 +33,7 @@ import "codemirror/addon/hint/show-hint";
 import "codemirror/addon/hint/show-hint.css";
 import "codemirror/lib/codemirror.css";
 
-import ast, { IASTNode } from "./ast";
+import ast, { IASTNode, validateStream } from "./ast";
 import { createHinter, createMode } from "./codemirror";
 import { DatepickerAutocomplete } from "./datepickerautocomplete";
 import lex, { Token, TokenType } from "./lexer";
@@ -72,7 +72,7 @@ class CustomAutoComplete implements IAutocompleteProvider {
             }]);
         }
 
-        return Promise.resolve(term.values || []);
+        return Promise.resolve(term && term.values || []);
     }
 }
 
@@ -126,8 +126,9 @@ export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, any> {
         };
 
         try {
-            let tokens = lex(query).map(replaceFieldWithSearchTerm);
-            this.query = ast(tokens);
+            let tokens = lex(query);
+            validateStream(tokens);
+            this.query = ast(tokens.map(replaceFieldWithSearchTerm));
             this.setState({
                 queryError: null,
             });
