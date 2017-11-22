@@ -55,7 +55,7 @@ function astProperty(tokens: Token[]): Property {
     let operator = tokens.shift();
     let value = tokens.shift();
     if (!field || !operator || !value) {
-        throw new SyntaxError("Missing part of property expression");
+        throw new InternalError("Missing part of property expression");
     }
     return new Property(field.value, operator.value, value.value);
 }
@@ -80,7 +80,7 @@ function astCondition(tokens: Token[], firstNode: IASTNode | null): Condition {
 
 export function expectedNextType(token?: Token|null): TokenType[] {
     if (!token) {
-        return [TokenType.FIELD, TokenType.BRACKET_OPEN];
+        return [TokenType.FIELD, TokenType.BRACKET_OPEN, TokenType.END];
     }
     switch (token.type) {
         case TokenType.FIELD:
@@ -88,15 +88,17 @@ export function expectedNextType(token?: Token|null): TokenType[] {
         case TokenType.OPERATOR:
             return [TokenType.VALUE];
         case TokenType.VALUE:
-            return [TokenType.CONDITION, TokenType.BRACKET_CLOSE, TokenType.EOL];
+            return [TokenType.CONDITION, TokenType.BRACKET_CLOSE, TokenType.END];
         case TokenType.CONDITION:
             return [TokenType.FIELD, TokenType.BRACKET_OPEN];
         case TokenType.BRACKET_OPEN:
             return [TokenType.FIELD];
         case TokenType.BRACKET_CLOSE:
-            return [TokenType.CONDITION];
+            return [TokenType.CONDITION, TokenType.END];
+        case TokenType.END:
+            return [];
         default:
-            return [TokenType.FIELD];
+            return [];
     }
 
 }
@@ -104,6 +106,7 @@ export function expectedNextType(token?: Token|null): TokenType[] {
 export function validateStream(tokens: Token[]) {
     let currentToken: Token|null = null;
     let depth = 0;
+    tokens = tokens.concat([new Token(TokenType.END, "")]);
 
     for(let i = 0; i < tokens.length; i++) {
         let expectedTypes = expectedNextType(currentToken);
@@ -122,9 +125,13 @@ export function validateStream(tokens: Token[]) {
             // Condition can not be at the end of the string
             expectedTypes = expectedTypes.filter(t => t !== TokenType.CONDITION);
         }
-        if(depth <= 0) {
+        if(depth < 0) {
             // Can not close more braces than there are opened
             expectedTypes = expectedTypes.filter(t => t !== TokenType.BRACKET_CLOSE);
+        }
+        if(depth > 0) {
+            // Can not have EOL before all braces are closed
+            expectedTypes = expectedTypes.filter(t => t !== TokenType.END);
         }
         if(expectedTypes.indexOf(currentToken.type) < 0) {
             // tslint:disable-next-line:no-console
@@ -136,7 +143,6 @@ export function validateStream(tokens: Token[]) {
 }
 
 function toAst(tokens: Token[], depth: number = 0): IASTNode|null {
-    validateStream(tokens);
     let firstProperty: IASTNode|null = null;
     let condition: Condition|null = null;
     let token: Token|null = null;
@@ -185,5 +191,7 @@ function toAst(tokens: Token[], depth: number = 0): IASTNode|null {
 }
 
 export default function ast(tokens: Token[]): IASTNode|null {
-    return toAst(tokens.filter(t => t.type !== TokenType.WHITESPACE));
+    let filteredTokens = tokens.filter(t => t.type !== TokenType.WHITESPACE);
+    validateStream(filteredTokens);
+    return toAst(filteredTokens);
 }
