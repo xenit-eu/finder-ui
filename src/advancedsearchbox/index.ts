@@ -67,6 +67,7 @@ class CustomAutoComplete implements IAutocompleteProvider {
         const type = term ? term.type : "text";
         if (type === "date") {
             return Promise.resolve([{
+                text: "",
                 render: (element: HTMLElement, self: any) => this.datepicker.render(element, self, isNaN(Date.parse(value)) ? new Date() : new Date(value)),
             }]);
         }

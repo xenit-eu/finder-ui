@@ -2,6 +2,7 @@ import { expectedNextType } from "./ast";
 import { lexUntil, Token, TokenType } from "./lexer";
 
 export type AutocompleteValue_t = string | {
+    text: string,
     render?: (element: HTMLLIElement, data: any, cur: any) => void;
 };
 

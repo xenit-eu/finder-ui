@@ -14,11 +14,25 @@ export function insertHint(cm: Editor, self: {from: Position, to: Position}, dat
     cm.focus();
 }
 
-function quoteStringIfRequired(text?: String): String | null | undefined {
-    if(text && text.indexOf(" ") >= 0) {
-        return JSON.stringify(text);
+function addHintFunction(item: string|{text: string}): {text: string, hint: any} {
+    if(typeof item === "string") {
+        return {
+            text: item,
+            hint: insertHint,
+        };
+    } else {
+        return {
+            ...item,
+            hint: insertHint,
+        };
     }
-    return text;
+}
+
+function quoteStringIfRequired(item: { text: string }): { text: string } {
+    if(item.text && item.text.indexOf(" ") >= 0) {
+        return {...item, text: JSON.stringify(item.text)};
+    }
+    return item;
 }
 
 export function createHinter(autocomplete: IAutocompleteProvider) {
@@ -44,8 +58,7 @@ export function createHinter(autocomplete: IAutocompleteProvider) {
         }
 
         getHints(autocomplete, tokens).then(items => ({
-            list: items.map(item => { return (typeof item === "string") ? ({ text: item, hint: insertHint }) : ({ ...item, hint: insertHint }); })
-                .map(item => ({ ...item, text: quoteStringIfRequired(item.text) })),
+            list: items.map(addHintFunction).map(quoteStringIfRequired),
             from: Pos(cursorPos.line, lastCmToken.start + insertedTok),
             to: Pos(cursorPos.line, lastCmToken.end),
         })).then(resolve);
