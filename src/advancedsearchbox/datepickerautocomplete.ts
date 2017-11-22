@@ -1,6 +1,7 @@
-import { Editor, Hints } from "codemirror";
-const Flatpickr = require('flatpickr');
-import 'flatpickr/dist/themes/material_blue.css';
+import { Editor } from "codemirror";
+import { Hints } from "codemirror/addon/hint/show-hint";
+const Flatpickr = require("flatpickr");
+import "flatpickr/dist/themes/material_blue.css";
 
 export class DatepickerAutocomplete {
     public constructor(private cm: () => Editor, private dateToStr: (d: Date) => string) {
@@ -12,10 +13,10 @@ export class DatepickerAutocomplete {
             inline: true,
             static: true,
             defaultDate: currentValue || new Date(),
-            onClose: (selectedDate)  => this.pick(selectedDate[0], self),
+            onClose: (selectedDate: Date[]) => this.pick(selectedDate[0], self),
         });
 
-        setTimeout(() => {element.hintId = null; }, 0);
+        setTimeout(() => { (<any>element).hintId = null; }, 0);
     }
 
     private pick(date: Date, hints: Hints) {

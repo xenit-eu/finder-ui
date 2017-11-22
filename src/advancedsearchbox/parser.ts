@@ -1,6 +1,5 @@
-import {StringStream} from "codemirror";
-
-const CodeMirror = require('codemirror');
+import { StringStream } from "codemirror";
+const CodeMirror = require("codemirror");
 
 export enum TokenType {
     FIELD,
@@ -17,7 +16,7 @@ export class Token {
     }
 
     public toString(): string {
-        return TokenType[this.type]+"("+JSON.stringify(this.value)+")";
+        return TokenType[this.type] + "(" + JSON.stringify(this.value) + ")";
     }
 };
 
@@ -29,7 +28,7 @@ type ParseState_t = {
 };
 
 function getNextFieldState(state: ParseState_t) {
-    switch(state.fieldState) {
+    switch (state.fieldState) {
         case TokenType.FIELD:
             return TokenType.OPERATOR;
         case TokenType.OPERATOR:
@@ -43,15 +42,15 @@ function getNextFieldState(state: ParseState_t) {
 
 function eatUntil(stream: StringStream, regex: RegExp): string {
     let incrementalValue = "";
-    while(!stream.eol()) {
+    while (!stream.eol()) {
         let char = stream.peek();
         if (char === null) {
             break;
         }
-        if(regex.test(char)) {
+        if (regex.test(char)) {
             return incrementalValue;
         }
-        incrementalValue+=stream.next();
+        incrementalValue += stream.next();
     }
     return incrementalValue;
 }
@@ -59,7 +58,7 @@ function eatUntil(stream: StringStream, regex: RegExp): string {
 function nextField(state: ParseState_t, incrementalValue: string): Token {
     let nextState = getNextFieldState(state);
     let currentState = state.fieldState;
-    if(currentState === TokenType.VALUE) {
+    if (currentState === TokenType.VALUE) {
         state.firstField = false;
     }
 
@@ -79,39 +78,39 @@ export function initialState(): ParseState_t {
 
 export function parseIncremental(stream: StringStream, state: ParseState_t): Token {
     let char = stream.peek();
-    if(state.inString) {
+    if (state.inString) {
         let nextToken = nextField(state, eatUntil(stream, /"/));
         stream.next(); // Skip over "
         state.inString = false;
         return nextToken;
     }
 
-    if(char !== null && " \n\r\t".indexOf(char) > -1 && !state.inString) {
+    if (char !== null && " \n\r\t".indexOf(char) > -1 && !state.inString) {
         stream.next();
         return new Token(TokenType.WHITESPACE, char);
     }
 
-    if(char === "(") {
+    if (char === "(") {
         stream.next();
         state.firstField = true;
         state.depth++;
         return new Token(TokenType.BRACKET_OPEN, char);
     }
 
-    if(char === ")") {
+    if (char === ")") {
         stream.next();
         state.firstField = false;
         state.depth--;
         return new Token(TokenType.BRACKET_CLOSE, char);
     }
 
-    if(stream.match("AND", true, true)) {
+    if (stream.match("AND", true, true)) {
         return new Token(TokenType.CONDITION, "AND");
-    } else if(stream.match("OR", true, true)) {
+    } else if (stream.match("OR", true, true)) {
         return new Token(TokenType.CONDITION, "OR");
     }
 
-    if(char === '"') {
+    if (char === '"') {
         state.inString = true;
         stream.next();
         return parseIncremental(stream, state);
@@ -125,7 +124,7 @@ export function parse(str: string): Token[] {
     let tokens: Token[] = [];
     let stream = new CodeMirror.StringStream(str);
 
-    while(!stream.eol()) {
+    while (!stream.eol()) {
         tokens.push(parseIncremental(stream, state));
     }
     return tokens;
@@ -136,17 +135,17 @@ export function parseUntil(str: string, pos: number): Token[] {
     let tokens: Token[] = [];
     let stream: StringStream = new CodeMirror.StringStream(str);
 
-    while(stream.pos < pos && ! stream.eol()) {
+    while (stream.pos < pos && !stream.eol()) {
         tokens.push(parseIncremental(stream, state));
     }
     return tokens;
 }
 
 export function expectedNextType(token?: Token): TokenType[] {
-    if(!token) {
+    if (!token) {
         return [TokenType.FIELD];
     }
-    switch(token.type) {
+    switch (token.type) {
         case TokenType.FIELD:
             return [TokenType.OPERATOR];
         case TokenType.OPERATOR:

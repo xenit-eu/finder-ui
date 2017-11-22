@@ -26,13 +26,13 @@ const muiTheme = getMuiTheme({
 const iconColor = "#09A89E";
 
 // Codemirror
-import {defineMode, Editor} from "codemirror";
-const CodeMirror = require('react-codemirror');
-import "codemirror/lib/codemirror.css";
-import { DatepickerAutocomplete} from "./datepickerautocomplete";
-import { AutocompleteValue_t, IAutocompleteProvider } from "./typeahead";
-import { createHinter, createMode } from "./codemirror";
+import { defineMode, Editor } from "codemirror";
+const CodeMirror = require("react-codemirror");
 import "codemirror/addon/hint/show-hint";
+import "codemirror/lib/codemirror.css";
+import { createHinter, createMode } from "./codemirror";
+import { DatepickerAutocomplete } from "./datepickerautocomplete";
+import { AutocompleteValue_t, IAutocompleteProvider } from "./typeahead";
 
 import "./index.less"; // to be imported after other css, to fix layout problems.
 
@@ -44,25 +44,25 @@ function toDateString(d: Date): string {
 
 class CustomAutoComplete implements IAutocompleteProvider {
 
-    public constructor (private searchableTerms: SearchableTerm_t[], private datepicker: DatepickerAutocomplete) {
+    public constructor(private searchableTerms: SearchableTerm_t[], private datepicker: DatepickerAutocomplete) {
     }
 
     public needFields(): Promise<AutocompleteValue_t[]> {
         return Promise.resolve(this.searchableTerms.map((t: SearchableTerm_t) => t.label));
     }
 
-    public needOperators (parsedCategory: string): Promise<AutocompleteValue_t[]> {
+    public needOperators(parsedCategory: string): Promise<AutocompleteValue_t[]> {
         const term = this.searchableTerms.filter((t: SearchableTerm_t) => t.label === parsedCategory)[0];
         const type = term ? term.type : "text";
         return Promise.resolve(type === "date" ? ["on", "from", "till"] : ["=", "contains"]);
     }
 
-    public needValues (parsedCategory: string, parsedOperator: string, value: string): Promise<AutocompleteValue_t[]> {
+    public needValues(parsedCategory: string, parsedOperator: string, value: string): Promise<AutocompleteValue_t[]> {
         const term = this.searchableTerms.filter((t: SearchableTerm_t) => t.label === parsedCategory)[0];
         const type = term ? term.type : "text";
         if (type === "date") {
             return Promise.resolve([{
-                render: (element, self) => this.datepicker.render(element, self, isNaN(Date.parse(value))?new Date():new Date(value)),
+                render: (element: HTMLElement, self: any) => this.datepicker.render(element, self, isNaN(Date.parse(value)) ? new Date() : new Date(value)),
             }]);
         }
         return Promise.resolve([]);
@@ -89,12 +89,12 @@ export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, any> {
 
     private customAutoComplete: CustomAutoComplete;
     private datepicker: DatepickerAutocomplete;
-    private codemirror: Editor;
+    private codemirror: Editor|null;
     private query: string;
 
     constructor(props: AdvancedSearchBox_t) {
         super(props);
-        this.datepicker = new DatepickerAutocomplete(() => this.codemirror, toDateString);
+        this.datepicker = new DatepickerAutocomplete(() => <Editor>this.codemirror, toDateString);
         this.customAutoComplete = new CustomAutoComplete(props.searchableTerms, this.datepicker);
     }
 
@@ -112,7 +112,7 @@ export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, any> {
     public render() {
         return _.div({ className: "search-box" }, [
             __(CodeMirror, {
-                ref: (elem) => { this.codemirror = elem?elem.getCodeMirror():null; },
+                ref: (elem: ReactCodeMirror.ReactCodeMirror|null) => { this.codemirror = elem ? elem.getCodeMirror() : null; },
                 options: {
                     hintOptions: {
                         hint: createHinter(this.customAutoComplete),
@@ -121,15 +121,15 @@ export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, any> {
                     mode: "finder-query",
                 },
                 onChange: this.onChange.bind(this),
-                onCursorActivity: (cm: Editor) => cm.showHint(),
+                onCursorActivity: (cm: Editor) => (<any>cm).showHint(),
 
             }),
-        _.div({ key: "save-icon", className: "save-icon icon" },__(StarIcon, { color: iconColor, onClick: () => this.props.onSaveAsQuery(prompt("Save query as") || "query") })),
-        _.div({ key: "div", className: "search-icon icon" },
-            this.props.searching
-                ? __(CircularProgress, { size: 24 })
-                : __(SearchIcon, { color: iconColor, onClick: () => this.props.onSearch(FinderQuery.fromAdvancedQuery(this.query)) }),
-        ),
+            _.div({ key: "save-icon", className: "save-icon icon" }, __(StarIcon, { color: iconColor, onClick: () => this.props.onSaveAsQuery(prompt("Save query as") || "query") })),
+            _.div({ key: "div", className: "search-icon icon" },
+                this.props.searching
+                    ? __(CircularProgress, { size: 24 })
+                    : __(SearchIcon, { color: iconColor, onClick: () => this.props.onSearch(FinderQuery.fromAdvancedQuery(this.query)) }),
+            ),
         ]);
     }
 
