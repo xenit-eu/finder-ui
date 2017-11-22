@@ -19,6 +19,9 @@ export class DatepickerAutocomplete {
     }
 
     private pick(date: Date, hints: any) {
-        let doc = this.cm().getDoc().replaceRange(this.dateToStr(date), hints.from, hints.to);
+        let cm = this.cm();
+        let doc = cm.getDoc();
+        doc.replaceRange(this.dateToStr(date), hints.from, hints.to);
+        cm.focus();
     }
 }
