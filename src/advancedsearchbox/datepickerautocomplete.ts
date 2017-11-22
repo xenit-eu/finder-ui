@@ -1,6 +1,7 @@
 import { Editor } from "codemirror";
 const Flatpickr = require("flatpickr");
 import "flatpickr/dist/themes/material_blue.css";
+import { insertHint } from "./codemirror";
 
 export class DatepickerAutocomplete {
     public constructor(private cm: () => Editor, private dateToStr: (d: Date) => string) {
@@ -19,9 +20,6 @@ export class DatepickerAutocomplete {
     }
 
     private pick(date: Date, hints: any) {
-        let cm = this.cm();
-        let doc = cm.getDoc();
-        doc.replaceRange(this.dateToStr(date), hints.from, hints.to);
-        cm.focus();
+        insertHint(this.cm(), hints, {text: this.dateToStr(date)});
     }
 }
