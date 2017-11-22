@@ -1,4 +1,4 @@
-import { expectedNextType, parseUntil, Token, TokenType } from "./parser";
+import { expectedNextType, lexUntil, Token, TokenType } from "./lexer";
 
 export type AutocompleteValue_t = string | {
     render?: (element: HTMLLIElement, data: any, cur: any) => void;

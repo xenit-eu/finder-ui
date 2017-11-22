@@ -20,14 +20,14 @@ export class Token {
     }
 };
 
-type ParseState_t = {
+type LexState_t = {
     inString: boolean,
     fieldState: TokenType,
     firstField: boolean,
     depth: number,
 };
 
-function getNextFieldState(state: ParseState_t) {
+function getNextFieldState(state: LexState_t) {
     switch (state.fieldState) {
         case TokenType.FIELD:
             return TokenType.OPERATOR;
@@ -55,7 +55,7 @@ function eatUntil(stream: StringStream, regex: RegExp): string {
     return incrementalValue;
 }
 
-function nextField(state: ParseState_t, incrementalValue: string): Token {
+function nextField(state: LexState_t, incrementalValue: string): Token {
     let nextState = getNextFieldState(state);
     let currentState = state.fieldState;
     if (currentState === TokenType.VALUE) {
@@ -67,7 +67,7 @@ function nextField(state: ParseState_t, incrementalValue: string): Token {
     return new Token(currentState, incrementalValue);
 }
 
-export function initialState(): ParseState_t {
+export function initialState(): LexState_t {
     return {
         inString: false,
         fieldState: TokenType.FIELD,
@@ -76,7 +76,7 @@ export function initialState(): ParseState_t {
     };
 }
 
-export function parseIncremental(stream: StringStream, state: ParseState_t): Token {
+export function lexIncremental(stream: StringStream, state: LexState_t): Token {
     let char = stream.peek();
     if (state.inString) {
         let nextToken = nextField(state, eatUntil(stream, /"/));
@@ -113,30 +113,30 @@ export function parseIncremental(stream: StringStream, state: ParseState_t): Tok
     if (char === '"') {
         state.inString = true;
         stream.next();
-        return parseIncremental(stream, state);
+        return lexIncremental(stream, state);
     }
 
     return nextField(state, eatUntil(stream, /[\r\n\t\s\(\)]/));
 }
 
-export function parse(str: string): Token[] {
+export function lex(str: string): Token[] {
     let state = initialState();
     let tokens: Token[] = [];
     let stream = new CodeMirror.StringStream(str);
 
     while (!stream.eol()) {
-        tokens.push(parseIncremental(stream, state));
+        tokens.push(lexIncremental(stream, state));
     }
     return tokens;
 }
 
-export function parseUntil(str: string, pos: number): Token[] {
+export function lexUntil(str: string, pos: number): Token[] {
     let state = initialState();
     let tokens: Token[] = [];
     let stream: StringStream = new CodeMirror.StringStream(str);
 
     while (stream.pos < pos && !stream.eol()) {
-        tokens.push(parseIncremental(stream, state));
+        tokens.push(lexIncremental(stream, state));
     }
     return tokens;
 }

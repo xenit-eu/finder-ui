@@ -1,5 +1,5 @@
 import { Editor, Pos, StringStream } from "codemirror";
-import { expectedNextType, initialState, parseIncremental, parseUntil, Token, TokenType } from "./parser";
+import { expectedNextType, initialState, lexIncremental, lexUntil, Token, TokenType } from "./lexer";
 import getHints, { IAutocompleteProvider } from "./typeahead";
 
 export function createHinter(autocomplete: IAutocompleteProvider) {
@@ -9,7 +9,7 @@ export function createHinter(autocomplete: IAutocompleteProvider) {
 
         let cmTokens = cm.getLineTokens(cursorPos.line).filter(token => token.start < cursorPos.ch);
 
-        let tokens = parseUntil(lineContents, cursorPos.ch);
+        let tokens = lexUntil(lineContents, cursorPos.ch);
 
         if (tokens.length < 1 || cmTokens.length < 1) {
             return resolve({ list: [] });
@@ -35,6 +35,6 @@ export function createHinter(autocomplete: IAutocompleteProvider) {
 export function createMode() {
     return () => ({
         startState: initialState,
-        token: (stream: StringStream, state: any) => TokenType[parseIncremental(stream, state).type].toLowerCase(),
+        token: (stream: StringStream, state: any) => TokenType[lexIncremental(stream, state).type].toLowerCase(),
     });
 }
