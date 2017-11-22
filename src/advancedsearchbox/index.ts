@@ -29,6 +29,7 @@ const iconColor = "#09A89E";
 import { defineMode, Editor } from "codemirror";
 const CodeMirror = require("react-codemirror");
 import "codemirror/addon/hint/show-hint";
+import "codemirror/addon/hint/show-hint.css";
 import "codemirror/lib/codemirror.css";
 
 import ast, { IASTNode } from "./ast";
