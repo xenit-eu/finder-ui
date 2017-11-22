@@ -130,6 +130,8 @@ export function lex(str: string): Token[] {
     return tokens;
 }
 
+export default lex;
+
 export function lexUntil(str: string, pos: number): Token[] {
     let state = initialState();
     let tokens: Token[] = [];

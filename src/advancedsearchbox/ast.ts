@@ -1,23 +1,39 @@
 import { Token, TokenType } from "./lexer";
 
-interface IASTNode {
-    toJSON(): any;
+export type AstJson_t = { and: AstJson_t[] } | { or: AstJson_t[] } | { property: { field: string, operator: string, value: string } };
+
+export interface IASTNode {
+    toJSON(): AstJson_t;
+    toString(): string;
 }
 
 class Condition implements IASTNode {
     public constructor(public condition: "and"|"or", public nodes: IASTNode[]) {};
 
-    public toJSON() {
-        return {
-            [this.condition]: this.nodes.map(node => node.toJSON()),
-        };
+    public toJSON(): AstJson_t {
+        switch (this.condition) {
+            case "and":
+                return {
+                    and: this.nodes.map(node => node.toJSON()),
+                };
+            case "or":
+                return {
+                    or: this.nodes.map(node => node.toJSON()),
+                };
+            default:
+                throw new TypeError("Condition is required to be 'and' or 'or', got " + this.condition);
+        }
+    }
+
+    public toString(): string {
+        return this.nodes.map(node => (node instanceof Condition ? ("(" + node + ")") : node).toString()).join(" " + this.condition + " ");
     }
 }
 
 class Property implements IASTNode {
     public constructor(public field: string, public operator: string, public value: string) {};
 
-    public toJSON() {
+    public toJSON(): AstJson_t {
         return {
             property: {
                 field: this.field,
@@ -25,6 +41,10 @@ class Property implements IASTNode {
                 value: this.value,
             },
         };
+    }
+
+    public toString(): string {
+        return this.field + " " + this.operator + " " + this.value;
     }
 }
 

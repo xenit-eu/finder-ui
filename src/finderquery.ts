@@ -1,3 +1,4 @@
+import { AstJson_t, IASTNode } from "./advancedsearchbox/ast";
 import { traverseAndReplace } from "./utils";
 /*
 type All_t = {all: string};
@@ -153,6 +154,45 @@ export class FinderQuery {
             default:
                 return { name: term.category, value };
         }
+    }
+
+    private static astToApix(query: AstJson_t): any {
+        let ast = <any> query;
+        if(ast.property) {
+            let property: any = { name: ast.property.field };
+            switch(ast.property.operator) {
+                case "=":
+                default:
+                    property.value = ast.property.value;
+                    break;
+                case "contains":
+                    property.value = "*"+ast.property.value+"*";
+                    break;
+                case "on":
+                    property.range = {start: ast.property.value, end: ast.property.value};
+                    break;
+                case "from":
+                    property.range = {start: ast.property.value, end: "MAX"};
+                    break;
+                case "till":
+                    property.range = {start: "MIN", end: ast.property.value};
+                    break;
+            }
+            return { property };
+        } else if (ast.and) {
+            return { and: ast.and.map(FinderQuery.astToApix) };
+        } else if(ast.or) {
+            return { or: ast.or.map(FinderQuery.astToApix) };
+        }
+
+    }
+
+    public static fromAST(query: IASTNode|null): FinderQuery {
+        if(!query) {
+            return new FinderQuery({all: "**"});
+        }
+
+        return new FinderQuery(FinderQuery.astToApix(query.toJSON()));
     }
 
     /**

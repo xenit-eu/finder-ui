@@ -30,8 +30,11 @@ import { defineMode, Editor } from "codemirror";
 const CodeMirror = require("react-codemirror");
 import "codemirror/addon/hint/show-hint";
 import "codemirror/lib/codemirror.css";
+
+import ast, { IASTNode } from "./ast";
 import { createHinter, createMode } from "./codemirror";
 import { DatepickerAutocomplete } from "./datepickerautocomplete";
+import lex, { Token, TokenType } from "./lexer";
 import { AutocompleteValue_t, IAutocompleteProvider } from "./typeahead";
 
 import "./index.less"; // to be imported after other css, to fix layout problems.
@@ -91,7 +94,7 @@ export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, any> {
     private customAutoComplete: CustomAutoComplete;
     private datepicker: DatepickerAutocomplete;
     private codemirror: Editor|null;
-    private query: string;
+    private query: IASTNode|null = null;
 
     constructor(props: AdvancedSearchBox_t) {
         super(props);
@@ -99,15 +102,25 @@ export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, any> {
         this.customAutoComplete = new CustomAutoComplete(props.searchableTerms, this.datepicker);
     }
 
-    public onChange(query: any) {
-        this.query = query;
-        // traverse the query to replace the labels to names necessary for the query.
-        /*
-        traverseAndReplace(this.query, (prop: string, val: any) => {
-            if (prop === "category" && this.searcheableTermsByLabel[val]) {
-                return this.searcheableTermsByLabel[val].name;
+    public onChange(query: string) {
+
+        const replaceFieldWithSearchTerm = (token: Token) => {
+            if(token.type !== TokenType.FIELD) {
+                return token;
             }
-        });*/
+            let matchedTerm = this.props.searchableTerms.find(term => term.label === token.value);
+            if(!matchedTerm) {
+                return token;
+            }
+            return new Token(token.type, matchedTerm.name);
+        };
+
+        try {
+            let tokens = lex(query).map(replaceFieldWithSearchTerm);
+            this.query = ast(tokens);
+        } catch(e) {
+
+        }
     }
 
     public render() {
@@ -129,7 +142,7 @@ export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, any> {
             _.div({ key: "div", className: "search-icon icon" },
                 this.props.searching
                     ? __(CircularProgress, { size: 24 })
-                    : __(SearchIcon, { color: iconColor, onClick: () => this.props.onSearch(FinderQuery.fromAdvancedQuery(this.query)) }),
+                    : __(SearchIcon, { color: iconColor, onClick: () => this.props.onSearch(FinderQuery.fromAST(this.query)) }),
             ),
         ]);
     }
