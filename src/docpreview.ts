@@ -7,5 +7,5 @@ import { createElement as __, DOM as _, ReactElement } from "react";
 //@Param src string "url of the document to be displayed"
 
 export function  DocPreview ({src}: {src: string}): ReactElement<any> {
-    return _.iframe({border: "0", src});
+    return _.iframe({ style: { border: "none" }, src });
 }

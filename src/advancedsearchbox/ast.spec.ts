@@ -7,7 +7,9 @@ describe("Advanced searchbox AST", () => {
 
         let tree = ast(tokens);
 
-        expect(tree.toJSON()).toEqual({
+        expect(tree).not.toBeNull();
+
+        expect(tree && tree.toJSON()).toEqual({
             property: {
                 field: "creator",
                 operator: "=",
@@ -20,8 +22,9 @@ describe("Advanced searchbox AST", () => {
         let tokens = lex("creator = admin AND modifier = admin");
 
         let tree = ast(tokens);
+        expect(tree).not.toBeNull();
 
-        expect(tree.toJSON()).toEqual({
+        expect(tree && tree.toJSON()).toEqual({
             and: [
                 {
                     property: {
@@ -45,8 +48,9 @@ describe("Advanced searchbox AST", () => {
         let tokens = lex("creator = admin AND (modifier = admin OR modified before 2017-01-01)");
 
         let tree = ast(tokens);
+        expect(tree).not.toBeNull();
 
-        expect(tree.toJSON()).toEqual({
+        expect(tree && tree.toJSON()).toEqual({
             and: [
                 {
                     property: {
@@ -81,8 +85,9 @@ describe("Advanced searchbox AST", () => {
         let tokens = lex("creator = admin AND modifier = admin AND modified before 2017-01-01");
 
         let tree = ast(tokens);
+        expect(tree).not.toBeNull();
 
-        expect(tree.toJSON()).toEqual({
+        expect(tree && tree.toJSON()).toEqual({
             and: [
                 {
                     property: {

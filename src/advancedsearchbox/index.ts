@@ -113,7 +113,7 @@ export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, any> {
     public render() {
         return _.div({ className: "search-box" }, [
             __(CodeMirror, {
-                ref: (elem: ReactCodeMirror.ReactCodeMirror|null) => { this.codemirror = elem ? elem.getCodeMirror() : null; },
+                ref: (elem: any) => { this.codemirror = elem ? elem.getCodeMirror() : null; },
                 options: {
                     hintOptions: {
                         hint: createHinter(this.customAutoComplete),

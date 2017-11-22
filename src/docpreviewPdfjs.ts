@@ -5,5 +5,5 @@ export function DocPreviewPdfJs({src}: { src: string }): ReactElement<any> {
         return _.div({ className: "PDFJS_Without_file" });
     }
     const pdsJsWrapperSrc = "/alfresco/s/finder/resources/static/pdfjs/index.html?file=" + encodeURIComponent(src);
-    return _.iframe({ className: "pdfjs-container-iframe", border: "0", src: pdsJsWrapperSrc });
+    return _.iframe({ className: "pdfjs-container-iframe", style: { border: "none" }, src: pdsJsWrapperSrc });
 }

@@ -29,13 +29,26 @@ class Property implements IASTNode {
 }
 
 function astProperty(tokens: Token[]): Property {
-    return new Property(tokens.shift().value, tokens.shift().value, tokens.shift().value);
+    let field = tokens.shift();
+    let operator = tokens.shift();
+    let value = tokens.shift();
+    if (!field || !operator || !value) {
+        throw new SyntaxError("Missing part of property expression");
+    }
+    return new Property(field.value, operator.value, value.value);
 }
 
-function astCondition(tokens: Token[], firstNode: IASTNode): Condition {
-    let conditionType = tokens.shift().value.toLowerCase();
+function astCondition(tokens: Token[], firstNode: IASTNode | null): Condition {
+    let conditionToken = tokens.shift();
+    if(!conditionToken) {
+        throw new SyntaxError("conditionToken is null");
+    }
+    let conditionType = conditionToken.value.toLowerCase();
     if(conditionType !== "and" && conditionType !== "or") {
         throw new SyntaxError("Condition must be 'and' or 'or', got " + JSON.stringify(conditionType));
+    }
+    if(!firstNode) {
+        throw new TypeError("firstNode is null.");
     }
     if(firstNode instanceof Condition && conditionType === firstNode.condition) {
         return firstNode;
@@ -43,7 +56,7 @@ function astCondition(tokens: Token[], firstNode: IASTNode): Condition {
     return new Condition(conditionType, [firstNode]);
 }
 
-export function expectedNextType(token?: Token): TokenType[] {
+export function expectedNextType(token?: Token|null): TokenType[] {
     if (!token) {
         return [TokenType.FIELD, TokenType.BRACKET_OPEN];
     }
@@ -67,7 +80,7 @@ export function expectedNextType(token?: Token): TokenType[] {
 }
 
 export function validateStream(tokens: Token[]) {
-    let currentToken = null;
+    let currentToken: Token|null = null;
 
     for(let i = 0; i < tokens.length; i++) {
         let expectedTypes = expectedNextType(currentToken);
@@ -80,11 +93,11 @@ export function validateStream(tokens: Token[]) {
     }
 }
 
-function toAst(tokens: Token[]): IASTNode {
+function toAst(tokens: Token[]): IASTNode|null {
     validateStream(tokens);
     let firstProperty: IASTNode|null = null;
     let condition: Condition|null = null;
-    let token;
+    let token: Token|null = null;
     // tslint:disable-next-line:no-conditional-assignment
     while(token = tokens[0]) {
         if(token.type === TokenType.FIELD) {
@@ -103,7 +116,12 @@ function toAst(tokens: Token[]): IASTNode {
             if(!condition) {
                 firstProperty = toAst(tokens);
             } else {
-                condition.nodes.push(toAst(tokens));
+                let ast = toAst(tokens);
+                if(!ast) {
+                    throw new TypeError("ast is null");
+                }
+
+                condition.nodes.push(ast);
             }
         }
 
@@ -116,6 +134,6 @@ function toAst(tokens: Token[]): IASTNode {
     return condition||firstProperty;
 }
 
-export default function ast(tokens: Token[]): IASTNode {
+export default function ast(tokens: Token[]): IASTNode|null {
     return toAst(tokens.filter(t => t.type !== TokenType.WHITESPACE));
 }

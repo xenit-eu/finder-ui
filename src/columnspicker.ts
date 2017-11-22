@@ -2,7 +2,7 @@ import Dialog from "material-ui/Dialog";
 import FlatButton from "material-ui/FlatButton";
 import FontIcon from "material-ui/FontIcon";
 import IconButton from "material-ui/IconButton";
-import { Component, createElement as __, DOM as _ } from "react";
+import { Component, createElement as __, CSSProperties, DOM as _ } from "react";
 
 import MenuItem from "material-ui/MenuItem";
 import SelectField from "material-ui/SelectField";
@@ -35,7 +35,7 @@ const sortableOptions = {
     },
 };
 
-const saveButtonStyle = {
+const saveButtonStyle: CSSProperties = {
     position: "relative",
     float: "right",
 };

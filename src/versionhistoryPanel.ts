@@ -10,7 +10,7 @@ import Subtitles from "material-ui/svg-icons/av/subtitles";
 import SocialPerson from "material-ui/svg-icons/social/person";
 
 import * as moment from "moment";
-import { Component, createElement as __, DOM as _, ReactElement } from "react";
+import { Component, createElement as __, CSSProperties, DOM as _, ReactElement } from "react";
 
 import "./versionhistoryPanel.less";
 
@@ -30,7 +30,7 @@ export type VersionsHistoryPanel_t = {
 
 const iconsize = 30;
 
-const avatarStyle = {
+const avatarStyle: CSSProperties = {
     color: "rgb(255, 255, 255)",
     backgroundColor: "rgb(188, 188, 188)",
     display: "inline-flex",
@@ -42,7 +42,7 @@ const avatarStyle = {
     µwidth: "30px",
 };
 
-const avatarSvgStyle = {
+const avatarSvgStyle: CSSProperties = {
     display: "inline-block",
     color: "rgb(255, 255, 255)",
     fill: "rgb(255, 255, 255)",
@@ -53,7 +53,7 @@ const avatarSvgStyle = {
     margin: "6px",
 };
 
-const avatar = _.div({size: iconsize, style: avatarStyle}, [
+const avatar = _.div({style: avatarStyle}, [
    _.svg({viewBox: "0 0 24 24", style: avatarSvgStyle}, [
       _.path({d: "M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"}),
    ]),

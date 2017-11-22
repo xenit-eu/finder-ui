@@ -23,7 +23,7 @@ describe("Treeview test", () => {
         let list = wrapper;
         const topListItems = list.find("ListItem");
         expect(topListItems.get(0).props[primaryText]).toBe("Parent");
-        const subItems = topListItems.at(0).prop("nestedItems").map((c: ReactElement<any>) => Fixture(c, { context: { muiTheme } }));
+        const subItems = (<any>topListItems).at(0).prop("nestedItems").map((c: ReactElement<any>) => Fixture(c, { context: { muiTheme } }));
         const subItem = subItems[0].find("ListItem").at(0);
         expect(subItem.prop(primaryText)).toBe("Child");
     });

@@ -62,10 +62,10 @@ export default function getHints(autocomplete: IAutocompleteProvider, tokens: To
     }
 
     return valuePromise.then(list => {
-        if (isGuessed && nextTokenTypes.includes(TokenType.BRACKET_OPEN)) {
+        if (isGuessed && nextTokenTypes.indexOf(TokenType.BRACKET_OPEN) >= 0) {
             list = list.concat(["("]);
         }
-        if (isGuessed && nextTokenTypes.includes(TokenType.BRACKET_CLOSE) && bracketDepth > 0) {
+        if (isGuessed && nextTokenTypes.indexOf(TokenType.BRACKET_CLOSE) >= 0 && bracketDepth > 0) {
             list = list.concat(")");
         }
         return list;

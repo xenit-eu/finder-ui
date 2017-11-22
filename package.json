@@ -27,8 +27,17 @@
   "homepage": "https://bitbucket.org/xenit/finder-ui#README.md",
   "dependencies": {
     "@types/codemirror": "0.0.51",
+    "@types/es6-promise": "0.0.33",
+    "@types/es6-shim": "^0.31.35",
+    "@types/material-ui": "^0.16.4",
+    "@types/node": "^8.0.53",
+    "@types/react": "^15.4.1",
+    "@types/react-addons-test-utils": "^0.14.20",
     "@types/react-codemirror": "^1.0.0",
+    "@types/react-dom": "^15.5.6",
+    "@types/react-tap-event-plugin": "0.0.30",
     "codemirror": "^5.31.0",
+    "es6-shim": "^0.35.3",
     "flatpickr": "^2.6.3",
     "material-ui": "^0.16.4",
     "moment": "^2.17.1",
@@ -43,7 +52,10 @@
     "sortablejs": "^1.6.0"
   },
   "devDependencies": {
-    "awesome-typescript-loader": "2.1.1",
+    "@types/enzyme": "^3.1.5",
+    "@types/jasmine": "^2.5.2",
+    "@types/core-js": "^0.9.43",
+    "awesome-typescript-loader": "^3.4.0",
     "core-js": "^2.5.1",
     "css-loader": "^0.28.4",
     "enzyme": "^2.6.0",
@@ -73,7 +85,7 @@
     "toolbox-loader": "0.0.3",
     "tslint": "^4.5.1",
     "tslint-custom": "git+ssh://git@bitbucket.org/xenit/tslint-custom.git",
-    "typescript": "2.0.10",
+    "typescript": "^2.5.0",
     "typings": "^2.0.0",
     "webpack": "^1.13.1"
   }

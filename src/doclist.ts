@@ -208,14 +208,16 @@ export function DocList({  className, columns, data, onDownloadButtonClick, onMe
         ]);
     }
     const headerelements = (<ReactElement<any>[]>[_.th({ key: "Menu" }, "")])
-        .concat(togglable ? [_.th({ key: "toggle", align: "center", width: "1px" }, downloadComponents)] : [])
+        .concat(togglable ? [_.th({ key: "toggle", style: { textAlign: "center", width: "1px" } }, downloadComponents)] : [])
         .concat(columns.map(c => SortableTh(c, onSortColumnSelected, translations)));
 
     const header = _.thead({ key: "header" }, [_.tr({ key: "head" }, headerelements)]);
     const style = rowStyle ? rowStyle : (i: number) => ({});
     const singleRowElements = (row: Row_t, i: number) =>
         [_.td({ key: "_menu" }, __(RowMenu, { rowIndex: i, menuItems: rowMenu(i), onMenuSelected }))]
-            .concat((togglable ? [_.td({ key: "toggle", align: "center" }, __(Checkbox, { checked: rowToggled(i), onCheck: (ev: any, checked: boolean) => onRowToggled(checked, i, row) }))] : []))
+            .concat((togglable ? [
+                _.td({ key: "toggle", style: { textAlign: "center" } }, __(Checkbox, { checked: rowToggled(i), onCheck: (ev: any, checked: boolean) => onRowToggled(checked, i, row) })),
+            ] : []))
             .concat(columns.map(col => buildSingleTD(col, row, onRowSelected, i)));
 
     const bodycontent = data.map((row, i) => _.tr({ style: style(i), key: i }, singleRowElements(row, i)));

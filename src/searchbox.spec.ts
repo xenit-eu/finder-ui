@@ -1,4 +1,5 @@
 import "core-js";
+import "es6-shim";
 
 import { mount, shallow } from "enzyme";
 import { Component, createElement as __, DOM as _, PropTypes } from "react";
@@ -13,19 +14,6 @@ import { SearchBox, SearchBox_t } from "./searchbox";
 const jasmineEnzyme = require("jasmine-enzyme"); // no typings for jasmine-engine => require instead of import.
 
 const ENTER_KEY_CODE: number = 13;
-
-// !!!!! missing function in phantomjs !!!!!!
-if (!String.prototype.endsWith) {
-    String.prototype.endsWith = (searchString, position) => {
-        let subjectString = this.toString();
-        if (typeof position !== "number" || !isFinite(position) || Math.floor(position) !== position || position > subjectString.length) {
-            position = subjectString.length;
-        }
-        position -= searchString.length;
-        let lastIndex = subjectString.lastIndexOf(searchString, position);
-        return lastIndex !== -1 && lastIndex === position;
-    };
-}
 
 describe("SearchBox component tests", () => {
 
