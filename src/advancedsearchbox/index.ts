@@ -2,6 +2,7 @@ import CircularProgress from "material-ui/CircularProgress";
 import DatePicker from "material-ui/DatePicker";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import SearchIcon from "material-ui/svg-icons/action/search";
+import ErrorIcon from "material-ui/svg-icons/alert/error";
 import StarIcon from "material-ui/svg-icons/toggle/star-border";
 import { cloneElement, Component, createElement as __, DOM as _ } from "react";
 import { SearchableTerm_t } from "../searchbox";
@@ -81,6 +82,10 @@ export type AdvancedSearchBox_t = {
     onSaveAsQuery: (name: string) => void,
 };
 
+type AdvancedSearchBox_State_t = {
+    queryError?: Error,
+};
+
 //@Component AdvancedSearchBox
 //@ComponentDescription "Allows to type advanced queries using combination of OR and AND combined with parantheses"
 //@Method AdvancedSearchBox Returns ReactComponent
@@ -99,6 +104,9 @@ export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, any> {
 
     constructor(props: AdvancedSearchBox_t) {
         super(props);
+        this.state = {
+            queryError: null,
+        };
         this.datepicker = new DatepickerAutocomplete(() => <Editor>this.codemirror, toDateString);
         this.customAutoComplete = new CustomAutoComplete(props.searchableTerms, this.datepicker);
     }
@@ -119,8 +127,13 @@ export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, any> {
         try {
             let tokens = lex(query).map(replaceFieldWithSearchTerm);
             this.query = ast(tokens);
+            this.setState({
+                queryError: null,
+            });
         } catch(e) {
-
+            this.setState({
+                queryError: e,
+            });
         }
     }
 
@@ -137,13 +150,14 @@ export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, any> {
                 },
                 onChange: this.onChange.bind(this),
                 onCursorActivity: (cm: Editor) => (<any>cm).showHint(),
-
             }),
             _.div({ key: "save-icon", className: "save-icon icon" }, __(StarIcon, { color: iconColor, onClick: () => this.props.onSaveAsQuery(prompt("Save query as") || "query") })),
-            _.div({ key: "div", className: "search-icon icon" },
+            _.div({ key: "div", className: "search-icon icon", title: this.state.queryError?this.state.queryError.toString():undefined },
                 this.props.searching
-                    ? __(CircularProgress, { size: 24 })
-                    : __(SearchIcon, { color: iconColor, onClick: () => this.props.onSearch(FinderQuery.fromAST(this.query)) }),
+                    ? __(CircularProgress, { size: 24 }) : (
+                        this.state.queryError ? __(ErrorIcon, { color: iconColor })
+                            : __(SearchIcon, { color: iconColor, onClick: () => this.props.onSearch(FinderQuery.fromAST(this.query)) })
+                    ),
             ),
         ]);
     }

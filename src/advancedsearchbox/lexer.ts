@@ -9,6 +9,7 @@ export enum TokenType {
     WHITESPACE,
     BRACKET_OPEN,
     BRACKET_CLOSE,
+    EOL,
 };
 
 export class Token {

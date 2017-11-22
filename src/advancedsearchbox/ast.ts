@@ -7,6 +7,8 @@ export interface IASTNode {
     toString(): string;
 }
 
+export class InternalError extends Error {};
+
 class Condition implements IASTNode {
     public constructor(public condition: "and"|"or", public nodes: IASTNode[]) {};
 
@@ -61,14 +63,14 @@ function astProperty(tokens: Token[]): Property {
 function astCondition(tokens: Token[], firstNode: IASTNode | null): Condition {
     let conditionToken = tokens.shift();
     if(!conditionToken) {
-        throw new SyntaxError("conditionToken is null");
+        throw new InternalError("conditionToken is null");
     }
     let conditionType = conditionToken.value.toLowerCase();
     if(conditionType !== "and" && conditionType !== "or") {
-        throw new SyntaxError("Condition must be 'and' or 'or', got " + JSON.stringify(conditionType));
+        throw new InternalError("Condition must be 'and' or 'or', got " + JSON.stringify(conditionType));
     }
     if(!firstNode) {
-        throw new TypeError("firstNode is null.");
+        throw new InternalError("firstNode is null.");
     }
     if(firstNode instanceof Condition && conditionType === firstNode.condition) {
         return firstNode;
@@ -86,7 +88,7 @@ export function expectedNextType(token?: Token|null): TokenType[] {
         case TokenType.OPERATOR:
             return [TokenType.VALUE];
         case TokenType.VALUE:
-            return [TokenType.CONDITION, TokenType.BRACKET_CLOSE];
+            return [TokenType.CONDITION, TokenType.BRACKET_CLOSE, TokenType.EOL];
         case TokenType.CONDITION:
             return [TokenType.FIELD, TokenType.BRACKET_OPEN];
         case TokenType.BRACKET_OPEN:
@@ -101,19 +103,39 @@ export function expectedNextType(token?: Token|null): TokenType[] {
 
 export function validateStream(tokens: Token[]) {
     let currentToken: Token|null = null;
+    let depth = 0;
 
     for(let i = 0; i < tokens.length; i++) {
         let expectedTypes = expectedNextType(currentToken);
         currentToken = tokens[i];
+        switch(currentToken.type) {
+            case TokenType.BRACKET_OPEN:
+                depth++;
+            break;
+            case TokenType.BRACKET_CLOSE:
+                depth--;
+                break;
+            default:
+        }
+
+        if (i === tokens.length - 1) {
+            // Condition can not be at the end of the string
+            expectedTypes = expectedTypes.filter(t => t !== TokenType.CONDITION);
+        }
+        if(depth <= 0) {
+            // Can not close more braces than there are opened
+            expectedTypes = expectedTypes.filter(t => t !== TokenType.BRACKET_CLOSE);
+        }
         if(expectedTypes.indexOf(currentToken.type) < 0) {
             // tslint:disable-next-line:no-console
             console.debug("Token stream: "+tokens.map(t => t.toString()).join(" "));
-            throw new SyntaxError("Unexpected token " + currentToken + " at position " + i + ". Expected " + JSON.stringify(expectedTypes.map(type => TokenType[type])));
+            throw new SyntaxError("Unexpected token " + currentToken + " at token " + i + ". Expected " + JSON.stringify(expectedTypes.map(type => TokenType[type])));
         }
     }
+
 }
 
-function toAst(tokens: Token[]): IASTNode|null {
+function toAst(tokens: Token[], depth: number = 0): IASTNode|null {
     validateStream(tokens);
     let firstProperty: IASTNode|null = null;
     let condition: Condition|null = null;
@@ -134,11 +156,11 @@ function toAst(tokens: Token[]): IASTNode|null {
         if(token.type === TokenType.BRACKET_OPEN) {
             tokens.shift();
             if(!condition) {
-                firstProperty = toAst(tokens);
+                firstProperty = toAst(tokens, depth + 1);
             } else {
-                let ast = toAst(tokens);
+                let ast = toAst(tokens, depth + 1);
                 if(!ast) {
-                    throw new TypeError("ast is null");
+                    throw new InternalError("ast is null");
                 }
 
                 condition.nodes.push(ast);
@@ -147,11 +169,19 @@ function toAst(tokens: Token[]): IASTNode|null {
 
         if(token.type === TokenType.BRACKET_CLOSE) {
             tokens.shift();
-            return condition||firstProperty;
+            if(depth > 0) {
+                return condition||firstProperty;
+            } else {
+                throw new InternalError("Unexpected token " + token + ". (depth = " + depth + ")");
+            }
         }
     }
 
-    return condition||firstProperty;
+    if(depth === 0) {
+        return condition||firstProperty;
+    } else {
+        throw new InternalError("Unexpected end of expression. (depth = " + depth + ")");
+    }
 }
 
 export default function ast(tokens: Token[]): IASTNode|null {
