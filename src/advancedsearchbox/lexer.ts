@@ -140,26 +140,3 @@ export function lexUntil(str: string, pos: number): Token[] {
     }
     return tokens;
 }
-
-export function expectedNextType(token?: Token): TokenType[] {
-    if (!token) {
-        return [TokenType.FIELD];
-    }
-    switch (token.type) {
-        case TokenType.FIELD:
-            return [TokenType.OPERATOR];
-        case TokenType.OPERATOR:
-            return [TokenType.VALUE];
-        case TokenType.VALUE:
-            return [TokenType.CONDITION, TokenType.BRACKET_CLOSE];
-        case TokenType.CONDITION:
-            return [TokenType.FIELD, TokenType.BRACKET_OPEN];
-        case TokenType.BRACKET_OPEN:
-            return [TokenType.FIELD];
-        case TokenType.BRACKET_CLOSE:
-            return [TokenType.CONDITION];
-        default:
-            return [TokenType.FIELD];
-    }
-
-}

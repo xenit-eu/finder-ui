@@ -1,5 +1,6 @@
 import { Editor, Pos, StringStream } from "codemirror";
-import { expectedNextType, initialState, lexIncremental, lexUntil, Token, TokenType } from "./lexer";
+import { expectedNextType } from "./ast";
+import { initialState, lexIncremental, lexUntil, Token, TokenType } from "./lexer";
 import getHints, { IAutocompleteProvider } from "./typeahead";
 
 export function createHinter(autocomplete: IAutocompleteProvider) {

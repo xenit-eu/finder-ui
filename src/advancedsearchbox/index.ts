@@ -65,7 +65,8 @@ class CustomAutoComplete implements IAutocompleteProvider {
                 render: (element: HTMLElement, self: any) => this.datepicker.render(element, self, isNaN(Date.parse(value)) ? new Date() : new Date(value)),
             }]);
         }
-        return Promise.resolve([]);
+
+        return Promise.resolve(term.values || []);
     }
 }
 
