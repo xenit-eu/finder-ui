@@ -1,0 +1,39 @@
+.search-box {
+    .CodeMirror, .ReactCodeMirror {
+        flex-basis: auto;
+        flex-grow: 1;
+        width: auto;
+        height: initial;
+        border: 0;
+        border-color: white;
+        border-radius: none;
+        box-shadow: none;
+        &.focus {
+            box-shadow: none;
+            border-color: white;
+        }
+        .cm-field {
+            color:#2196F3;
+        }
+
+        .cm-operator {
+            color: #9E9E9E
+        }
+
+        .cm-value {
+            color: #E91E63
+        }
+
+        .cm-condition {
+            font-weight: bold;
+        }
+    }
+}
+
+.CodeMirror-hints {
+    z-index: 9999; // to display it on top of the appbar of material ui.
+    max-height: 35em;
+    .CodeMirror-hint-active {
+        background-color: lightgrey;
+    }
+}

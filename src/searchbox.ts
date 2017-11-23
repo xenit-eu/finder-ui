@@ -1,3 +1,4 @@
+import "es6-shim";
 import { Menu, MenuItem, Paper, Popover } from "material-ui";
 import Chip from "material-ui/Chip";
 import CircularProgress from "material-ui/CircularProgress";
@@ -38,7 +39,7 @@ function toDateString(d: Date): string {
 }
 
 function addMonths(d: Date, months: number): Date {
-    let result = new Date(d);
+    let result = new Date(d.valueOf());
     result.setMonth(result.getMonth() + months);
     return result;
 }
@@ -139,7 +140,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
         this.hideSuggestions();
     }
 
-    public handleInputChange(event: KeyboardEvent) {
+    public handleInputChange(event: KeyboardEvent<HTMLInputElement>) {
         const input: HTMLInputElement = <HTMLInputElement>event.target;
         const val = input.value;
         this.onInputChange(val, false);
@@ -168,7 +169,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
         } else if (currentTerm && currentTerm.type === "enum") {
             if (!val.endsWith(":")) {
                 const match = /[^\:]+\:\s*(.*)\s*$/.exec(val);
-                if (match && currentTerm.values.includes(match[1])) {
+                if (match && currentTerm.values.indexOf(match[1]) >= 0) {
                     this.addNewTerm({ name: currentTerm.name, label: currentTerm.label, value: match[1] });
                 }
             }
@@ -215,7 +216,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
         this.setState({ suggestionsOpened: false, focusSuggestions: false });
     }
 
-    public handleInputKey(evt: KeyboardEvent): void {
+    public handleInputKey(evt: KeyboardEvent<HTMLInputElement>): void {
         const input = <HTMLInputElement>evt.target;
         switch (evt.keyCode) {
             case 13: // ENTER
@@ -223,7 +224,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                     this.props.onEnter(null);
                 } else if (this.state.currentTerm) {
                     const m = reNameValue.exec(input.value);
-                    if (m && !(["on...", "after...", "before...", "between..."].includes(m[2]))) {
+                    if (m && !(["on...", "after...", "before...", "between..."].indexOf(m[2]) >= 0)) {
                         this.addNewTerm({ name: this.state.currentTerm.name, label: this.state.currentTerm.label, value: m[2] });
                         this.hideSuggestions();
                     }
@@ -451,7 +452,7 @@ class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
                     onChange: this.props.onChange,
                     onKeyUp: this.handleKeyUp.bind(this),
                     onFocus: this.props.onFocus,
-                    ref: input => { this.inputElem = input; },
+                    ref: input => { this.inputElem = <HTMLInputElement>input; },
                 }),
                 __(Paper, {
                     className: "searchbox-autocomplete",
@@ -459,7 +460,7 @@ class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
                         display: this.props.open && this.props.suggestions.length > 0 ? "block" : "none",
                     },
                 }, __(Menu, {
-                    ref: (menu) => { this.menu = menu; },
+                    ref: (menu) => { this.menu = <Menu>menu; },
                     width: "100%",
                     autoWidth: false,
                     maxHeight: <any>"80vh",

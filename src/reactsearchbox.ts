@@ -4,7 +4,7 @@ import CircularProgress from "material-ui/CircularProgress";
 import DatePicker from "material-ui/DatePicker";
 import RefreshIndicator from "material-ui/RefreshIndicator";
 import SearchIcon from "material-ui/svg-icons/action/search";
-import { createElement as __, DOM as _, KeyboardEvent, ReactElement } from "react";
+import { createElement as __, CSSProperties, DOM as _, KeyboardEvent, ReactElement } from "react";
 
 /* tslint:disable */
 export type SearchQueryElementKeyTranslate = (k: string) => string;
@@ -37,7 +37,7 @@ export interface ISearchQuery {
     elements: ISearchQueryElement[];
 }
 
-const searchIconStyle = {
+const searchIconStyle: CSSProperties = {
     position: "relative",
     top: "-12px",
     left: "10px",
@@ -101,11 +101,11 @@ function buildChip(translateSearchKeyword: (keyword: string) => string, context:
     }
 }
 
-let autocompleteStyle = { style: { flex: "1 1 auto", display: "inline-block", overflow: "hidden", border: 0, height: "90%", width: "100%" } };
+let autocompleteStyle: CSSProperties = { flex: "1 1 auto", display: "inline-block", overflow: "hidden", border: 0, height: "90%", width: "100%" };
 export function ReactSearchBox({translateSearchKeyword, context, searching, searchText, terms, suggestionList, onRemove, onAddChip, onDoSearch, onInputChanged}: ReactSearchBox_t): ReactElement<any> {
     return _.div({ className: "search-box" }, [
         ...terms.elements.map((t: any, i: number) => buildChip(translateSearchKeyword, context, t, i, onRemove)),
-        _.div(autocompleteStyle, __(AutoComplete, {
+        _.div({style: autocompleteStyle}, __(AutoComplete, {
             fullWidth: true,
             searchText,
             key: "input",

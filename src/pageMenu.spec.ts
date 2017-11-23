@@ -36,7 +36,7 @@ describe("PageMenu component tests", () => {
         // simulateEvent(wrapper.find('IconButton'), 'touchTap');
 
         const layer = wrapper.find("Popover RenderToLayer");
-        const layerWrapper = Fixture(layer.prop("render")()); // render the popup menu layer content !
+        const layerWrapper = Fixture((<any>layer).prop("render")()); // render the popup menu layer content !
 
         expect(layerWrapper.find("MenuItem").length).toBe(props.menuItems.length);
 
@@ -70,7 +70,7 @@ describe("PageMenu component tests", () => {
         // simulateEvent(wrapper.find('IconButton'), 'touchTap');
 
         const layer = wrapper.find("Popover RenderToLayer");
-        const layerWrapper = Fixture(layer.prop("render")()); // render the popup menu layer content !
+        const layerWrapper = Fixture((<any>layer).prop("render")()); // render the popup menu layer content !
 
         simulateEvent(layerWrapper.find("MenuItem").at(clickedIndex).find("EnhancedButton"), "touchTap");
 

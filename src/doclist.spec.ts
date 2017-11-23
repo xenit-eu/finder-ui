@@ -199,7 +199,7 @@ describe("DocList component tests", () => {
         const wrapper = Fixture(DocList(props));
 
         const table = wrapper.find("table");
-        const menuWrapper = Fixture(table.find("tbody tr").at(1).find("RenderToLayer").prop("render")());
+        const menuWrapper = Fixture((<any>table).find("tbody tr").at(1).find("RenderToLayer").prop("render")());
 
         // console.log(menuWrapper.debug());
 

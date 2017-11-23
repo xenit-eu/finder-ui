@@ -62,13 +62,12 @@ export class NewCommentCard extends Component<NewCommentCard_t, State_t> {
             ),
             _.div({ className: "comment-save-icon" }, __(FontIcon, {
                 className: `fa fa-floppy-o`,
-                onTouchTap: () => {
+                onClick: () => {
                     if (this.state.newComment && this.state.newComment.trim() !== "") {
                         this.props.onSaveNewComment(this.state.newComment.trim());
                         this.setState({newComment: ""});
                     }
                 },
-                primary: true,
                 style: iconStyle,
             })),
 
@@ -99,20 +98,18 @@ export function CommentCards (
                 comment.deletable ?
                     _.div({ className: "comment-delete-icon" }, __(FontIcon, {
                         className: `fa fa-trash`,
-                        primary: true,
-                        onTouchTap: () => onDeleteComment(comment),
+                        onClick: () => onDeleteComment(comment),
                         style: iconStyle,
                     })) : "",
                 comment.editable ?
                     _.div({ className: "comment-edit-icon" }, __(FontIcon, {
                         className: `fa fa-pencil`,
-                        primary: true,
-                        onTouchTap: () => onStartEditing(comment),
+                        onClick: () => onStartEditing(comment),
                         style: iconStyle,
                     })) : "",
             );
         } else {
-            let backupComment: Comment_t = Object.assign({}, comment);
+            let backupComment: Comment_t = { ...comment };
 
             cardText = _.div({ className: "comment-card-body" },
                 __(CardTitle, {},
@@ -124,14 +121,12 @@ export function CommentCards (
                 ),
                 _.div({ className: "comment-save-icon" }, __(FontIcon, {
                     className: `fa fa-floppy-o`,
-                    primary: true,
-                    onTouchTap: () => onSaveEditing(comment),
+                    onClick: () => onSaveEditing(comment),
                     style: iconStyle,
                 })),
                 _.div({ className: "comment-cancel-icon" }, __(FontIcon, {
                     className: `fa fa-ban`,
-                    primary: true,
-                    onTouchTap: () => {
+                    onClick: () => {
                         comment.comment = backupComment.comment;
                         onCancelEditing(comment);
                     },
