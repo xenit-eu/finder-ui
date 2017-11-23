@@ -33,10 +33,10 @@ import "codemirror/addon/hint/show-hint";
 import "codemirror/addon/hint/show-hint.css";
 import "codemirror/lib/codemirror.css";
 
-import ast, { IASTNode, validateStream } from "./ast";
 import { createHinter, createMode } from "./codemirror";
 import { DatepickerAutocomplete } from "./datepickerautocomplete";
 import lex, { Token, TokenType } from "./lexer";
+import parse, { IASTNode, validateStream } from "./parser";
 import { AutocompleteValue_t, IAutocompleteProvider } from "./typeahead";
 
 import "./index.less"; // to be imported after other css, to fix layout problems.
@@ -128,7 +128,7 @@ export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, any> {
         try {
             let tokens = lex(query);
             validateStream(tokens);
-            this.query = ast(tokens.map(replaceFieldWithSearchTerm));
+            this.query = parse(tokens.map(replaceFieldWithSearchTerm));
             this.setState({
                 queryError: null,
             });

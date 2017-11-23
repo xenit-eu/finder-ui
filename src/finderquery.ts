@@ -1,4 +1,4 @@
-import { AstJson_t, IASTNode } from "./advancedsearchbox/ast";
+import { AstJson_t, IASTNode } from "./advancedsearchbox/parser";
 import { traverseAndReplace } from "./utils";
 /*
 type All_t = {all: string};

@@ -192,7 +192,7 @@ function toAst(tokens: Token[], depth: number = 0): IASTNode|null {
     }
 }
 
-export default function ast(tokens: Token[]): IASTNode|null {
+export default function parse(tokens: Token[]): IASTNode|null {
     let filteredTokens = tokens.filter(t => t.type !== TokenType.WHITESPACE);
     validateStream(filteredTokens);
     return toAst(filteredTokens);

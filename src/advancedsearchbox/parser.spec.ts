@@ -1,11 +1,11 @@
-import ast from "./ast";
 import { lex, TokenType } from "./lexer";
+import parse from "./parser";
 
 describe("Advanced searchbox AST", () => {
     it("should convert a simple expression to an AST", () => {
         let tokens = lex("creator = admin");
 
-        let tree = ast(tokens);
+        let tree = parse(tokens);
 
         expect(tree).not.toBeNull();
 
@@ -21,7 +21,7 @@ describe("Advanced searchbox AST", () => {
     it("should convert an expression to an AST", () => {
         let tokens = lex("creator = admin AND modifier = admin");
 
-        let tree = ast(tokens);
+        let tree = parse(tokens);
         expect(tree).not.toBeNull();
 
         expect(tree && tree.toJSON()).toEqual({
@@ -47,7 +47,7 @@ describe("Advanced searchbox AST", () => {
     it("should convert a complex expression with brackets to an AST", () => {
         let tokens = lex("creator = admin AND (modifier = admin OR modified before 2017-01-01)");
 
-        let tree = ast(tokens);
+        let tree = parse(tokens);
         expect(tree).not.toBeNull();
 
         expect(tree && tree.toJSON()).toEqual({
@@ -84,7 +84,7 @@ describe("Advanced searchbox AST", () => {
     it("should flatten multiple conditions of the same type", () => {
         let tokens = lex("creator = admin AND modifier = admin AND modified before 2017-01-01");
 
-        let tree = ast(tokens);
+        let tree = parse(tokens);
         expect(tree).not.toBeNull();
 
         expect(tree && tree.toJSON()).toEqual({

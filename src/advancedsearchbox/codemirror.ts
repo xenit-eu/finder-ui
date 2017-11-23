@@ -1,6 +1,6 @@
 import { Editor, Pos, Position, StringStream } from "codemirror";
-import { expectedNextType } from "./ast";
 import { initialState, lexIncremental, lexUntil, Token, TokenType } from "./lexer";
+import { expectedNextType } from "./parser";
 import getHints, { IAutocompleteProvider } from "./typeahead";
 
 export function insertHint(cm: Editor, self: {from: Position, to: Position}, data: {text: string}) {

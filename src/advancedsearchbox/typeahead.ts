@@ -1,5 +1,5 @@
-import { expectedNextType } from "./ast";
 import { lexUntil, Token, TokenType } from "./lexer";
+import { expectedNextType } from "./parser";
 
 export type AutocompleteValue_t = string | {
     text: string,
