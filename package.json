@@ -25,12 +25,10 @@
   "homepage": "https://bitbucket.org/xenit/finder-ui#README.md",
   "dependencies": {
     "@types/codemirror": "0.0.51",
-    "@types/es6-promise": "0.0.33",
     "@types/es6-shim": "^0.31.35",
     "@types/material-ui": "^0.16.4",
     "@types/node": "^8.0.53",
     "@types/react": "^15.4.1",
-    "@types/react-addons-test-utils": "^0.14.20",
     "@types/react-codemirror": "^1.0.0",
     "@types/react-dom": "^15.5.6",
     "@types/react-tap-event-plugin": "0.0.30",
@@ -49,6 +47,7 @@
     "sortablejs": "^1.6.0"
   },
   "devDependencies": {
+    "@types/react-addons-test-utils": "^0.14.20",
     "@types/enzyme": "^3.1.5",
     "@types/jasmine": "^2.5.2",
     "@types/core-js": "^0.9.43",
