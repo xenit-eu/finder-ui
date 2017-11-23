@@ -21,10 +21,6 @@ module.exports = {
     },
     plugins: [
         new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en-gb|fr|nl/), // avoid that moment loads all locals (only needed languages)
-        //new webpack.optimize.UglifyJsPlugin({ minimize: true, compress: { warnings: false }}),
-        new HtmlWebpackPlugin({
-            template: './index.html'
-        }),
         new webpack.DefinePlugin({
             'process.env': {
                 'NODE_ENV': JSON.stringify('production')
@@ -42,4 +38,3 @@ module.exports = {
     node: {
     }
 };
-    

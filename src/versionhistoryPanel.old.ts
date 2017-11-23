@@ -10,7 +10,7 @@ import Subtitles from "material-ui/svg-icons/av/subtitles";
 import SocialPerson from "material-ui/svg-icons/social/person";
 
 import * as moment from "moment";
-import { Component, createElement as __, DOM as _, ReactElement } from "react";
+import { Component, createElement as __, CSSProperties, DOM as _, ReactElement } from "react";
 export type Version_t = {
     title: string
     editor: string,
@@ -36,8 +36,8 @@ export function VersionsHistoryPanel({show, versions}: VersionsHistoryPanel_t): 
         if (versions.length === 0) {
             return _.div({ className: "docversions" }, "Document has no version history.");
         }
-        const textcenteredstyle = { style: { display: "inline-block", position: "relative", top: "-4px", left: "8px", width: "125px" } };
-        const outerspanStyle = { style: { display: "inline-block", marginTop: "3px", marginBottom: "3px", marginLeft: "8px", marginRight: "8px", width: "165px" } };
+        const textcenteredstyle: {style: CSSProperties} = { style: { display: "inline-block", position: "relative", top: "-4px", left: "8px", width: "125px" } };
+        const outerspanStyle: {style: CSSProperties} = { style: { display: "inline-block", marginTop: "3px", marginBottom: "3px", marginLeft: "8px", marginRight: "8px", width: "165px" } };
         const singleVersion = (v: Version_t) => {
             const momentText = moment(new Date(Number.parseInt(v.editDate))).fromNow();
             const noderefSpan = Object.assign({ title: v.nodeRef}, outerspanStyle);
