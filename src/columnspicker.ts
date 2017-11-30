@@ -42,8 +42,9 @@ const saveButtonStyle: CSSProperties = {
     float: "right",
 };
 
-type ColumnSet_t = {
+export type ColumnSet_t = {
     label: string,
+    readonly?: boolean,
     columns: string[], // list of column names.
 };
 
@@ -115,9 +116,11 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
     private handleSave () {
         this.setState((prevState) => {
             let set = prevState.sets.find(s => s.label === prevState.selectedSet); // Extract currently selected set
-            let newSet = { ...set, columns: prevState.selected.map(l => this.mappingByLabel[l].name) }; // Place new columns
-            let sets = prevState.sets.map(s => s.label === prevState.selectedSet ? newSet : set); // Replace set with new set, keeping its position
-            return { sets }; // Update state
+            if (set && !set.readonly) {
+                let newSet = { ...set, columns: prevState.selected.map(l => this.mappingByLabel[l].name) }; // Place new columns
+                let sets = prevState.sets.map(s => s.label === prevState.selectedSet ? newSet : set); // Replace set with new set, keeping its position
+                return { sets }; // Update state
+            }
         }, () => this.handleSetChange());
     }
 
@@ -146,7 +149,7 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
 
     private handleDelete() {
         this.setState((prevState) => {
-            const newSets = prevState.sets.filter(s => s.label !== prevState.selectedSet);
+            const newSets = prevState.sets.filter(s => s.label !== prevState.selectedSet && !s.readonly);
             const selectedSet = newSets.length > 0 ? newSets[0] : null;
             return {
                 sets: newSets,
@@ -170,6 +173,8 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
         const selected = this.state.selected.map((val: string) => __("li", {"key": val, "data-id": val}, val));
         const others = this.props.allColumns.filter(a => this.state.selected.indexOf(a.label) === -1).map(c => c.label).map((val: string) => __("li", {"key": val, "data-id": val}, val));
 
+        const selectedSet = this.state.sets.find(s => s.label === this.state.selectedSet);
+
         const dialogButtons = [
             __(FlatButton, {
                 key: "buttonDone",
@@ -180,6 +185,10 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
                 //onClick: this.handleDone.bind(this),
             }),
         ];
+
+        const setsList = this.state.sets.map(o => __(MenuItem, { value: o.label, primaryText: o.label }));
+
+        setsList.unshift(__(MenuItem, { value: "", primaryText: "(None)", disabled: true }));
 
         const dialog = __(Dialog, {
             key: "dialog",
@@ -200,11 +209,11 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
                 className: "select-display",
                 value: this.state.selectedSet,
                 onChange: this.handleChangeSet.bind(this),
-            }, this.state.sets.map(o => __(MenuItem, { value: o.label, primaryText: o.label }))),
+            }, setsList),
             _.div({ key: "columns-actions", className: "columns-actions" },
-                __(FlatButton, { key: "bs", style: saveButtonStyle, label: "Save", onClick: this.handleSave.bind(this) }),
+                __(FlatButton, { key: "bs", style: saveButtonStyle, label: "Save", onClick: this.handleSave.bind(this), disabled: !selectedSet || selectedSet.readonly }),
                 __(FlatButton, { key: "bsa", style: saveButtonStyle, label: "Save as new...", onClick: this.handleSaveAsNew.bind(this) }),
-                __(FlatButton, { key: "bd", style: saveButtonStyle, label: "Delete", onClick: this.handleDelete.bind(this) }),
+                __(FlatButton, { key: "bd", style: saveButtonStyle, label: "Delete", onClick: this.handleDelete.bind(this), disabled: !selectedSet||selectedSet.readonly }),
             ),
 
             __("hr", { key: "hr-1" }),
