@@ -22,6 +22,8 @@ export type ColumnsPicker_t = {
     visible: boolean,
     allColumns: Column_t[],
     selectedColumns: string[], // list of names
+    sets?: ColumnSet_t[],
+    onSetsChange?: (sets: ColumnSet_t[]) => void,
     onDone: (selectedColumns: string[]) => void,
 };
 
@@ -80,7 +82,7 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
         this.state = {
             opened: false,
             selected: props.selectedColumns.map(a => this.mappingByName[a].label),
-            sets: JSON.parse(localStorage.getItem(storageKey) || "[]"),
+            sets: props.sets || JSON.parse(localStorage.getItem(storageKey) || "[]"),
             selectedSet: "",
         };
     }
@@ -89,8 +91,16 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
         this.init(props);
         this.setState({
             selected: props.selectedColumns.map(a => this.mappingByName[a].label),
-            sets: JSON.parse(localStorage.getItem(storageKey) || "[]"),
+            sets: props.sets || JSON.parse(localStorage.getItem(storageKey) || "[]"),
         } as State_t);
+    }
+
+    private handleSetChange() {
+        if(this.props.onSetsChange) {
+            this.props.onSetsChange(this.state.sets);
+        } else {
+            localStorage.setItem(storageKey, JSON.stringify(this.state.sets));
+        }
     }
 
     private handleDone () {
@@ -103,38 +113,47 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
     }
 
     private handleSave () {
-        const set = this.state.sets.filter(s => s.label === this.state.selectedSet)[0];
-        set.columns = this.state.selected.map(l => this.mappingByLabel[l].name  );
-        localStorage.setItem(storageKey, JSON.stringify(this.state.sets));
+        this.setState((prevState) => {
+            let set = prevState.sets.find(s => s.label === prevState.selectedSet); // Extract currently selected set
+            let newSet = { ...set, columns: prevState.selected.map(l => this.mappingByLabel[l].name) }; // Place new columns
+            let sets = prevState.sets.map(s => s.label === prevState.selectedSet ? newSet : set); // Replace set with new set, keeping its position
+            return { sets }; // Update state
+        }, () => this.handleSetChange());
     }
 
     private handleSaveAsNew () {
         const name: string = prompt("Column set name") || "DEFAULT";
-        let list = this.state.sets;
-
-        list.push({label: name, columns: this.state.selected.map(l => this.mappingByLabel[l].name  )});
-        localStorage.setItem(storageKey, JSON.stringify(list));
-
-        this.setState({sets: list, selectedSet: name} as State_t);
+        this.setState((prevState) => {
+            return {
+                sets: prevState.sets.concat([{ label: name, columns: prevState.selected.map(l => this.mappingByLabel[l].name) }]),
+                selectedSet: name,
+            };
+        }, () => this.handleSetChange());
     }
 
     private handleChangeSet (event: any, index: number, value: string) {
-        const set = this.state.sets.filter(s => s.label === value)[0];
-        this.setState({
-            selectedSet: value,
-            selected: set.columns.map(a => this.mappingByName[a].label),
-        } as State_t);
+        this.setState((prevState) => {
+            const set = prevState.sets.find(s => s.label === value);
+            if (set) {
+                return {
+                    selectedSet: value,
+                    selected: set.columns.map(a => this.mappingByName[a].label),
+                };
+            }
+            return {};
+        });
     }
 
     private handleDelete() {
-        const newSets = this.state.sets.filter(s => s.label !== this.state.selectedSet);
-        const selectedSet = newSets.length > 0 ? newSets[0] : null;
-        this.setState({
-            sets: newSets,
-            selected: selectedSet ?  selectedSet.columns.map(a => this.mappingByName[a].label) : [],
-            selectedSet: selectedSet ? selectedSet.label : "",
-        } as State_t);
-        localStorage.setItem(storageKey, JSON.stringify(newSets));
+        this.setState((prevState) => {
+            const newSets = prevState.sets.filter(s => s.label !== prevState.selectedSet);
+            const selectedSet = newSets.length > 0 ? newSets[0] : null;
+            return {
+                sets: newSets,
+                selected: selectedSet ?  selectedSet.columns.map(a => this.mappingByName[a].label) : [],
+                selectedSet: selectedSet ? selectedSet.label : "",
+            };
+        }, () => this.handleSetChange());
     }
 
     private handleChangeTargetSortable(items: string[]) {
