@@ -1,7 +1,6 @@
 import { Component, ComponentType, createElement as __, DOM as _, ReactElement } from "react";
 
-export type TemplateProps_t<T, P> = { value: T, renderParameters: P, editEnabled: boolean, onChange: (value: T) => void };
-export type Template_t<T, P> = ComponentType<TemplateProps_t<T, P>>;
+export type Template_t<T, P> = ComponentType<{ value: T, renderParameters: P, editEnabled: boolean, onChange: (value: T) => void }>;
 
 export type Field_t<T, P> = {
     value: T,
@@ -9,7 +8,11 @@ export type Field_t<T, P> = {
     parameters: P,
 };
 
-type MetadataFields_t<T, P> = TemplateProps_t<T[], Array<Field_t<T, P>>>;
+type MetadataFields_t<T, P> = {
+    fields: Array<Field_t<T, P>>,
+    editable: boolean,
+    onChange: (value: T[]) => void,
+};
 
 type MetadataFields_State_t<T> = {
     values: T[],
@@ -19,7 +22,7 @@ export class MetadataFields<T, P> extends Component<MetadataFields_t<T, P>, Meta
     constructor(props: MetadataFields_t<T, P>) {
         super(props);
         this.state = {
-            values: props.value,
+            values: props.fields.map(f => f.value),
         };
     }
 
@@ -32,15 +35,15 @@ export class MetadataFields<T, P> extends Component<MetadataFields_t<T, P>, Meta
     }
 
     public componentWillReceiveProps(props: MetadataFields_t<T, P>) {
-        this.setState({ values: props.value });
+        this.setState({ values: props.fields.map(f => f.value) });
     }
 
     public render() {
-        return _.div({ className: "metadata-fields" }, this.props.renderParameters.map((f, i) => __(f.template, {
+        return _.div({ className: "metadata-fields" }, this.props.fields.map((f, i) => __(f.template, {
             key: i,
             value: f.value,
             renderParameters: f.parameters,
-            editEnabled: this.props.editEnabled,
+            editEnabled: this.props.editable,
             onChange: <(value: T) => void>this._onChange.bind(this, i),
         })));
     }
