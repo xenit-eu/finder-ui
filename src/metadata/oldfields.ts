@@ -7,7 +7,6 @@ import SelectField from "material-ui/SelectField";
 import TextField from "material-ui/TextField";
 import { Component, createElement as __, DOM as _, ReactElement } from "react";
 import { MetaDataPanelGroup_t, MetaDataPanelGroupInfo_t } from "../metadataPanel";
-import {Field_t, MetadataFields, Template_t} from "./fields";
 
 export enum MetadataType_t {
     STRING,
@@ -93,79 +92,6 @@ export function metadataField(field: Metadata_t, editable: boolean): ReactElemen
             throw "Did not return properly";
     }
 }
-
-/**
- * Wrapper for legacy Metadata_t value that dispatches onChange when its value is modified
- */
-class LegacyValueWrapper {
-    constructor(private metadata: Metadata_t, private onChange: (value: Metadata_t) => void) {
-    }
-    public get name(): string {
-        return this.metadata.name;
-    }
-    public get value(): string {
-        return this.metadata.value;
-    }
-    public set value(v: string) {
-        this.metadata.value = v;
-        this.onChange(this.metadata);
-    }
-    public get label(): string {
-        return this.metadata.label;
-    }
-    public get disable(): boolean {
-        return this.metadata.disable;
-    }
-    public get type(): MetadataType_t {
-        return this.metadata.type;
-    }
-    public get options(): any|undefined {
-        return this.metadata.options;
-    }
-}
-
-const legacyTemplate: Template_t<Metadata_t, null> = ({value, renderParameters, editEnabled, onChange}) => {
-    if (!metadataFilter(value)) {
-        return _.span({ style: { display: "none" } });
-    }
-    return metadataField(new LegacyValueWrapper(value, onChange), editEnabled);
-};
-
-const upgradeLegacyValue = (field: Metadata_t): Field_t<Metadata_t, null> => ({
-    value: field,
-    template: legacyTemplate,
-    parameters: null,
-});
-
-type Group_t = {
-    expandable: boolean,
-    children: Metadata_t,
-    label: string,
-};
-
-const legacyGroupTemplate: Template_t<Metadata_t[], { label: string, expandable: boolean, expanded: boolean}> = ({ value, renderParameters, editEnabled, onChange }) => {
-    return __(Card, { initiallyExpanded: renderParameters.expanded }, [
-        __(CardHeader, { title: renderParameters.label, actAsExpander: renderParameters.expandable, showExpandableButton: renderParameters.expandable }),
-        __(CardText, { expandable: renderParameters.expandable },
-            __(MetadataFields, {
-                fields: value.map(upgradeLegacyValue),
-                editable: editEnabled,
-                onChange,
-            }),
-        ),
-    ]);
-};
-
-const upgradeLegacyGroup= (group: LegacyGroup_t): Field_t<Metadata_t[], {label: string, expandable: boolean, expanded: boolean}> => ({
-    value: group.items,
-    template: legacyGroupTemplate,
-    parameters: {
-        label: group.group.label,
-        expandable: group.group.id !== "default",
-        expanded: group.group.expanded,
-    },
-});
-
 const defaultGroup = {
     label: "Default",
     id: "default",
@@ -173,14 +99,8 @@ const defaultGroup = {
     order: 1000,
 };
 
-type LegacyGroup_t = { group: MetaDataPanelGroup_t, items: Metadata_t[] };
-
-function legacyUpdateInPlace(oldValues: Metadata_t[], newValues: Metadata_t[]) {
-    newValues.forEach(v => { let m = oldValues.find(o => v.name === o.name); if (m) { m.value = v.value; } });
-}
-
-function fieldsInGroups(fields: Metadata_t[], groupInfo: MetaDataPanelGroupInfo_t): LegacyGroup_t[] {
-    let groupsWithChildren: {[id: string]: LegacyGroup_t} = { default: { group: defaultGroup, items: [] } };
+function fieldsInGroups(fields: Metadata_t[], groupInfo: MetaDataPanelGroupInfo_t) {
+    let groupsWithChildren: { [id: string]: { group: MetaDataPanelGroup_t, items: Metadata_t[] } } = { default: { group: defaultGroup, items: [] } };
     groupInfo.groups.forEach(g => groupsWithChildren[g.id] = ({ group: g, items: [] }));
     fields.forEach(f => groupsWithChildren[groupInfo.itemToGroup[f.name] ? groupInfo.itemToGroup[f.name] : "default"].items.push(f));
     if (groupsWithChildren["default"].items.length === 0) {
@@ -190,25 +110,18 @@ function fieldsInGroups(fields: Metadata_t[], groupInfo: MetaDataPanelGroupInfo_
     groupsWithChildrenList.sort((a, b) => a.group.order - b.group.order);
     return groupsWithChildrenList;
 }
-
 export function metadataFields(fields: Metadata_t[], editable: boolean = true, groupInfo: MetaDataPanelGroupInfo_t | undefined = undefined): Array<ReactElement<any>> {
-    //const filteredFields = fields.filter(metadataFilter);
+    const filteredFields = fields.filter(metadataFilter);
     if (!groupInfo) {
-        return [
-            __(MetadataFields, {
-                fields: fields.map(upgradeLegacyValue),
-                editable,
-                onChange: legacyUpdateInPlace.bind(null, fields),
-            }),
-        ];
+        return filteredFields.map(f => metadataField(f, editable));
     } else {
         let groupsWithChildrenList = fieldsInGroups(fields, groupInfo);
-        return [
-            __(MetadataFields, {
-                fields: groupsWithChildrenList.map(upgradeLegacyGroup),
-                editable,
-                onChange: legacyUpdateInPlace.bind(null, fields),
-            }),
-        ];
+        return groupsWithChildrenList.map(g => {
+            const expandable = g.group.id !== "default";
+            const childItems = g.items.map(f => __(CardText, { expandable }, _.div({}, metadataField(f, editable))));
+            const header = __(CardHeader, { title: g.group.label, actAsExpander: expandable, showExpandableButton: expandable });
+            const items = [header, ...childItems];
+            return __(Card, { initiallyExpanded: g.group.expanded }, items);
+        });
     }
 }
