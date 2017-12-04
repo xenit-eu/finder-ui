@@ -80,7 +80,7 @@ export type AdvancedSearchBox_t = {
     searching: boolean,                     // flag indicating that search process is busy => activate spinner !
     searchableTerms: SearchableTerm_t[],    // suggestions to be proposed on the drop-down list.
     onSearch: (apixQuery: any) => void,     // to initiate the search based on the last query.
-    onSaveAsQuery: (name: string) => void,
+    onSaveAsQuery: (name: string, query: FinderQuery) => void,
 };
 
 type AdvancedSearchBox_State_t = {
@@ -153,7 +153,9 @@ export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, any> {
                 onChange: this.onChange.bind(this),
                 onCursorActivity: (cm: Editor) => (<any>cm).showHint(),
             }),
-            _.div({ key: "save-icon", className: "save-icon icon" }, __(StarIcon, { color: iconColor, onClick: () => this.props.onSaveAsQuery(prompt("Save query as") || "query") })),
+            _.div({ key: "save-icon", className: "save-icon icon" },
+                __(StarIcon, { color: iconColor, onClick: () => this.props.onSaveAsQuery(prompt("Save query as") || "query", FinderQuery.fromAST(this.query)) }),
+            ),
             _.div({ key: "div", className: "search-icon icon", title: this.state.queryError?this.state.queryError.toString():undefined },
                 this.props.searching
                     ? __(CircularProgress, { size: 24 }) : (

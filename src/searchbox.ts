@@ -88,7 +88,7 @@ export type SearchBox_actions_t = {
     onEnter: (text: Term_t | null) => void,           // add new term or start search (when parameter is null)
     onAddQuery: (query: Query_t) => void,           // add new query to the searchedQueries.
     onInputChanged: (text: string) => void,         // called on any changes in the input box.
-    onSaveAsQuery: (name: string) => void,          // called on request to save the current query as a new saved query.
+    onSaveAsQuery: (name: string, query: FinderQuery) => void,          // called on request to save the current query as a new saved query.
 };
 export type SearchBox_t = SearchBox_actions_t & SearchBox_data_t;
 type State_t = {
@@ -333,7 +333,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
 
                     _.div({ key: "save-icon", className: "save-icon icon", id: "searchbox_save" }, __(StarIcon, {
                         color: iconColor,
-                        onClick: () => this.props.onSaveAsQuery(prompt("Save query as") || "query"),
+                        onClick: () => this.props.onSaveAsQuery(prompt("Save query as") || "query", FinderQuery.fromCombinedTermsAndQueries(this.props.searchedTerms, this.props.searchedQueries)),
                     })),
 
                     _.div({ key: "search-icon", className: "search-icon icon", id: "searchbox_search" },
