@@ -25,6 +25,7 @@
   "homepage": "https://bitbucket.org/xenit/finder-ui#README.md",
   "dependencies": {
     "@types/codemirror": "0.0.51",
+    "@types/debug": "0.0.30",
     "@types/es6-shim": "^0.31.35",
     "@types/material-ui": "^0.16.4",
     "@types/node": "^8.0.53",
@@ -32,7 +33,9 @@
     "@types/react-codemirror": "^1.0.0",
     "@types/react-dom": "^15.5.6",
     "@types/react-tap-event-plugin": "0.0.30",
+    "@types/webpack-env": "^1.13.2",
     "codemirror": "^5.31.0",
+    "debug": "^3.1.0",
     "es6-shim": "^0.35.3",
     "flatpickr": "^2.6.3",
     "material-ui": "^0.16.4",

@@ -148,8 +148,9 @@ const legacyGroupTemplate: Template_t<Metadata_t[], { label: string, expandable:
         __(CardHeader, { title: renderParameters.label, actAsExpander: renderParameters.expandable, showExpandableButton: renderParameters.expandable }),
         __(CardText, { expandable: renderParameters.expandable },
             __(MetadataFields, {
-                fields: value.map(upgradeLegacyValue),
-                editable: editEnabled,
+                value,
+                renderParameters: value.map(upgradeLegacyValue),
+                editEnabled,
                 onChange,
             }),
         ),
@@ -196,8 +197,9 @@ export function metadataFields(fields: Metadata_t[], editable: boolean = true, g
     if (!groupInfo) {
         return [
             __(MetadataFields, {
-                fields: fields.map(upgradeLegacyValue),
-                editable,
+                value: fields,
+                renderParameters: fields.map(upgradeLegacyValue),
+                editEnabled: editable,
                 onChange: legacyUpdateInPlace.bind(null, fields),
             }),
         ];
@@ -205,8 +207,9 @@ export function metadataFields(fields: Metadata_t[], editable: boolean = true, g
         let groupsWithChildrenList = fieldsInGroups(fields, groupInfo);
         return [
             __(MetadataFields, {
-                fields: groupsWithChildrenList.map(upgradeLegacyGroup),
-                editable,
+                value: fields,
+                renderParameters: groupsWithChildrenList.map(upgradeLegacyGroup),
+                editEnabled: editable,
                 onChange: legacyUpdateInPlace.bind(null, fields),
             }),
         ];
