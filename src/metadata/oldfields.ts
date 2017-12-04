@@ -132,24 +132,24 @@ const legacyTemplate: Template_t<Metadata_t, null> = ({value, renderParameters, 
 };
 
 const upgradeLegacyValue = (field: Metadata_t): Field_t<Metadata_t, null> => ({
-    value: field,
     template: legacyTemplate,
     parameters: null,
 });
 
-type Group_t = {
-    expandable: boolean,
-    children: Metadata_t,
+type GroupParameters_t = {
     label: string,
+    expandable: boolean,
+    expanded: boolean,
+    items: Field_t<Metadata_t, null>[],
 };
 
-const legacyGroupTemplate: Template_t<Metadata_t[], { label: string, expandable: boolean, expanded: boolean}> = ({ value, renderParameters, editEnabled, onChange }) => {
+const legacyGroupTemplate: Template_t<Metadata_t[], GroupParameters_t> = ({ value, renderParameters, editEnabled, onChange }) => {
     return __(Card, { initiallyExpanded: renderParameters.expanded }, [
         __(CardHeader, { title: renderParameters.label, actAsExpander: renderParameters.expandable, showExpandableButton: renderParameters.expandable }),
         __(CardText, { expandable: renderParameters.expandable },
             __(MetadataFields, {
                 value,
-                renderParameters: value.map(upgradeLegacyValue),
+                renderParameters: {fields: value.map(upgradeLegacyValue)},
                 editEnabled,
                 onChange,
             }),
@@ -157,13 +157,13 @@ const legacyGroupTemplate: Template_t<Metadata_t[], { label: string, expandable:
     ]);
 };
 
-const upgradeLegacyGroup= (group: LegacyGroup_t): Field_t<Metadata_t[], {label: string, expandable: boolean, expanded: boolean}> => ({
-    value: group.items,
+const upgradeLegacyGroup= (group: LegacyGroup_t): Field_t<Metadata_t[], GroupParameters_t> => ({
     template: legacyGroupTemplate,
     parameters: {
         label: group.group.label,
         expandable: group.group.id !== "default",
         expanded: group.group.expanded,
+        items: group.items.map(upgradeLegacyValue),
     },
 });
 
@@ -180,7 +180,7 @@ function legacyUpdateInPlace(oldValues: Metadata_t[], newValues: Metadata_t[]) {
     newValues.forEach(v => { let m = oldValues.find(o => v.name === o.name); if (m) { m.value = v.value; } });
 }
 
-function fieldsInGroups(fields: Metadata_t[], groupInfo: MetaDataPanelGroupInfo_t): LegacyGroup_t[] {
+function fieldsInGroups(fields: Metadata_t[], groupInfo: MetaDataPanelGroupInfo_t): {groupsWithChildrenList: LegacyGroup_t[], sortedFields: Metadata_t[][]} {
     let groupsWithChildren: {[id: string]: LegacyGroup_t} = { default: { group: defaultGroup, items: [] } };
     groupInfo.groups.forEach(g => groupsWithChildren[g.id] = ({ group: g, items: [] }));
     fields.forEach(f => groupsWithChildren[groupInfo.itemToGroup[f.name] ? groupInfo.itemToGroup[f.name] : "default"].items.push(f));
@@ -189,7 +189,7 @@ function fieldsInGroups(fields: Metadata_t[], groupInfo: MetaDataPanelGroupInfo_
     }
     let groupsWithChildrenList = Object.keys(groupsWithChildren).map(id => groupsWithChildren[id]);
     groupsWithChildrenList.sort((a, b) => a.group.order - b.group.order);
-    return groupsWithChildrenList;
+    return {groupsWithChildrenList, sortedFields: groupsWithChildrenList.map(group => group.items)};
 }
 
 export function metadataFields(fields: Metadata_t[], editable: boolean = true, groupInfo: MetaDataPanelGroupInfo_t | undefined = undefined): Array<ReactElement<any>> {
@@ -198,17 +198,17 @@ export function metadataFields(fields: Metadata_t[], editable: boolean = true, g
         return [
             __(MetadataFields, {
                 value: fields,
-                renderParameters: fields.map(upgradeLegacyValue),
+                renderParameters: {fields: fields.map(upgradeLegacyValue)},
                 editEnabled: editable,
                 onChange: legacyUpdateInPlace.bind(null, fields),
             }),
         ];
     } else {
-        let groupsWithChildrenList = fieldsInGroups(fields, groupInfo);
+        let {groupsWithChildrenList, sortedFields} = fieldsInGroups(fields, groupInfo);
         return [
             __(MetadataFields, {
-                value: fields,
-                renderParameters: groupsWithChildrenList.map(upgradeLegacyGroup),
+                value: sortedFields,
+                renderParameters: { fields: groupsWithChildrenList.map(upgradeLegacyGroup) },
                 editEnabled: editable,
                 onChange: legacyUpdateInPlace.bind(null, fields),
             }),
