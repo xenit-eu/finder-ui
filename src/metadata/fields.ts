@@ -4,11 +4,12 @@ export type TemplateProps_t<T, P> = { value: T, renderParameters: P, editEnabled
 export type Template_t<T, P> = ComponentType<TemplateProps_t<T, P>>;
 
 export type Field_t<T, P> = {
+    value: T,
     template: Template_t<T, P>,
     parameters: P,
 };
 
-type MetadataFields_t<T, P> = TemplateProps_t<T[], { fields: Array<Field_t<T, P>> }>;
+type MetadataFields_t<T, P> = TemplateProps_t<T[], Array<Field_t<T, P>>>;
 
 type MetadataFields_State_t<T> = {
     values: T[],
@@ -35,9 +36,9 @@ export class MetadataFields<T, P> extends Component<MetadataFields_t<T, P>, Meta
     }
 
     public render() {
-        return _.div({ className: "metadata-fields" }, this.props.renderParameters.fields.map((f, i) => __(f.template, {
+        return _.div({ className: "metadata-fields" }, this.props.renderParameters.map((f, i) => __(f.template, {
             key: i,
-            value: this.state.values[i],
+            value: f.value,
             renderParameters: f.parameters,
             editEnabled: this.props.editEnabled,
             onChange: <(value: T) => void>this._onChange.bind(this, i),
