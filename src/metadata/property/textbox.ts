@@ -9,11 +9,11 @@ const TextBox: PropertyRenderer_t = (config: PropertyRenderConfig_t) => {
         return _.span({ className: "metadata-field" }, __(TextField, {
             hintText: "Type value...",
             onChange: (evt: FormEvent<{}>, value: string) => {
-                props.onChange(props.mapToModel(props.node, value));
+                props.onChange(config.mapToModel(props.node, value));
             },
             disabled: props.renderMode !== RenderMode.VIEW,
             floatingLabelText: config.label,
-            value: props.mapToView(props.node),
+            value: config.mapToView(props.node),
         }));
     };
 };

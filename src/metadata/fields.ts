@@ -16,15 +16,10 @@ export enum RenderMode {
     EDIT,
 };
 
-export type ModelToViewMapper_t = (node: Node_t) => string;
-export type ViewToModelMapper_t = (node: Node_t, s: string) => Node_t;
-
 export type FieldSkeleton_Props_t = {
     node: Node_t,
     onChange: (node: Node_t) => void,
     renderMode: RenderMode,
-    mapToView: ModelToViewMapper_t,
-    mapToModel: ViewToModelMapper_t,
 };
 export type FieldSkeleton_t = ComponentType<FieldSkeleton_Props_t>;
 
