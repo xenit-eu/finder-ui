@@ -23,5 +23,5 @@ export type FieldSkeleton_Props_t = {
 };
 export type FieldSkeleton_t = ComponentType<FieldSkeleton_Props_t>;
 
-export type FieldsetSkeleton_Props_t = { children: ReactNode };
+export type FieldsetSkeleton_Props_t = { fields: Array<{ label: string, value: ReactNode }> };
 export type FieldsetSkeleton_t = ComponentType<FieldsetSkeleton_Props_t>;
