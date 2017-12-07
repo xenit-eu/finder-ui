@@ -9,7 +9,7 @@ const NColumn: (ncolumns: number) => FieldsetRenderer_t = (ncolumns: number) => 
     return (config: FieldsetRenderConfig_t) => {
         const component = (props: FieldsetSkeleton_Props_t) => {
             return _.div({},
-                props.fields.map(field => _.div(columnProps, [field.label, "\u2003", field.value])),
+                props.fields.map(field => _.div(columnProps, [field.label + ":", "\u2003", field.value])),
             );
         };
         (<any>component).displayName = "Fieldset.NColumn(" + ncolumns + ")(" + JSON.stringify(config) + ")";
