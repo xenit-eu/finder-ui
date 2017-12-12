@@ -4,7 +4,7 @@ import { Component, createElement as __, DOM as _, FormEvent, ReactElement } fro
 import { FieldSkeleton_Props_t, RenderMode } from "../fields";
 import { PropertyRenderConfig_t, PropertyRenderer_t } from "./interface";
 
-const TextBox: PropertyRenderer_t = (config: PropertyRenderConfig_t) => {
+const TextArea: PropertyRenderer_t = (config: PropertyRenderConfig_t) => {
     return (props: FieldSkeleton_Props_t) => {
         if (props.renderMode !== RenderMode.VIEW) {
             return _.span({ className: "metadata-field" }, __(TextField, {
@@ -13,6 +13,9 @@ const TextBox: PropertyRenderer_t = (config: PropertyRenderConfig_t) => {
                 onChange: (evt: FormEvent<{}>, value: string) => {
                     props.onChange(config.mapToModel(props.node, value));
                 },
+                multiLine: true,
+                rows: 2,
+                rowsMax: 4,
                 value: config.mapToView(props.node),
             }));
         } else {
@@ -20,4 +23,4 @@ const TextBox: PropertyRenderer_t = (config: PropertyRenderConfig_t) => {
         }
     };
 };
-export default TextBox;
+export default TextArea;
