@@ -4,7 +4,7 @@ import { Component, createElement as __, DOM as _, FormEvent, ReactElement } fro
 import { FieldSkeleton_Props_t, RenderMode } from "../fields";
 import { PropertyRenderConfig_t, PropertyRenderer_t } from "./interface";
 
-const TextArea: PropertyRenderer_t = (config: PropertyRenderConfig_t) => {
+const TextArea: PropertyRenderer_t<string> = (config: PropertyRenderConfig_t<string>) => {
     return (props: FieldSkeleton_Props_t) => {
         if (props.renderMode !== RenderMode.VIEW) {
             return _.span({ className: "metadata-field" }, __(TextField, {

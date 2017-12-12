@@ -4,7 +4,7 @@ import { Component, createElement as __, CSSProperties, DOM as _, FormEvent, Rea
 import { FieldsetSkeleton_Props_t, FieldSkeleton_Props_t, RenderMode } from "../fields";
 import { FieldsetRenderConfig_t, FieldsetRenderer_t } from "./interface";
 
-const cellpropsleft = { style: <CSSProperties>{ width: "33%", textAlign: "right" } };
+const cellpropsleft = { style: <CSSProperties>{ width: "33%", textAlign: "right", overflow: "hidden", textOverflow: "ellipsis" } };
 const cellpropsright = { style: <CSSProperties>{ width: "67%" } };
 const tableprops = { style: <CSSProperties>{ width: "100%", tableLayout: "fixed" } };
 
