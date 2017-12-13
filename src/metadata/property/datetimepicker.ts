@@ -7,7 +7,8 @@ import { FieldSkeleton_Props_t, RenderMode } from "../fields";
 import { PropertyRenderConfig_t, PropertyRenderer_t } from "./interface";
 
 const DateTimePicker: PropertyRenderer_t<Date> = (config: PropertyRenderConfig_t<Date>) => {
-    return (props: FieldSkeleton_Props_t) => {
+    // tslint:disable-next-line:only-arrow-functions
+    return function DateTimePicker(props: FieldSkeleton_Props_t) {
         const defaultValueString = config.parameters["override-default-value"] || null;
         let defaultValue = undefined;
         if(defaultValueString) {

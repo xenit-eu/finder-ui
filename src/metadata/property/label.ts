@@ -4,7 +4,8 @@ import { FieldSkeleton_Props_t, RenderMode } from "../fields";
 import { PropertyRenderConfig_t, PropertyRenderer_t } from "./interface";
 
 const Label: PropertyRenderer_t<string> = (config: PropertyRenderConfig_t<string>) => {
-    return (props: FieldSkeleton_Props_t) => {
+    // tslint:disable-next-line:only-arrow-functions
+    return function Label(props: FieldSkeleton_Props_t) {
         return _.span({ className: "metadata-value" }, config.mapToView(props.node));
     };
 };

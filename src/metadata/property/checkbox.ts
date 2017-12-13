@@ -5,7 +5,8 @@ import { FieldSkeleton_Props_t, RenderMode } from "../fields";
 import { PropertyRenderConfig_t, PropertyRenderer_t } from "./interface";
 
 const CheckBox: PropertyRenderer_t<boolean> = (config: PropertyRenderConfig_t<boolean>) => {
-    return (props: FieldSkeleton_Props_t) => {
+    // tslint:disable-next-line:only-arrow-functions
+    return function CheckBox(props: FieldSkeleton_Props_t) {
         return _.span({ className: "metadata-field" }, __(Checkbox, {
             checked: config.mapToView(props.node),
             onCheck: (evt: FormEvent<{}>, value: boolean) => {
