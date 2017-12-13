@@ -4,11 +4,13 @@ import { Component, createElement as __, DOM as _, FormEvent, ReactElement } fro
 import { FieldSkeleton_Props_t, RenderMode } from "../fields";
 import { PropertyRenderConfig_t, PropertyRenderer_t } from "./interface";
 
+type KV_t = {
+    key: string,
+    value: string,
+};
+
 type ListConstraint_State_t = {
-    menuItems: Array<{
-        key: string,
-        value: string,
-    }>,
+    menuItems: KV_t[],
     loaded: boolean,
 };
 
@@ -24,12 +26,12 @@ const ListConstraint: PropertyRenderer_t<string> = (config: PropertyRenderConfig
 
         public componentDidMount() {
             config.parameters.resolver.lookup([])
-                .then(items => this.setState({ menuItems: items, loaded: true }));
+                .then((items: KV_t[]) => this.setState({ menuItems: items, loaded: true }));
         }
 
         public render() {
             if (this.props.renderMode !== RenderMode.VIEW && this.state.loaded) {
-                const menuItems = this.state.menuItems.map(item => __(MenuItem, {
+                const menuItems = this.state.menuItems.map((item: KV_t) => __(MenuItem, {
                     key: item.key,
                     value: item.key,
                     primaryText: item.value,
