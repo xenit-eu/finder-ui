@@ -73,13 +73,13 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
                     fullWidth: true,
                     multiple: isMultiValue,
                     hintText: "Select value",
-                    onChange: (evt: FormEvent<{}>, key, values: string|string[]) => {
+                    onChange: (evt: FormEvent<{}>, key: number, values: string|string[]) => {
                         this.props.onChange(config.mapToModel(this.props.node, values));
                     },
                     value,
                 }, menuItems));
             } else {
-                let values = isMultiValue?value:[value];
+                let values = this._getViewValue();
                 if(this.state.currentValuesLoaded) {
                     values = this.state.currentValues.map(item => item.value);
                 }

@@ -8,7 +8,7 @@ const Label: PropertyRenderer_t<string | string[]> = (config: PropertyRenderConf
     return function Label(props: FieldSkeleton_Props_t) {
         const value = config.mapToView(props.node);
         const isMultiValue = Array.isArray(value);
-        const stringValue = isMultiValue ? value.join(", ") : value;
+        const stringValue = isMultiValue ? (<string[]>value).join(", ") : value;
         return _.span({ className: "metadata-value" }, stringValue);
     };
 };
