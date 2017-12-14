@@ -28,16 +28,21 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
             };
         }
 
+        private _getViewValue(): string[] {
+            const value = config.mapToView(this.props.node);
+            return Array.isArray(value)?value:[value];
+        }
+
         private lookupCurrentValues() {
             this.setState({ currentValuesLoaded: false }, () => {
-                config.parameters.resolver.lookup(config.mapToView(this.props.node))
+                config.parameters.resolver.lookup(this._getViewValue())
                     .then((items: KV_t[]) => this.setState({ currentValues: items, currentValuesLoaded: true }));
             });
         }
 
         private lookupMenuItems() {
             this.setState({ menuItemsLoaded: false }, () => {
-                config.parameters.resolver.query([], {})
+                config.parameters.resolver.query(this._getViewValue(), {})
                     .then((items: KV_t[]) => this.setState({ menuItems: items, menuItemsLoaded: true }));
             });
         }
