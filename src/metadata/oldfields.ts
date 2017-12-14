@@ -6,7 +6,7 @@ import MenuItem from "material-ui/MenuItem";
 import SelectField from "material-ui/SelectField";
 import TextField from "material-ui/TextField";
 import { Component, createElement as __, DOM as _, ReactElement } from "react";
-import { MetaDataPanelGroup_t, MetaDataPanelGroupInfo_t } from "./metadataPanel";
+import { MetaDataPanelGroup_t, MetaDataPanelGroupInfo_t } from "../metadataPanel";
 
 export enum MetadataType_t {
     STRING,
