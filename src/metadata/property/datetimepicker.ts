@@ -44,6 +44,9 @@ const DateTimePicker: PropertyRenderer_t<Date | Date[]> = (config: PropertyRende
                 return null;
             }
         } else {
+            if(!value) {
+                return null;
+            }
             return _.span({ className: "metadata-value" }, isMultiValue?value.map(v => v.toString()).join(", "):value.toString());
         }
     };
