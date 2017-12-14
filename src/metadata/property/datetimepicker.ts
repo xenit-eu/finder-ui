@@ -6,7 +6,7 @@ const d = debug("finder-ui:metadata:property:datetimepicker");
 import { FieldSkeleton_Props_t, RenderMode } from "../fields";
 import { PropertyRenderConfig_t, PropertyRenderer_t } from "./interface";
 
-const DateTimePicker: PropertyRenderer_t<Date> = (config: PropertyRenderConfig_t<Date>) => {
+const DateTimePicker: PropertyRenderer_t<Date | Date[]> = (config: PropertyRenderConfig_t<Date | Date[]>) => {
     // tslint:disable-next-line:only-arrow-functions
     return function DateTimePicker(props: FieldSkeleton_Props_t) {
         const defaultValueString = config.parameters["override-default-value"] || null;
@@ -23,21 +23,28 @@ const DateTimePicker: PropertyRenderer_t<Date> = (config: PropertyRenderConfig_t
             }
         }
 
+        const value = config.mapToView(props.node);
+        const isMultiValue = Array.isArray(value);
+
         if (props.renderMode !== RenderMode.VIEW) {
-            return _.span({ className: "metadata-field" }, __(DatePicker, {
-                fullWidth: true,
-                autoOk: true,
-                container: "inline",
-                hintText: "Pick a date",
-                onChange: (evt: FormEvent<{}>, value: Date) => {
-                    props.onChange(config.mapToModel(props.node, value));
-                },
-                defaultDate: defaultValue,
-                value: config.mapToView(props.node),
-            }));
+            if (!isMultiValue) {
+                return _.span({ className: "metadata-field" }, __(DatePicker, {
+                    fullWidth: true,
+                    autoOk: true,
+                    container: "inline",
+                    hintText: "Pick a date",
+                    onChange: (evt: FormEvent<{}>, v: Date) => {
+                        props.onChange(config.mapToModel(props.node, v));
+                    },
+                    defaultDate: defaultValue,
+                    value: <Date>value,
+                }));
+            } else {
+                // TODO: Implement handling of multivalue fields
+                return null;
+            }
         } else {
-            const viewValue = config.mapToView(props.node);
-            return _.span({ className: "metadata-value" }, viewValue ? viewValue.toString() : "");
+            return _.span({ className: "metadata-value" }, isMultiValue?value.map(v => v.toString()).join(", "):value.toString());
         }
     };
 };
