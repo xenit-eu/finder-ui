@@ -114,13 +114,14 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
     }
 
     private handleSave () {
-        this.setState((prevState) => {
+        this.setState((prevState: State_t) => {
             let set = prevState.sets.find(s => s.label === prevState.selectedSet); // Extract currently selected set
             if (set && !set.readonly) {
                 let newSet = { ...set, columns: prevState.selected.map(l => this.mappingByLabel[l].name) }; // Place new columns
                 let sets = prevState.sets.map(s => s.label === prevState.selectedSet ? newSet : set); // Replace set with new set, keeping its position
                 return { sets }; // Update state
             }
+            return { sets: prevState.sets };
         }, () => this.handleSetChange());
     }
 
@@ -143,7 +144,7 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
                     selected: set.columns.map(a => this.mappingByName[a].label),
                 };
             }
-            return {};
+            return prevState;
         });
     }
 
