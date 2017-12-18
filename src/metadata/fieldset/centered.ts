@@ -11,7 +11,7 @@ const tableprops = { style: <CSSProperties>{ width: "100%", tableLayout: "fixed"
 const CenteredFieldset: FieldsetRenderer_t = (config: FieldsetRenderConfig_t) => {
     const component = (props: FieldsetSkeleton_Props_t) => {
         return _.table(tableprops,
-            props.fields.map(field => _.tr({}, _.td(cellpropsleft, field.label + ":"), _.td(cellpropsright, field.value))),
+            props.fields.map(field => _.tr({}, _.td(cellpropsleft, [field.label]), _.td(cellpropsright, field.value))),
         );
     };
     (<any>component).displayName = "Fieldset.Centered(" + JSON.stringify(config) + ")";
