@@ -152,7 +152,7 @@ export class DropZone extends Component<DropZone_t, State_t> {
     }
 
     public onDropZoneClick () {
-        if (this.fileInput && !this.state.show && !this.props.disabled && this.props.clickable) { 
+        if (this.fileInput && !this.state.show && !this.props.disabled && this.props.clickable) {
             this.fileInput.click();
         }
     }
