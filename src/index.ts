@@ -21,3 +21,4 @@ export * from "./columnspicker";
 export * from "./finderquery";
 export * from "./AlfredTheming";
 export * from "./resizer";
+export * from "./upload";
