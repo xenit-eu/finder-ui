@@ -3,10 +3,10 @@ import { mount, shallow } from "enzyme";
 import { Component, createElement as __, DOM as _, PropTypes } from "react";
 
 import * as injectTapEventPlugin from "react-tap-event-plugin";
-import { Fixture, simulateEvent } from "./testUtils";
+import { Fixture, simulateEvent } from "../testUtils";
 
+import { Pager_t } from "../pager";
 import { DocList, DocList_t, MenuItem_t, SortDirection_t } from "./doclist";
-import { Pager_t } from "./pager";
 
 // tslint:disable-next-line:no-var-requires
 const jasmineEnzyme = require("jasmine-enzyme"); // no typings for jasmine-engine => require instead of import.

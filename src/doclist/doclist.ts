@@ -8,8 +8,9 @@ import FileDownload from "material-ui/svg-icons/file/file-download";
 import MoreHorizIcon from "material-ui/svg-icons/navigation/more-horiz";
 import ToggleIndeterminateCheckBox from "material-ui/svg-icons/toggle/indeterminate-check-box";
 import { createElement as __, DOM as _, ReactElement, ReactNode } from "react";
+
+import { Pager, Pager_t } from "../pager";
 import "./doclist.less";
-import { Pager, Pager_t } from "./pager";
 
 type OnMenuSelected_t = (rowIndex: number, menuIndex: number, key?: string) => void;
 
