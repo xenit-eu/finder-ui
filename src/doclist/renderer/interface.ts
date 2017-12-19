@@ -3,6 +3,7 @@ import { ModelToViewMapper_t, Node_t } from "../../metadata";
 
 export type ColumnRenderer_Props_t = {
     node: Node_t,
+    row: number,
 };
 
 export type ColumnRenderer_t = ComponentType<ColumnRenderer_Props_t>;
