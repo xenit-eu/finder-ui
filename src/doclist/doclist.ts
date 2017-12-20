@@ -8,8 +8,11 @@ import FileDownload from "material-ui/svg-icons/file/file-download";
 import MoreHorizIcon from "material-ui/svg-icons/navigation/more-horiz";
 import ToggleIndeterminateCheckBox from "material-ui/svg-icons/toggle/indeterminate-check-box";
 import { createElement as __, DOM as _, ReactElement, ReactNode } from "react";
+
+import { Node_t } from "../metadata/fields";
+import { Pager, Pager_t } from "../pager";
 import "./doclist.less";
-import { Pager, Pager_t } from "./pager";
+import { ColumnRenderer_Props_t, ColumnRenderer_t } from "./renderer/interface";
 
 type OnMenuSelected_t = (rowIndex: number, menuIndex: number, key?: string) => void;
 
@@ -75,6 +78,7 @@ export type Doclist_Column_t = {
     sortable?: boolean,
     sortDirection?: SortDirection_t,
     format?: (a: any, props: Row_t, index: number) => string | ReactElement<any>,
+    renderer?: ColumnRenderer_t,
 };
 
 export type OnSortColumnSelected_t = (columnIndex: number, columnName: string, direction: SortDirection_t) => void;
@@ -100,9 +104,10 @@ function translate(translations: Translations_t, key: string) {
 }
 
 export type DocList_t_Data = {
+    data?: Row_t[],
+    nodes?: Node_t[],
     columns: Doclist_Column_t[],
     columnsPicker?: ReactElement<any>,
-    data: Row_t[],
     pager: Pager_t,
     rowMenu: (rowIndex: number) => MenuItem_t[],
     rowToggled: (rowIndex: number) => boolean,
@@ -179,12 +184,18 @@ function SortableTh(c: Doclist_Column_t, onSortColumnSelected: OnSortColumnSelec
 //@Param columnsPicker any "Column picker element"
 //@Param toggledRows number "The number of rows that have been toggled in total"
 
-export function DocList({  className, columns, data, onDownloadButtonClick, onMenuSelected, onPageSelected, onRowSelected, onRowToggled,
-    onSortColumnSelected, pager, rowMenu, rowStyle, rowToggled, togglable, columnsPicker, documentNotFoundText, toggledRows, translations}: DocList_t): ReactElement<any> {
+export function DocList({ className, columns, data, nodes, onDownloadButtonClick, onMenuSelected, onPageSelected, onRowSelected,
+    onRowToggled, onSortColumnSelected, pager, rowMenu, rowStyle, rowToggled, togglable, columnsPicker, documentNotFoundText,
+    toggledRows, translations }: DocList_t): ReactElement<any> {
+
+    // Convert data to node
+    nodes = upgradeDataToNodes(data, nodes);
+    columns = columns.map(upgradeColumnFormatToRender);
+
     let downloadComponents: ReactNode | false = false;
     if (togglable) {
-        const allRows = data.map((_: any, key: number) => key);
-        const rowToggleState: boolean[] = data.map((_: any, key: number) => rowToggled(key));
+        const allRows = nodes.map((_: any, key: number) => key);
+        const rowToggleState: boolean[] = nodes.map((_: any, key: number) => rowToggled(key));
         const allRowsToggled = rowToggleState.every(toggled => toggled);
         const noRowsToggled = rowToggleState.every(toggled => !toggled);
         const style = {
@@ -197,12 +208,12 @@ export function DocList({  className, columns, data, onDownloadButtonClick, onMe
                     style,
                     checked: true,
                     checkedIcon: __(ToggleIndeterminateCheckBox),
-                    onCheck: () => data.forEach((row, i) => onRowToggled(true, i, row)),
+                    onCheck: () => nodes.forEach((node, i) => onRowToggled(true, i, nodeToRow(node))),
                 }) :
                 __(Checkbox, {
                     style,
                     checked: allRowsToggled && !noRowsToggled,
-                    onCheck: (ev: any, checked: boolean) => data.forEach((row, i) => onRowToggled(checked, i, row)),
+                    onCheck: (ev: any, checked: boolean) => nodes.forEach((node, i) => onRowToggled(checked, i, nodeToRow(node))),
                 }),
             __(IconButton, { disabled: toggledRows === 0, tooltip: toggledRows + " selected", onClick: onDownloadButtonClick }, [__(FileDownload)]),
         ]);
@@ -213,14 +224,14 @@ export function DocList({  className, columns, data, onDownloadButtonClick, onMe
 
     const header = _.thead({ key: "header" }, [_.tr({ key: "head" }, headerelements)]);
     const style = rowStyle ? rowStyle : (i: number) => ({});
-    const singleRowElements = (row: Row_t, i: number) =>
+    const singleRowElements = (node: Node_t, i: number) =>
         [_.td({ key: "_menu" }, __(RowMenu, { rowIndex: i, menuItems: rowMenu(i), onMenuSelected }))]
             .concat((togglable ? [
-                _.td({ key: "toggle", style: { textAlign: "center" } }, __(Checkbox, { checked: rowToggled(i), onCheck: (ev: any, checked: boolean) => onRowToggled(checked, i, row) })),
+                _.td({ key: "toggle", style: { textAlign: "center" } }, __(Checkbox, { checked: rowToggled(i), onCheck: (ev: any, checked: boolean) => onRowToggled(checked, i, nodeToRow(node)) })),
             ] : []))
-            .concat(columns.map(col => buildSingleTD(col, row, onRowSelected, i)));
+            .concat(columns.map(col => buildSingleTD(col, node, onRowSelected, i)));
 
-    const bodycontent = data.map((row, i) => _.tr({ style: style(i), key: i }, singleRowElements(row, i)));
+    const bodycontent = nodes.map((node, i) => _.tr({ style: style(i), key: i }, singleRowElements(node, i)));
     const body = _.tbody({ key: "body" }, bodycontent);
     const tableProps = { key: "table", className: className || "table table-hover table-striped table-mc-purple table-condensed", id: "doclist-table" };
     const table = _.div({ className: "table-scroll-wrapper" }, _.table(tableProps, [header, body])); // table
@@ -228,13 +239,53 @@ export function DocList({  className, columns, data, onDownloadButtonClick, onMe
     const emptyDocList = _.div({ className: "doclist-message" }, [documentNotFoundText]);
     return _.div({ className: "doclist" }, pager.totalItems > 0 ? [_.div({ className: "doclist-header" }, [pagerComponent, columnsPicker]), table] : [emptyDocList]);
 }
-function buildSingleTD(col: Doclist_Column_t, row: Row_t, onRowSelected: (i: number) => void, i: number) {
-    const formattedData = col.format ? col.format(row[col.name], row, i) : row[col.name];
-    let title = (typeof formattedData === "string") && (formattedData.indexOf("...") < 0) ? formattedData : row[col.name];
+function buildSingleTD(col: Doclist_Column_t, node: Node_t, onRowSelected: (i: number) => void, i: number) {
     return _.td(
         {
             key: col.name + col.label, className: "doclist-col-" + col.name,
             onClick: () => onRowSelected(i),
-            title,
-        }, formattedData);
+        }, __(col.renderer || "span", {
+            node,
+            row: i,
+        }));
+}
+
+function upgradeDataToNodes(data?: Row_t[], nodes?: Node_t[]): Node_t[] {
+    if(nodes) {
+        return nodes;
+    }
+
+    if(data) {
+        return data.map((row: Row_t) => {
+            let node = {
+                type: "",
+                aspects: [],
+                properties: {},
+            };
+
+            Object.keys(row).forEach((key: string) => {
+                node.properties[key] = [row[key]];
+            });
+            return node;
+        });
+
+    }
+    throw new Error("Either data or nodes must be passed.");
+}
+
+function nodeToRow(node: Node_t): Row_t {
+    let row = {};
+    Object.keys(node.properties).forEach(key => row[key] = node.properties[key][0]);
+    return row;
+}
+
+function upgradeColumnFormatToRender(col: Doclist_Column_t): Doclist_Column_t {
+    return {
+        // tslint:disable-next-line:only-arrow-functions
+        renderer: function UpgradedFormatRenderer(props: ColumnRenderer_Props_t): ReactElement<any> {
+            let value = col.format ? col.format(props.node.properties[col.name][0], nodeToRow(props.node), props.row) : props.node.properties[col.name][0];
+            return typeof value === "string" ? _.span({}, value) : value;
+        },
+        ...col,
+    };
 }
