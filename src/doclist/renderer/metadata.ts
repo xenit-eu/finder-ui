@@ -19,4 +19,3 @@ function wrapMetadataRenderer<T>(metadataRendererFactory: PropertyRenderer_t<T>)
 export const Currency = wrapMetadataRenderer(PropertyRenderers.Currency);
 export const Size = wrapMetadataRenderer(PropertyRenderers.Size);
 export const Mimetype = wrapMetadataRenderer(PropertyRenderers.Mimetype);
-export const ResourceResolver = wrapMetadataRenderer(PropertyRenderers.SelectBox);
