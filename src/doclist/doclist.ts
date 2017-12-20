@@ -208,12 +208,12 @@ export function DocList({ className, columns, data, nodes, onDownloadButtonClick
                     style,
                     checked: true,
                     checkedIcon: __(ToggleIndeterminateCheckBox),
-                    onCheck: () => nodes.forEach((node, i) => onRowToggled(true, i, nodeToRow(node))),
+                    onCheck: () => (<Node_t[]>nodes).forEach((node, i) => onRowToggled(true, i, nodeToRow(node))),
                 }) :
                 __(Checkbox, {
                     style,
                     checked: allRowsToggled && !noRowsToggled,
-                    onCheck: (ev: any, checked: boolean) => nodes.forEach((node, i) => onRowToggled(checked, i, nodeToRow(node))),
+                    onCheck: (ev: any, checked: boolean) => (<Node_t[]>nodes).forEach((node, i) => onRowToggled(checked, i, nodeToRow(node))),
                 }),
             __(IconButton, { disabled: toggledRows === 0, tooltip: toggledRows + " selected", onClick: onDownloadButtonClick }, [__(FileDownload)]),
         ]);
