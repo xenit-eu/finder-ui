@@ -16,6 +16,7 @@ import "./columnspicker.less";
 export type Column_t = {
     name: string,
     label: string,
+    fixed?: boolean,
 };
 
 export type ColumnsPicker_t = {
@@ -25,16 +26,6 @@ export type ColumnsPicker_t = {
     sets?: ColumnSet_t[],
     onSetsChange?: (sets: ColumnSet_t[]) => void,
     onDone: (selectedColumns: string[]) => void,
-};
-
-const sortableOptions = {
-    animation: 150,
-    sort: true,
-    group: {
-        name: "clone2",
-        pull: true,
-        put: true,
-    },
 };
 
 const saveButtonStyle: CSSProperties = {
@@ -50,7 +41,7 @@ export type ColumnSet_t = {
 
 type State_t = {
     opened: boolean, // open dialog.
-    selected: string[], // list of labels
+    selected: Column_t[],
     sets: ColumnSet_t[],
     selectedSet: string, // selected ColumnSet label.
 };
@@ -69,29 +60,19 @@ const storageKey = "users-column-sets";
 
 export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
 
-    private mappingByName: {[k: string]: Column_t};
-    private mappingByLabel: {[k: string]: Column_t};
-
-    private init (props: ColumnsPicker_t) {
-        this.mappingByName = props.allColumns.reduce((map, c) => { map[c.name] = c; return map; }, {});
-        this.mappingByLabel = props.allColumns.reduce((map, c) => { map[c.label] = c; return map; }, {});
-    }
-
     constructor(props: ColumnsPicker_t) {
         super(props);
-        this.init(props);
         this.state = {
             opened: false,
-            selected: props.selectedColumns.map(a => this.mappingByName[a].label),
+            selected: <Column_t[]>props.selectedColumns.map(name => props.allColumns.find(c => c.name === name)).filter(col => !!col),
             sets: props.sets || JSON.parse(localStorage.getItem(storageKey) || "[]"),
             selectedSet: "",
         };
     }
 
     public componentWillReceiveProps(props: ColumnsPicker_t) {
-        this.init(props);
         this.setState({
-            selected: props.selectedColumns.map(a => this.mappingByName[a].label),
+            selected: <Column_t[]>props.selectedColumns.map(name => props.allColumns.find(c => c.name === name)).filter(col => !!col),
             sets: props.sets || JSON.parse(localStorage.getItem(storageKey) || "[]"),
         } as State_t);
     }
@@ -105,7 +86,7 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
     }
 
     private handleDone () {
-        this.props.onDone(this.state.selected.map((c: string) => this.mappingByLabel[c].name));
+        this.props.onDone(this.state.selected.map(col => col.name));
         this.setState({ opened: false} as State_t);
     }
 
@@ -117,7 +98,7 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
         this.setState((prevState: State_t) => {
             let set = prevState.sets.find(s => s.label === prevState.selectedSet); // Extract currently selected set
             if (set && !set.readonly) {
-                let newSet = { ...set, columns: prevState.selected.map(l => this.mappingByLabel[l].name) }; // Place new columns
+                let newSet = { ...set, columns: prevState.selected.map(l => l.name) }; // Place new columns
                 let sets = prevState.sets.map(s => s.label === prevState.selectedSet ? newSet : s); // Replace set with new set, keeping its position
                 return { sets }; // Update state
             }
@@ -129,19 +110,24 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
         const name: string = prompt("Column set name") || "DEFAULT";
         this.setState((prevState) => {
             return {
-                sets: prevState.sets.concat([{ label: name, columns: prevState.selected.map(l => this.mappingByLabel[l].name) }]),
+                sets: prevState.sets.concat([{ label: name, columns: prevState.selected.map(l => l.name) }]),
                 selectedSet: name,
             };
         }, () => this.handleSetChange());
     }
 
+    private _getColumnsIncludingFixed(columns: string[]): Column_t[] {
+        const fixedColumns = this.props.allColumns.filter(c => c.fixed).filter(c => columns.indexOf(c.name) === -1);
+        return fixedColumns.concat(columns.map(name => <Column_t>this.props.allColumns.find(c => c.name === name)));
+    }
+
     private handleChangeSet (event: any, index: number, value: string) {
         this.setState((prevState) => {
-            const set = prevState.sets.find(s => s.label === value);
+            const set: ColumnSet_t|undefined = prevState.sets.find(s => s.label === value);
             if (set) {
                 return {
                     selectedSet: value,
-                    selected: set.columns.map(a => this.mappingByName[a].label),
+                    selected: this._getColumnsIncludingFixed(set.columns),
                 };
             }
             return prevState;
@@ -154,25 +140,36 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
             const selectedSet = newSets.length > 0 ? newSets[0] : null;
             return {
                 sets: newSets,
-                selected: selectedSet ?  selectedSet.columns.map(a => this.mappingByName[a].label) : [],
+                selected: this._getColumnsIncludingFixed(selectedSet ? selectedSet.columns : []),
                 selectedSet: selectedSet ? selectedSet.label : "",
             };
         }, () => this.handleSetChange());
     }
 
     private handleChangeTargetSortable(items: string[]) {
-        this.setState( {selected: items } as State_t );
+        this.setState({ selected: this._getColumnsIncludingFixed(items) });
     }
 
     private handleChangeSourceSortable(items: string[]) {
-        const selected = this.props.allColumns.map(c => c.label).filter(a => items.indexOf(a) === -1);
-        this.setState({ selected } as State_t );
+        this.setState((prevState: State_t) => ({
+            selected: prevState.selected.filter(c => c.fixed || items.indexOf(c.name) === -1),
+        }));
     }
 
     public render() {
 
-        const selected = this.state.selected.map((val: string) => __("li", {"key": val, "data-id": val}, val));
-        const others = this.props.allColumns.filter(a => this.state.selected.indexOf(a.label) === -1).map(c => c.label).map((val: string) => __("li", {"key": val, "data-id": val}, val));
+        const selected = this.state.selected.map((col) => __("li", {"key": col.name, "data-id": col.name, "className": col.fixed?"column-picker-fixed":""}, col.label));
+        const others = this.props.allColumns.filter(a => !this.state.selected.some(b => a.name === b.name)).map((col) => __("li", {"key": col.name, "data-id": col.name}, col.label));
+
+        const sortableOptions = {
+            animation: 150,
+            sort: true,
+            group: {
+                name: "clone2",
+                pull: <T>(to: T, from: T, element: HTMLElement) => (to === from || !element.classList.contains("column-picker-fixed")),
+                put: true,
+            },
+        };
 
         const selectedSet = this.state.sets.find(s => s.label === this.state.selectedSet);
 

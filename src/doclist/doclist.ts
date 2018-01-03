@@ -76,6 +76,7 @@ export type Doclist_Column_t = {
     label: string,
     alignRight?: boolean,
     sortable?: boolean,
+    fixed?: boolean,
     sortDirection?: SortDirection_t,
     format?: (a: any, props: Row_t, index: number) => string | ReactElement<any>,
     renderer?: ColumnRenderer_t,
