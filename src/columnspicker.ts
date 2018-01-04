@@ -78,16 +78,14 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
         } as State_t);
     }
 
-    private handleSetChange() {
+    private handleDone () {
+        this.props.onDone(this.state.selected.map(col => col.name));
+
         if(this.props.onSetsChange) {
             this.props.onSetsChange(this.state.sets);
         } else {
             localStorage.setItem(storageKey, JSON.stringify(this.state.sets));
         }
-    }
-
-    private handleDone () {
-        this.props.onDone(this.state.selected.map(col => col.name));
         this.setState({ opened: false} as State_t);
     }
 
@@ -104,7 +102,7 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
                 return { sets }; // Update state
             }
             return { sets: prevState.sets };
-        }, () => this.handleSetChange());
+        });
     }
 
     private handleSaveAsNew () {
@@ -118,7 +116,7 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
                 sets: prevState.sets.concat([{ id: "user-" + name, label: name, columns: prevState.selected.map(l => l.name) }]),
                 selectedSet: "user-"+name,
             };
-        }, () => this.handleSetChange());
+        });
     }
 
     private _getColumnsIncludingFixed(columns: string[]): Column_t[] {
@@ -148,7 +146,7 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
                 selected: this._getColumnsIncludingFixed(selectedSet ? selectedSet.columns : []),
                 selectedSet: selectedSet ? selectedSet.id : "",
             };
-        }, () => this.handleSetChange());
+        });
     }
 
     private handleChangeTargetSortable(items: string[]) {
@@ -177,6 +175,8 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
         };
 
         const selectedSet = this.state.sets.find(s => s.id === this.state.selectedSet);
+        const selectedSetColumns = selectedSet?this._getColumnsIncludingFixed(selectedSet.columns):[];
+        const columnsModified = selectedSet && (this.state.selected.length !== selectedSetColumns.length ||!this.state.selected.every((value, i) => value.name === selectedSetColumns[i].name));
 
         const dialogButtons = [
             __(FlatButton, {
@@ -192,6 +192,10 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
         const setsList = this.state.sets.map(o => __(MenuItem, { value: o.id, primaryText: o.label }));
 
         setsList.unshift(__(MenuItem, { value: "", primaryText: "(None)", disabled: true }));
+
+        if(selectedSet && columnsModified) {
+            setsList.push(__(MenuItem, {value: "--mod-"+selectedSet.id, primaryText: selectedSet.label + "*"}));
+        }
 
         const dialog = __(Dialog, {
             key: "dialog",
@@ -210,7 +214,7 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
             __(SelectField, {
                 key: "sf",
                 className: "select-display",
-                value: this.state.selectedSet,
+                value: (columnsModified?"--mod-":"")+this.state.selectedSet,
                 onChange: this.handleChangeSet.bind(this),
             }, setsList),
             _.div({ key: "columns-actions", className: "columns-actions" },
