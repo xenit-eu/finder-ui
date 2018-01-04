@@ -108,7 +108,11 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
     }
 
     private handleSaveAsNew () {
-        const name: string = prompt("Column set name") || "DEFAULT";
+        const name: string | null = prompt("Column set name");
+        if(!name) {
+            // No name entered, or cancel clicked -> do not create a new set
+            return;
+        }
         this.setState((prevState) => {
             return {
                 sets: prevState.sets.concat([{ id: "user-" + name, label: name, columns: prevState.selected.map(l => l.name) }]),
