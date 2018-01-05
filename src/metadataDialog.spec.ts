@@ -8,6 +8,7 @@ import { MetaDataDialog, MetaDataDialog_t } from "./metadataDialog";
 
 // tslint:disable-next-line:no-var-requires
 const jasmineEnzyme = require("jasmine-enzyme"); // no typings for jasmine-engine => require instead of import.
+const debug:any = require("debug");
 
 describe("Metadata component", () => {
 

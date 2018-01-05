@@ -99,6 +99,7 @@ describe("DocList component tests", () => {
         expect(wrapper.find("table").length).not.toBe(0);
         const table = wrapper.find("table");
         expect(table.find("thead tr th").at(1).text()).toBe(props.columns[0].label);
+        if (!props.data) throw "compiler unhappy";
         expect(table.find("tbody tr").length).toBe(props.data.length);
         expect(table.find("tbody tr").at(0).find("td").at(1).text()).toBe(props.data[0][name]);
         expect(table.find("tbody tr").at(1).find("td").at(1).text()).toBe(props.data[1][name]);

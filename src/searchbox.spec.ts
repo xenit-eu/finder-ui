@@ -1,6 +1,5 @@
 import "core-js";
 import "es6-shim";
-
 import { mount, shallow } from "enzyme";
 import { Component, createElement as __, DOM as _, PropTypes } from "react";
 
@@ -12,6 +11,7 @@ import { SearchBox, SearchBox_t } from "./searchbox";
 
 // tslint:disable-next-line:no-var-requires
 const jasmineEnzyme = require("jasmine-enzyme"); // no typings for jasmine-engine => require instead of import.
+const debug:any = require("debug");
 
 const ENTER_KEY_CODE: number = 13;
 
@@ -78,19 +78,19 @@ describe("SearchBox component tests", () => {
 
     it("should make a chip of a query with only value (no ':') when allowValueNoKeyTerm is true", () => {
         const props: SearchBox_t = {
-                searching: false,
-                searchedTerms: [],
-                searchableTerms: [{ label: "name", name: "name_name", type: "text", values: [] }],
-                searchableQueries: [],
-                searchedQueries: [],
-                allowValueNoKeyTerm: true,
-                onRemoveTerm: (idx) => { },
-                onRemoveQuery: (idx) => { },
-                onEnter: (text) => { },
-                onAddQuery: (query) => { },
-                onInputChanged: () => { },
-                onSaveAsQuery: () => { },
-            };
+            searching: false,
+            searchedTerms: [],
+            searchableTerms: [{ label: "name", name: "name_name", type: "text", values: [] }],
+            searchableQueries: [],
+            searchedQueries: [],
+            allowValueNoKeyTerm: true,
+            onRemoveTerm: (idx) => { },
+            onRemoveQuery: (idx) => { },
+            onEnter: (text) => { },
+            onAddQuery: (query) => { },
+            onInputChanged: () => { },
+            onSaveAsQuery: () => { },
+        };
 
         spyOn(props, "onEnter");
 
