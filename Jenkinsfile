@@ -9,7 +9,7 @@ node {
 
     try {
         stage 'Node setup + npm install + TESTS'
-        sh "./gradlew npmInstall npm_run_typings --stacktrace --debug --continue -i"
+        sh "./gradlew npmInstall --stacktrace --debug --continue -i"
         stage 'Test'
         sh "./gradlew  npm_test --stacktrace --debug --continue -i"
         stage 'Linter'
