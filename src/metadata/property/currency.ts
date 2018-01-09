@@ -41,8 +41,8 @@ type Currency_State_t = {
 const Currency: PropertyRenderer_t<number | null> = (config: PropertyRenderConfig_t<number | null>) => {
     const label = Label({
         ...config,
-        mapToModel: (node: Node_t, value: string) => config.mapToModel(node, convertCurrencyToInt(value)),
-        mapToView: (node: Node_t) => convertIntToCurrency(config.mapToView(node)),
+        mapToModel: (node: Node_t[], value: string) => config.mapToModel(node, convertCurrencyToInt(value)),
+        mapToView: (node: Node_t[]) => convertIntToCurrency(config.mapToView(node)),
     });
 
     class Currency extends Component<FieldSkeleton_Props_t, Currency_State_t> {
