@@ -1,7 +1,15 @@
 import { FieldSkeleton_t, Node_t } from "../fields";
 
-export type ModelToViewMapper_t<T> = (node: Node_t) => T;
-export type ViewToModelMapper_t<T> = (node: Node_t, s: T) => Node_t;
+class MultipleValuesMarkerObject {
+    // tslint:disable-next-line:variable-name
+    private __multipleValuesMarker__ = true;
+}
+
+export const MultipleValuesMarker = new MultipleValuesMarkerObject();
+// tslint:disable-next-line:type-name
+export type MultipleValuesMarker = MultipleValuesMarkerObject;
+export type ModelToViewMapper_t<T> = (node: Node_t[]) => T | MultipleValuesMarker;
+export type ViewToModelMapper_t<T> = (node: Node_t[], s: T) => Node_t[];
 type Color_t = string;
 
 type RendererSpecificParameters_t = {[k: string]: any};

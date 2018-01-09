@@ -17,8 +17,8 @@ export enum RenderMode {
 };
 
 export type FieldSkeleton_Props_t = {
-    node: Node_t,
-    onChange: (node: Node_t) => void,
+    node: Node_t[],
+    onChange: (node: Node_t[]) => void,
     renderMode: RenderMode,
 };
 export type FieldSkeleton_t = ComponentType<FieldSkeleton_Props_t>;
