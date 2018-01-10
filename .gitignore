@@ -4,3 +4,4 @@ typings/
 test-results/
 .gradle/
 build/
+.settings
