@@ -2,7 +2,7 @@ import TextField from "material-ui/TextField";
 import { Component, createElement as __, DOM as _, FormEvent, ReactElement, ReactNode } from "react";
 
 declare var require: (m: string) => any;
-const ChipInput = require("material-ui-chip-input");
+const ChipInput = require("material-ui-chip-input").default;
 
 import { FieldSkeleton_Props_t, RenderMode } from "../fields";
 import { PropertyRenderConfig_t, PropertyRenderer_t } from "./interface";

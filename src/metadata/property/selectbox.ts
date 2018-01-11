@@ -69,7 +69,7 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
                     insetChildren: isMultiValue,
                     checked: isMultiValue && value.indexOf(item.key) >= 0,
                 }));
-                return _.span({ className: "metadata-field" }, __(SelectField, <any>{
+                return _.span({ className: "metadata-field" }, __(SelectField, {
                     fullWidth: true,
                     multiple: isMultiValue,
                     hintText: "Select value",
