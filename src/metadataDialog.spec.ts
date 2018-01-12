@@ -8,7 +8,7 @@ import { MetaDataDialog, MetaDataDialog_t } from "./metadataDialog";
 
 // tslint:disable-next-line:no-var-requires
 const jasmineEnzyme = require("jasmine-enzyme"); // no typings for jasmine-engine => require instead of import.
-const debug:any = require("debug");
+const debug: any = require("debug");
 
 describe("Metadata component", () => {
 
@@ -49,8 +49,8 @@ describe("Metadata component", () => {
                 disable: false,
                 type: MetadataType_t.STRING,
             }],
-            onClose: () => {},
-            onSave: (fields) => {},
+            onClose: () => { },
+            onSave: (fields) => { },
         };
 
         const wrapper = Fixture(MetaDataDialog(props));
@@ -123,25 +123,25 @@ describe("Metadata component", () => {
         const input: any = textField.find("input");
         input.value = inputText;
         // textField.simulate('change');
-        (<any>textField).prop("onChange")({target: {value: inputText}});
+        (<any>textField).prop("onChange")({ target: { value: inputText } });
 
         // simulate a click on save button.
         const saveButton = layerWrapper.find("FlatButton").at(1); // second button is save button
         simulateEvent(saveButton, "touchTap");
 
         expect(props.onSave).toHaveBeenCalledWith([{
-                name: "F1",
-                label: "L1",
-                value: "V1",
-                disable: false,
-                type: MetadataType_t.STRING,
-            }, {
-                name: "F2",
-                label: "L2",
-                value: inputText,
-                disable: false,
-                type: MetadataType_t.STRING,
-            }]);
+            name: "F1",
+            label: "L1",
+            value: "V1",
+            disable: false,
+            type: MetadataType_t.STRING,
+        }, {
+            name: "F2",
+            label: "L2",
+            value: inputText,
+            disable: false,
+            type: MetadataType_t.STRING,
+        }]);
 
     });
 

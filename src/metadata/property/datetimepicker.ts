@@ -1,5 +1,5 @@
 //import * as debug from "debug";
-const debug:any = require("debug");
+const debug: any = require("debug");
 import DatePicker from "material-ui/DatePicker";
 import { Component, createElement as __, DOM as _, FormEvent, ReactElement } from "react";
 const d = debug("finder-ui:metadata:property:datetimepicker");

@@ -1,17 +1,20 @@
 import "core-js";
-import "es6-shim";
 import { mount, shallow } from "enzyme";
-import { Component, createElement as __, DOM as _, PropTypes } from "react";
-
+import "es6-shim";
+import {
+    Component,
+    createElement as __,
+    DOM as _,
+    PropTypes,
+} from "react";
 import * as injectTapEventPlugin from "react-tap-event-plugin";
-import { Fixture, simulateEvent } from "./testUtils";
-
 import { Pager_t } from "./pager";
 import { SearchBox, SearchBox_t } from "./searchbox";
+import { Fixture, simulateEvent } from "./testUtils";
 
 // tslint:disable-next-line:no-var-requires
 const jasmineEnzyme = require("jasmine-enzyme"); // no typings for jasmine-engine => require instead of import.
-const debug:any = require("debug");
+const debug: any = require("debug");
 
 const ENTER_KEY_CODE: number = 13;
 
