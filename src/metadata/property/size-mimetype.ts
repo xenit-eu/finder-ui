@@ -28,8 +28,8 @@ function convertToHumanReadable(size: string): string {
 export const Size: PropertyRenderer_t<Content_t | null> = (config: PropertyRenderConfig_t<Content_t | null>) => {
     return Label({
         ...config,
-        mapToModel: (node: Node_t, value: string) => config.mapToModel(node, null),
-        mapToView: (node: Node_t) => {
+        mapToModel: (node: Node_t[], value: string) => config.mapToModel(node, null),
+        mapToView: (node: Node_t[]) => {
             let value = config.mapToView(node);
             return value ? convertToHumanReadable(value.size) : "";
         },
@@ -39,8 +39,8 @@ export const Size: PropertyRenderer_t<Content_t | null> = (config: PropertyRende
 export const Mimetype: PropertyRenderer_t<Content_t | null> = (config: PropertyRenderConfig_t<Content_t | null>) => {
     return Label({
         ...config,
-        mapToModel: (node: Node_t, value: string) => config.mapToModel(node, null),
-        mapToView: (node: Node_t) => {
+        mapToModel: (node: Node_t[], value: string) => config.mapToModel(node, null),
+        mapToView: (node: Node_t[]) => {
             let value = config.mapToView(node);
             return value ? value.mimetype : "";
         },
