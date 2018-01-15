@@ -6,3 +6,4 @@ export { default as DateTimePicker } from "./datetimepicker";
 export { default as SelectBox } from "./selectbox";
 export { default as Currency } from "./currency";
 export { Size, Mimetype } from "./size-mimetype";
+export { default as TreeSelectBox } from "./treeselectbox"
