@@ -48,11 +48,13 @@ function addDays(d: Date, days: number): Date {
     return new Date(d.getTime() + (days * DAY));
 }
 
+export type Value_t = string | {label: string, value: string};
+
 export type SearchableTerm_t = {
     name: string,
     label: string,
     type: string, // "text" | "enum" | "date"
-    values: string[],
+    values: Value_t[],
 };
 
 //@Type  "Term structure"
@@ -169,8 +171,16 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
         } else if (currentTerm && currentTerm.type === "enum") {
             if (!val.endsWith(":")) {
                 const match = /[^\:]+\:\s*(.*)\s*$/.exec(val);
-                if (match && currentTerm.values.indexOf(match[1]) >= 0) {
-                    this.addNewTerm({ name: currentTerm.name, label: currentTerm.label, value: match[1] });
+                if (match) {
+                    const valList = currentTerm.values.filter(v => typeof v === "string" ? v === match[1] : v.label === match[1]);
+                    if (valList.length > 0) {
+                        const valueOrObj = valList[0];
+                        if (typeof valueOrObj === "string") {
+                            this.addNewTerm({ name: currentTerm.name, label: currentTerm.label, value: valueOrObj });
+                        } else {
+                            this.addNewTerm({ name: currentTerm.name, label: currentTerm.label, value: valueOrObj.value, valueLabel: valueOrObj.label });
+                        }
+                    }
                 }
             }
         } else if (reQuery.test(val)) {  // query has been encoded.
@@ -201,7 +211,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                 case "date":
                     return ["today", "last week", "last month", "on...", "after...", "before...", "between..."].map(t => currentTerm.label + ":" + t);
                 case "enum":
-                    return currentTerm.values.map(t => currentTerm.label + ":" + t);
+                    return currentTerm.values.map(t => typeof t === "object" ? t.label : t).map(t => currentTerm.label + ":" + t);
                 default:
             }
         }
