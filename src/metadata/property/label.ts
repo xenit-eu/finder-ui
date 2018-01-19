@@ -48,7 +48,7 @@ const Label: PropertyRenderer_t<string | string[]> = (config: PropertyRenderConf
             }
         }
 
-        render() {
+        public render() {
             let values = this._getViewValue();
             if(this.state.currentValuesLoaded) {
                 values = this.state.currentValues.map(item => item.value);
