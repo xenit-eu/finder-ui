@@ -1,5 +1,5 @@
-import { MenuItem, SelectField } from "material-ui";
-import { Component, createElement as __, DOM as _, FormEvent, ReactElement } from "react";
+import { MenuItem, SelectField, TextField } from "material-ui";
+import { Component, createElement as __, DOM as _, FormEvent, ReactElement, SyntheticEvent } from "react";
 
 import { FieldSkeleton_Props_t, RenderMode } from "../fields";
 import { PropertyRenderConfig_t, PropertyRenderer_t } from "./interface";
@@ -53,7 +53,7 @@ const TreeSelectBox: PropertyRenderer_t<string[]> = (config: PropertyRenderConfi
         }
 
         public componentWillReceiveProps(nextProps: FieldSkeleton_Props_t) {
-            if(nextProps.node !== this.props.node) {
+            if (nextProps.node !== this.props.node) {
                 this.lookupCurrentValues();
             }
         }
@@ -70,7 +70,7 @@ const TreeSelectBox: PropertyRenderer_t<string[]> = (config: PropertyRenderConfi
                     value,
                 });
                 let values = this._getViewValue();
-                if(this.state.currentValuesLoaded) {
+                if (this.state.currentValuesLoaded) {
                     values = this.state.currentValues.map(item => item.value);
                 }
                 return _.span({ className: "metadata-field" }, __(SelectField, {
@@ -81,7 +81,7 @@ const TreeSelectBox: PropertyRenderer_t<string[]> = (config: PropertyRenderConfi
                 }, menuItems));
             } else {
                 let values = this._getViewValue();
-                if(this.state.currentValuesLoaded) {
+                if (this.state.currentValuesLoaded) {
                     values = this.state.currentValues.map(item => item.value);
                 }
                 return _.span({ className: "metadata-value" }, values.join(", "));
@@ -104,6 +104,7 @@ type TreeSelectBoxImpl_Props_t = {
 
 type TreeSelectBoxImpl_State_t = {
     expanded: string[],
+    searchFilter: string,
 };
 
 type CheckboxTreeData_t = {
@@ -116,29 +117,44 @@ class TreeSelectBoxImpl extends Component<TreeSelectBoxImpl_Props_t, TreeSelectB
     constructor(props: TreeSelectBoxImpl_Props_t) {
         super(props);
         this.state = {
-            expanded: this._getDefaultExpanded(props.value),
+            expanded: this._getParentsFor(props.value),
+            searchFilter: "",
         };
     }
 
     private _getParents(nodeKey?: string): string[] {
-        if(!nodeKey) {
+        if (!nodeKey) {
             return [];
         }
         const node = this.props.treeDescription.find(n => n.key === nodeKey);
-        if(!node) {
+        if (!node) {
             return [];
         }
         return [node.key].concat(this._getParents(node.parent));
     }
 
-    private _getDefaultExpanded(values: string[]): string[] {
+    private _getParentsFor(values: string[]): string[] {
         const selectedNodes = this.props.treeDescription
             .filter(node => values.indexOf(node.key) >= 0);
         return (<string[]>[]).concat(...selectedNodes.map(node => this._getParents(node.parent)));
     }
 
+    private _getFilteredValues(filter: string) {
+        const matchingNodes = this.props.treeDescription
+            .filter(node => node.value.toLowerCase().indexOf(filter.toLowerCase()) >= 0);
+        return (<string[]>[]).concat(...matchingNodes.map(node => this._getParents(node.key).concat([node.key])));
+    }
+
+    private _getFilteredTreeDescription() {
+        if(!this.state.searchFilter) {
+            return this.props.treeDescription;
+        }
+        const filteredNodes = this._getFilteredValues(this.state.searchFilter);
+        return this.props.treeDescription.filter(node => filteredNodes.indexOf(node.key) >= 0);
+    }
+
     private _buildNodesTree(nodeKey?: string): CheckboxTreeData_t[] {
-        return this.props.treeDescription
+        return this._getFilteredTreeDescription()
             .filter(node => node.parent === nodeKey)
             .map(node => ({
                 value: node.key,
@@ -148,13 +164,29 @@ class TreeSelectBoxImpl extends Component<TreeSelectBoxImpl_Props_t, TreeSelectB
     }
 
     public render() {
-        return __(CheckboxTree, {
-            nodes: this._buildNodesTree(),
-            checked: this.props.value,
-            expanded: this.state.expanded,
-            onCheck: (checked: string[]) => this.props.onChange(checked),
-            onExpand: (expanded: string[]) => this.setState({ expanded }),
-            noCascade: true,
-        });
+        return _.div({
+            style: {
+                padding: "0 24px",
+            },
+        },
+            __(TextField, {
+                fullWidth: true,
+                hintText: "Filter",
+                onKeyDown: (ev: SyntheticEvent<{}>) => { ev.stopPropagation(); },
+                onChange: (ev: SyntheticEvent<{}>, newValue: string) => {
+                    this.setState({ searchFilter: newValue, expanded: newValue ? this._getFilteredValues(newValue) : this.state.expanded });
+                    ev.stopPropagation();
+                },
+                value: this.state.searchFilter,
+            }),
+            __(CheckboxTree, {
+                nodes: this._buildNodesTree(),
+                checked: this.props.value,
+                expanded: this.state.expanded,
+                onCheck: (checked: string[]) => this.props.onChange(checked),
+                onExpand: (expanded: string[]) => this.setState({ expanded }),
+                noCascade: true,
+            }),
+        );
     }
 }
