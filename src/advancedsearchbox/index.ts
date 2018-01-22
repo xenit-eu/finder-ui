@@ -72,7 +72,7 @@ class CustomAutoComplete implements IAutocompleteProvider {
             }]);
         }
 
-        return Promise.resolve(term && term.values || []);
+        return Promise.resolve(term && term.values.map(v => typeof v === "string" ? v : v.label ) || []);
     }
 }
 
