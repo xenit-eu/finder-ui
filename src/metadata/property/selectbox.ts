@@ -1,5 +1,5 @@
-import { MenuItem, SelectField } from "material-ui";
-import { Component, createElement as __, DOM as _, FormEvent, ReactElement } from "react";
+import { MenuItem, SelectField, TextField } from "material-ui";
+import { Component, createElement as __, DOM as _, FormEvent, ReactElement, SyntheticEvent } from "react";
 
 import { FieldSkeleton_Props_t, RenderMode } from "../fields";
 import { PropertyRenderConfig_t, PropertyRenderer_t } from "./interface";
@@ -14,6 +14,7 @@ type SelectBox_State_t = {
     menuItemsLoaded: boolean,
     currentValues: KV_t[],
     currentValuesLoaded: boolean,
+    searchFilter: string,
 };
 
 const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRenderConfig_t<string | string[]>) => {
@@ -25,6 +26,7 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
                 menuItemsLoaded: false,
                 currentValues: [],
                 currentValuesLoaded: false,
+                searchFilter: "",
             };
         }
 
@@ -33,18 +35,20 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
             return Array.isArray(value)?value:[value];
         }
 
-        private lookupCurrentValues() {
-            this.setState({ currentValuesLoaded: false }, () => {
-                config.parameters.resolver.lookup(this._getViewValue())
-                    .then((items: KV_t[]) => this.setState({ currentValues: items, currentValuesLoaded: true }));
-            });
+        private setStateP<K extends keyof SelectBox_State_t>(state: Pick<SelectBox_State_t, K>): Promise<void> {
+            return (new Promise(resolve => this.setState(state, resolve)));
         }
 
-        private lookupMenuItems() {
-            this.setState({ menuItemsLoaded: false }, () => {
-                config.parameters.resolver.query(this._getViewValue(), {})
-                    .then((items: KV_t[]) => this.setState({ menuItems: items, menuItemsLoaded: true }));
-            });
+        private lookupCurrentValues() {
+            return this.setStateP({ currentValuesLoaded: false })
+                .then(() => config.parameters.resolver.lookup(this._getViewValue()))
+                .then((items: KV_t[]) => this.setStateP({ currentValues: items, currentValuesLoaded: true }));
+        }
+
+        private lookupMenuItems(searchFilter?: string) {
+            return this.setStateP({ menuItemsLoaded: false, searchFilter: searchFilter|| "" })
+                .then(() => config.parameters.resolver.query(this._getViewValue(), { 0: searchFilter }))
+                .then((items: KV_t[]) => this.setStateP({ menuItems: items, menuItemsLoaded: true }));
         }
 
         public componentDidMount() {
@@ -61,7 +65,7 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
         public render() {
             let value = config.mapToView(this.props.node);
             const isMultiValue = Array.isArray(value);
-            if (this.props.renderMode !== RenderMode.VIEW && this.state.menuItemsLoaded) {
+            if (this.props.renderMode !== RenderMode.VIEW) {
                 const menuItems = this.state.menuItems.map((item: KV_t) => __(MenuItem, {
                     key: item.key,
                     value: item.key,
@@ -69,15 +73,37 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
                     insetChildren: isMultiValue,
                     checked: isMultiValue && value.indexOf(item.key) >= 0,
                 }));
-                return _.span({ className: "metadata-field" }, __(SelectField, {
-                    fullWidth: true,
-                    multiple: isMultiValue,
-                    hintText: "Select value",
-                    onChange: (evt: FormEvent<{}>, key: number, values: string|string[]) => {
-                        this.props.onChange(config.mapToModel(this.props.node, values));
+                const searchBox = _.div({
+                    style: {
+                        padding: "0 24px",
                     },
-                    value,
-                }, menuItems));
+                },
+                    __(TextField, {
+                        fullWidth: true,
+                        hintText: "Filter",
+                        onKeyDown: (ev: SyntheticEvent<{}>) => { ev.stopPropagation(); },
+                        onChange: (ev: SyntheticEvent<{}>, newValue: string) => { this.lookupMenuItems(newValue); ev.stopPropagation(); },
+                        value: this.state.searchFilter,
+                    }),
+                );
+
+                return _.span({ className: "metadata-field" },
+                    __(SelectField, <any>{
+                        fullWidth: true,
+                        multiple: isMultiValue,
+                        hintText: "Select value",
+                        onChange: (evt: FormEvent<{}>, key: number, values: string | string[]) => {
+                            this.props.onChange(config.mapToModel(this.props.node, values));
+                        },
+                        dropDownMenuProps: {
+                            onClose: () => this.lookupMenuItems(),
+                        },
+                        value,
+                    },
+                        searchBox,
+                        ...menuItems,
+                    ),
+                );
             } else {
                 let values = this._getViewValue();
                 if(this.state.currentValuesLoaded) {
