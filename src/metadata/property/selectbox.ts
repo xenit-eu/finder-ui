@@ -68,7 +68,7 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
         }
 
         public componentDidUpdate(prevProps: FieldSkeleton_Props_t) {
-            if (this.props.renderMode !== RenderMode.VIEW && !this.state.menuItemsLoaded) {
+            if (this.props.renderMode !== RenderMode.VIEW && !this.state.menuItemsLoaded && this.props.renderMode !== prevProps.renderMode) {
                 this.lookupMenuItems();
             }
         }
