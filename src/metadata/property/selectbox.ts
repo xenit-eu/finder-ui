@@ -14,7 +14,7 @@ type SelectBox_State_t = {
     menuItemsLoaded: boolean,
     currentValues: KV_t[],
     currentValuesLoaded: boolean,
-    searchFilter: string,
+    searchFilter?: string,
 };
 
 const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRenderConfig_t<string | string[]>) => {
@@ -26,7 +26,7 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
                 menuItemsLoaded: false,
                 currentValues: [],
                 currentValuesLoaded: false,
-                searchFilter: "",
+                searchFilter: undefined,
             };
         }
 
@@ -46,6 +46,9 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
         }
 
         private lookupMenuItems(searchFilter: string = "") {
+            if(searchFilter === this.state.searchFilter) {
+                return Promise.resolve();
+            }
             return this.setStateP({ menuItemsLoaded: false, searchFilter})
                 .then(() => config.parameters.resolver.query(this._getViewValue(), { 0: searchFilter }))
                 .then((items: KV_t[]) => this.setStateP({ menuItems: items, menuItemsLoaded: true }));
@@ -53,12 +56,20 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
 
         public componentDidMount() {
             this.lookupCurrentValues();
-            this.lookupMenuItems();
+            if(this.props.renderMode !== RenderMode.VIEW) {
+                this.lookupMenuItems();
+            }
         }
 
         public componentWillReceiveProps(nextProps: FieldSkeleton_Props_t) {
             if(nextProps.node !== this.props.node) {
                 this.lookupCurrentValues();
+            }
+        }
+
+        public componentDidUpdate(prevProps: FieldSkeleton_Props_t) {
+            if (this.props.renderMode !== RenderMode.VIEW && !this.state.menuItemsLoaded) {
+                this.lookupMenuItems();
             }
         }
 
@@ -107,7 +118,7 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
             } else {
                 let values = this._getViewValue();
                 if(this.state.currentValuesLoaded) {
-                    values = this.state.currentValues.map(item => item.value);
+                    values = this.state.currentValues.map((item, i) => item ? item.value : values[i]);
                 }
                 return _.span({ className: "metadata-value" }, values.join(", "));
             }
