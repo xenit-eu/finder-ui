@@ -45,8 +45,8 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
                 .then((items: KV_t[]) => this.setStateP({ currentValues: items, currentValuesLoaded: true }));
         }
 
-        private lookupMenuItems(searchFilter?: string) {
-            return this.setStateP({ menuItemsLoaded: false, searchFilter: searchFilter|| "" })
+        private lookupMenuItems(searchFilter: string = "") {
+            return this.setStateP({ menuItemsLoaded: false, searchFilter})
                 .then(() => config.parameters.resolver.query(this._getViewValue(), { 0: searchFilter }))
                 .then((items: KV_t[]) => this.setStateP({ menuItems: items, menuItemsLoaded: true }));
         }
