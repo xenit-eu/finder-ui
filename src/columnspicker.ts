@@ -128,7 +128,7 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
         this.setState((prevState) => {
             const set: ColumnSet_t|undefined = prevState.sets.find(s => s.id === value);
             if (set) {
-                return {
+                return {... prevState,
                     selectedSet: value,
                     selected: this._getColumnsIncludingFixed(set.columns),
                 };

@@ -17,7 +17,7 @@ type TreeSelectBoxInner_State_t = {
     currentValuesLoaded: boolean,
 };
 
-const TreeSelectBox: PropertyRenderer_t<string[]> = (config: PropertyRenderConfig_t<string[]>) => {
+const TreeSelectBox: PropertyRenderer_t<string[]|string> = (config: PropertyRenderConfig_t<string[]|string>) => {
     class TreeSelectBoxInner extends Component<FieldSkeleton_Props_t, TreeSelectBoxInner_State_t> {
         constructor(props: FieldSkeleton_Props_t) {
             super(props);
@@ -30,7 +30,8 @@ const TreeSelectBox: PropertyRenderer_t<string[]> = (config: PropertyRenderConfi
         }
 
         private _getViewValue(): string[] {
-            return config.mapToView(this.props.node);
+            const value = config.mapToView(this.props.node);
+            return Array.isArray(value)?value:[value];
         }
 
         private lookupCurrentValues() {
@@ -64,7 +65,8 @@ const TreeSelectBox: PropertyRenderer_t<string[]> = (config: PropertyRenderConfi
             if (this.props.renderMode !== RenderMode.VIEW && this.state.menuItemsLoaded) {
                 const menuItems = __(TreeSelectBoxImpl, {
                     treeDescription: this.state.menuItems,
-                    onChange: (values: string[]) => {
+                    multiple: isMultiValue,
+                    onChange: (values: string[]|string) => {
                         this.props.onChange(config.mapToModel(this.props.node, values));
                     },
                     value,
@@ -95,11 +97,13 @@ export default TreeSelectBox;
 
 const CheckboxTree = require("react-checkbox-tree");
 import "react-checkbox-tree/lib/react-checkbox-tree.css";
+import "./treeselectbox.less";
 
 type TreeSelectBoxImpl_Props_t = {
     treeDescription: Tree_t[],
-    value: string[],
-    onChange: (value: string[]) => void,
+    value: string[] | string,
+    multiple: boolean,
+    onChange: (value: string[]|string) => void,
 };
 
 type TreeSelectBoxImpl_State_t = {
@@ -117,7 +121,7 @@ class TreeSelectBoxImpl extends Component<TreeSelectBoxImpl_Props_t, TreeSelectB
     constructor(props: TreeSelectBoxImpl_Props_t) {
         super(props);
         this.state = {
-            expanded: this._getParentsFor(props.value),
+            expanded: this._getParentsFor(<string[]>(props.multiple ? props.value : [props.value])),
             searchFilter: "",
         };
     }
@@ -160,7 +164,21 @@ class TreeSelectBoxImpl extends Component<TreeSelectBoxImpl_Props_t, TreeSelectB
                 value: node.key,
                 label: node.value,
                 children: this._buildNodesTree(node.key),
+                className: this.props.value.indexOf(node.key) >= 0? "treeselectbox-checked":"treeselectbox-unchecked",
             }));
+    }
+
+    private _onCheck(checked: string[]) {
+        if(this.props.multiple) {
+            this.props.onChange(checked);
+        } else {
+            const newlyChecked = checked.filter(item => this.props.value.indexOf(item) === -1);
+            if(newlyChecked[0]) {
+                this.props.onChange(newlyChecked[0]);
+            } else {
+                this.props.onChange(this.props.value);
+            }
+        }
     }
 
     public render() {
@@ -168,6 +186,7 @@ class TreeSelectBoxImpl extends Component<TreeSelectBoxImpl_Props_t, TreeSelectB
             style: {
                 padding: "0 24px",
             },
+            className: this.props.multiple ? "react-checkbox-tree-multiple" : "react-checkbox-tree-single",
         },
             __(TextField, {
                 fullWidth: true,
@@ -181,9 +200,9 @@ class TreeSelectBoxImpl extends Component<TreeSelectBoxImpl_Props_t, TreeSelectB
             }),
             __(CheckboxTree, {
                 nodes: this._buildNodesTree(),
-                checked: this.props.value,
+                checked: this.props.multiple ? this.props.value : [this.props.value],
                 expanded: this.state.expanded,
-                onCheck: (checked: string[]) => this.props.onChange(checked),
+                onCheck: (checked: string[]) => this._onCheck(checked),
                 onExpand: (expanded: string[]) => this.setState({ expanded }),
                 noCascade: true,
             }),
