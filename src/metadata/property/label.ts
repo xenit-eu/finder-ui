@@ -30,7 +30,7 @@ const Label: PropertyRenderer_t<string | string[]> = (config: PropertyRenderConf
         private lookupCurrentValues() {
             this.setState({ currentValuesLoaded: false }, () => {
                 if(config.parameters.resolver) {
-                    config.parameters.resolver.lookup(this._getViewValue())
+                    config.parameters.resolver.lookup(this._getViewValue().map(v => v.toString()))
                     .then((items: KV_t[]) => this.setState({ currentValues: items, currentValuesLoaded: true }));
                 } else {
                     this.setState({currentValues: this._getViewValue().map(v => ({key: v, value: v})), currentValuesLoaded: true});

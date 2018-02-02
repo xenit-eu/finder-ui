@@ -41,7 +41,7 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
 
         private lookupCurrentValues() {
             return this.setStateP({ currentValuesLoaded: false })
-                .then(() => config.parameters.resolver.lookup(this._getViewValue()))
+                .then(() => config.parameters.resolver.lookup(this._getViewValue().map(v => v.toString())))
                 .then((items: KV_t[]) => this.setStateP({ currentValues: items, currentValuesLoaded: true }));
         }
 
@@ -50,7 +50,7 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
                 return Promise.resolve();
             }
             return this.setStateP({ menuItemsLoaded: false, searchFilter})
-                .then(() => config.parameters.resolver.query(this._getViewValue(), { 0: searchFilter }))
+                .then(() => config.parameters.resolver.query(this._getViewValue().map(v => v.toString()), { 0: searchFilter }))
                 .then((items: KV_t[]) => this.setStateP({ menuItems: items, menuItemsLoaded: true }));
         }
 
