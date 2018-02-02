@@ -13,8 +13,8 @@ type Label_State_t = {
     currentValuesLoaded: boolean,
 };
 const Label: PropertyRenderer_t<string | string[]> = (config: PropertyRenderConfig_t<string | string[]>) => {
-    class LabelInner extends Component<FieldSkeleton_Props_t, Label_State_t> {
-        constructor(props: FieldSkeleton_Props_t) {
+    class LabelInner extends Component<FieldSkeleton_Props_t & { className?: string }, Label_State_t> {
+        constructor(props: FieldSkeleton_Props_t & { className?: string }) {
             super(props);
             this.state = {
                 currentValues: [],
@@ -53,7 +53,7 @@ const Label: PropertyRenderer_t<string | string[]> = (config: PropertyRenderConf
             if(this.state.currentValuesLoaded) {
                 values = this.state.currentValues.map(item => item.value);
             }
-            return _.span({ className: "metadata-value" }, values.join(", "));
+            return _.span({ className: this.props.className || "metadata-value metadata-field-label" }, values.join(", "));
         }
 
     }

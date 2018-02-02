@@ -98,7 +98,7 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
                     }),
                 );
 
-                return _.span({ className: "metadata-field" },
+                return _.span({ className: "metadata-field metadata-field-selectbox" },
                     __(SelectField, <any>{
                         fullWidth: true,
                         multiple: isMultiValue,
@@ -120,7 +120,7 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
                 if(this.state.currentValuesLoaded) {
                     values = this.state.currentValues.map((item, i) => item ? item.value : values[i]);
                 }
-                return _.span({ className: "metadata-value" }, values.join(", "));
+                return _.span({ className: "metadata-value metadata-field-selectbox" }, values.join(", "));
             }
         }
     }

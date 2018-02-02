@@ -29,7 +29,7 @@ const DateTimePicker: PropertyRenderer_t<Date | Date[]> = (config: PropertyRende
 
         if (props.renderMode !== RenderMode.VIEW) {
             if (!isMultiValue) {
-                return _.span({ className: "metadata-field" }, __(DatePicker, {
+                return _.span({ className: "metadata-field metadata-field-datetimepicker" }, __(DatePicker, {
                     fullWidth: true,
                     autoOk: true,
                     container: "inline",
@@ -48,7 +48,7 @@ const DateTimePicker: PropertyRenderer_t<Date | Date[]> = (config: PropertyRende
             if (!value) {
                 return null;
             }
-            return _.span({ className: "metadata-value" }, Array.isArray(value) ? value.map(v => v.toString()).join(", ") : value.toString());
+            return _.span({ className: "metadata-value metadata-field-datetimepicker" }, Array.isArray(value) ? value.map(v => v.toString()).join(", ") : value.toString());
         }
     };
 };

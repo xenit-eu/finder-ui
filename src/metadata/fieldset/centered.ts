@@ -4,14 +4,13 @@ import { Component, createElement as __, CSSProperties, DOM as _, FormEvent, Rea
 import { FieldsetSkeleton_Props_t, FieldSkeleton_Props_t, RenderMode } from "../fields";
 import { FieldsetRenderConfig_t, FieldsetRenderer_t } from "./interface";
 
-const cellpropsleft = { style: <CSSProperties>{ width: "33%", textAlign: "right", overflow: "hidden", textOverflow: "ellipsis" } };
-const cellpropsright = { style: <CSSProperties>{ width: "67%" } };
-const tableprops = { style: <CSSProperties>{ width: "100%", tableLayout: "fixed" } };
+import "./centered.less";
 
 const CenteredFieldset: FieldsetRenderer_t = (config: FieldsetRenderConfig_t) => {
     const component = (props: FieldsetSkeleton_Props_t) => {
-        return _.table(tableprops,
-            props.fields.map(field => _.tr({}, _.td(cellpropsleft, [field.label]), _.td(cellpropsright, field.value))),
+        return _.table({ className: "metadata-fieldset metadata-fieldset-centered" },
+            config.label ? _.div({ className: "metadata-fieldset-title" }, config.label) : undefined,
+            props.fields.map(field => _.tr({}, _.td({ className: "metadata-fieldset-label" }, [field.label]), _.td({ className: "metadata-fieldset-value" }, field.value))),
         );
     };
     (<any>component).displayName = "Fieldset.Centered(" + JSON.stringify(config) + ")";

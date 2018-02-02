@@ -10,7 +10,7 @@ const GroupedFieldset: FieldsetRenderer_t = (config: FieldsetRenderConfig_t) => 
     const wrappedrenderer = config.parameters.centered ? Centered(config) : ncolumns(1)(config);
     const expandable = !!config.parameters.collapsible;
     const component = (props: FieldsetSkeleton_Props_t) => {
-        return __(Card, { initiallyExpanded: !config.parameters["start-collapsed"] }, [
+        return __(Card, { initiallyExpanded: !config.parameters["start-collapsed"], className: "metadata-fieldset-group metadata-fieldset-group-" + (expandable ? "expandable" : "fixed") }, [
             __(CardHeader, { title: config.label, actAsExpander: expandable, showExpandableButton: expandable}),
             __(CardText, {
                 expandable,

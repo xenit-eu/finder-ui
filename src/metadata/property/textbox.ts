@@ -32,7 +32,7 @@ const TextBox: PropertyRenderer_t<string | string[]> = (config: PropertyRenderCo
     return function TextBox(props: FieldSkeleton_Props_t) {
         const value = config.mapToView(props.node);
         if (props.renderMode !== RenderMode.VIEW) {
-            return _.span({ className: "metadata-field" }, __(<any>(Array.isArray(value) ? MultiValueTextBox : TextField), {
+            return _.span({ className: "metadata-field metadata-field-textbox" }, __(<any>(Array.isArray(value) ? MultiValueTextBox : TextField), {
                 fullWidth: true,
                 hintText: "Type value...",
                 onChange: (evt: FormEvent<{}>, v: string | string[]) => {
@@ -41,7 +41,7 @@ const TextBox: PropertyRenderer_t<string | string[]> = (config: PropertyRenderCo
                 value,
             }));
         } else {
-            return __(label, props);
+            return __(label, <any>{ ...props, className: "metadata-value metadata-field-textbox" });
         }
     };
 };

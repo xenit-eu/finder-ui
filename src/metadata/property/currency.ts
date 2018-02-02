@@ -85,7 +85,7 @@ const Currency: PropertyRenderer_t<number | null> = (config: PropertyRenderConfi
                 } catch(e) {
                     isError = e;
                 }
-                return _.span({ className: "metadata-field" }, __(TextField, {
+                return _.span({ className: "metadata-field metadata-field-currency" }, __(TextField, {
                     fullWidth: true,
                     hintText: "Type value...",
                     onChange: (evt: FormEvent<{}>, v: string) => this._onChange(v),
@@ -94,7 +94,7 @@ const Currency: PropertyRenderer_t<number | null> = (config: PropertyRenderConfi
                     errorText: isError ? isError.toString() : "",
                 }));
             } else {
-                return __(label, this.props);
+                return __(label, <any>{ ...this.props, className: "metadata-value metadata-field-currency" });
             }
 
         }
