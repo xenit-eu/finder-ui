@@ -14,7 +14,7 @@ const TextArea: PropertyRenderer_t<string | string[]> = (config: PropertyRenderC
         const stringValue = Array.isArray(value) ? value.join(", ") : value;
         if (props.renderMode !== RenderMode.VIEW) {
             if (!isMultiValue) {
-                return _.span({ className: "metadata-field" }, __(TextField, {
+                return _.span({ className: "metadata-field metadata-field-textarea" }, __(TextField, {
                     fullWidth: true,
                     hintText: "Type value...",
                     onChange: (evt: FormEvent<{}>, v: string) => {
@@ -30,7 +30,7 @@ const TextArea: PropertyRenderer_t<string | string[]> = (config: PropertyRenderC
                 return null;
             }
         } else {
-            return __(label, props);
+            return __(label, <any>{ ...props, className: "metadata-value metadata-field-textarea" });
         }
     };
 };

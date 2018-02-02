@@ -75,7 +75,7 @@ const TreeSelectBox: PropertyRenderer_t<string[]|string> = (config: PropertyRend
                 if (this.state.currentValuesLoaded) {
                     values = this.state.currentValues.map(item => item.value);
                 }
-                return _.span({ className: "metadata-field" }, __(SelectField, {
+                return _.span({ className: "metadata-field metadata-field-treeselectbox" }, __(SelectField, {
                     value: values,
                     multiple: true,
                     fullWidth: true,
@@ -86,7 +86,7 @@ const TreeSelectBox: PropertyRenderer_t<string[]|string> = (config: PropertyRend
                 if (this.state.currentValuesLoaded) {
                     values = this.state.currentValues.map(item => item.value);
                 }
-                return _.span({ className: "metadata-value" }, values.join(", "));
+                return _.span({ className: "metadata-value metadata-field-treeselectbox" }, values.join(", "));
             }
         }
     }
