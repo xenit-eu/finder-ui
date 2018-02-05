@@ -56,14 +56,14 @@ export type MetadataPanel_Props_t<T> = {
      * Called for every node that should be saved
      */
     onSave: (node: T, originalNode: T) => Promise<boolean>,
-    onSaveAll: undefined,
+    onSaveAll?: never,
 } | {
     /**
      * Called when the save button is pressed in edit mode
      * Called once for all nodes that have to be saved
      */
     onSaveAll: (node: T[], originalNode: T[]) => Promise<boolean>,
-    onSave: undefined,
+    onSave?: never,
 });
 
 type MetadataPanel_State_t<T> = {
