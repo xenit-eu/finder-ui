@@ -29,8 +29,13 @@ const TreeSelectBox: PropertyRenderer_t<string[]|string> = (config: PropertyRend
             };
         }
 
-        private _getViewValue(): string[] {
+        private _getSanitizedValue(): string[]|string {
             const value = config.mapToView(this.props.node);
+            return Array.isArray(value) ? value.map(v => v.toString()) : value.toString();
+        }
+
+        private _getViewValue(): string[] {
+            const value = this._getSanitizedValue();
             return Array.isArray(value)?value:[value];
         }
 
@@ -60,7 +65,7 @@ const TreeSelectBox: PropertyRenderer_t<string[]|string> = (config: PropertyRend
         }
 
         public render() {
-            let value = config.mapToView(this.props.node);
+            let value = this._getSanitizedValue();
             const isMultiValue = Array.isArray(value);
             if (this.props.renderMode !== RenderMode.VIEW && this.state.menuItemsLoaded) {
                 const menuItems = __(TreeSelectBoxImpl, {

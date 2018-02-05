@@ -30,8 +30,13 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
             };
         }
 
-        private _getViewValue(): string[] {
+        private _getSanitizedValue(): string[]|string {
             const value = config.mapToView(this.props.node);
+            return Array.isArray(value) ? value.map(v => v.toString()) : value.toString();
+        }
+
+        private _getViewValue(): string[] {
+            const value = this._getSanitizedValue();
             return Array.isArray(value)?value:[value];
         }
 
@@ -41,7 +46,7 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
 
         private lookupCurrentValues() {
             return this.setStateP({ currentValuesLoaded: false })
-                .then(() => config.parameters.resolver.lookup(this._getViewValue().map(v => v.toString())))
+                .then(() => config.parameters.resolver.lookup(this._getViewValue()))
                 .then((items: KV_t[]) => this.setStateP({ currentValues: items, currentValuesLoaded: true }));
         }
 
@@ -50,7 +55,7 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
                 return Promise.resolve();
             }
             return this.setStateP({ menuItemsLoaded: false, searchFilter})
-                .then(() => config.parameters.resolver.query(this._getViewValue().map(v => v.toString()), { 0: searchFilter }))
+                .then(() => config.parameters.resolver.query(this._getViewValue(), { 0: searchFilter }))
                 .then((items: KV_t[]) => this.setStateP({ menuItems: items, menuItemsLoaded: true }));
         }
 
@@ -74,7 +79,7 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
         }
 
         public render() {
-            let value = config.mapToView(this.props.node);
+            let value = this._getSanitizedValue();
             const isMultiValue = Array.isArray(value);
             if (this.props.renderMode !== RenderMode.VIEW) {
                 const menuItems = this.state.menuItems.map((item: KV_t) => __(MenuItem, {
