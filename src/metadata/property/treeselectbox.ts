@@ -29,14 +29,14 @@ const TreeSelectBox: PropertyRenderer_t<string[]|string> = (config: PropertyRend
             };
         }
 
-        private _getSanitizedValue(): string[]|string {
+        private _getSanitizedValue(): string[]|string|null {
             const value = config.mapToView(this.props.node);
-            return Array.isArray(value) ? value.map(v => v.toString()) : value.toString();
+            return Array.isArray(value) ? value.map(v => v.toString()) : value !== null ? value.toString() : null;
         }
 
         private _getViewValue(): string[] {
             const value = this._getSanitizedValue();
-            return Array.isArray(value)?value:[value];
+            return Array.isArray(value) ? value : value !== null ? [value] : [];
         }
 
         private lookupCurrentValues() {
