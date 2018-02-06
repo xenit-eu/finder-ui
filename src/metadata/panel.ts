@@ -111,13 +111,13 @@ export class MetadataPanel<T> extends Component<MetadataPanel_Props_t<T>, Metada
     }
 
     public componentWillReceiveProps(nextProps: MetadataPanel_Props_t<T>) {
-        if(arrayEquals(this.props.nodes, nextProps.nodes, (a, b) => this.didNodeChange(a, b))) {
+        if(!arrayEquals(this.props.nodes, nextProps.nodes, (a, b) => !this.didNodeChange(a, b))) {
             this.setState({
                 nodes: nextProps.nodes,
                 renderMode: this.props.initialRenderMode || RenderMode.VIEW,
             });
         }
-        if (!arrayEquals(this.props.nodes, nextProps.nodes, (a, b) => this.shouldFormSkeletonUpdate(a, b))) {
+        if (!arrayEquals(this.props.nodes, nextProps.nodes, (a, b) => !this.shouldFormSkeletonUpdate(a, b))) {
             this.loadSkeletonsForNodes(nextProps.nodes);
         }
     }
@@ -202,7 +202,7 @@ export class MetadataPanel<T> extends Component<MetadataPanel_Props_t<T>, Metada
     }
 
     private _onChange(nodes: T[]) {
-        if (!arrayEquals(nodes, this.props.nodes, (a, b) => this.shouldFormSkeletonUpdate(a, b))) {
+        if (!arrayEquals(nodes, this.props.nodes, (a, b) => !this.shouldFormSkeletonUpdate(a, b))) {
             this.loadSkeletonsForNodes(nodes);
         }
         this.setState({ nodes });
