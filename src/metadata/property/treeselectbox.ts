@@ -74,7 +74,7 @@ const TreeSelectBox: PropertyRenderer_t<string[]|string> = (config: PropertyRend
                     onChange: (values: string[]|string) => {
                         this.props.onChange(config.mapToModel(this.props.node, values));
                     },
-                    value,
+                    value:value || [],
                 });
                 let values = this._getViewValue();
                 if (this.state.currentValuesLoaded) {

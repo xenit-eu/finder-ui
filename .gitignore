@@ -5,3 +5,4 @@ test-results/
 .gradle/
 build/
 .settings
+npm-debug.log*
