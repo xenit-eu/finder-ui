@@ -3,6 +3,7 @@ const debug: any = require("debug");
 import DatePicker from "material-ui/DatePicker";
 import { Component, createElement as __, DOM as _, FormEvent, ReactElement } from "react";
 const d = debug("finder-ui:metadata:property:datetimepicker");
+import * as moment from "moment";
 
 import { FieldSkeleton_Props_t, RenderMode } from "../fields";
 import { PropertyRenderConfig_t, PropertyRenderer_t } from "./interface";
@@ -39,6 +40,7 @@ const DateTimePicker: PropertyRenderer_t<Date | Date[]> = (config: PropertyRende
                     },
                     defaultDate: defaultValue,
                     value: <Date>value,
+                    formatDate: (date: Date) => moment(date).format(config.parameters["date-format"] || "Y/M/D"),
                 }));
             } else {
                 // TODO: Implement handling of multivalue fields
@@ -48,7 +50,10 @@ const DateTimePicker: PropertyRenderer_t<Date | Date[]> = (config: PropertyRende
             if (!value) {
                 return null;
             }
-            return _.span({ className: "metadata-value metadata-field-datetimepicker" }, Array.isArray(value) ? value.map(v => v.toString()).join(", ") : value.toString());
+            return _.span(
+                { className: "metadata-value metadata-field-datetimepicker" },
+                (Array.isArray(value) ? value : [value]).map(v => moment(v).format(config.parameters["date-format"] || "Y/M/D")).join(", "),
+            );
         }
     };
 };
