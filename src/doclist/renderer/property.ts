@@ -1,3 +1,4 @@
+import * as moment from "moment";
 import { DOM as _ } from "react";
 import { ColumnRenderer_Config_t, ColumnRenderer_Factory_t, ColumnRenderer_Props_t, ColumnRenderer_t } from "./interface";
 
@@ -25,7 +26,7 @@ function convertToString(parameters: { [k: string]: any }, value: Property_t) {
     }
 
     if(value instanceof Date) {
-        return value.toLocaleDateString();
+        return moment(value).format(parameters["date-format"] || "Y/M/D");
     }
 
     return value;
