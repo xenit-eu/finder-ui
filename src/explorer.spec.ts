@@ -3,28 +3,69 @@ import getMuiTheme from "material-ui/styles/getMuiTheme";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import { Component, createElement as __, DOM as _, ReactElement } from "react";
 import * as injectTapEventPlugin from "react-tap-event-plugin";
-import { DocumentTreeNode_t, TreeNode } from "./explorer";
+import { Explorer, Explorer_t, ExplorerNode_t } from "./explorer";
 import { Fixture, simulateEvent, TestWrapper } from "./testUtils";
 
 const muiTheme = getMuiTheme();
-const childLower: DocumentTreeNode_t = { open: true, id: "c", isFolder: false, Toggle: () => { }, Click: () => { }, text: "ChildBottom", children: [] };
-const childLow: DocumentTreeNode_t = { open: true, id: "c", isFolder: false, Toggle: () => { }, Click: () => { }, text: "Child", children: [childLower] };
-const case1: DocumentTreeNode_t = { open: true, id: "c", isFolder: true, Toggle: () => { }, Click: () => { }, text: "Parent", children: [childLow, childLower] };
 
-const primaryText = "primaryText";
+type TestExplorerNode_t = ExplorerNode_t & {
+    children: TestExplorerNode_t[],
+};
 
-describe("Treeview test", () => {
+const childLower: TestExplorerNode_t = {
+    id: "child-lower",
+    primaryText: "ChildBottom",
+    children: [],
+};
 
+const childLow: TestExplorerNode_t = {
+    id: "child-low",
+    primaryText: "Child",
+    children: [childLower],
+};
+
+const root: TestExplorerNode_t = {
+    id: "root",
+    primaryText: "Parent",
+    children: [childLow, childLower],
+};
+
+describe("Explorer", () => {
     beforeAll(() => {
         injectTapEventPlugin();
     });
-    it("should display nested items", () => {
-        const wrapper = Fixture(__(TreeNode, case1));
-        let list = wrapper;
-        const topListItems = list.find("ListItem");
-        expect(topListItems.get(0).props[primaryText]).toBe("Parent");
-        const subItems = (<any>topListItems).at(0).prop("nestedItems").map((c: ReactElement<any>) => Fixture(c, { context: { muiTheme } }));
-        const subItem = subItems[0].find("ListItem").at(0);
-        expect(subItem.prop(primaryText)).toBe("Child");
+
+    it("Should display the root node", async () => {
+        const wrapper = Fixture(__(Explorer, {
+            node: root,
+            onRequestChildren: (node: TestExplorerNode_t) => Promise.resolve(node.children),
+            onClick: () => null,
+            onDrop: () => null,
+        }));
+
+        const rootItem = wrapper.find("ListItem").at(0);
+        expect(rootItem.prop("primaryText")).toBe("Parent");
+
+        // Expand root item
+        rootItem.find("IconButton").at(0).simulate("click");
+        await Promise.resolve(); // This promise will run after the other promise above
+        const subItems = rootItem.children().find("ListItem");
+        expect(subItems.length).toBe(2);
+        expect(subItems.at(0).prop("primaryText")).toBe("Child");
+        expect(subItems.at(1).prop("primaryText")).toBe("ChildBottom");
+
+        // Expand sub item
+        subItems.at(0).find("IconButton").at(0).simulate("click");
+        await Promise.resolve(); // This promise will run after the other promise above
+        const subsub = subItems.at(0).children().find("ListItem");
+        expect(subsub.length).toBe(1);
+        expect(subsub.at(0).prop("primaryText")).toBe("ChildBottom");
+
+        // Expand bottom item
+        subItems.at(1).find("IconButton").at(0).simulate("click");
+        await Promise.resolve(); // This promise will run after the other promise above
+        const bot = subItems.at(1).children().find("ListItem");
+        expect(bot.length).toBe(0);
+        expect(subItems.at(1).find("IconButton").exists()).toBe(false);
     });
 });
