@@ -1,56 +1,96 @@
-import Avatar from "material-ui/Avatar";
-import Badge from "material-ui/Badge";
-import { List, ListItem } from "material-ui/List";
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import Subheader from "material-ui/Subheader";
-import ActionAssignment from "material-ui/svg-icons/action/assignment";
-import ActionGrade from "material-ui/svg-icons/action/grade";
-import ActionInfo from "material-ui/svg-icons/action/info";
-import ContentDrafts from "material-ui/svg-icons/content/drafts";
-import ContentInbox from "material-ui/svg-icons/content/inbox";
-import ContentSend from "material-ui/svg-icons/content/send";
-import FileFolder from "material-ui/svg-icons/file/folder";
-import Toggle from "material-ui/Toggle";
-import { Component, createElement as __, DOM as _, ReactElement } from "react";
+import { Avatar, Badge, CircularProgress, IconButton, List, ListItem } from "material-ui";
+import { NavigationExpandLess, NavigationExpandMore } from "material-ui/svg-icons";
+import { Component, createElement as __, ReactElement} from "react";
 
-export type DocumentTreeNode_t = {
-    id: any,
-    open: boolean,
-    text: string,
-    Toggle: (id: string) => void,
-    Click: (id: string) => void,
-    children: DocumentTreeNode_t[],
-    isFolder: boolean,
-    className?: string,
+export type Explorer_t<T extends ExplorerNode_t> = {
+    onClick: (node: T) => void,
+    onRequestChildren: (node: T) => Promise<T[]>,
+    onDrop: (node: T, event: any) => void,
+    nestedLevel?: number,
+    node: T,
 };
 
-export function TreeNode({open, Toggle, Click, text, children, isFolder, id, className}: DocumentTreeNode_t): ReactElement<any> {
-    let avatar = __(Avatar, { icon: __(isFolder ? FileFolder : ActionAssignment, {}) });
-    return __(ListItem, {
-        onNestedListToggle: () => { Toggle(id); },
-        onClick: (e: any) => { Click(id); e.stopPropagation(); },
-        initiallyOpen: open,
-        leftAvatar: avatar,
-        primaryTogglesNestedList: false,
-        primaryText: text,
-        key: id,
-        nestedItems: children.map((v, i) => TreeNode(v)),
-        className: className ? className : "",
-    });
+export type ExplorerNode_t = {
+    id: string,
+    primaryText: string,
+    icon?: ReactElement<any>,
+};
+
+type Explorer_State_t = {
+    children: ExplorerNode_t[],
+    loading: boolean,
+    loaded: boolean,
+    open: boolean,
+};
+
+class ExplorerNode<T extends ExplorerNode_t> extends Component<Explorer_t<T>, Explorer_State_t> {
+    constructor(props: Explorer_t<T>) {
+        super(props);
+        this.state = {
+            children: [],
+            loading: false,
+            loaded: false,
+            open: false,
+        };
+    }
+
+    private _doToggle() {
+        this.setState({
+            open: !this.state.open,
+        }, () => this._doLoadChildren());
+    }
+
+    private _doLoadChildren() {
+        if(!this.state.open || this.state.loaded || this.state.loading) {
+            return;
+        }
+
+        this.setState({
+            loading: true,
+        }, () => {
+            this.props.onRequestChildren(this.props.node).then(children => {
+                this.setState({
+                    children,
+                    loading: false,
+                    loaded: true,
+                });
+            }).catch(e => this.setState({ loading: false, open: false }));
+        });
+    }
+
+    private _getRightIconButton() {
+        if (this.state.loading && this.state.open) {
+            return __(IconButton, {
+                onClick: () => this._doToggle(),
+            }, __(CircularProgress, { size: 24 }));
+        }
+        if(this.state.children.length === 0 && this.state.loaded) {
+            return undefined;
+        }
+        return __(IconButton, {
+            onClick: () => this._doToggle(),
+        }, __(this.state.open ? NavigationExpandLess : NavigationExpandMore));
+    }
+
+    public render(): ReactElement<any> {
+        return __(ListItem, {
+            onClick: () => this.props.onClick(this.props.node),
+            onDrop: (event: any) => this.props.onDrop(this.props.node, event),
+            onDragOver: (event: any) => event.preventDefault(),
+            onNestedListToggle: () => this._doToggle(),
+            nestedLevel: this.props.nestedLevel,
+            open: this.state.open,
+            primaryText: this.props.node.primaryText,
+            primaryTogglesNestedList: false,
+            leftAvatar: this.props.node.icon,
+            nestedItems: this.state.children.map(child => __(ExplorerNode, { ...this.props, node: child, nestedLevel: this.props.nestedLevel! + 1 })),
+            rightIconButton: this._getRightIconButton(),
+        });
+    }
 }
 
-//@Component BuildTreeNodeRoot
-//@ComponentDescription "Displays a folder structure with document in a tree view."
-//@Method BuildTreeNodeRoot Returns ReactComponent
-//@MethodDescription "BuildTreeNodeRoot({param1: value1, param2: value2, ...})"
-//@Param id any "data associated to the current node (typically: document id)"
-//@Param open boolean "indicates if this node should be opened"
-//@Param text string "text to be displayed for this node"
-//@Param children DocumentTreeNode_t[] "child nodes (same structure as the current node)"
-//@Param isFolder boolean "indicates that the current node is a document"
-//@Param className string "Name of the css class to give to the doclist (optional)"
-//@Param Toggle (id: string) => void "called when node is requested to open/close"
-//@Param Click (id: string) => void "called when clicking on a node"
-export function BuildTreeNodeRoot(node: DocumentTreeNode_t) {
-    return __(List, {}, [TreeNode(node)]);
+export function Explorer<T extends ExplorerNode_t>(props: Explorer_t<T>) {
+    return __(List, <any>{ className: "explorer" }, [
+        __(ExplorerNode, { ...props, nestedLevel: 0 }),
+    ]);
 }
