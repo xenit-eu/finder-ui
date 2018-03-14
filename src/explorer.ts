@@ -6,7 +6,7 @@ export type Explorer_t<T extends ExplorerNode_t> = {
     onClick: (node: T) => void,
     onRequestChildren: (node: T) => Promise<T[]>,
     onDrop: (node: T, event: any) => void,
-    nestedLevel?: number,
+    selectedNodes?: string[],
     node: T,
 };
 
@@ -16,6 +16,10 @@ export type ExplorerNode_t = {
     icon?: ReactElement<any>,
 };
 
+type ExplorerNode_Props_t<T extends ExplorerNode_t> = Explorer_t<T> & {
+    nestedLevel: number,
+};
+
 type Explorer_State_t = {
     children: ExplorerNode_t[],
     loading: boolean,
@@ -23,8 +27,8 @@ type Explorer_State_t = {
     open: boolean,
 };
 
-class ExplorerNode<T extends ExplorerNode_t> extends Component<Explorer_t<T>, Explorer_State_t> {
-    constructor(props: Explorer_t<T>) {
+class ExplorerNode<T extends ExplorerNode_t> extends Component<ExplorerNode_Props_t<T>, Explorer_State_t> {
+    constructor(props: ExplorerNode_Props_t<T>) {
         super(props);
         this.state = {
             children: [],
@@ -73,6 +77,7 @@ class ExplorerNode<T extends ExplorerNode_t> extends Component<Explorer_t<T>, Ex
     }
 
     public render(): ReactElement<any> {
+        const isSelected = this.props.selectedNodes && this.props.selectedNodes.indexOf(this.props.node.id) >= 0;
         return __(ListItem, {
             onClick: () => this.props.onClick(this.props.node),
             onDrop: (event: any) => this.props.onDrop(this.props.node, event),
