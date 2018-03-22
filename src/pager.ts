@@ -12,33 +12,35 @@ const flatButtonStyle = {
 };
 
 type Page_t = { value: number, isActive: boolean, onClick: () => void };
-function Page({value, isActive, onClick}: Page_t): ReactElement<any> {
-    const activeStyling = { minWidth: 36, color: "blue",backgroundColor:"lightgrey" };
+function Page({ value, isActive, onClick }: Page_t): ReactElement<any> {
+    const activeStyling = { minWidth: 36, color: "blue", backgroundColor: "lightgrey" };
     return __(FlatButton, { key: "P-" + value, style: isActive ? activeStyling : flatButtonStyle, label: value.toString(), primary: isActive, onClick });
 }
 
 type Ellipsis_t = { onClick: () => void };
-function Ellipsis({onClick}: Ellipsis_t): ReactElement<any> {
+function Ellipsis({ onClick }: Ellipsis_t): ReactElement<any> {
     return __(FlatButton, { key: "...", style: flatButtonStyle, label: "...", onClick });
 }
 
 type PreviousPageLink_t = { isActive: boolean, onClick: () => void };
-function PreviousPageLink({isActive, onClick}: PreviousPageLink_t): ReactElement<any> {
+function PreviousPageLink({ isActive, onClick }: PreviousPageLink_t): ReactElement<any> {
     return __(FlatButton, { key: "previous", style: flatButtonStyle, icon: __(NavigationChevronLeft, undefined), onClick, disabled: !isActive });
 }
 
 type NextPageLink_t = { isActive: boolean, onClick: () => void };
-function NextPageLink({isActive, onClick}: NextPageLink_t): ReactElement<any> {
+function NextPageLink({ isActive, onClick }: NextPageLink_t): ReactElement<any> {
     return __(FlatButton, { key: "next", style: flatButtonStyle, icon: __(NavigationChevronRight, undefined), onClick, disabled: !isActive });
 }
 
-function ItemsOnThisPage({selected, pageSize, totalItems}: Pager_t): ReactElement<any> {
+function ItemsOnThisPage({ selected, pageSize, totalItems }: Pager_t): ReactElement<any> {
+    const noValidResults = totalItems === undefined || totalItems === null || isNaN(totalItems);
     if (selected < 1) {
         return _.span({});
     }
-    let currentStart = pageSize * (selected - 1) + 1;
-    let currentEnd = Math.min(pageSize * selected, totalItems);
-    return _.span({ className: "items-on-this-page" }, [_.b({}, [currentStart]), "-", _.b({}, [currentEnd]), " of ", _.b({}, totalItems)]);
+    const showTotalItems = noValidResults ? 0 : totalItems;
+    const currentStart = noValidResults ? 0 : pageSize * (selected - 1) + 1;
+    const currentEnd = noValidResults ? 0 : Math.min(pageSize * selected, totalItems);
+    return _.span({ className: "items-on-this-page" }, [_.b({}, [currentStart]), "-", _.b({}, [currentEnd]), " of ", _.b({}, showTotalItems)]);
 }
 
 /*
@@ -75,13 +77,13 @@ export type Pager_t = {
     selected: number,
     pageSelected: (page: number, data?: any) => void,
 };
+function calculatePages(selected: number, totalPages: number, pageRange: number) {
+    if (totalPages === undefined || isNaN(totalPages)) {
+        return [1];
+    }
 
-export function Pager({totalItems, pageSize, selected, pageSelected}: Pager_t): ReactElement<any> {
-    const totalPages = Math.floor(totalItems / pageSize) + ((totalItems % pageSize > 0) ? 1 : 0);
-    const pageRange = totalPages < 15 ? totalPages : 15;
-    selected = selected || 1;
+    let pages: number[] = [];
     let delta = Math.ceil(pageRange / 2);
-    let pages: any;
     if ((selected - delta) > (totalPages - pageRange)) {
         pages = range(totalPages - pageRange + 1, totalPages);
     } else {
@@ -91,7 +93,14 @@ export function Pager({totalItems, pageSize, selected, pageSelected}: Pager_t): 
         const offset = selected - delta;
         pages = range(offset + 1, offset + pageRange);
     }
-
+    return pages;
+}
+export function Pager({ totalItems, pageSize, selected, pageSelected }: Pager_t): ReactElement<any> {
+    let totalPages = Math.floor(totalItems / pageSize) + ((totalItems % pageSize > 0) ? 1 : 0);
+    totalPages = isNaN(totalPages) ? 1 : totalPages;
+    const pageRange = Math.min(totalPages, 15);
+    selected = selected || 1;
+    const pages = calculatePages(selected, totalPages, pageRange);
     let pageElements = pages.map((i: number) => __(Page, { /*key: 'page' + i,*/ value: i, isActive: selected === i, onClick: () => pageSelected(i) }));
 
     // __(FirstPageLink, {isActive: true, onClick: onClick}),
