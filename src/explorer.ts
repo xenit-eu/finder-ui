@@ -89,7 +89,7 @@ class ExplorerNode<T extends ExplorerNode_t> extends Component<ExplorerNode_Prop
             primaryTogglesNestedList: false,
             leftAvatar: this.props.node.icon,
             className: isSelected ? "explorer-selected" : "",
-            nestedItems: this.state.children.map((child, i) => __(ExplorerNode, { ...this.props, key: i, node: child, nestedLevel: this.props.nestedLevel! + 1 })),
+            nestedItems: this.state.children.map((child, i) => __(ExplorerNode,<any>  { ...this.props, key: i, node: child, nestedLevel: this.props.nestedLevel! + 1 })),
             rightIconButton: this._getRightIconButton(),
         });
     }

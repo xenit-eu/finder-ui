@@ -86,7 +86,7 @@
     "toolbox-loader": "0.0.3",
     "tslint": "^4.5.1",
     "tslint-custom": "git+ssh://git@bitbucket.org/xenit/tslint-custom.git",
-    "typescript": "^2.5.0",
+    "typescript": "2.6.2",
     "webpack": "^1.13.1"
   }
 }
