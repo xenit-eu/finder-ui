@@ -1,4 +1,7 @@
 import { AstJson_t, IASTNode } from "./advancedsearchbox/parser";
+
+import * as debug from "debug";
+const d = debug("finder-ui:finderquery");
 /*
 type All_t = {all: string};
 enum DateKeyword_t { TODAY, LASTWEEK, LASTMONTH, LASTYEAR  }
@@ -110,7 +113,7 @@ export class FinderQuery {
             // clone to avoid changing values in original queries.
         }
 
-        q1 = FinderQuery.fromSearchTerms(terms).query;
+        q1 = FinderQuery.fromSearchTerms(terms, null).query;
 
         const result = (!!q1 && !!q2 ? {and: [q1, q2]} : (q1 || q2)) || {all: "**"};
         return new FinderQuery(result);
@@ -259,6 +262,68 @@ export class FinderQuery {
 
     public toHumanReadableString (): string {
         return FinderQuery.toHumanReadable(this.query);
+    }
+
+    private static toSearchTermsAndQueriesAnd(query: ApixQuery_t): { terms: SearchTerm_t[], queries: Query_t[] } {
+        d(">>> toSearchTermsAndQueriesAnd(%O)", query);
+        const terms: SearchTerm_t[] = [];
+        const queries: Query_t[] = [];
+
+        const n = Object.getOwnPropertyNames(query)[0];
+        d("Property name: %s", n);
+        switch(n) {
+            case "property":
+                terms.push({ name: query[n].name, value: query[n].value });
+                break;
+            case "all":
+                break;
+            case "parent":
+                terms.push({ name: "parent", value: query[n] });
+                break;
+            case "and":
+                const { terms: t, queries: q } = (<ApixQuery_t[]>query[n])
+                    .map(FinderQuery.toSearchTermsAndQueriesAnd).reduce((a, b) => {
+                        return {
+                            terms: a.terms.concat(b.terms),
+                            queries: a.queries.concat(b.queries),
+                        };
+                    });
+                    terms.push(...t);
+                    queries.push(...q);
+                    break;
+            default:
+                queries.push({label: FinderQuery.toHumanReadable(query), query });
+        }
+
+        d("<<< toSearchTermsAndQueriesAnd(%O): Terms=%O; Queries=%O", query, terms, queries);
+        return {terms, queries};
+    }
+
+    public toSearchTermsAndQueries(): { terms: SearchTerm_t[], queries: Query_t[] } {
+        d(">>> toSearchTermsAndQueries()");
+        const query = this.query;
+        const terms: SearchTerm_t[] = [];
+        const queries: Query_t[] = [];
+
+        const name = Object.getOwnPropertyNames(query)[0];
+        switch(name) {
+            case "and":
+                const { terms: t, queries: q } = query[name].map(FinderQuery.toSearchTermsAndQueriesAnd).reduce((a, b) => {
+                    return {
+                        terms: a.terms.concat(b.terms),
+                        queries: a.queries.concat(b.queries),
+                    };
+                });
+                terms.push(...t);
+                queries.push(...q);
+                break;
+            default:
+                return { terms: [], queries: [{ label: FinderQuery.toHumanReadable(query), query }] };
+        }
+        d("<<< toSearchTermsAndQueries(): Terms=%O; Queries=%O", terms, queries);
+
+        return {terms, queries};
+
     }
 
 }
