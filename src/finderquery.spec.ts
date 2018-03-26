@@ -1,5 +1,5 @@
 
-import { FinderQuery, SearchTerm_t, TYPE_QNAME } from "./finderquery";
+import { FinderQuery, Query_t, SearchTerm_t, TYPE_QNAME } from "./finderquery";
 
 describe("search terms to apix query", () => {
     it("2 search terms", () => {
@@ -62,6 +62,56 @@ describe("search terms to apix query", () => {
         };
 
         expect(FinderQuery.fromSearchTerms(input).query).toEqual(expected);
+    });
+
+    it("With multiple search terms and queries", () => {
+        const terms: SearchTerm_t[] = [
+            {
+                name: "All",
+                value: "abeecher",
+            }, {
+                name: "parent",
+                value: "some://noderef/value",
+            }, {
+                name: "{http://www.alfresco.org/model/content/1.0}name",
+                value: "avatar",
+            },
+        ];
+
+        const queries: Query_t[] = [{
+            label: "Some label",
+            query: {
+                or: [{
+                    property: { name: "{http://www.alfresco.org/model/content/1.0}creator", value: "abeecher" },
+                }, {
+                    property: { name: "{http://www.alfresco.org/model/content/1.0}name", value: "abeecher" },
+                }, {
+                    property: { name: "{http://www.alfresco.org/model/content/1.0}title", value: "abeecher" },
+                }],
+            },
+        }];
+
+        const expected = {
+            and: [{
+                and: [{
+                    property: {
+                        name: "All",
+                        value: "abeecher",
+                    },
+                }, {
+                    parent: "some://noderef/value",
+                }, {
+                    property: {
+                        name: "{http://www.alfresco.org/model/content/1.0}name",
+                        value: "avatar",
+                    },
+                }],
+            },
+            queries[0].query,
+        ],
+    };
+
+        expect(FinderQuery.fromCombinedTermsAndQueries(terms, queries));
     });
 });
 

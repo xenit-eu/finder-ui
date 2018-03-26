@@ -6,7 +6,6 @@ import ErrorIcon from "material-ui/svg-icons/alert/error";
 import StarIcon from "material-ui/svg-icons/toggle/star-border";
 import { cloneElement, Component, createElement as __, DOM as _ } from "react";
 import { SearchableTerm_t } from "../searchbox";
-import { traverseAndReplace } from "../utils";
 
 import * as Colors from "material-ui/styles/colors";
 import getMuiTheme from "material-ui/styles/getMuiTheme";

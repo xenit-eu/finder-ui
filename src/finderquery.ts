@@ -1,5 +1,4 @@
 import { AstJson_t, IASTNode } from "./advancedsearchbox/parser";
-import { traverseAndReplace } from "./utils";
 /*
 type All_t = {all: string};
 enum DateKeyword_t { TODAY, LASTWEEK, LASTMONTH, LASTYEAR  }
@@ -111,21 +110,7 @@ export class FinderQuery {
             // clone to avoid changing values in original queries.
         }
 
-        // replace terms value inside queries when name of properties match.
-        let usedTerms: string[] = [];
-        traverseAndReplace(q2 || {}, (name: string, obj: any) => {
-            if (name === "property") {
-                const term = terms.filter((t: SearchTerm_t) => t.name === obj.name)[0];
-                if (term) {
-                    usedTerms.push(term.name);
-                    return apixSearchProperty(term);
-                }
-            }
-            return null;
-        });
-
-        const remainingTerms: SearchTerm_t[] = terms.filter(t => usedTerms.indexOf(t.name) === -1);
-        q1 = FinderQuery.fromSearchTerms(remainingTerms, null).query;
+        q1 = FinderQuery.fromSearchTerms(terms).query;
 
         const result = (!!q1 && !!q2 ? {and: [q1, q2]} : (q1 || q2)) || {all: "**"};
         return new FinderQuery(result);
