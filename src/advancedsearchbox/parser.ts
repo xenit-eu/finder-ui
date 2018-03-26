@@ -1,6 +1,8 @@
 import { Token, TokenType } from "./lexer";
 
-export type AstJson_t = { and: AstJson_t[] } | { or: AstJson_t[] } | { property: { field: string, operator: string, value: string } };
+export type AstJson_t = { and: AstJson_t[], or?: never, property?: never } |
+    { or: AstJson_t[], and?: never, property?: never } |
+    { property: { field: string, operator: string, value: string }, and?: never, or?: never };
 
 export interface IASTNode {
     toJSON(): AstJson_t;
@@ -196,4 +198,16 @@ export default function parse(tokens: Token[]): IASTNode|null {
     let filteredTokens = tokens.filter(t => t.type !== TokenType.WHITESPACE);
     validateStream(filteredTokens);
     return toAst(filteredTokens);
+}
+
+export function jsonToAst(json: AstJson_t): IASTNode {
+    if(json.and) {
+        return new Condition("and", json.and.map(jsonToAst));
+    } else if(json.or) {
+        return new Condition("or", json.or.map(jsonToAst));
+    } else if(json.property) {
+        return new Property(json.property.field, json.property.operator, json.property.value);
+    } else {
+        throw new InternalError("Can't convert json object to AST Node: unrecognised type.");
+    }
 }

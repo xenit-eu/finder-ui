@@ -1,4 +1,4 @@
-import { AstJson_t, IASTNode } from "./advancedsearchbox/parser";
+import { AstJson_t, IASTNode, jsonToAst } from "./advancedsearchbox/parser";
 
 import * as debug from "debug";
 const d = debug("finder-ui:finderquery");
@@ -181,6 +181,70 @@ export class FinderQuery {
         }
 
         return new FinderQuery(FinderQuery.astToApix(query.toJSON()));
+    }
+
+    private static apixToAst(query: any): AstJson_t | null {
+        const name = Object.getOwnPropertyNames(query)[0];
+        switch(name) {
+            case "and":
+                return { and: query[name].map(q => FinderQuery.apixToAst(q)) };
+            case "or":
+                return { or: query[name].map(q => FinderQuery.apixToAst(q)) };
+            case "property":
+                let operator = "=";
+                let value = query[name].value;
+                const containsRegex = /^\*(.*)\*$/;
+                if(value && containsRegex.test(value)) {
+                    operator = "contains";
+                    value = value.match(containsRegex)[1];
+                }
+                if(query[name].range) {
+                    if(query[name].range.end === "MAX") {
+                        operator = "from";
+                        value = query[name].range.start;
+                    } else if(query[name].range.start === "MIN") {
+                        operator = "till";
+                        value = query[name].range.end;
+                    } else if(query[name].range.end === query[name].range.start) {
+                        operator = "on";
+                        value = query[name].range.start;
+                    } else {
+                        return {
+                            and: [{
+                                property: {
+                                    field: query[name].name,
+                                    operator: "from",
+                                    value: query[name].range.start,
+                                },
+                            }, {
+                                property: {
+                                    field: query[name].name,
+                                    operator: "till",
+                                    value: query[name].range.end,
+                                },
+                            }],
+                        };
+                    }
+                }
+                return {
+                    property: {
+                        field: query[name].name,
+                        operator,
+                        value,
+                    },
+                };
+            default:
+                return null;
+        }
+
+    }
+
+    public toAST(): IASTNode | null {
+        const json =  FinderQuery.apixToAst(this.query);
+        if(!json) {
+            return null;
+        }
+        return jsonToAst(json);
     }
 
     /**
