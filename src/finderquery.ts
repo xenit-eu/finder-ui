@@ -119,7 +119,7 @@ export class FinderQuery {
         return new FinderQuery(result);
     }
 
-    private static toApix(term: any): any {
+    private static astToApixProperty(term: any): any {
         let value = term.value;
 
         switch (term.operator) {
@@ -187,9 +187,9 @@ export class FinderQuery {
         const name = Object.getOwnPropertyNames(query)[0];
         switch(name) {
             case "and":
-                return { and: query[name].map(q => FinderQuery.apixToAst(q)) };
+                return { and: query[name].map((q: any) => FinderQuery.apixToAst(q)) };
             case "or":
-                return { or: query[name].map(q => FinderQuery.apixToAst(q)) };
+                return { or: query[name].map((q: any) => FinderQuery.apixToAst(q)) };
             case "property":
                 let operator = "=";
                 let value = query[name].value;
@@ -249,6 +249,7 @@ export class FinderQuery {
 
     /**
      *  Converts a ReactFilterBox query (advanced query) to an apix query.
+     *  @deprecated use #fromAST() to create a finder query from the advanced searchbox AST
      *
      * @param query
      */
@@ -270,7 +271,7 @@ export class FinderQuery {
                     if (part.expressions) {
                         result.and.push(FinderQuery.fromAdvancedQuery(part.expressions).rawQuery);
                     } else {
-                        result.and.push({ property: FinderQuery.toApix(part) });
+                        result.and.push({ property: FinderQuery.astToApixProperty(part) });
                     }
                 }
                 if (part.conditionType.toUpperCase() === "OR") {
@@ -284,14 +285,14 @@ export class FinderQuery {
                     if (part.expressions) {
                         result.or.push(FinderQuery.fromAdvancedQuery(part.expressions).rawQuery);
                     } else {
-                        result.or.push({ property: FinderQuery.toApix(part) });
+                        result.or.push({ property: FinderQuery.astToApixProperty(part) });
                     }
 
                 }
             } else if (part.expressions) {
                 result = FinderQuery.fromAdvancedQuery(part.expressions).rawQuery;
             } else {
-                result = {property: FinderQuery.toApix(part)};
+                result = {property: FinderQuery.astToApixProperty(part)};
             }
         });
         return new FinderQuery(result);
@@ -371,8 +372,12 @@ export class FinderQuery {
 
         const name = Object.getOwnPropertyNames(query)[0];
         switch(name) {
+            case "property":
+            case "parent":
+            case "all":
+                return FinderQuery.toSearchTermsAndQueriesAnd(query);
             case "and":
-                const { terms: t, queries: q } = query[name].map(FinderQuery.toSearchTermsAndQueriesAnd).reduce((a, b) => {
+                const { terms: t, queries: q } = (<ApixQuery_t[]>query[name]).map(FinderQuery.toSearchTermsAndQueriesAnd).reduce((a, b) => {
                     return {
                         terms: a.terms.concat(b.terms),
                         queries: a.queries.concat(b.queries),
