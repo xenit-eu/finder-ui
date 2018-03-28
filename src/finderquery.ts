@@ -1,5 +1,7 @@
-import { AstJson_t, IASTNode } from "./advancedsearchbox/parser";
-import { traverseAndReplace } from "./utils";
+import { AstJson_t, IASTNode, jsonToAst } from "./advancedsearchbox/parser";
+
+import * as debug from "debug";
+const d = debug("finder-ui:finderquery");
 /*
 type All_t = {all: string};
 enum DateKeyword_t { TODAY, LASTWEEK, LASTMONTH, LASTYEAR  }
@@ -111,27 +113,13 @@ export class FinderQuery {
             // clone to avoid changing values in original queries.
         }
 
-        // replace terms value inside queries when name of properties match.
-        let usedTerms: string[] = [];
-        traverseAndReplace(q2 || {}, (name: string, obj: any) => {
-            if (name === "property") {
-                const term = terms.filter((t: SearchTerm_t) => t.name === obj.name)[0];
-                if (term) {
-                    usedTerms.push(term.name);
-                    return apixSearchProperty(term);
-                }
-            }
-            return null;
-        });
-
-        const remainingTerms: SearchTerm_t[] = terms.filter(t => usedTerms.indexOf(t.name) === -1);
-        q1 = FinderQuery.fromSearchTerms(remainingTerms, null).query;
+        q1 = FinderQuery.fromSearchTerms(terms, null).query;
 
         const result = (!!q1 && !!q2 ? {and: [q1, q2]} : (q1 || q2)) || {all: "**"};
         return new FinderQuery(result);
     }
 
-    private static toApix(term: any): any {
+    private static astToApixProperty(term: any): any {
         let value = term.value;
 
         switch (term.operator) {
@@ -195,8 +183,73 @@ export class FinderQuery {
         return new FinderQuery(FinderQuery.astToApix(query.toJSON()));
     }
 
+    private static apixToAst(query: any): AstJson_t | null {
+        const name = Object.getOwnPropertyNames(query)[0];
+        switch(name) {
+            case "and":
+                return { and: query[name].map((q: any) => FinderQuery.apixToAst(q)) };
+            case "or":
+                return { or: query[name].map((q: any) => FinderQuery.apixToAst(q)) };
+            case "property":
+                let operator = "=";
+                let value = query[name].value;
+                const containsRegex = /^\*(.*)\*$/;
+                if(value && containsRegex.test(value)) {
+                    operator = "contains";
+                    value = value.match(containsRegex)[1];
+                }
+                if(query[name].range) {
+                    if(query[name].range.end === "MAX") {
+                        operator = "from";
+                        value = query[name].range.start;
+                    } else if(query[name].range.start === "MIN") {
+                        operator = "till";
+                        value = query[name].range.end;
+                    } else if(query[name].range.end === query[name].range.start) {
+                        operator = "on";
+                        value = query[name].range.start;
+                    } else {
+                        return {
+                            and: [{
+                                property: {
+                                    field: query[name].name,
+                                    operator: "from",
+                                    value: query[name].range.start,
+                                },
+                            }, {
+                                property: {
+                                    field: query[name].name,
+                                    operator: "till",
+                                    value: query[name].range.end,
+                                },
+                            }],
+                        };
+                    }
+                }
+                return {
+                    property: {
+                        field: query[name].name,
+                        operator,
+                        value,
+                    },
+                };
+            default:
+                return null;
+        }
+
+    }
+
+    public toAST(): IASTNode | null {
+        const json =  FinderQuery.apixToAst(this.query);
+        if(!json) {
+            return null;
+        }
+        return jsonToAst(json);
+    }
+
     /**
      *  Converts a ReactFilterBox query (advanced query) to an apix query.
+     *  @deprecated use #fromAST() to create a finder query from the advanced searchbox AST
      *
      * @param query
      */
@@ -218,7 +271,7 @@ export class FinderQuery {
                     if (part.expressions) {
                         result.and.push(FinderQuery.fromAdvancedQuery(part.expressions).rawQuery);
                     } else {
-                        result.and.push({ property: FinderQuery.toApix(part) });
+                        result.and.push({ property: FinderQuery.astToApixProperty(part) });
                     }
                 }
                 if (part.conditionType.toUpperCase() === "OR") {
@@ -232,14 +285,14 @@ export class FinderQuery {
                     if (part.expressions) {
                         result.or.push(FinderQuery.fromAdvancedQuery(part.expressions).rawQuery);
                     } else {
-                        result.or.push({ property: FinderQuery.toApix(part) });
+                        result.or.push({ property: FinderQuery.astToApixProperty(part) });
                     }
 
                 }
             } else if (part.expressions) {
                 result = FinderQuery.fromAdvancedQuery(part.expressions).rawQuery;
             } else {
-                result = {property: FinderQuery.toApix(part)};
+                result = {property: FinderQuery.astToApixProperty(part)};
             }
         });
         return new FinderQuery(result);
@@ -274,6 +327,72 @@ export class FinderQuery {
 
     public toHumanReadableString (): string {
         return FinderQuery.toHumanReadable(this.query);
+    }
+
+    private static toSearchTermsAndQueriesAnd(query: ApixQuery_t): { terms: SearchTerm_t[], queries: Query_t[] } {
+        d(">>> toSearchTermsAndQueriesAnd(%O)", query);
+        const terms: SearchTerm_t[] = [];
+        const queries: Query_t[] = [];
+
+        const n = Object.getOwnPropertyNames(query)[0];
+        d("Property name: %s", n);
+        switch(n) {
+            case "property":
+                terms.push({ name: query[n].name, value: query[n].value });
+                break;
+            case "all":
+                break;
+            case "parent":
+                terms.push({ name: "parent", value: query[n] });
+                break;
+            case "and":
+                const { terms: t, queries: q } = (<ApixQuery_t[]>query[n])
+                    .map(FinderQuery.toSearchTermsAndQueriesAnd).reduce((a, b) => {
+                        return {
+                            terms: a.terms.concat(b.terms),
+                            queries: a.queries.concat(b.queries),
+                        };
+                    });
+                    terms.push(...t);
+                    queries.push(...q);
+                    break;
+            default:
+                queries.push({label: FinderQuery.toHumanReadable(query), query });
+        }
+
+        d("<<< toSearchTermsAndQueriesAnd(%O): Terms=%O; Queries=%O", query, terms, queries);
+        return {terms, queries};
+    }
+
+    public toSearchTermsAndQueries(): { terms: SearchTerm_t[], queries: Query_t[] } {
+        d(">>> toSearchTermsAndQueries()");
+        const query = this.query;
+        const terms: SearchTerm_t[] = [];
+        const queries: Query_t[] = [];
+
+        const name = Object.getOwnPropertyNames(query)[0];
+        switch(name) {
+            case "property":
+            case "parent":
+            case "all":
+                return FinderQuery.toSearchTermsAndQueriesAnd(query);
+            case "and":
+                const { terms: t, queries: q } = (<ApixQuery_t[]>query[name]).map(FinderQuery.toSearchTermsAndQueriesAnd).reduce((a, b) => {
+                    return {
+                        terms: a.terms.concat(b.terms),
+                        queries: a.queries.concat(b.queries),
+                    };
+                });
+                terms.push(...t);
+                queries.push(...q);
+                break;
+            default:
+                return { terms: [], queries: [{ label: FinderQuery.toHumanReadable(query), query }] };
+        }
+        d("<<< toSearchTermsAndQueries(): Terms=%O; Queries=%O", terms, queries);
+
+        return {terms, queries};
+
     }
 
 }

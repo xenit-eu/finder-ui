@@ -1,6 +1,8 @@
 import { Token, TokenType } from "./lexer";
 
-export type AstJson_t = { and: AstJson_t[] } | { or: AstJson_t[] } | { property: { field: string, operator: string, value: string } };
+export type AstJson_t = { and: AstJson_t[], or?: never, property?: never } |
+    { or: AstJson_t[], and?: never, property?: never } |
+    { property: { field: string, operator: string, value: string }, and?: never, or?: never };
 
 export interface IASTNode {
     toJSON(): AstJson_t;
@@ -92,9 +94,9 @@ export function expectedNextType(token?: Token|null): TokenType[] {
         case TokenType.CONDITION:
             return [TokenType.FIELD, TokenType.BRACKET_OPEN];
         case TokenType.BRACKET_OPEN:
-            return [TokenType.FIELD];
+            return [TokenType.BRACKET_OPEN, TokenType.FIELD];
         case TokenType.BRACKET_CLOSE:
-            return [TokenType.CONDITION, TokenType.END];
+            return [TokenType.BRACKET_CLOSE, TokenType.CONDITION, TokenType.END];
         case TokenType.END:
             return [];
         default:
@@ -196,4 +198,39 @@ export default function parse(tokens: Token[]): IASTNode|null {
     let filteredTokens = tokens.filter(t => t.type !== TokenType.WHITESPACE);
     validateStream(filteredTokens);
     return toAst(filteredTokens);
+}
+
+function jsonCondition(condition: "and" | "or", items: AstJson_t[]): IASTNode | null {
+    switch(items.length) {
+        case 0:
+            return null;
+        case 1:
+            return jsonToAst(items[0]);
+        default:
+            const subitems = <IASTNode[]>items.map(jsonToAst).filter(f => f !== null);
+            const newsubitems: IASTNode[] = [];
+            for(const node of subitems) {
+                if(node instanceof Condition && node.condition === condition) {
+                    newsubitems.push(...node.nodes);
+                } else {
+                    newsubitems.push(node);
+                }
+            }
+            return new Condition(condition, newsubitems);
+    }
+
+}
+
+export function jsonToAst(json: AstJson_t | null): IASTNode | null {
+    if(json === null) {
+        return null;
+    } else if(json.and) {
+        return jsonCondition("and", json.and);
+    } else if(json.or) {
+        return jsonCondition("or", json.or);
+    } else if(json.property) {
+        return new Property(json.property.field, json.property.operator, json.property.value);
+    } else {
+        throw new InternalError("Can't convert json object to AST Node: unrecognised type.");
+    }
 }
