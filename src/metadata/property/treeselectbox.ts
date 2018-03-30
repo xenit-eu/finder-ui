@@ -163,13 +163,14 @@ class TreeSelectBoxImpl extends Component<TreeSelectBoxImpl_Props_t, TreeSelectB
     }
 
     private _buildNodesTree(nodeKey?: string): CheckboxTreeData_t[] {
+        const checked = this.props.multiple ? (key: string) => this.props.value.indexOf(key) >= 0:(key: string) => key === this.props.value;
         return this._getFilteredTreeDescription()
             .filter(node => node.parent === nodeKey)
             .map(node => ({
                 value: node.key,
                 label: node.value,
                 children: this._buildNodesTree(node.key),
-                className: this.props.value.indexOf(node.key) >= 0? "treeselectbox-checked":"treeselectbox-unchecked",
+                className: checked(node.key) ? "treeselectbox-checked" : "treeselectbox-unchecked",
             }));
     }
 
