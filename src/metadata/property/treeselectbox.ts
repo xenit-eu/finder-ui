@@ -15,6 +15,7 @@ type TreeSelectBoxInner_State_t = {
     menuItemsLoaded: boolean,
     currentValues: Tree_t[],
     currentValuesLoaded: boolean,
+    updateTrigger: boolean,
 };
 
 const TreeSelectBox: PropertyRenderer_t<string[]|string> = (config: PropertyRenderConfig_t<string[]|string>) => {
@@ -26,6 +27,7 @@ const TreeSelectBox: PropertyRenderer_t<string[]|string> = (config: PropertyRend
                 menuItemsLoaded: false,
                 currentValues: [],
                 currentValuesLoaded: false,
+                updateTrigger: false,
             };
         }
 
@@ -74,13 +76,18 @@ const TreeSelectBox: PropertyRenderer_t<string[]|string> = (config: PropertyRend
                     onChange: (values: string[]|string) => {
                         this.props.onChange(config.mapToModel(this.props.node, values));
                     },
+                    triggerUpdateInternal: () => this.setState((state) => ({ updateTrigger: !state.updateTrigger })),
                     value:value || [],
                 });
                 let values = this._getViewValue();
                 if (this.state.currentValuesLoaded) {
                     values = this.state.currentValues.map(item => item.value);
                 }
-                return _.span({ className: "metadata-field metadata-field-treeselectbox" }, __(SelectField, {
+                return _.span({ className: "metadata-field metadata-field-treeselectbox" }, __(SelectField, <any>{
+                    openImmediately: this.state.updateTrigger,
+                    dropDownMenuProps: {
+                        autoWidth: true,
+                    },
                     value: values,
                     multiple: true,
                     fullWidth: true,
@@ -109,6 +116,7 @@ type TreeSelectBoxImpl_Props_t = {
     value: string[] | string,
     multiple: boolean,
     onChange: (value: string[]|string) => void,
+    triggerUpdateInternal: () => void,
 };
 
 type TreeSelectBoxImpl_State_t = {
@@ -199,6 +207,7 @@ class TreeSelectBoxImpl extends Component<TreeSelectBoxImpl_Props_t, TreeSelectB
                 onKeyDown: (ev: SyntheticEvent<{}>) => { ev.stopPropagation(); },
                 onChange: (ev: SyntheticEvent<{}>, newValue: string) => {
                     this.setState({ searchFilter: newValue, expanded: newValue ? this._getFilteredValues(newValue) : this.state.expanded });
+                    this.props.triggerUpdateInternal();
                     ev.stopPropagation();
                 },
                 value: this.state.searchFilter,
@@ -208,7 +217,10 @@ class TreeSelectBoxImpl extends Component<TreeSelectBoxImpl_Props_t, TreeSelectB
                 checked: this.props.multiple ? this.props.value : [this.props.value],
                 expanded: this.state.expanded,
                 onCheck: (checked: string[]) => this._onCheck(checked),
-                onExpand: (expanded: string[]) => this.setState({ expanded }),
+                onExpand: (expanded: string[]) => {
+                    this.setState({ expanded });
+                    this.props.triggerUpdateInternal();
+                },
                 noCascade: true,
             }),
         );
