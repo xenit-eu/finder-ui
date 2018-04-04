@@ -1,3 +1,15 @@
-.metadata-fieldset .metadata-fieldset-label > :last-child::after {
-    content: ':';
+.metadata-fieldset {
+    .metadata-fieldset-label> :last-child::after {
+        content: ':';
+    }
+    .metadata-fieldset-field{
+        margin: 2px 0px 2px 0px;
+        .metadata-fieldset-title {
+            font-weight: bold;
+            font-size: 120%;
+        }
+        .metadata-fieldset-label {
+            font-weight: bold;
+        }
+    }
 }
