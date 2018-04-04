@@ -177,7 +177,9 @@ class TreeSelectBoxImpl extends Component<TreeSelectBoxImpl_Props_t, TreeSelectB
             .map(node => ({
                 value: node.key,
                 label: node.value,
-                children: this._buildNodesTree(node.key),
+                children: node.key === undefined ? (() => {
+                    throw new Error("Node key is undefined. (parent: " + node.parent + ")");
+                })() : this._buildNodesTree(node.key),
                 className: checked(node.key) ? "treeselectbox-checked" : "treeselectbox-unchecked",
             }));
     }
