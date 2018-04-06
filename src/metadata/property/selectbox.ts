@@ -95,7 +95,7 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
                 // This is a workaround for XENFIN-769 where the value displayed in a SelectField
                 // is empty because no menu items are present.
                 // This happens when using a custom resource resolver with min-input-length > 0
-                if(menuItems.length === 0) {
+                if(menuItems.length === 0 && !this.state.searchFilter) {
                     menuItems.push(...this.state.currentValues);
                 }
 
