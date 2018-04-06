@@ -89,7 +89,17 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
             let value = this._getSanitizedValue();
             const isMultiValue = Array.isArray(value);
             if (this.props.renderMode !== RenderMode.VIEW) {
-                const menuItems = this.state.menuItems.map((item: KV_t) => __(MenuItem, {
+                const menuItems = this.state.menuItems;
+
+                // Place the current values in the menu if there are no menu items shown initially
+                // This is a workaround for XENFIN-769 where the value displayed in a SelectField
+                // is empty because no menu items are present.
+                // This happens when using a custom resource resolver with min-input-length > 0
+                if(menuItems.length === 0) {
+                    menuItems.push(...this.state.currentValues);
+                }
+
+                const menuItemComponents = menuItems.map((item: KV_t) => __(MenuItem, {
                     key: item.key,
                     value: item.key,
                     primaryText: item.value,
@@ -120,11 +130,12 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
                         },
                         dropDownMenuProps: {
                             onClose: () => this.lookupMenuItems(),
+                            autoWidth: true,
                         },
                         value,
                     },
                         searchBox,
-                        ...menuItems,
+                        ...menuItemComponents,
                     ),
                 );
             } else {
