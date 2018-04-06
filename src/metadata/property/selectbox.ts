@@ -1,4 +1,4 @@
-import { MenuItem, SelectField, TextField } from "material-ui";
+import { Menu, MenuItem, SelectField, TextField } from "material-ui";
 import { Component, createElement as __, DOM as _, FormEvent, ReactElement, SyntheticEvent } from "react";
 
 import { FieldSkeleton_Props_t, RenderMode } from "../fields";
@@ -17,6 +17,13 @@ type SelectBox_State_t = {
     searchFilter?: string,
 };
 
+/*
+XENFIN-770
+This is required! because otherwise we loose focus each time we type in the filter.
+Before thinking about removing this, can you not pass parameter?
+*/
+(<any>Menu).defaultProps.disableAutoFocus = true;
+
 const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRenderConfig_t<string | string[]>) => {
     class SelectBoxInner extends Component<FieldSkeleton_Props_t, SelectBox_State_t> {
         constructor(props: FieldSkeleton_Props_t) {
@@ -30,7 +37,7 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
             };
         }
 
-        private _getSanitizedValue(): string[]|string|null {
+        private _getSanitizedValue(): string[] | string | null {
             const value = config.mapToView(this.props.node);
             return Array.isArray(value) ? value.map(v => v.toString()) : value !== null ? value.toString() : null;
         }
@@ -51,23 +58,23 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
         }
 
         private lookupMenuItems(searchFilter: string = "") {
-            if(searchFilter === this.state.searchFilter) {
+            if (searchFilter === this.state.searchFilter) {
                 return Promise.resolve();
             }
-            return this.setStateP({ menuItemsLoaded: false, searchFilter})
+            return this.setStateP({ menuItemsLoaded: false, searchFilter })
                 .then(() => config.parameters.resolver.query(this._getViewValue(), { 0: searchFilter }))
                 .then((items: KV_t[]) => this.setStateP({ menuItems: items, menuItemsLoaded: true }));
         }
 
         public componentDidMount() {
             this.lookupCurrentValues();
-            if(this.props.renderMode !== RenderMode.VIEW) {
+            if (this.props.renderMode !== RenderMode.VIEW) {
                 this.lookupMenuItems();
             }
         }
 
         public componentWillReceiveProps(nextProps: FieldSkeleton_Props_t) {
-            if(nextProps.node !== this.props.node) {
+            if (nextProps.node !== this.props.node) {
                 this.lookupCurrentValues();
             }
         }
@@ -122,7 +129,7 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
                 );
             } else {
                 let values = this._getViewValue();
-                if(this.state.currentValuesLoaded) {
+                if (this.state.currentValuesLoaded) {
                     values = this.state.currentValues.map((item, i) => item ? item.value : values[i]);
                 }
                 return _.span({ className: "metadata-value metadata-field-selectbox" }, values.join(", "));
