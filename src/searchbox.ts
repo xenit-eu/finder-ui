@@ -168,7 +168,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
             if (currentTerm && currentTerm.type === "date") {
                 this.addNewTerm({ name: currentTerm.name, label: currentTerm.label, value: toDateString(addMonths(new Date(), -1)) + ".." + toDateString(new Date()) });
             }
-        } else if (currentTerm && currentTerm.type === "enum") {
+        } else if (currentTerm && currentTerm.values && currentTerm.values.length > 0) {
             if (!val.endsWith(":")) {
                 const match = /[^\:]+\:\s*(.*)\s*$/.exec(val);
                 if (match) {
@@ -211,7 +211,10 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                 case "date":
                     return ["today", "last week", "last month", "on...", "after...", "before...", "between..."].map(t => currentTerm.label + ":" + t);
                 case "enum":
-                    return currentTerm.values.map(t => typeof t === "object" ? t.label : t).map(t => currentTerm.label + ":" + t);
+                case "text":
+                    if(currentTerm.values && currentTerm.values.length > 0) {
+                        return currentTerm.values.map(t => typeof t === "object" ? t.label : t).map(t => currentTerm.label + ":" + t);
+                    }
                 default:
             }
         }
