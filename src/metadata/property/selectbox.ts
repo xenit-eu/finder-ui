@@ -88,8 +88,21 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
         public render() {
             let value = this._getSanitizedValue();
             const isMultiValue = Array.isArray(value);
+            let viewValues = this._getViewValue();
+            if (this.state.currentValuesLoaded) {
+                viewValues = this.state.currentValues.map((item, i) => item ? item.value : viewValues[i]);
+            }
             if (this.props.renderMode !== RenderMode.VIEW) {
-                const menuItems = this.state.menuItems.map((item: KV_t) => __(MenuItem, {
+
+                // Place the current values in the menu if there are no menu items shown initially
+                // This is a workaround for XENFIN-769 where the value displayed in a SelectField
+                // is empty because no menu items are present.
+                // This happens when using a custom resource resolver with min-input-length > 0
+                // Not a problem for multivalue, because the selectionRenderer is always called for multivalue fields
+                const useCurrentValues = this.state.menuItems.length === 0 && !this.state.searchFilter && !isMultiValue;
+                const menuItems = useCurrentValues ? this.state.currentValues.filter(v => !!v) : this.state.menuItems;
+
+                const menuItemComponents = menuItems.map((item: KV_t) => __(MenuItem, {
                     key: item.key,
                     value: item.key,
                     primaryText: item.value,
@@ -120,19 +133,17 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
                         },
                         dropDownMenuProps: {
                             onClose: () => this.lookupMenuItems(),
+                            autoWidth: true,
                         },
+                        selectionRenderer: () => viewValues.join(", "),
                         value,
                     },
                         searchBox,
-                        ...menuItems,
+                        ...menuItemComponents,
                     ),
                 );
             } else {
-                let values = this._getViewValue();
-                if (this.state.currentValuesLoaded) {
-                    values = this.state.currentValues.map((item, i) => item ? item.value : values[i]);
-                }
-                return _.span({ className: "metadata-value metadata-field-selectbox" }, values.join(", "));
+                return _.span({ className: "metadata-value metadata-field-selectbox" }, viewValues.join(", "));
             }
         }
     }
