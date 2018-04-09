@@ -1,9 +1,9 @@
+import * as ld from "lodash";
 import { MenuItem, SelectField, TextField } from "material-ui";
 import { Component, createElement as __, DOM as _, FormEvent, ReactElement, SyntheticEvent } from "react";
 
 import { FieldSkeleton_Props_t, RenderMode } from "../fields";
 import { PropertyRenderConfig_t, PropertyRenderer_t } from "./interface";
-
 type Tree_t = {
     key: string,
     value: string,
@@ -18,7 +18,7 @@ type TreeSelectBoxInner_State_t = {
     updateTrigger: boolean,
 };
 
-const TreeSelectBox: PropertyRenderer_t<string[]|string> = (config: PropertyRenderConfig_t<string[]|string>) => {
+const TreeSelectBox: PropertyRenderer_t<string[] | string> = (config: PropertyRenderConfig_t<string[] | string>) => {
     class TreeSelectBoxInner extends Component<FieldSkeleton_Props_t, TreeSelectBoxInner_State_t> {
         constructor(props: FieldSkeleton_Props_t) {
             super(props);
@@ -31,7 +31,7 @@ const TreeSelectBox: PropertyRenderer_t<string[]|string> = (config: PropertyRend
             };
         }
 
-        private _getSanitizedValue(): string[]|string|null {
+        private _getSanitizedValue(): string[] | string | null {
             const value = config.mapToView(this.props.node);
             return Array.isArray(value) ? value.map(v => v.toString()) : value !== null ? value.toString() : null;
         }
@@ -61,7 +61,7 @@ const TreeSelectBox: PropertyRenderer_t<string[]|string> = (config: PropertyRend
         }
 
         public componentWillReceiveProps(nextProps: FieldSkeleton_Props_t) {
-            if (nextProps.node !== this.props.node) {
+            if (!ld.isEqual(nextProps.node, this.props.node)) {
                 this.lookupCurrentValues();
             }
         }
@@ -73,16 +73,14 @@ const TreeSelectBox: PropertyRenderer_t<string[]|string> = (config: PropertyRend
                 const menuItems = __(TreeSelectBoxImpl, {
                     treeDescription: this.state.menuItems,
                     multiple: isMultiValue,
-                    onChange: (values: string[]|string) => {
+                    onChange: (values: string[] | string) => {
                         this.props.onChange(config.mapToModel(this.props.node, values));
                     },
                     triggerUpdateInternal: () => this.setState((state) => ({ updateTrigger: !state.updateTrigger })),
-                    value:value || [],
+                    value: value || [],
                 });
                 let values = this._getViewValue();
-                if (this.state.currentValuesLoaded) {
-                    values = this.state.currentValues.map(item => item.value);
-                }
+                values = this.state.currentValuesLoaded ? this.state.currentValues.map(item => item.value) : ["Loading..."];
                 return _.span({ className: "metadata-field metadata-field-treeselectbox" }, __(SelectField, <any>{
                     openImmediately: this.state.updateTrigger,
                     dropDownMenuProps: {
@@ -95,9 +93,7 @@ const TreeSelectBox: PropertyRenderer_t<string[]|string> = (config: PropertyRend
                 }, menuItems));
             } else {
                 let values = this._getViewValue();
-                if (this.state.currentValuesLoaded) {
-                    values = this.state.currentValues.map(item => item.value);
-                }
+                values = this.state.currentValuesLoaded ? this.state.currentValues.map(item => item.value) : ["Loading..."];
                 return _.span({ className: "metadata-value metadata-field-treeselectbox" }, values.join(", "));
             }
         }
@@ -115,7 +111,7 @@ type TreeSelectBoxImpl_Props_t = {
     treeDescription: Tree_t[],
     value: string[] | string,
     multiple: boolean,
-    onChange: (value: string[]|string) => void,
+    onChange: (value: string[] | string) => void,
     triggerUpdateInternal: () => void,
 };
 
@@ -163,7 +159,7 @@ class TreeSelectBoxImpl extends Component<TreeSelectBoxImpl_Props_t, TreeSelectB
     }
 
     private _getFilteredTreeDescription() {
-        if(!this.state.searchFilter) {
+        if (!this.state.searchFilter) {
             return this.props.treeDescription;
         }
         const filteredNodes = this._getFilteredValues(this.state.searchFilter);
@@ -171,7 +167,7 @@ class TreeSelectBoxImpl extends Component<TreeSelectBoxImpl_Props_t, TreeSelectB
     }
 
     private _buildNodesTree(nodeKey?: string): CheckboxTreeData_t[] {
-        const checked = this.props.multiple ? (key: string) => this.props.value.indexOf(key) >= 0:(key: string) => key === this.props.value;
+        const checked = this.props.multiple ? (key: string) => this.props.value.indexOf(key) >= 0 : (key: string) => key === this.props.value;
         return this._getFilteredTreeDescription()
             .filter(node => node.parent === nodeKey)
             .map(node => ({
@@ -185,11 +181,11 @@ class TreeSelectBoxImpl extends Component<TreeSelectBoxImpl_Props_t, TreeSelectB
     }
 
     private _onCheck(checked: string[]) {
-        if(this.props.multiple) {
+        if (this.props.multiple) {
             this.props.onChange(checked);
         } else {
             const newlyChecked = checked.filter(item => this.props.value.indexOf(item) === -1);
-            if(newlyChecked[0]) {
+            if (newlyChecked[0]) {
                 this.props.onChange(newlyChecked[0]);
             } else {
                 this.props.onChange(this.props.value);
