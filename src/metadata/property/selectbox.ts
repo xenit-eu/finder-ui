@@ -101,7 +101,7 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
                 // This happens when using a custom resource resolver with min-input-length > 0
                 // Not a problem for multivalue, because the selectionRenderer is always called for multivalue fields
                 if(menuItems.length === 0 && !this.state.searchFilter && !isMultiValue) {
-                    menuItems.push(...this.state.currentValues);
+                    menuItems.push(...this.state.currentValues.filter(v => !!v));
                 }
                 const menuItemComponents = menuItems.map((item: KV_t) => __(MenuItem, {
                     key: item.key,
