@@ -53,10 +53,11 @@
     "sortablejs": "^1.6.0"
   },
   "devDependencies": {
-    "@types/react-addons-test-utils": "^0.14.20",
+    "@types/core-js": "^0.9.43",
     "@types/enzyme": "^3.1.5",
     "@types/jasmine": "^2.5.2",
-    "@types/core-js": "^0.9.43",
+    "@types/lodash.isequal": "^4.5.2",
+    "@types/react-addons-test-utils": "^0.14.20",
     "awesome-typescript-loader": "^3.4.0",
     "core-js": "^2.5.1",
     "css-loader": "^0.28.4",

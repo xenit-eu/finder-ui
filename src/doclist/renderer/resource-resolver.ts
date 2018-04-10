@@ -1,3 +1,4 @@
+import * as ld from "lodash";
 import { Component, DOM as _ } from "react";
 import { ColumnRenderer_Config_t, ColumnRenderer_Factory_t, ColumnRenderer_Props_t, ColumnRenderer_t } from "./interface";
 
@@ -26,7 +27,7 @@ const ResourceResolverRenderer: ColumnRenderer_Factory_t<string> = (config: Colu
 
         private _getViewValue(): string[] {
             const value = config.mapToView(this.props.node);
-            return Array.isArray(value)?value:[value];
+            return Array.isArray(value) ? value : [value];
         }
 
         private lookupItems() {
@@ -42,16 +43,16 @@ const ResourceResolverRenderer: ColumnRenderer_Factory_t<string> = (config: Colu
         }
 
         public componentWillReceiveProps(nextProps: ColumnRenderer_Props_t) {
-            if(nextProps.node !== this.props.node) {
+            if (!ld.isEqual(nextProps.node, this.props.node)) {
                 this.lookupItems();
             }
         }
 
         public render() {
-            if(this.state.loadError !== null) {
+            if (this.state.loadError !== null) {
                 return _.span({ className: "doclist-renderer-error" }, "Error loading resource: " + this.state.loadError);
             }
-            if(!this.state.itemsLoaded) {
+            if (!this.state.itemsLoaded) {
                 return _.span({ className: "doclist-renderer-loading" }, "Loading...");
             } else {
                 return _.span({}, this.state.items.map(kv => kv.value).join(", "));

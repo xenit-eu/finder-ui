@@ -1,3 +1,4 @@
+import * as ld from "lodash";
 import { Menu, MenuItem, SelectField, TextField } from "material-ui";
 import { Component, createElement as __, DOM as _, FormEvent, ReactElement, SyntheticEvent } from "react";
 
@@ -74,7 +75,7 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
         }
 
         public componentWillReceiveProps(nextProps: FieldSkeleton_Props_t) {
-            if (nextProps.node !== this.props.node) {
+            if (!ld.isEqual(nextProps.node, this.props.node)) {
                 this.lookupCurrentValues();
             }
         }
@@ -143,7 +144,9 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
                     ),
                 );
             } else {
-                return _.span({ className: "metadata-value metadata-field-selectbox" }, viewValues.join(", "));
+                return _.span(
+                    { className: "metadata-value metadata-field-selectbox" },
+                    this.state.currentValuesLoaded ? viewValues.join(", ") : "Loading...");
             }
         }
     }
