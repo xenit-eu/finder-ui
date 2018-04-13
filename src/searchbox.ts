@@ -168,9 +168,9 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
             if (currentTerm && currentTerm.type === "date") {
                 this.addNewTerm({ name: currentTerm.name, label: currentTerm.label, value: toDateString(addMonths(new Date(), -1)) + ".." + toDateString(new Date()) });
             }
-        } else if (currentTerm && currentTerm.values && currentTerm.values.length > 0) {
+        } else if (currentTerm && currentTerm.type === "enum") {
             if (!val.endsWith(":")) {
-                const match = /[^\:]+\:\s*(.*)\s*$/.exec(val);
+                const match = reNameValue.exec(val);
                 if (match) {
                     const valList = currentTerm.values.filter(v => typeof v === "string" ? v === match[1] : v.label === match[1]);
                     if (valList.length > 0) {
