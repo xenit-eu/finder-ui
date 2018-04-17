@@ -1,7 +1,8 @@
 import TextField from "material-ui/TextField";
-import { Component, createElement as __, DOM as _, FormEvent, ReactElement } from "react";
+import { Component, createElement as __, DOM as _, FormEvent } from "react";
 
 import { FieldSkeleton_Props_t, RenderMode } from "../fields";
+import { ChangeOnBlurTextField } from "./helpers";
 import { PropertyRenderConfig_t, PropertyRenderer_t } from "./interface";
 import Label from "./label";
 
@@ -14,7 +15,7 @@ const TextArea: PropertyRenderer_t<string | string[]> = (config: PropertyRenderC
         const stringValue = Array.isArray(value) ? value.join(", ") : value;
         if (props.renderMode !== RenderMode.VIEW) {
             if (!isMultiValue) {
-                return _.span({ className: "metadata-field metadata-field-textarea" }, __(TextField, {
+                return _.span({ className: "metadata-field metadata-field-textarea" }, __(ChangeOnBlurTextField, {
                     fullWidth: true,
                     hintText: "Type value...",
                     onChange: (evt: FormEvent<{}>, v: string) => {
