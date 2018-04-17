@@ -17,7 +17,7 @@ const Flatpickr = require("react-flatpickr");
 
 import { Component, createElement as __, DOM as _, KeyboardEvent, ReactElement } from "react";
 
-import "flatpickr/dist/themes/material_blue.css";
+import "react-flatpickr/node_modules/flatpickr/dist/themes/material_blue.css";
 import "./searchbox.less";
 
 const DAY: number = 24 * 3600 * 1000;

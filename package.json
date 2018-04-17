@@ -39,7 +39,7 @@
     "codemirror": "^5.31.0",
     "es6-shim": "^0.35.3",
     "filesize": "^3.5.11",
-    "flatpickr": "^2.6.3",
+    "flatpickr": "^3.0.7",
     "lodash.isequal": "^4.5.0",
     "material-ui": "0.20.0",
     "material-ui-chip-input": "^0.18.3",
