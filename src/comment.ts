@@ -5,6 +5,8 @@ import TextField from "material-ui/TextField";
 import * as moment from "moment";
 import { Component, createElement as __, DOM as _ } from "react";
 
+import "./comment.less";
+
 export type Comment_t = {
     nodeRef: string,
     parentNodeRef: string,
