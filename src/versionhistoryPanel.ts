@@ -53,32 +53,32 @@ const avatarSvgStyle: CSSProperties = {
     margin: "6px",
 };
 
-const avatar = _.div({style: avatarStyle}, [
-   _.svg({viewBox: "0 0 24 24", style: avatarSvgStyle}, [
-      _.path({d: "M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"}),
-   ]),
+const avatar = _.div({ style: avatarStyle }, [
+    _.svg({ viewBox: "0 0 24 24", style: avatarSvgStyle }, [
+        _.path({ d: "M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" }),
+    ]),
 ]);
 
-export function VersionsHistoryPanel({show, versions}: VersionsHistoryPanel_t): ReactElement<any> {
+export function VersionsHistoryPanel({ show, versions }: VersionsHistoryPanel_t): ReactElement<any> {
     if (show) {
         if (versions.length === 0) {
             return _.div({ className: "docversions" }, "Document has no version history.");
         }
 
-        const versionItem = (v: Version_t) =>  _.div({className: "history-item"}, [
+        const versionItem = (v: Version_t) => _.div({ className: "history-item" }, [
             _.div({}, [
-                _.div({className: "history-version"}, [v.versionNumber]),
+                _.div({ className: "history-version" }, [v.versionNumber]),
             ]),
-            _.div({className: "history-meta-data"}, [
-                _.div({className: "history-doc-name"}, [v.title]),
-                _.div({className: "history-details"}, [
-                    _.div({className: "history-avatar"}, [
+            _.div({ className: "history-meta-data" }, [
+                v.title && v.title.length > 0 ? _.div({ className: "history-doc-name" }, [v.title]) : undefined,
+                _.div({ className: "history-details" }, [
+                    _.div({ className: "history-avatar" }, [
                         avatar,
                     ]),
                     _.div({}, [
-                        _.span({className: "history-user"}, [v.editor]),
-                        _.span({className: "history-edited"}, [moment(new Date(Number.parseInt(v.editDate))).fromNow()]),
-                        _.span({className: "history-comment"}, [v.editComment]),
+                        _.span({ className: "history-user" }, [v.editor]),
+                        _.span({ className: "history-edited" }, [moment(new Date(Number.parseInt(v.editDate))).fromNow()]),
+                        _.span({ className: "history-comment" }, [v.editComment]),
                     ]),
                 ]),
             ]),
