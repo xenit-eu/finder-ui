@@ -38,7 +38,7 @@ type RowMenu_t = {
     onMenuSelected: OnMenuSelected_t,
 };
 
-function RowMenu({rowIndex, menuItems, onMenuSelected}: RowMenu_t): ReactElement<any> {
+function RowMenu({ rowIndex, menuItems, onMenuSelected }: RowMenu_t): ReactElement<any> {
     return __(IconMenu, {
         iconButtonElement: __(IconButton, { style: { height: "15px", padding: "0" } },
             __(MoreHorizIcon, { color: "grey" })),
@@ -161,7 +161,7 @@ function SortableTh(c: Doclist_Column_t, onSortColumnSelected: OnSortColumnSelec
                 className: `header-icon fa fa-${iconName}`,
                 title,
             }) : null,
-            c.label,
+            _.div({ className: "doclist-column-title" }, c.label),
         ]);
 }
 
@@ -252,11 +252,11 @@ function buildSingleTD(col: Doclist_Column_t, node: Node_t, onRowSelected: (i: n
 }
 
 function upgradeDataToNodes(data?: Row_t[], nodes?: Node_t[]): Node_t[] {
-    if(nodes) {
+    if (nodes) {
         return nodes;
     }
 
-    if(data) {
+    if (data) {
         return data.map((row: Row_t) => {
             let node = {
                 type: "",
