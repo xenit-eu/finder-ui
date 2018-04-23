@@ -19,11 +19,11 @@ export type ApixQuery_t = any; // raw apix query. IE: {and: [{property: {name: "
 export type SearchTerm_t = { name: string, value: string };
 export type Query_t = { label: string, query: ApixQuery_t };
 
-function clone (obj: any): any {
+function clone(obj: any): any {
     return JSON.parse(JSON.stringify(obj));
 }
 
-export function usersQueries (queries?: Query_t[]): Query_t[] {
+export function usersQueries(queries?: Query_t[]): Query_t[] {
     if (queries) {
         localStorage.setItem("users-queries", JSON.stringify(queries));
     }
@@ -35,20 +35,25 @@ export function usersQueries (queries?: Query_t[]): Query_t[] {
  *
  * @param term
  */
-function apixSearchProperty (term: SearchTerm_t): {[k: string]: any} {
+function apixSearchProperty(term: SearchTerm_t): { [k: string]: any } {
     const match = /\s*(.+)\.\.(.+)\s*/.exec(term.value);
     if (match) {
-        return {name: term.name, range: {start: match[1], end: match[2]}};
+        return { name: term.name, range: { start: match[1], end: match[2] } };
     } else {
-        return {name: term.name, value: term.value.trim()};
+        return { name: term.name, value: term.value.trim() };
     }
 }
-
+export type QueryParentLeaf_t = { parent: string };
+export type QueryPathLeaf_t = { path: string };
+export type QueryTypeLeaf_t = { type: string };
+export type QueryTextLeaf_t = { text: string };
+export type QueryPropertyLeaf_t = { property: { [k: string]: any } };
+export type QueryLeaf_t = QueryParentLeaf_t | QueryPathLeaf_t | QueryTypeLeaf_t | QueryTextLeaf_t | QueryPropertyLeaf_t;
 export class FinderQuery {
 
     private rawQuery: ApixQuery_t;
 
-    constructor (query: ApixQuery_t) {
+    constructor(query: ApixQuery_t) {
         this.rawQuery = query;
     }
 
@@ -57,18 +62,21 @@ export class FinderQuery {
      *
      * @param searchTerms
      */
-    public static fromSearchTerms (searchTerms: SearchTerm_t[], def: ApixQuery_t|null = { all: "**" }): FinderQuery {
+    public static fromSearchTerms(searchTerms: SearchTerm_t[], def: ApixQuery_t | null = { all: "**" }): FinderQuery {
         let result: ApixQuery_t = def;  // default: all
         if (searchTerms.length) {
-            result = {and: []};
+            result = { and: [] };
 
-            let orChunks: {[k: string]: Array<{parent: string}|{type: string}|{text: string}|{property: {[k: string]: any}}>} = {};
+            let orChunks: { [k: string]: Array<QueryLeaf_t> } = {};
 
             searchTerms.forEach(t => {
                 if (!orChunks[t.name]) {
                     orChunks[t.name] = [];
                 }
                 switch (t.name) {
+                    case "path":
+                        orChunks[t.name].push({ path: t.value });
+                        break;
                     case "parent":
                         // specific term specifying the "parent" constraint.
                         orChunks[t.name].push({ parent: t.value });
@@ -78,7 +86,7 @@ export class FinderQuery {
                         break;
                     case TYPE_QNAME:
                         // Specific term specifying document type constraint
-                        orChunks[t.name].push({type: t.value});
+                        orChunks[t.name].push({ type: t.value });
                         break;
                     default:
                         orChunks[t.name].push({ property: apixSearchProperty(t) });
@@ -104,18 +112,18 @@ export class FinderQuery {
         return new FinderQuery(result);
     }
 
-    public static fromCombinedTermsAndQueries (terms: SearchTerm_t[], queries: Query_t[]): FinderQuery {
-        let q1: ApixQuery_t|null = null;
-        let q2: ApixQuery_t|null = null;
+    public static fromCombinedTermsAndQueries(terms: SearchTerm_t[], queries: Query_t[]): FinderQuery {
+        let q1: ApixQuery_t | null = null;
+        let q2: ApixQuery_t | null = null;
 
         if (queries.length > 0) {
-            q2 = clone(queries.length > 1 ? {and: queries.map(q => q.query)} : queries[0].query);
+            q2 = clone(queries.length > 1 ? { and: queries.map(q => q.query) } : queries[0].query);
             // clone to avoid changing values in original queries.
         }
 
         q1 = FinderQuery.fromSearchTerms(terms, null).query;
 
-        const result = (!!q1 && !!q2 ? {and: [q1, q2]} : (q1 || q2)) || {all: "**"};
+        const result = (!!q1 && !!q2 ? { and: [q1, q2] } : (q1 || q2)) || { all: "**" };
         return new FinderQuery(result);
     }
 
@@ -131,13 +139,13 @@ export class FinderQuery {
                 return { name: term.category, value };
 
             case "on":
-                return { name: term.category, range: {start: value, end: value} };
+                return { name: term.category, range: { start: value, end: value } };
 
             case "from":
-                return { name: term.category, range: {start: value, end: "MAX"} };
+                return { name: term.category, range: { start: value, end: "MAX" } };
 
             case "till":
-                return { name: term.category, range: {start: "MIN", end: value} };
+                return { name: term.category, range: { start: "MIN", end: value } };
 
             default:
                 return { name: term.category, value };
@@ -145,39 +153,39 @@ export class FinderQuery {
     }
 
     private static astToApix(query: AstJson_t): any {
-        let ast = <any> query;
-        if(ast.property) {
+        let ast = <any>query;
+        if (ast.property) {
             let property: any = { name: ast.property.field };
-            switch(ast.property.operator) {
+            switch (ast.property.operator) {
                 case "=":
                 default:
                     property.value = ast.property.value;
                     break;
                 case "contains":
-                    property.value = "*"+ast.property.value+"*";
+                    property.value = "*" + ast.property.value + "*";
                     break;
                 case "on":
-                    property.range = {start: ast.property.value, end: ast.property.value};
+                    property.range = { start: ast.property.value, end: ast.property.value };
                     break;
                 case "from":
-                    property.range = {start: ast.property.value, end: "MAX"};
+                    property.range = { start: ast.property.value, end: "MAX" };
                     break;
                 case "till":
-                    property.range = {start: "MIN", end: ast.property.value};
+                    property.range = { start: "MIN", end: ast.property.value };
                     break;
             }
             return { property };
         } else if (ast.and) {
             return { and: ast.and.map(FinderQuery.astToApix) };
-        } else if(ast.or) {
+        } else if (ast.or) {
             return { or: ast.or.map(FinderQuery.astToApix) };
         }
 
     }
 
-    public static fromAST(query: IASTNode|null): FinderQuery {
-        if(!query) {
-            return new FinderQuery({all: "**"});
+    public static fromAST(query: IASTNode | null): FinderQuery {
+        if (!query) {
+            return new FinderQuery({ all: "**" });
         }
 
         return new FinderQuery(FinderQuery.astToApix(query.toJSON()));
@@ -185,7 +193,7 @@ export class FinderQuery {
 
     private static apixToAst(query: any): AstJson_t | null {
         const name = Object.getOwnPropertyNames(query)[0];
-        switch(name) {
+        switch (name) {
             case "and":
                 return { and: query[name].map((q: any) => FinderQuery.apixToAst(q)) };
             case "or":
@@ -194,18 +202,18 @@ export class FinderQuery {
                 let operator = "=";
                 let value = query[name].value;
                 const containsRegex = /^\*(.*)\*$/;
-                if(value && containsRegex.test(value)) {
+                if (value && containsRegex.test(value)) {
                     operator = "contains";
                     value = value.match(containsRegex)[1];
                 }
-                if(query[name].range) {
-                    if(query[name].range.end === "MAX") {
+                if (query[name].range) {
+                    if (query[name].range.end === "MAX") {
                         operator = "from";
                         value = query[name].range.start;
-                    } else if(query[name].range.start === "MIN") {
+                    } else if (query[name].range.start === "MIN") {
                         operator = "till";
                         value = query[name].range.end;
-                    } else if(query[name].range.end === query[name].range.start) {
+                    } else if (query[name].range.end === query[name].range.start) {
                         operator = "on";
                         value = query[name].range.start;
                     } else {
@@ -240,8 +248,8 @@ export class FinderQuery {
     }
 
     public toAST(): IASTNode | null {
-        const json =  FinderQuery.apixToAst(this.query);
-        if(!json) {
+        const json = FinderQuery.apixToAst(this.query);
+        if (!json) {
             return null;
         }
         return jsonToAst(json);
@@ -263,9 +271,9 @@ export class FinderQuery {
                 if (part.conditionType.toUpperCase() === "AND") {
                     if (!result.and) {
                         if (result.or) {
-                            result = {and: [{ or: result.or }]};
+                            result = { and: [{ or: result.or }] };
                         } else {
-                            result = {and: [result]};
+                            result = { and: [result] };
                         }
                     }
                     if (part.expressions) {
@@ -277,9 +285,9 @@ export class FinderQuery {
                 if (part.conditionType.toUpperCase() === "OR") {
                     if (!result.or) {
                         if (result.and) {
-                            result = {or: [{ and: result.and }]};
+                            result = { or: [{ and: result.and }] };
                         } else {
-                            result = {or: [result]};
+                            result = { or: [result] };
                         }
                     }
                     if (part.expressions) {
@@ -292,13 +300,13 @@ export class FinderQuery {
             } else if (part.expressions) {
                 result = FinderQuery.fromAdvancedQuery(part.expressions).rawQuery;
             } else {
-                result = {property: FinderQuery.astToApixProperty(part)};
+                result = { property: FinderQuery.astToApixProperty(part) };
             }
         });
         return new FinderQuery(result);
     }
 
-    get query (): ApixQuery_t {
+    get query(): ApixQuery_t {
         return this.rawQuery;
     }
 
@@ -325,7 +333,7 @@ export class FinderQuery {
         }
     }
 
-    public toHumanReadableString (): string {
+    public toHumanReadableString(): string {
         return FinderQuery.toHumanReadable(this.query);
     }
 
@@ -336,7 +344,7 @@ export class FinderQuery {
 
         const n = Object.getOwnPropertyNames(query)[0];
         d("Property name: %s", n);
-        switch(n) {
+        switch (n) {
             case "property":
                 terms.push({ name: query[n].name, value: query[n].value });
                 break;
@@ -353,15 +361,15 @@ export class FinderQuery {
                             queries: a.queries.concat(b.queries),
                         };
                     });
-                    terms.push(...t);
-                    queries.push(...q);
-                    break;
+                terms.push(...t);
+                queries.push(...q);
+                break;
             default:
-                queries.push({label: FinderQuery.toHumanReadable(query), query });
+                queries.push({ label: FinderQuery.toHumanReadable(query), query });
         }
 
         d("<<< toSearchTermsAndQueriesAnd(%O): Terms=%O; Queries=%O", query, terms, queries);
-        return {terms, queries};
+        return { terms, queries };
     }
 
     public toSearchTermsAndQueries(): { terms: SearchTerm_t[], queries: Query_t[] } {
@@ -371,7 +379,7 @@ export class FinderQuery {
         const queries: Query_t[] = [];
 
         const name = Object.getOwnPropertyNames(query)[0];
-        switch(name) {
+        switch (name) {
             case "property":
             case "parent":
             case "all":
@@ -391,7 +399,7 @@ export class FinderQuery {
         }
         d("<<< toSearchTermsAndQueries(): Terms=%O; Queries=%O", terms, queries);
 
-        return {terms, queries};
+        return { terms, queries };
 
     }
 
