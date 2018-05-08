@@ -71,7 +71,7 @@ class CustomAutoComplete implements IAutocompleteProvider {
             }]);
         }
 
-        return Promise.resolve(term && term.values.map(v => typeof v === "string" ? v : v.label ) || []);
+        return Promise.resolve(term && term.values.map(v => typeof v === "string" ? v : v.label) || []);
     }
 }
 
@@ -99,8 +99,8 @@ export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, any> {
 
     private customAutoComplete: CustomAutoComplete;
     private datepicker: DatepickerAutocomplete;
-    private codemirror: Editor|null;
-    private query: IASTNode|null = null;
+    private codemirror: Editor | null;
+    private query: IASTNode | null = null;
 
     constructor(props: AdvancedSearchBox_t) {
         super(props);
@@ -114,11 +114,11 @@ export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, any> {
     public onChange(query: string) {
 
         const replaceFieldWithSearchTerm = (token: Token) => {
-            if(token.type !== TokenType.FIELD) {
+            if (token.type !== TokenType.FIELD) {
                 return token;
             }
             let matchedTerm = this.props.searchableTerms.find(term => term.label === token.value);
-            if(!matchedTerm) {
+            if (!matchedTerm) {
                 return token;
             }
             return new Token(token.type, matchedTerm.name);
@@ -131,7 +131,7 @@ export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, any> {
             this.setState({
                 queryError: null,
             });
-        } catch(e) {
+        } catch (e) {
             this.setState({
                 queryError: e,
             });
@@ -139,6 +139,10 @@ export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, any> {
     }
 
     public render() {
+        const me = this;
+        function doSearch() {
+            return me.props.onSearch(FinderQuery.fromAST(me.query));
+        }
         return _.div({ className: "search-box" }, [
             __(CodeMirror, {
                 ref: (elem: any) => { this.codemirror = elem ? elem.getCodeMirror() : null; },
@@ -147,6 +151,7 @@ export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, any> {
                         hint: createHinter(this.customAutoComplete),
                         completeSingle: false,
                     },
+                    extraKeys: { Enter:  (cm: any)=>doSearch()},
                     mode: "finder-query",
                 },
                 onChange: this.onChange.bind(this),
@@ -155,11 +160,11 @@ export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, any> {
             _.div({ key: "save-icon", className: "save-icon icon" },
                 __(StarIcon, { color: iconColor, onClick: () => this.props.onSaveAsQuery(prompt("Save query as") || "query", FinderQuery.fromAST(this.query)) }),
             ),
-            _.div({ key: "div", className: "search-icon icon", title: this.state.queryError?this.state.queryError.toString():undefined },
+            _.div({ key: "div", className: "search-icon icon", title: this.state.queryError ? this.state.queryError.toString() : undefined },
                 this.props.searching
                     ? __(CircularProgress, { size: 24 }) : (
                         this.state.queryError ? __(ErrorIcon, { color: iconColor })
-                            : __(SearchIcon, { color: iconColor, onClick: () => this.props.onSearch(FinderQuery.fromAST(this.query)) })
+                            : __(SearchIcon, { color: iconColor, onClick: ()=> doSearch() })
                     ),
             ),
         ]);
