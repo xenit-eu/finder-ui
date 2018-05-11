@@ -83,7 +83,9 @@ export type AdvancedSearchBox_t = {
 };
 
 type AdvancedSearchBox_State_t = {
-    queryError?: Error,
+    queryError: Error | null,
+    query: IASTNode | null,
+    doShake: boolean,
 };
 
 //@Component AdvancedSearchBox
@@ -95,17 +97,18 @@ type AdvancedSearchBox_State_t = {
 //@Param onSearch (apixQuery: any) => void "callback called to start the search based on the current query passed as parameter."
 //@Param onSaveAsQuery (name: string) => void "callback called to save the current query"
 
-export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, any> {
+export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, AdvancedSearchBox_State_t> {
 
     private customAutoComplete: CustomAutoComplete;
     private datepicker: DatepickerAutocomplete;
     private codemirror: Editor | null;
-    private query: IASTNode | null = null;
 
     constructor(props: AdvancedSearchBox_t) {
         super(props);
         this.state = {
             queryError: null,
+            query: null,
+            doShake: false,
         };
         this.datepicker = new DatepickerAutocomplete(() => <Editor>this.codemirror, toDateString);
         this.customAutoComplete = new CustomAutoComplete(props.searchableTerms, this.datepicker);
@@ -127,23 +130,38 @@ export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, any> {
         try {
             let tokens = lex(query);
             validateStream(tokens);
-            this.query = parse(tokens.map(replaceFieldWithSearchTerm));
+
             this.setState({
                 queryError: null,
+                query: parse(tokens.map(replaceFieldWithSearchTerm)),
             });
         } catch (e) {
             this.setState({
                 queryError: e,
+                query: null,
             });
         }
     }
 
-    public render() {
-        const me = this;
-        function doSearch() {
-            return me.props.onSearch(FinderQuery.fromAST(me.query));
+    private checkValid() {
+        if (this.state.queryError) {
+            this.setState({
+                doShake: true,
+            });
+            setTimeout(() => this.setState({
+                doShake: false,
+            }), 1000);
+            return false;
         }
-        return _.div({ className: "search-box" }, [
+        return true;
+    }
+
+    private doSearch() {
+        return this.checkValid() && this.props.onSearch(FinderQuery.fromAST(this.state.query));
+    }
+
+    public render() {
+        return _.div({ className: "search-box" + (this.state.doShake ? " search-box-query-error" : "") }, [
             __(CodeMirror, {
                 ref: (elem: any) => { this.codemirror = elem ? elem.getCodeMirror() : null; },
                 options: {
@@ -151,20 +169,20 @@ export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, any> {
                         hint: createHinter(this.customAutoComplete),
                         completeSingle: false,
                     },
-                    extraKeys: { Enter:  (cm: any)=>doSearch()},
+                    extraKeys: { Enter: (cm: any) => this.doSearch() },
                     mode: "finder-query",
                 },
                 onChange: this.onChange.bind(this),
                 onCursorActivity: (cm: Editor) => (<any>cm).showHint(),
             }),
             _.div({ key: "save-icon", className: "save-icon icon" },
-                __(StarIcon, { color: iconColor, onClick: () => this.props.onSaveAsQuery(prompt("Save query as") || "query", FinderQuery.fromAST(this.query)) }),
+                __(StarIcon, { color: iconColor, onClick: () => this.checkValid() && this.props.onSaveAsQuery(prompt("Save query as") || "query", FinderQuery.fromAST(this.state.query)) }),
             ),
             _.div({ key: "div", className: "search-icon icon", title: this.state.queryError ? this.state.queryError.toString() : undefined },
                 this.props.searching
                     ? __(CircularProgress, { size: 24 }) : (
                         this.state.queryError ? __(ErrorIcon, { color: iconColor })
-                            : __(SearchIcon, { color: iconColor, onClick: ()=> doSearch() })
+                            : __(SearchIcon, { color: iconColor, onClick: () => this.doSearch() })
                     ),
             ),
         ]);
