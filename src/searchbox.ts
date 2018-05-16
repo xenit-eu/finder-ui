@@ -48,12 +48,12 @@ function addDays(d: Date, days: number): Date {
     return new Date(d.getTime() + (days * DAY));
 }
 
-export type Value_t = string | {label: string, value: string};
+export type Value_t = string | { label: string, value: string };
 
 export type SearchableTerm_t = {
     name: string,
     label: string,
-    type: string, // "text" | "enum" | "date"
+    type: "text" | "enum" | "date" | "folder",
     values: Value_t[],
 };
 
@@ -168,7 +168,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
             if (currentTerm && currentTerm.type === "date") {
                 this.addNewTerm({ name: currentTerm.name, label: currentTerm.label, value: toDateString(addMonths(new Date(), -1)) + ".." + toDateString(new Date()) });
             }
-        } else if (currentTerm && currentTerm.type === "enum") {
+        } else if (currentTerm && (currentTerm.type === "enum" || currentTerm.type === "folder")) {
             if (!val.endsWith(":")) {
                 const match = reNameValue.exec(val);
                 if (match) {
@@ -211,8 +211,9 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                 case "date":
                     return ["today", "last week", "last month", "on...", "after...", "before...", "between..."].map(t => currentTerm.label + ":" + t);
                 case "enum":
+                case "folder":
                 case "text":
-                    if(currentTerm.values && currentTerm.values.length > 0) {
+                    if (currentTerm.values && currentTerm.values.length > 0) {
                         return currentTerm.values.map(t => typeof t === "object" ? t.label : t).map(t => currentTerm.label + ":" + t);
                     }
                 default:
@@ -237,6 +238,12 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                     this.props.onEnter(null);
                 } else if (this.state.currentTerm) {
                     const m = reNameValue.exec(input.value);
+                    if (m && this.state.currentTerm.name === "path") {
+                        const valuePairs = <{ label: string, value: string }[]>this.state.currentTerm.values.filter(v => v && typeof v === "object");
+                        const firstPair = valuePairs.filter(v => v.label === m[2])[0];
+                        this.addNewTerm({ name: this.state.currentTerm.name, label: this.state.currentTerm.label, value: firstPair.value, valueLabel: firstPair.label });
+                        break;
+                    }
                     if (m && !(["on...", "after...", "before...", "between..."].indexOf(m[2]) >= 0)) {
                         this.addNewTerm({ name: this.state.currentTerm.name, label: this.state.currentTerm.label, value: m[2] });
                         this.hideSuggestions();
@@ -313,10 +320,10 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
             .filter(option => option.toLowerCase().includes((this.state.textValue || "").toLowerCase()));
 
         return _.div({ key: "search-box", className: "search-box" }, [
-            (this.props.searchedQueries.length === 0 && this.props.searchedTerms.length === 0)?__(Chip, {
+            (this.props.searchedQueries.length === 0 && this.props.searchedTerms.length === 0) ? __(Chip, {
                 className: "searchbox-chip searchbox-chip-default",
                 key: "Default",
-            }, "All:*"):undefined,
+            }, "All:*") : undefined,
             ...this.props.searchedQueries.map((t, i) => __(Chip, {
                 className: "searchbox-chip",
                 backgroundColor: Colors.blue100,
@@ -536,7 +543,7 @@ export class AutocompleteSearchBox extends Component<AutocompleteSearchBox_t, Au
 
     private _onInputChanged(text: string) {
         this.setState((prevState: AutocompleteSearchBox_State_t, props: AutocompleteSearchBox_t) => {
-            if(prevState.autocompleteTimer) {
+            if (prevState.autocompleteTimer) {
                 clearTimeout(prevState.autocompleteTimer);
             }
 
