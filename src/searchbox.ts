@@ -57,7 +57,6 @@ export type SearchableTerm_t = {
     values: Value_t[],
 };
 
-
 //@Type  "Term structure"
 //@TypeDescription  "Term structure"
 export type Term_t = {
@@ -240,9 +239,9 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                 } else if (this.state.currentTerm) {
                     const m = reNameValue.exec(input.value);
                     if (m && this.state.currentTerm.name === "path") {
-                        const valuePairs = <{ label: string, value: string }[]>this.state.currentTerm.values.filter(v => v && typeof v === 'object');
-                        const firstPair = valuePairs.filter( v => v.label === m[2])[0];
-                        this.addNewTerm({ name: this.state.currentTerm.name, label: this.state.currentTerm.label, value:firstPair.value,valueLabel:firstPair.label});
+                        const valuePairs = <{ label: string, value: string }[]>this.state.currentTerm.values.filter(v => v && typeof v === "object");
+                        const firstPair = valuePairs.filter(v => v.label === m[2])[0];
+                        this.addNewTerm({ name: this.state.currentTerm.name, label: this.state.currentTerm.label, value: firstPair.value, valueLabel: firstPair.label });
                         break;
                     }
                     if (m && !(["on...", "after...", "before...", "between..."].indexOf(m[2]) >= 0)) {
