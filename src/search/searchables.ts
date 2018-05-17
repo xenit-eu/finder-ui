@@ -1,16 +1,19 @@
 import {
     DATE_FROM, DATE_LASTMONTH, DATE_LASTWEEK, DATE_LASTYEAR, DATE_ON, DATE_TODAY, DATE_UNTIL,
-    FromDateRange, IDateRange, IDateRangeTranslator, LAST_MONTH_RANGE, LAST_WEEK_RANGE, LAST_YEAR_RANGE,
-    SimpleDateRange, TODAY_RANGE, UntilDateRange,
+    DateRangeSearchables, FromDateRange, IDateRange, IDateRangeTranslator, LAST_MONTH_RANGE, LAST_WEEK_RANGE,
+    LAST_YEAR_RANGE, SimpleDateRange, TODAY_RANGE, UntilDateRange,
 } from "./DateRange";
 import {
     AllSimpleSearchQueryElement, DatePropertySearchQueryElement,
     FolderSearchQueryElement,
-    ISearchQuery, ISimpleSearchQueryElement,
-    ITranslationService, PropertyNameService_t, ReferenceSimpleSearchQueryElement, StringValuePropertySearchQueryElement,
+    IPropertyKeyNameService,  ISimpleSearchQueryElement,
+    ITranslationService, PropertyNameService_t, ReferenceSimpleSearchQueryElement, SearchQuery,
+    StringValuePropertySearchQueryElement,
     TextSearchQueryElement,
-} from "./searchquery";
 
+} from "./searchquery";
+import { ALL, FOLDER, TEXT } from "./WordTranslator";
+export const DUMMYEXPORT = "dummyExport";
 export interface ISimpleSearchableQueryElement {
     machKeyValue(key: string, value: string): Promise<IExactValueMatch>;
     getPartiallyMatchingAutocompleteListElements(key: string, value: string): Promise<IAutocompleteSuggestion[]>;
@@ -20,12 +23,12 @@ const reNameValue: RegExp = /^([^\:]+)\:\s*(.+)\s*$/;
 const reNoNameJustValue: RegExp = /[^\:]/;
 const reQuery: RegExp = /\[([\w\s\-\_]+)\]/;
 function ExistsFilter<T>(elements: (T | undefined | null | void)[]) {
-    return <T[]>elements.filter(element => element);
+    return elements.filter(element => element) as T[];
 }
 function trimLowercase(s: string) {
     return s.trim().toLowerCase();
 }
-function lowercaseTrimContains(full: string, part: string) {
+export function lowercaseTrimContains(full: string, part: string) {
     if (XOR(isNullOrUndefined(full), isNullOrUndefined(part))) {
         return false;
     }
@@ -40,7 +43,7 @@ function XOR(a: boolean, b: boolean) {
 function isNullOrUndefined(a: string | null | undefined) {
     return a === undefined || a === null;
 }
-function lowercaseTrimEquals(a: string, b: string) {
+export function lowercaseTrimEquals(a: string, b: string) {
     if (XOR(isNullOrUndefined(a), isNullOrUndefined(b))) {
         return false;
     }
@@ -55,7 +58,7 @@ function empty(s: string | undefined) {
 function ContainsOrKeyOrValueOtherEmpty(key: string, value: string, container: string) {
 }
 export class ReferenceSearchableQueryElement implements ISimpleSearchableQueryElement {
-    public constructor(public name: string, public wrappedQuery: ISearchQuery) {
+    public constructor(public name: string, public wrappedQuery: SearchQuery) {
     }
 
     private createAutocompleteListElement(): IAutocompleteSuggestion {
@@ -76,24 +79,24 @@ export class ReferenceSearchableQueryElement implements ISimpleSearchableQueryEl
 }
 
 export class AllSearchable implements ISimpleSearchableQueryElement {
-    constructor(private translationService: ITranslationService) {
+    constructor(private AllwordTranslationService: (s: string) => string) {
     }
 
     public machKeyValue(key: string, value: string): Promise<IExactValueMatch> {
-        return this.translationService("All").then(translatedAll => lowercaseTrimEquals(translatedAll, key) || lowercaseTrimEquals("", key) ?
-            new SimpleSearchQueryElementValueMatch(new AllSimpleSearchQueryElement(this.translationService, value)) : new NoResultValueMatch());
+        return Promise.resolve(this.AllwordTranslationService(ALL)).then(translatedAll => lowercaseTrimEquals(translatedAll, key) || lowercaseTrimEquals("", key) ?
+            new SimpleSearchQueryElementValueMatch(new AllSimpleSearchQueryElement(this.AllwordTranslationService, value)) : new NoResultValueMatch());
     }
     public getPartiallyMatchingAutocompleteListElements(key: string, value: string): Promise<IAutocompleteSuggestion[]> {
-        return this.translationService("All").then(translatedAll => lowercaseTrimContains(translatedAll, key) || lowercaseTrimContains("", key) ?
+        return Promise.resolve(this.AllwordTranslationService(ALL)).then(translatedAll => lowercaseTrimContains(translatedAll, key) || lowercaseTrimContains("", key) ?
             [new SimpleAutoCompleteListElement(translatedAll, value, translatedAll + ":" + value)] : []);
     }
 }
 
 export abstract class PropertySearchable implements ISimpleSearchableQueryElement {
-    constructor(public qname: string, protected propertyNameService: PropertyNameService_t) {
+    public constructor(public qname: string, protected propertykeyNameService: IPropertyKeyNameService) {
     }
     public machKeyValue(key: string, value: string): Promise<IExactValueMatch> {
-        return this.propertyNameService.translatePropertyKey(this.qname).then(tQName => {
+        return this.propertykeyNameService.translatePropertyKey(this.qname).then(tQName => {
             return lowercaseTrimEquals(key, tQName) ? this.matchesValueExact(value) : new NoResultValueMatch();
         });
     }
@@ -103,7 +106,7 @@ export abstract class PropertySearchable implements ISimpleSearchableQueryElemen
 }
 export type EnumPropertySearchableValue_t = string;
 export class EnumPropertySearchable extends PropertySearchable {
-    constructor(prop: string, private values: EnumPropertySearchableValue_t[], propertyNameService: PropertyNameService_t) {
+    constructor(prop: string, private values: EnumPropertySearchableValue_t[], private propertyNameService: PropertyNameService_t) {
         super(prop, propertyNameService);
     }
 
@@ -122,19 +125,19 @@ export class EnumPropertySearchable extends PropertySearchable {
     public getPartiallyMatchingAutocompleteListElements(key: string, value: string): Promise<IAutocompleteSuggestion[]> {
         return this.propertyNameService.translatePropertyKey(this.qname).then(tQName => {
             if (!lowercaseTrimContains(tQName, key)) {
-                return Promise.resolve(<IAutocompleteSuggestion[]>[]);
+                return Promise.resolve([] as IAutocompleteSuggestion[]);
             }
             const unfilteredP = Promise.all(this.values.map(v => {
                 return this.propertyNameService.translatePropertyValue(this.qname, v).then(tValue =>
                     lowercaseTrimContains(tValue, value) ? new SimpleAutoCompleteListElement(tQName, tValue, tQName + ":" + tValue) : undefined);
             }));
-            return <Promise<SimpleAutoCompleteListElement[]>>unfilteredP.then(uf => ExistsFilter<SimpleAutoCompleteListElement>(uf));
+            return unfilteredP.then(uf => ExistsFilter<SimpleAutoCompleteListElement>(uf)) as Promise<SimpleAutoCompleteListElement[]>;
         });
     }
 }
 
 export class AnyStringValuePropertySearchable extends PropertySearchable {
-    constructor(prop: string, propertyNameService: PropertyNameService_t) {
+    constructor(prop: string, private propertyNameService: PropertyNameService_t) {
         super(prop, propertyNameService);
     }
     protected matchesValueExact(val: string) {
@@ -148,36 +151,36 @@ export class AnyStringValuePropertySearchable extends PropertySearchable {
 }
 
 export class TextSearchable implements ISimpleSearchableQueryElement {
-    constructor(private text: string, private translationService: ITranslationService) {
+    constructor(private text: string, private translationService: (s: string) => string) {
     }
     public getPartiallyMatchingAutocompleteListElements(key: string, value: string): Promise<IAutocompleteSuggestion[]> {
-        return this.translationService("text").then(textTranslated => {
+        return Promise.resolve(this.translationService(TEXT)).then(textTranslated => {
             if (!lowercaseTrimContains(textTranslated, key)) {
-                return <IAutocompleteSuggestion[]>[];
+                return [] as IAutocompleteSuggestion[];
             }
             return lowercaseTrimContains(this.text, value) ?
                 [new SimpleAutoCompleteListElement(textTranslated, this.text, textTranslated + ":" + this.text)] : [];
         });
     }
     public machKeyValue(key: string, value: string): Promise<IExactValueMatch> {
-        return this.translationService("text").then(textTranslated => lowercaseTrimEquals(key, textTranslated) && lowercaseTrimEquals(value, this.text) ?
+        return Promise.resolve(this.translationService(TEXT)).then(textTranslated => lowercaseTrimEquals(key, textTranslated) && lowercaseTrimEquals(value, this.text) ?
             new SimpleSearchQueryElementValueMatch(new TextSearchQueryElement(this.text, this.translationService)) : new NoResultValueMatch());
     }
 }
 
 export class FolderSearchable implements ISimpleSearchableQueryElement {
 
-    constructor(public qnamePath: string, public displayPath: string, private translationService: ITranslationService) {
+    constructor(public qnamePath: string, public displayPath: string, private wordTranslationService: (s: string) => string, private noderef: string) {
     }
 
     public machKeyValue(key: string, value: string): Promise<IExactValueMatch> {
-        return this.translationService("Folder").then(folderTranslated => lowercaseTrimEquals(this.displayPath, value) && lowercaseTrimEquals(key, folderTranslated) ?
-            new SimpleSearchQueryElementValueMatch(new FolderSearchQueryElement(this.qnamePath, this.displayPath, this.translationService)) :
+        return Promise.resolve(this.wordTranslationService(FOLDER)).then(folderTranslated => lowercaseTrimEquals(this.displayPath, value) && lowercaseTrimEquals(key, folderTranslated) ?
+            new SimpleSearchQueryElementValueMatch(new FolderSearchQueryElement(this.qnamePath, this.displayPath, this.wordTranslationService, this.noderef)) :
             new NoResultValueMatch());
     }
 
     public getPartiallyMatchingAutocompleteListElements(key: string, value: string): Promise<IAutocompleteSuggestion[]> {
-        return this.translationService("Folder").then(folderTranslated => lowercaseTrimContains(folderTranslated, key) && lowercaseTrimContains(this.displayPath, value) ?
+        return Promise.resolve(this.wordTranslationService(FOLDER)).then(folderTranslated => lowercaseTrimContains(folderTranslated, key) && lowercaseTrimContains(this.displayPath, value) ?
             [new SimpleAutoCompleteListElement(folderTranslated, this.displayPath, folderTranslated + ":" + this.displayPath)] : []);
     }
 }
@@ -197,17 +200,16 @@ const DateFillInBefore: IDateFillInType = {
 
 export const DateFillInTypes: IDateFillInType[] = [DateFillInOn, DateFillInAfter, DateFillInBefore];
 const DateFillInsearchables = [DATE_ON, DATE_FROM, DATE_UNTIL];
-const DateRangeSearchables = [TODAY_RANGE, LAST_WEEK_RANGE, LAST_MONTH_RANGE, LAST_YEAR_RANGE];
 export const DateSearchableWords = DateRangeSearchables.map(dRS => dRS.label).concat(DateFillInsearchables);
 export class DateSearchable extends PropertySearchable {
-    constructor(qname: string, propertyNameService: PropertyNameService_t, private dateRangeTranslator: IDateRangeTranslator) {
+    constructor(qname: string, private propertyNameService: PropertyNameService_t, private dateRangeTranslator: IDateRangeTranslator) {
         super(qname, propertyNameService);
     }
     private dateWordToAutocompletion(translatedDateWord: string, translatedKey: string) {//TODO More complex check accounting typed date (e.g. typing "on 12/" should be aware of 12th day)
         return new SimpleAutoCompleteListElement(translatedKey, translatedDateWord, translatedKey + ":" + translatedDateWord);
     }
     private dateWordToMatch(dateWord: string): IExactValueMatch {//TODO More complex check accounting typed date (e.g. typing "on 12/" should be aware of 12th day)
-        for (let dateRange of DateRangeSearchables) {
+        for (const dateRange of DateRangeSearchables) {
             if (dateRange.label === dateWord) {
                 return new SimpleSearchQueryElementValueMatch(new DatePropertySearchQueryElement(this.qname,
                     dateRange, this.dateRangeTranslator, this.propertyNameService));
@@ -252,7 +254,7 @@ export class DateSearchable extends PropertySearchable {
 export enum DateHandleRequired {
     range, single, none,
 }
-interface IExactValueMatch {
+export interface IExactValueMatch {
     requiredDateHandle(): DateHandleRequired;
     hasResult(): boolean;
 }
