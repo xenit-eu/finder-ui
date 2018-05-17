@@ -5,12 +5,11 @@ import SearchIcon from "material-ui/svg-icons/action/search";
 import ErrorIcon from "material-ui/svg-icons/alert/error";
 import StarIcon from "material-ui/svg-icons/toggle/star-border";
 import { cloneElement, Component, createElement as __, DOM as _ } from "react";
-import { SearchableTerm_t } from "../searchbox";
 
 import * as Colors from "material-ui/styles/colors";
 import getMuiTheme from "material-ui/styles/getMuiTheme";
 
-import { FinderQuery } from "../finderquery";
+import { AdvancedSearchQuery } from "../searchquery";
 
 const muiTheme = getMuiTheme({
     palette: {
@@ -39,30 +38,40 @@ import parse, { IASTNode, validateStream } from "./parser";
 import { AutocompleteValue_t, IAutocompleteProvider } from "./typeahead";
 
 import "./index.less"; // to be imported after other css, to fix layout problems.
+declare type DEPR_AdvancedSearchQuery_t = {
 
+};
 defineMode("finder-query", createMode());
 
 function toDateString(d: Date): string {
     return new Date(d.getTime() + (5 * 3600 * 1000)).toISOString().substring(0, 10);
 };
+type Searchable_t = {
+    label: string,
+    type: string,
+    values: any[],
+    name: string,
+};
+type DEPRICATED_AdvancedSearchQuery_t = {
 
+};
 class CustomAutoComplete implements IAutocompleteProvider {
 
-    public constructor(private searchableTerms: SearchableTerm_t[], private datepicker: DatepickerAutocomplete) {
+    public constructor(private searchableTerms: Searchable_t[], private datepicker: DatepickerAutocomplete) {
     }
 
     public needFields(): Promise<AutocompleteValue_t[]> {
-        return Promise.resolve(this.searchableTerms.map((t: SearchableTerm_t) => t.label));
+        return Promise.resolve(this.searchableTerms.map((t: Searchable_t) => t.label));
     }
 
     public needOperators(parsedCategory: string): Promise<AutocompleteValue_t[]> {
-        const term = this.searchableTerms.filter((t: SearchableTerm_t) => t.label === parsedCategory)[0];
+        const term = this.searchableTerms.filter((t: Searchable_t) => t.label === parsedCategory)[0];
         const type = term ? term.type : "text";
         return Promise.resolve(type === "date" ? ["on", "from", "till"] : ["=", "contains"]);
     }
 
     public needValues(parsedCategory: string, parsedOperator: string, value: string): Promise<AutocompleteValue_t[]> {
-        const term = this.searchableTerms.filter((t: SearchableTerm_t) => t.label === parsedCategory)[0];
+        const term = this.searchableTerms.filter((t: Searchable_t) => t.label === parsedCategory)[0];
         const type = term ? term.type : "text";
         if (type === "date") {
             return Promise.resolve([{
@@ -71,20 +80,20 @@ class CustomAutoComplete implements IAutocompleteProvider {
             }]);
         }
 
-        return Promise.resolve(term && term.values.map(v => typeof v === "string" ? v : v.label) || []);
+        return Promise.resolve(term && term.values.map((v: any) => typeof v === "string" ? v : v.label) || []);
     }
 }
 
 export type AdvancedSearchBox_t = {
     searching: boolean,                     // flag indicating that search process is busy => activate spinner !
-    searchableTerms: SearchableTerm_t[],    // suggestions to be proposed on the drop-down list.
-    onSearch: (apixQuery: any) => void,     // to initiate the search based on the last query.
-    onSaveAsQuery: (name: string, query: FinderQuery) => void,
+    searchableTerms: Searchable_t[],    // suggestions to be proposed on the drop-down list.
+    onSearch: (query: DEPR_AdvancedSearchQuery_t | null) => void,     // to initiate the search based on the last query.
+    onSaveAsAdvancedSearchQuery: (name: string, query: DEPR_AdvancedSearchQuery_t | null) => void,
 };
 
 type AdvancedSearchBox_State_t = {
     queryError: Error | null,
-    query: IASTNode | null,
+    query: DEPR_AdvancedSearchQuery_t | null,
     doShake: boolean,
 };
 
@@ -130,10 +139,10 @@ export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, AdvancedSe
         try {
             let tokens = lex(query);
             validateStream(tokens);
-
+            const parsed: DEPR_AdvancedSearchQuery_t | null = parse(tokens.map(replaceFieldWithSearchTerm));
             this.setState({
                 queryError: null,
-                query: parse(tokens.map(replaceFieldWithSearchTerm)),
+                query: parsed,
             });
         } catch (e) {
             this.setState({
@@ -157,7 +166,7 @@ export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, AdvancedSe
     }
 
     private doSearch() {
-        return this.checkValid() && this.props.onSearch(FinderQuery.fromAST(this.state.query));
+        return this.checkValid() && this.props.onSearch(this.state.query);
     }
 
     public render() {
@@ -176,7 +185,14 @@ export class AdvancedSearchBox extends Component<AdvancedSearchBox_t, AdvancedSe
                 onCursorActivity: (cm: Editor) => (<any>cm).showHint(),
             }),
             _.div({ key: "save-icon", className: "save-icon icon" },
-                __(StarIcon, { color: iconColor, onClick: () => this.checkValid() && this.props.onSaveAsQuery(prompt("Save query as") || "query", FinderQuery.fromAST(this.state.query)) }),
+                __(StarIcon, {
+                    color: iconColor,
+                    onClick: () =>
+                        this.checkValid() &&
+                        this.props.onSaveAsAdvancedSearchQuery(
+                            prompt("Save query as") || "query",
+                            this.state.query),
+                }),
             ),
             _.div({ key: "div", className: "search-icon icon", title: this.state.queryError ? this.state.queryError.toString() : undefined },
                 this.props.searching
