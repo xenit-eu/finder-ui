@@ -3,7 +3,6 @@ import { mount, shallow } from "enzyme";
 import getMuiTheme from "material-ui/styles/getMuiTheme";
 import * as PropTypes from "prop-types";
 import { Component, createElement as __, ReactElement } from "react";
-import * as ReactDOM from "react-dom";
 import * as _ from "react-dom-factories";
 import * as TestUtils from "react-dom/test-utils";
 
@@ -15,10 +14,10 @@ import * as TestUtils from "react-dom/test-utils";
  *
  */
 export function simulateEvent(wrappedTarget: any, eventType: string) {
-    if (wrappedTarget.node) {
+    const node = wrappedTarget.getElement();
+    if (node) {
         // wrappedTarget was obtained using enzyme's mount()
-        const domNode = ReactDOM.findDOMNode(wrappedTarget.node);
-        TestUtils.Simulate[eventType](domNode);
+        TestUtils.Simulate[eventType](wrappedTarget.getDOMNode());
     } else {
         // wrappedTarget was obtained using enzyme's shallow()
         wrappedTarget.simulate(eventType);

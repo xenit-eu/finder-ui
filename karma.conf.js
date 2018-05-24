@@ -43,6 +43,7 @@ module.exports = function (config) {
             //"Chrome", 
             'PhantomJS'
         ],
+        // fix typescript serving video/mp2t mime type
         mime: {
             'text/x-typescript': ['ts', 'tsx']
         },
@@ -66,7 +67,7 @@ module.exports = function (config) {
                     }, // ignore inclusion of style files.
                 ]
             },
-            externals: { /// !!!! important !!!! 
+            externals: { /// !!!! important !!!!
                 'cheerio': 'window',
                 'react/addons': true,
                 'react/lib/ExecutionEnvironment': true,
