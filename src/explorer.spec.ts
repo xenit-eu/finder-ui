@@ -7,6 +7,11 @@ import * as injectTapEventPlugin from "react-tap-event-plugin";
 import { Explorer, Explorer_t, ExplorerNode_t } from "./explorer";
 import { Fixture, simulateEvent, TestWrapper } from "./testUtils";
 
+import { configure } from "enzyme";
+import * as Adapter from "enzyme-adapter-react-16";
+
+configure({ adapter: new Adapter() });
+
 const muiTheme = getMuiTheme();
 
 type TestExplorerNode_t = ExplorerNode_t & {

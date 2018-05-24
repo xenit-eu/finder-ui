@@ -61,6 +61,7 @@
   "devDependencies": {
     "@types/core-js": "^0.9.43",
     "@types/enzyme": "^3.1.5",
+    "@types/enzyme-adapter-react-16": "^1.0.2",
     "@types/jasmine": "^2.5.2",
     "@types/prop-types": "^15.5.3",
     "@types/react": "^16.0.0",
@@ -82,6 +83,7 @@
     "karma-chrome-launcher": "^2.0.0",
     "karma-cli": "^1.0.1",
     "karma-edge-launcher": "^0.1.1",
+    "karma-es6-shim": "^1.0.0",
     "karma-jasmine": "^1.0.2",
     "karma-junit-reporter": "^1.1.0",
     "karma-phantomjs-launcher": "^1.0.2",

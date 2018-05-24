@@ -3,7 +3,7 @@ var path = require('path');
 module.exports = function (config) {
     config.set({
 
-        frameworks: ["jasmine"],
+        frameworks: ["jasmine", "es6-shim"],
 
         files: [{
             pattern: "src/**/*.spec.ts"
@@ -16,7 +16,8 @@ module.exports = function (config) {
             'karma-chrome-launcher',
             'karma-phantomjs-launcher',
             'karma-edge-launcher',
-            'karma-junit-reporter'
+            'karma-junit-reporter',
+            'karma-es6-shim'
         ],
 
         preprocessors: {

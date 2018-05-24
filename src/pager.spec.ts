@@ -9,6 +9,11 @@ import { Fixture, simulateEvent } from "./testUtils";
 import { Pager_t } from "./pager";
 import Pager from "./pager";
 
+import { configure } from "enzyme";
+import * as Adapter from "enzyme-adapter-react-16";
+
+configure({ adapter: new Adapter() });
+
 // tslint:disable-next-line:no-var-requires
 const jasmineEnzyme = require("jasmine-enzyme"); // no typings for jasmine-engine => require instead of import.
 

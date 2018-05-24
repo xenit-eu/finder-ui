@@ -6,6 +6,11 @@ import * as _ from "react-dom-factories";
 import * as injectTapEventPlugin from "react-tap-event-plugin";
 import { simulateEvent, TestWrapper } from "./testUtils";
 
+import { configure } from "enzyme";
+import * as Adapter from "enzyme-adapter-react-16";
+
+configure({ adapter: new Adapter() });
+
 /**
  *  enzyme lib playground
  *      doc: http://airbnb.io/enzyme/docs/api/ReactWrapper/text.html
