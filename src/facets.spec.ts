@@ -2,7 +2,8 @@
 import { mount, shallow, ShallowWrapper } from "enzyme";
 import getMuiTheme from "material-ui/styles/getMuiTheme";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import { Component, createElement as __, DOM as _, ReactElement } from "react";
+import { Component, createElement as __, ReactElement } from "react";
+import * as _ from "react-dom-factories";
 import * as injectTapEventPlugin from "react-tap-event-plugin";
 import { Facets, Facets_t } from "./facets";
 import { simulateEvent, TestWrapper } from "./testUtils";
@@ -30,7 +31,7 @@ describe("Facets test", () => {
         injectTapEventPlugin();
     });
 
-    it("should display 2 nested Lists with corresponding ListItems",  () => {
+    it("should display 2 nested Lists with corresponding ListItems", () => {
 
         const wrapper = shallow(__(Facets, case1));
         // console.log(wrapper.debug());

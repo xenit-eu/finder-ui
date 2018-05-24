@@ -1,5 +1,6 @@
 import Checkbox from "material-ui/Checkbox";
-import { Component, createElement as __, DOM as _, FormEvent, ReactElement } from "react";
+import { Component, createElement as __, FormEvent, ReactElement } from "react";
+import * as _ from "react-dom-factories";
 
 import { FieldSkeleton_Props_t, RenderMode } from "../fields";
 import { PropertyRenderConfig_t, PropertyRenderer_t } from "./interface";

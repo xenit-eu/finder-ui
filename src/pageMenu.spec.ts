@@ -1,5 +1,6 @@
 
-import { createElement as __, DOM as _ } from "react";
+import { createElement as __ } from "react";
+import * as _ from "react-dom-factories";
 import * as injectTapEventPlugin from "react-tap-event-plugin";
 import { Fixture, simulateEvent } from "./testUtils";
 
@@ -24,10 +25,10 @@ describe("PageMenu component tests", () => {
                 label: "M1",
             }, {
                 label: "M2",
-             }, {
+            }, {
                 label: "M3",
             }],
-            onMenuSelected: (menuIdx: number, key?: string) => {},
+            onMenuSelected: (menuIdx: number, key?: string) => { },
         };
 
         const wrapper = Fixture(PageMenu(props));
@@ -57,7 +58,7 @@ describe("PageMenu component tests", () => {
             }, {
                 label: "M3",
             }],
-            onMenuSelected: (menuIdx: number, key?: string) => {},
+            onMenuSelected: (menuIdx: number, key?: string) => { },
         };
 
         const clickedIndex = 1;

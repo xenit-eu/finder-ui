@@ -3,7 +3,8 @@ import FlatButton from "material-ui/FlatButton";
 import FontIcon from "material-ui/FontIcon";
 import TextField from "material-ui/TextField";
 import * as moment from "moment";
-import { Component, createElement as __, DOM as _ } from "react";
+import { Component, createElement as __ } from "react";
+import * as _ from "react-dom-factories";
 
 import "./comment.less";
 
@@ -48,17 +49,17 @@ export class NewCommentCard extends Component<NewCommentCard_t, State_t> {
 
     constructor(props: NewCommentCard_t) {
         super(props);
-        this.state = {newComment: ""};
+        this.state = { newComment: "" };
     }
 
-    public render () {
+    public render() {
         const cardContent = _.div({ className: "comment-card-body" },
             __(CardTitle, {},
                 __(TextField, {
                     className: "comment-card-textfield",
                     floatingLabelText: "Add a comment...",
                     hintText: "Add a comment...",
-                    onChange: (evt: any) => this.setState({newComment: evt.target.value}),
+                    onChange: (evt: any) => this.setState({ newComment: evt.target.value }),
                     value: this.state.newComment,
                 }),
             ),
@@ -67,7 +68,7 @@ export class NewCommentCard extends Component<NewCommentCard_t, State_t> {
                 onClick: () => {
                     if (this.state.newComment && this.state.newComment.trim() !== "") {
                         this.props.onSaveNewComment(this.state.newComment.trim());
-                        this.setState({newComment: ""});
+                        this.setState({ newComment: "" });
                     }
                 },
                 style: iconStyle,
@@ -78,7 +79,7 @@ export class NewCommentCard extends Component<NewCommentCard_t, State_t> {
     }
 }
 
-export function CommentCards (
+export function CommentCards(
     language: string,
     comments: Comment_t[],
     onDeleteComment: (commentToDelete: Comment_t) => void,
@@ -93,9 +94,9 @@ export function CommentCards (
                 _.div({ className: "comment-card-title" }, __(CardTitle, {
                     title: comment.comment,
                     subtitle: (comment.authorDisplayName ? comment.authorDisplayName : comment.author)
-                                    + " - " + calendarTime(comment.modified, language),
-                    style: { "overflow-wrap": "break-word" },
-                    titleStyle: { "font-size" : "15px", "line-height" : "1.5em", "display" : "block", "margin-bottom" : "10px"},
+                        + " - " + calendarTime(comment.modified, language),
+                    style: { overflowWrap: "break-word" },
+                    titleStyle: { fontSize: "15px", lineHeight: "1.5em", display: "block", marginBottom: "10px" },
                 })),
                 comment.deletable ?
                     _.div({ className: "comment-delete-icon" }, __(FontIcon, {

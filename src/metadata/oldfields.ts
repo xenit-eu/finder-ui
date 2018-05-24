@@ -5,7 +5,8 @@ import FlatButton from "material-ui/FlatButton";
 import MenuItem from "material-ui/MenuItem";
 import SelectField from "material-ui/SelectField";
 import TextField from "material-ui/TextField";
-import { Component, createElement as __, DOM as _, ReactElement } from "react";
+import { Component, createElement as __, ReactElement } from "react";
+import * as _ from "react-dom-factories";
 import { MetaDataPanelGroup_t, MetaDataPanelGroupInfo_t } from "../metadataPanel";
 
 export enum MetadataType_t {

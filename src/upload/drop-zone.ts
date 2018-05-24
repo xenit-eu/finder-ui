@@ -1,7 +1,8 @@
 import Checkbox from "material-ui/Checkbox";
 import LinearProgress from "material-ui/LinearProgress";
 import RaisedButton from "material-ui/RaisedButton";
-import { Component, createElement as __, DOM as _, HTMLAttributes, ReactElement } from "react";
+import { Component, createElement as __, HTMLAttributes, ReactElement } from "react";
+import * as _ from "react-dom-factories";
 
 import "./drop-zone.less";
 
@@ -46,30 +47,30 @@ export class DropZone extends Component<DropZone_t, State_t> {
     }
 
     private process(files: FileList) {
-        const fileStatuses: FileStatus_t[] = Array.prototype.map.call(files, (f: File) => ({file: f, progress: 0, id: "", selected: false}));
+        const fileStatuses: FileStatus_t[] = Array.prototype.map.call(files, (f: File) => ({ file: f, progress: 0, id: "", selected: false }));
         this.setState({
             files: fileStatuses,
         } as State_t, () => {  // callback called when this.state is updated (cfr https://stackoverflow.com/questions/29490581/react-state-not-updated)
             if (this.state.files.length === 0) {
                 return;
             }
-            this.props.process(this.state.files.map(f => f.file)    , (fileIdx, uploaded) => {
+            this.props.process(this.state.files.map(f => f.file), (fileIdx, uploaded) => {
                 // update progress
                 const total = this.state.files[fileIdx].file.size;
-                const uploadedPct = Math.floor(uploaded*100/total);
+                const uploadedPct = Math.floor(uploaded * 100 / total);
                 this.setState({
-                    files:  this.state.files.map((f,i) => ({file: f.file, id: f.id, progress: i === fileIdx ? uploadedPct : f.progress, selected: f.selected}) ),
+                    files: this.state.files.map((f, i) => ({ file: f.file, id: f.id, progress: i === fileIdx ? uploadedPct : f.progress, selected: f.selected })),
                 } as State_t);
             }, (fileIdx, id) => {
                 // done
                 this.setState({
-                    files:  this.state.files.map((f,i) => ({file: f.file, id: i === fileIdx ? id : f.id, progress: i === fileIdx ? 100 : f.progress, selected: f.selected}) ),
+                    files: this.state.files.map((f, i) => ({ file: f.file, id: i === fileIdx ? id : f.id, progress: i === fileIdx ? 100 : f.progress, selected: f.selected })),
                 } as State_t);
             });
         });
     }
 
-    public onDrop (evt: DragEvent) {
+    public onDrop(evt: DragEvent) {
         evt.preventDefault();
         if (this.props.disabled) {
             return true;
@@ -77,7 +78,7 @@ export class DropZone extends Component<DropZone_t, State_t> {
         this.process(evt.dataTransfer.files);
     }
 
-    public onEnter (evt: DragEvent) {
+    public onEnter(evt: DragEvent) {
         evt.preventDefault();
         if (this.props.disabled) {
             return true;
@@ -89,7 +90,7 @@ export class DropZone extends Component<DropZone_t, State_t> {
         return true;
     }
 
-    public onLeave (evt: DragEvent) {
+    public onLeave(evt: DragEvent) {
         evt.preventDefault();
         if (this.props.disabled) {
             return true;
@@ -118,11 +119,11 @@ export class DropZone extends Component<DropZone_t, State_t> {
     /**
      * Post process selected items and if all ok, remove them from the list.
      */
-    public onSaveButtonClicked () {
+    public onSaveButtonClicked() {
         const selectedIdxs = this.state.files.map((f, i) => f.selected ? i : -1).filter(i => i >= 0);
         this.props.postProcessSelected(this.state.files.filter(f => f.selected).map(f => f.id)).then((ok) => {
             if (ok) {
-                const remainingFiles = this.state.files.filter((f, i) =>  selectedIdxs.indexOf(i) === -1 );
+                const remainingFiles = this.state.files.filter((f, i) => selectedIdxs.indexOf(i) === -1);
                 this.setState({
                     show: remainingFiles.length > 0,
                     files: remainingFiles,
@@ -131,13 +132,13 @@ export class DropZone extends Component<DropZone_t, State_t> {
         });
     }
 
-    public onRemoveButtonClicked () {
+    public onRemoveButtonClicked() {
         this.setState({
-            files:  this.state.files.filter((f, i) => !f.selected ),
+            files: this.state.files.filter((f, i) => !f.selected),
         } as State_t);
     }
 
-    public onCancelButtonClicked () {
+    public onCancelButtonClicked() {
         this.setState({
             show: false,
             files: [],
@@ -145,13 +146,13 @@ export class DropZone extends Component<DropZone_t, State_t> {
         } as State_t);
     }
 
-    public onFileSelected (checked: boolean, idx: number) {
+    public onFileSelected(checked: boolean, idx: number) {
         this.setState({
-            files:  this.state.files.map((f,i) => ({file: f.file, id: f.id, progress: f.progress , selected: i === idx ? checked : f.selected}) ),
+            files: this.state.files.map((f, i) => ({ file: f.file, id: f.id, progress: f.progress, selected: i === idx ? checked : f.selected })),
         } as State_t);
     }
 
-    public onDropZoneClick () {
+    public onDropZoneClick() {
         if (this.fileInput && !this.state.show && !this.props.disabled && this.props.clickable) {
             this.fileInput.click();
         }
@@ -162,37 +163,40 @@ export class DropZone extends Component<DropZone_t, State_t> {
         const show = this.state.show ? "flex" : "none";
         const selection: boolean = this.state.files.filter(a => a.selected).length > 0;
 
-        return _.div(<any>{className: "drop-zone", style: containerStyle,
-                                onDragEnter: this.onEnter.bind(this),
-                                onDragLeave: this.onLeave.bind(this),
-                                onDragOver: (evt: any) => { evt.preventDefault(); return false; },
-                                onDrop: this.onDrop.bind(this),
-                                onClick: this.onDropZoneClick.bind(this)}, [
+        return _.div(<any>{
+            className: "drop-zone", style: containerStyle,
+            onDragEnter: this.onEnter.bind(this),
+            onDragLeave: this.onLeave.bind(this),
+            onDragOver: (evt: any) => { evt.preventDefault(); return false; },
+            onDrop: this.onDrop.bind(this),
+            onClick: this.onDropZoneClick.bind(this),
+        }, [
 
-            _.input(<any>{type: "file",  style: {display: "none"}, multiple: "multiple", ref: (input: HTMLInputElement) => this.fileInput = input }),
+                _.input(<any>{ type: "file", style: { display: "none" }, multiple: "multiple", ref: (input: HTMLInputElement) => this.fileInput = input }),
 
-            _.div({className: "overlay", style: { display: show }},
-                _.ul({className: "files-list"},
-                    this.state.files.map((f: FileStatus_t, i: number) => __("li", {}, [
-                        _.label({htmlFor: "ids_" + i, className: this.state.files[i].selected ? "selected" : ""}, f.file.name),
-                        __(Checkbox, {
-                                className:"check-box",
+                _.div({ className: "overlay", style: { display: show } },
+                    _.ul({ className: "files-list" },
+                        this.state.files.map((f: FileStatus_t, i: number) => __("li", {}, [
+                            _.label({ htmlFor: "ids_" + i, className: this.state.files[i].selected ? "selected" : "" }, f.file.name),
+                            __(Checkbox, {
+                                className: "check-box",
                                 id: "ids_" + i,
                                 checked: this.state.files[i].selected,
-                                style: {visibility: this.state.files[i].progress === 100 ? "visible" : "hidden" },
-                                onCheck: (evt: any, checked: boolean) => this.onFileSelected(checked, i)}),
-                        __(LinearProgress, {mode: "determinate", value: this.state.files[i].progress}),
-                    ])),
+                                style: { visibility: this.state.files[i].progress === 100 ? "visible" : "hidden" },
+                                onCheck: (evt: any, checked: boolean) => this.onFileSelected(checked, i),
+                            }),
+                            __(LinearProgress, { mode: "determinate", value: this.state.files[i].progress }),
+                        ])),
+                    ),
+                    _.div({ className: "buttons" }, [
+                        __(RaisedButton, { label: "Save", disabled: !selection, primary: true, onClick: this.onSaveButtonClicked.bind(this) }),
+                        __(RaisedButton, { label: "Skip", disabled: !selection, onClick: this.onRemoveButtonClicked.bind(this) }),
+                        __(RaisedButton, { label: "Cancel", onClick: this.onCancelButtonClicked.bind(this) }),
+                    ]),
                 ),
-                _.div({className: "buttons"}, [
-                    __(RaisedButton, {label: "Save", disabled: !selection,  primary: true, onClick: this.onSaveButtonClicked.bind(this)}),
-                    __(RaisedButton, {label: "Skip", disabled: !selection,  onClick: this.onRemoveButtonClicked.bind(this)}),
-                    __(RaisedButton, {label: "Cancel",  onClick: this.onCancelButtonClicked.bind(this)}),
-                ]),
-            ),
-            _.div({style: {display: "inline-block", filter: this.state.show ? "blur(5px)" : ""}}, this.props.children),
+                _.div({ style: { display: "inline-block", filter: this.state.show ? "blur(5px)" : "" } }, this.props.children),
 
-        ]);
+            ]);
     }
 
 }

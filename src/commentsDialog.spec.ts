@@ -1,5 +1,6 @@
 
-import { Component, createElement as __, DOM as _, PropTypes } from "react";
+import { Component, createElement as __ } from "react";
+import * as _ from "react-dom-factories";
 import * as injectTapEventPlugin from "react-tap-event-plugin";
 import { Comment_t } from "./comment";
 import { CommentsDialog, CommentsDialog_t } from "./commentsDialog";
@@ -23,12 +24,12 @@ describe("Metadata component", () => {
             language: "en-us",
             opened: false,
             comments: [],
-            onClose: () => {},
-            onSaveNewComment: (newComment: string) => {},
-            onDeleteComment: (commentToDelete: Comment_t) => {},
-            onStartEditing: (commentToEdit: Comment_t) => {},
-            onSaveEditing: (updatedComment: Comment_t) => {},
-            onCancelEditing: (canceledComment: Comment_t) => {},
+            onClose: () => { },
+            onSaveNewComment: (newComment: string) => { },
+            onDeleteComment: (commentToDelete: Comment_t) => { },
+            onStartEditing: (commentToEdit: Comment_t) => { },
+            onSaveEditing: (updatedComment: Comment_t) => { },
+            onCancelEditing: (canceledComment: Comment_t) => { },
         };
 
         const wrapper = Fixture(CommentsDialog(props));

@@ -2,7 +2,8 @@ import Dialog from "material-ui/Dialog";
 import FlatButton from "material-ui/FlatButton";
 import FontIcon from "material-ui/FontIcon";
 import IconButton from "material-ui/IconButton";
-import { Component, createElement as __, CSSProperties, DOM as _ } from "react";
+import { Component, createElement as __, CSSProperties } from "react";
+import * as _ from "react-dom-factories";
 
 import MenuItem from "material-ui/MenuItem";
 import SelectField from "material-ui/SelectField";
@@ -66,7 +67,7 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
         this.state = {
             opened: false,
             selected: <Column_t[]>props.selectedColumns.map(name => props.allColumns.find(c => c.name === name)).filter(col => !!col),
-            sets: (props.sets || JSON.parse(localStorage.getItem(storageKey) || "[]")).map((set: ColumnSet_t) => ({ id: "auto-"+set.label, ...set })),
+            sets: (props.sets || JSON.parse(localStorage.getItem(storageKey) || "[]")).map((set: ColumnSet_t) => ({ id: "auto-" + set.label, ...set })),
             selectedSet: "",
         };
     }
@@ -74,26 +75,26 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
     public componentWillReceiveProps(props: ColumnsPicker_t) {
         this.setState({
             selected: <Column_t[]>props.selectedColumns.map(name => props.allColumns.find(c => c.name === name)).filter(col => !!col),
-            sets: (props.sets || JSON.parse(localStorage.getItem(storageKey) || "[]")).map((set: ColumnSet_t) => ({ id: "auto-"+set.label, ...set })),
+            sets: (props.sets || JSON.parse(localStorage.getItem(storageKey) || "[]")).map((set: ColumnSet_t) => ({ id: "auto-" + set.label, ...set })),
         } as State_t);
     }
 
-    private handleDone () {
+    private handleDone() {
         this.props.onDone(this.state.selected.map(col => col.name));
 
-        if(this.props.onSetsChange) {
+        if (this.props.onSetsChange) {
             this.props.onSetsChange(this.state.sets);
         } else {
             localStorage.setItem(storageKey, JSON.stringify(this.state.sets));
         }
-        this.setState({ opened: false} as State_t);
+        this.setState({ opened: false } as State_t);
     }
 
-    private handleShowDialog () {
-        this.setState({opened: true} as State_t);
+    private handleShowDialog() {
+        this.setState({ opened: true } as State_t);
     }
 
-    private handleSave () {
+    private handleSave() {
         this.setState((prevState: State_t) => {
             let set = prevState.sets.find(s => s.id === prevState.selectedSet); // Extract currently selected set
             if (set && !set.readonly) {
@@ -105,16 +106,16 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
         });
     }
 
-    private handleSaveAsNew () {
+    private handleSaveAsNew() {
         const name: string | null = prompt("Column set name");
-        if(!name) {
+        if (!name) {
             // No name entered, or cancel clicked -> do not create a new set
             return;
         }
         this.setState((prevState) => {
             return {
                 sets: prevState.sets.concat([{ id: "user-" + name, label: name, columns: prevState.selected.map(l => l.name) }]),
-                selectedSet: "user-"+name,
+                selectedSet: "user-" + name,
             };
         });
     }
@@ -124,11 +125,12 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
         return fixedColumns.concat(columns.map(name => <Column_t>this.props.allColumns.find(c => c.name === name)));
     }
 
-    private handleChangeSet (event: any, index: number, value: string) {
+    private handleChangeSet(event: any, index: number, value: string) {
         this.setState((prevState) => {
-            const set: ColumnSet_t|undefined = prevState.sets.find(s => s.id === value);
+            const set: ColumnSet_t | undefined = prevState.sets.find(s => s.id === value);
             if (set) {
-                return {... prevState,
+                return {
+                    ...prevState,
                     selectedSet: value,
                     selected: this._getColumnsIncludingFixed(set.columns),
                 };
@@ -161,8 +163,8 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
 
     public render() {
 
-        const selected = this.state.selected.map((col) => __("li", {"key": col.name, "data-id": col.name, "className": col.fixed?"column-picker-fixed":""}, col.label));
-        const others = this.props.allColumns.filter(a => !this.state.selected.some(b => a.name === b.name)).map((col) => __("li", {"key": col.name, "data-id": col.name}, col.label));
+        const selected = this.state.selected.map((col) => __("li", { "key": col.name, "data-id": col.name, "className": col.fixed ? "column-picker-fixed" : "" }, col.label));
+        const others = this.props.allColumns.filter(a => !this.state.selected.some(b => a.name === b.name)).map((col) => __("li", { "key": col.name, "data-id": col.name }, col.label));
 
         const sortableOptions = {
             animation: 150,
@@ -175,8 +177,8 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
         };
 
         const selectedSet = this.state.sets.find(s => s.id === this.state.selectedSet);
-        const selectedSetColumns = selectedSet?this._getColumnsIncludingFixed(selectedSet.columns):[];
-        const columnsModified = selectedSet && (this.state.selected.length !== selectedSetColumns.length ||!this.state.selected.every((value, i) => value.name === selectedSetColumns[i].name));
+        const selectedSetColumns = selectedSet ? this._getColumnsIncludingFixed(selectedSet.columns) : [];
+        const columnsModified = selectedSet && (this.state.selected.length !== selectedSetColumns.length || !this.state.selected.every((value, i) => value.name === selectedSetColumns[i].name));
 
         const dialogButtons = [
             __(FlatButton, {
@@ -193,8 +195,8 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
 
         setsList.unshift(__(MenuItem, { value: "", primaryText: "(None)", disabled: true }));
 
-        if(selectedSet && columnsModified) {
-            setsList.push(__(MenuItem, {value: "--mod-"+selectedSet.id, primaryText: selectedSet.label + "*"}));
+        if (selectedSet && columnsModified) {
+            setsList.push(__(MenuItem, { value: "--mod-" + selectedSet.id, primaryText: selectedSet.label + "*" }));
         }
 
         const dialog = __(Dialog, {
@@ -209,41 +211,41 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
             autoScrollBodyContent: true,
         }, [
 
-            __("h3", {key: "hdr-1"}, "Saved column sets"),
+                __("h3", { key: "hdr-1" }, "Saved column sets"),
 
-            __(SelectField, {
-                key: "sf",
-                className: "select-display",
-                value: (columnsModified?"--mod-":"")+this.state.selectedSet,
-                onChange: this.handleChangeSet.bind(this),
-            }, setsList),
-            _.div({ key: "columns-actions", className: "columns-actions" },
-                __(FlatButton, { key: "bs", style: saveButtonStyle, label: "Save", onClick: this.handleSave.bind(this), disabled: !selectedSet || selectedSet.readonly }),
-                __(FlatButton, { key: "bsa", style: saveButtonStyle, label: "Save as new...", onClick: this.handleSaveAsNew.bind(this) }),
-                __(FlatButton, { key: "bd", style: saveButtonStyle, label: "Delete", onClick: this.handleDelete.bind(this), disabled: !selectedSet||selectedSet.readonly }),
-            ),
+                __(SelectField, {
+                    key: "sf",
+                    className: "select-display",
+                    value: (columnsModified ? "--mod-" : "") + this.state.selectedSet,
+                    onChange: this.handleChangeSet.bind(this),
+                }, setsList),
+                _.div({ key: "columns-actions", className: "columns-actions" },
+                    __(FlatButton, { key: "bs", style: saveButtonStyle, label: "Save", onClick: this.handleSave.bind(this), disabled: !selectedSet || selectedSet.readonly }),
+                    __(FlatButton, { key: "bsa", style: saveButtonStyle, label: "Save as new...", onClick: this.handleSaveAsNew.bind(this) }),
+                    __(FlatButton, { key: "bd", style: saveButtonStyle, label: "Delete", onClick: this.handleDelete.bind(this), disabled: !selectedSet || selectedSet.readonly }),
+                ),
 
-            __("hr", { key: "hr-1" }),
+                __("hr", { key: "hr-1" }),
 
-            __("h3", {key: "hdr-2"}, "Columns to display"),
-            __("div", {key: "selected"} ),
+                __("h3", { key: "hdr-2" }, "Columns to display"),
+                __("div", { key: "selected" }),
                 __(Sortable, {
                     options: sortableOptions,
                     className: "block-list-target",
                     onChange: this.handleChangeTargetSortable.bind(this),
                     tag: "ul",
                 }, selected),
-            __("hr", {key: "hr-2"}),
-            __("h3", {key: "hdr-3"}, "Other available columns"),
-            __("div", {key: "other", style: {marginBottom: 40}},
-                __(Sortable, {
-                    options: sortableOptions,
-                    className: "block-list-source",
-                    onChange: this.handleChangeSourceSortable.bind(this),
-                    tag: "ul",
-                }, others),
-              ),
-            __("p", {key: "footer"}, "Drag and drop the name on the above section to display it."),
+                __("hr", { key: "hr-2" }),
+                __("h3", { key: "hdr-3" }, "Other available columns"),
+                __("div", { key: "other", style: { marginBottom: 40 } },
+                    __(Sortable, {
+                        options: sortableOptions,
+                        className: "block-list-source",
+                        onChange: this.handleChangeSourceSortable.bind(this),
+                        tag: "ul",
+                    }, others),
+                ),
+                __("p", { key: "footer" }, "Drag and drop the name on the above section to display it."),
             ],
         );
 
@@ -253,7 +255,7 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
                 keyboardFocused: false,
                 onTouchTap: this.handleShowDialog.bind(this),
                 //onClick: this.handleShowDialog.bind(this),
-            }, __(FontIcon, {className: "fa fa-gear"})) : undefined,
+            }, __(FontIcon, { className: "fa fa-gear" })) : undefined,
             dialog,
         ]);
 

@@ -1,5 +1,6 @@
 
-import { Component, createElement as __, DOM as _, PropTypes } from "react";
+import { Component, createElement as __ } from "react";
+import * as _ from "react-dom-factories";
 import * as injectTapEventPlugin from "react-tap-event-plugin";
 import { Fixture, simulateEvent } from "./testUtils";
 

@@ -10,7 +10,8 @@ import Subtitles from "material-ui/svg-icons/av/subtitles";
 import SocialPerson from "material-ui/svg-icons/social/person";
 
 import * as moment from "moment";
-import { Component, createElement as __, CSSProperties, DOM as _, ReactElement } from "react";
+import { Component, createElement as __, CSSProperties, ReactElement } from "react";
+import * as _ from "react-dom-factories";
 
 import "./versionhistoryPanel.less";
 
@@ -39,7 +40,7 @@ const avatarStyle: CSSProperties = {
     fontSize: "15px",
     borderRadius: "50%",
     height: "30px",
-    µwidth: "30px",
+    width: "30px",
 };
 
 const avatarSvgStyle: CSSProperties = {

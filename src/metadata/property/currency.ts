@@ -1,5 +1,6 @@
 import { TextField } from "material-ui";
-import { Component, createElement as __, DOM as _, FormEvent, ReactElement, ReactNode } from "react";
+import { Component, createElement as __, FormEvent, ReactElement, ReactNode } from "react";
+import * as _ from "react-dom-factories";
 
 import { FieldSkeleton_Props_t, Node_t, RenderMode } from "../fields";
 import { PropertyRenderConfig_t, PropertyRenderer_t } from "./interface";
@@ -21,11 +22,11 @@ function convertIntToCurrency(modelValue: number | null): string {
 const currencyRegex = /^(-)?(\d+)(?:(?:.|,)(\d\d))?$/;
 
 function convertCurrencyToInt(viewValue: string): number | null {
-    if(!viewValue) {
+    if (!viewValue) {
         return null;
     }
     const match = viewValue.match(currencyRegex);
-    if(!match) {
+    if (!match) {
         throw new SyntaxError("Invalid currency format");
     }
     const sign = match[1];
@@ -51,14 +52,14 @@ const Currency: PropertyRenderer_t<number | null> = (config: PropertyRenderConfi
 
             let value = config.mapToView(props.node);
             this.state = {
-                currentValue: Array.isArray(value)?null:convertIntToCurrency(value),
+                currentValue: Array.isArray(value) ? null : convertIntToCurrency(value),
             };
         }
 
         public componentWillReceiveProps(newProps: FieldSkeleton_Props_t) {
             let value = config.mapToView(newProps.node);
             this.setState({
-                currentValue: Array.isArray(value)?null:convertIntToCurrency(value),
+                currentValue: Array.isArray(value) ? null : convertIntToCurrency(value),
             });
         }
 
@@ -67,7 +68,7 @@ const Currency: PropertyRenderer_t<number | null> = (config: PropertyRenderConfi
         }
 
         private _onBlur() {
-            if(this.state.currentValue !== null) {
+            if (this.state.currentValue !== null) {
                 try {
                     let value = convertCurrencyToInt(this.state.currentValue);
                     this.props.onChange(config.mapToModel(this.props.node, value));
@@ -82,14 +83,14 @@ const Currency: PropertyRenderer_t<number | null> = (config: PropertyRenderConfi
                 let isError = false;
                 try {
                     convertCurrencyToInt(this.state.currentValue);
-                } catch(e) {
+                } catch (e) {
                     isError = e;
                 }
                 return _.span({ className: "metadata-field metadata-field-currency" }, __(TextField, {
                     fullWidth: true,
                     hintText: "Type value...",
                     onChange: (evt: FormEvent<{}>, v: string) => this._onChange(v),
-                    onBlur: () => this._onBlur() ,
+                    onBlur: () => this._onBlur(),
                     value: this.state.currentValue,
                     errorText: isError ? isError.toString() : "",
                 }));

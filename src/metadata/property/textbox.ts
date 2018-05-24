@@ -1,5 +1,6 @@
 import TextField from "material-ui/TextField";
-import { Component, createElement as __, DOM as _, FormEvent, ReactNode } from "react";
+import { Component, createElement as __, FormEvent, ReactNode } from "react";
+import * as _ from "react-dom-factories";
 
 declare var require: (m: string) => any;
 const ChipInput = require("material-ui-chip-input").default;

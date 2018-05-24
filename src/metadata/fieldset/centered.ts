@@ -1,5 +1,6 @@
 import { Card, CardHeader, CardText } from "material-ui";
-import { Component, createElement as __, CSSProperties, DOM as _, FormEvent, ReactElement } from "react";
+import { Component, createElement as __, CSSProperties, FormEvent, ReactElement } from "react";
+import * as _ from "react-dom-factories";
 
 import { FieldsetSkeleton_Props_t, FieldSkeleton_Props_t, RenderMode } from "../fields";
 import { FieldsetRenderConfig_t, FieldsetRenderer_t } from "./interface";

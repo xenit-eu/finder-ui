@@ -1,4 +1,5 @@
-import { Component, createElement as __, DOM as _, FormEvent, ReactElement } from "react";
+import { Component, createElement as __, FormEvent, ReactElement } from "react";
+import * as _ from "react-dom-factories";
 
 import * as filesize from "filesize";
 import { FieldSkeleton_Props_t, Node_t } from "../fields";
@@ -19,7 +20,7 @@ function convertToHumanReadable(size: string): string {
         return "";
     }
     let numSize = Number.parseInt(size);
-    if(isNaN(numSize)) {
+    if (isNaN(numSize)) {
         return "";
     }
     return filesize(numSize);

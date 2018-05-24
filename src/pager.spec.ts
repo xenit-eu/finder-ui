@@ -1,6 +1,7 @@
 
 import { mount, shallow } from "enzyme";
-import { Component, createElement as __, DOM as _, PropTypes } from "react";
+import { Component, createElement as __ } from "react";
+import * as _ from "react-dom-factories";
 
 import * as injectTapEventPlugin from "react-tap-event-plugin";
 import { Fixture, simulateEvent } from "./testUtils";
@@ -25,7 +26,7 @@ describe("Pager component tests", () => {
             totalItems: 0,
             pageSize: 15,
             selected: 1,
-            pageSelected: (page: number) => {},
+            pageSelected: (page: number) => { },
         };
 
         const wrapper = Fixture(Pager(props));
@@ -47,7 +48,7 @@ describe("Pager component tests", () => {
             totalItems: 3,
             pageSize: 15,
             selected: 1,
-            pageSelected: (page: number) => {},
+            pageSelected: (page: number) => { },
         };
 
         const wrapper = Fixture(Pager(props));
@@ -70,7 +71,7 @@ describe("Pager component tests", () => {
             totalItems: 40,
             pageSize: 15,
             selected: 1,
-            pageSelected: (page: number) => {},
+            pageSelected: (page: number) => { },
         };
 
         const wrapper = Fixture(Pager(props));
@@ -91,7 +92,7 @@ describe("Pager component tests", () => {
             totalItems: 40, // 3 pages
             pageSize: 15,
             selected: 1,
-            pageSelected: (page: number) => {},
+            pageSelected: (page: number) => { },
         };
 
         spyOn(props, "pageSelected");
@@ -121,7 +122,7 @@ describe("Pager component tests", () => {
             totalItems: 40, // 3 pages
             pageSize: 15,
             selected: 2,
-            pageSelected: (page: number) => {},
+            pageSelected: (page: number) => { },
         };
 
         spyOn(props, "pageSelected");
@@ -177,7 +178,7 @@ describe("Pager component tests", () => {
             totalItems: 40, // 3 pages
             pageSize: 15,
             selected: 1,
-            pageSelected: (page: number) => {},
+            pageSelected: (page: number) => { },
         };
 
         spyOn(props, "pageSelected");
@@ -205,7 +206,7 @@ describe("Pager component tests", () => {
             totalItems: 40, // 3 pages
             pageSize: 15,
             selected: 2,
-            pageSelected: (page: number) => {},
+            pageSelected: (page: number) => { },
         };
 
         spyOn(props, "pageSelected");

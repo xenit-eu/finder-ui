@@ -1,6 +1,7 @@
 import Dialog from "material-ui/Dialog";
 import FlatButton from "material-ui/FlatButton";
-import { createElement as __, DOM as _ } from "react";
+import { createElement as __ } from "react";
+import * as _ from "react-dom-factories";
 
 import { Comment_t, CommentCards, NewCommentCard } from "./comment";
 
@@ -32,7 +33,7 @@ export type CommentsDialog_t = {
 };
 
 export function CommentsDialog({ language, opened, comments, onClose, onSaveNewComment,
-                                  onDeleteComment, onStartEditing, onSaveEditing, onCancelEditing }: CommentsDialog_t) {
+    onDeleteComment, onStartEditing, onSaveEditing, onCancelEditing }: CommentsDialog_t) {
     return __(Dialog, {
         title: "Comments",
         actions: CommentDialogActions({ handleClose: onClose }),
@@ -44,7 +45,7 @@ export function CommentsDialog({ language, opened, comments, onClose, onSaveNewC
         contentStyle: customContentStyle,
         autoScrollBodyContent: true,
     }, [
-            __(NewCommentCard, {onSaveNewComment}),
+            __(NewCommentCard, { onSaveNewComment }),
             ...CommentCards(language, comments, onDeleteComment, onStartEditing, onSaveEditing, onCancelEditing),
         ],
     );

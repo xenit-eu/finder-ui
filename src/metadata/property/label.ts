@@ -1,5 +1,6 @@
 import * as ld from "lodash";
-import { Component, createElement as __, DOM as _, FormEvent, ReactElement } from "react";
+import { Component, createElement as __, FormEvent, ReactElement } from "react";
+import * as _ from "react-dom-factories";
 
 import { FieldSkeleton_Props_t, RenderMode } from "../fields";
 import { PropertyRenderConfig_t, PropertyRenderer_t } from "./interface";
@@ -53,7 +54,7 @@ const Label: PropertyRenderer_t<string | string[]> = (config: PropertyRenderConf
             let values = this._getViewValue();
             const classNamed = { className: this.props.className || "metadata-value metadata-field-label" };
             if (!this.state.currentValuesLoaded) {
-                return _.span(classNamed,"Loading...");
+                return _.span(classNamed, "Loading...");
             }
             values = this.state.currentValues.map(item => item.value);
             return _.span(classNamed, values.join(", "));

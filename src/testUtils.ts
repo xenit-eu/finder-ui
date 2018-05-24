@@ -1,9 +1,11 @@
 
 import { mount, shallow } from "enzyme";
 import getMuiTheme from "material-ui/styles/getMuiTheme";
-import { Component, createElement as __, DOM as _, PropTypes, ReactElement } from "react";
-import * as TestUtils from "react-addons-test-utils";
+import * as PropTypes from "prop-types";
+import { Component, createElement as __, ReactElement } from "react";
 import * as ReactDOM from "react-dom";
+import * as _ from "react-dom-factories";
+import * as TestUtils from "react-dom/test-utils";
 
 /**
  *  Simulate an event 'click', 'touchTap', ... on a react element.
@@ -40,6 +42,6 @@ export class TestWrapper extends Component<any, any> {
     }
 }
 
-export function Fixture (component: ReactElement<any>, context: any = {}) {
+export function Fixture(component: ReactElement<any>, context: any = {}) {
     return mount(__(TestWrapper, context, component));
 }

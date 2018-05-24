@@ -1,7 +1,8 @@
 import { mount, shallow, ShallowWrapper } from "enzyme";
 import getMuiTheme from "material-ui/styles/getMuiTheme";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import { Component, createElement as __, DOM as _, ReactElement } from "react";
+import { Component, createElement as __, ReactElement } from "react";
+import * as _ from "react-dom-factories";
 import * as injectTapEventPlugin from "react-tap-event-plugin";
 import { Explorer, Explorer_t, ExplorerNode_t } from "./explorer";
 import { Fixture, simulateEvent, TestWrapper } from "./testUtils";

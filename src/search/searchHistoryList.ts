@@ -1,7 +1,8 @@
 import Avatar from "material-ui/Avatar";
 import { List, ListItem } from "material-ui/List";
 import ActionSearch from "material-ui/svg-icons/action/search";
-import { Component, createElement as __, DOM as _, ReactElement, SyntheticEvent } from "react";
+import { Component, createElement as __, ReactElement, SyntheticEvent } from "react";
+import * as _ from "react-dom-factories";
 
 let iconsize = 30;
 let avatarSearch = __(Avatar, { size: iconsize, icon: __(ActionSearch, {}) });
