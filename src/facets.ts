@@ -35,7 +35,7 @@ function FacetSub({ facet, onFacetSelected }: FacetSub_t): ReactElement<any> {
         nestedItems: facet.values.map(c =>
             __(ListItem, {
                 key: c.value,
-                onTouchTap: () => onFacetSelected(facet.name, facet.label, c.value, c.label),
+                onClick: () => onFacetSelected(facet.name, facet.label, c.value, c.label),
                 primaryText: c.label,
                 rightIcon: __(Badge, { className: "badge", badgeContent: c.count }),
             }),

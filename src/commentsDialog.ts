@@ -16,7 +16,7 @@ type CommentDialogActions_t = {
 
 function CommentDialogActions({ handleClose }: CommentDialogActions_t) {
     return [
-        __(FlatButton, { label: "Close", primary: true, onTouchTap: handleClose }),
+        __(FlatButton, { label: "Close", primary: true, onClick: handleClose }),
     ];
 }
 

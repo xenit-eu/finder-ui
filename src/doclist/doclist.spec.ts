@@ -3,7 +3,6 @@ import { mount, shallow } from "enzyme";
 import { Component, createElement as __ } from "react";
 import * as _ from "react-dom-factories";
 
-import * as injectTapEventPlugin from "react-tap-event-plugin";
 import { Fixture, simulateEvent } from "../testUtils";
 
 import { Pager_t } from "../pager";
@@ -19,9 +18,6 @@ const jasmineEnzyme = require("jasmine-enzyme"); // no typings for jasmine-engin
 
 describe("DocList component tests", () => {
 
-    beforeAll(() => {
-        injectTapEventPlugin();
-    });
     beforeEach(() => {
         jasmineEnzyme();
     });

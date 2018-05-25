@@ -1,7 +1,6 @@
 
 import { Component, createElement as __ } from "react";
 import * as _ from "react-dom-factories";
-import * as injectTapEventPlugin from "react-tap-event-plugin";
 import { Fixture, simulateEvent } from "./testUtils";
 
 import { MetadataType_t } from "./metadata";
@@ -18,9 +17,6 @@ const debug: any = require("debug");
 
 describe("Metadata component", () => {
 
-    beforeAll(() => {
-        injectTapEventPlugin();
-    });
     beforeEach(() => {
         jasmineEnzyme();
     });
@@ -133,7 +129,7 @@ describe("Metadata component", () => {
 
         // simulate a click on save button.
         const saveButton = layerWrapper.find("FlatButton").at(1); // second button is save button
-        simulateEvent(saveButton, "touchTap");
+        simulateEvent(saveButton, "click");
 
         expect(props.onSave).toHaveBeenCalledWith([{
             name: "F1",

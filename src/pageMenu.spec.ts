@@ -1,7 +1,6 @@
 
 import { createElement as __ } from "react";
 import * as _ from "react-dom-factories";
-import * as injectTapEventPlugin from "react-tap-event-plugin";
 import { Fixture, simulateEvent } from "./testUtils";
 
 import { PageMenu, PageMenu_t } from "./pageMenu";
@@ -16,9 +15,6 @@ const jasmineEnzyme = require("jasmine-enzyme"); // no typings for jasmine-engin
 
 describe("PageMenu component tests", () => {
 
-    beforeAll(() => {
-        injectTapEventPlugin();
-    });
     beforeEach(() => {
         jasmineEnzyme();
     });
@@ -37,9 +33,6 @@ describe("PageMenu component tests", () => {
         };
 
         const wrapper = Fixture(PageMenu(props));
-
-        // simulate a click on menu icon to open it ==> no necessary to see layer content!
-        // simulateEvent(wrapper.find('IconButton'), 'touchTap');
 
         const layer = wrapper.find("Popover RenderToLayer");
         const layerWrapper = Fixture((<any>layer).prop("render")()); // render the popup menu layer content !
@@ -72,13 +65,10 @@ describe("PageMenu component tests", () => {
 
         const wrapper = Fixture(PageMenu(props));
 
-        // simulate a click on menu icon to open it ==> no necessary to see layer content!
-        // simulateEvent(wrapper.find('IconButton'), 'touchTap');
-
         const layer = wrapper.find("Popover RenderToLayer");
         const layerWrapper = Fixture((<any>layer).prop("render")()); // render the popup menu layer content !
 
-        simulateEvent(layerWrapper.find("MenuItem").at(clickedIndex).find("EnhancedButton"), "touchTap");
+        simulateEvent(layerWrapper.find("MenuItem").at(clickedIndex).find("EnhancedButton"), "click");
 
         expect(props.onMenuSelected).toHaveBeenCalledWith(clickedIndex, undefined);
 

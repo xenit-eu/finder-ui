@@ -186,8 +186,7 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
                 label: "Done",
                 primary: true,
                 keyboardFocused: false,
-                onTouchTap: this.handleDone.bind(this),
-                //onClick: this.handleDone.bind(this),
+                onClick: this.handleDone.bind(this),
             }),
         ];
 
@@ -253,8 +252,7 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
             this.props.visible ? __(IconButton, {
                 key: "button",
                 keyboardFocused: false,
-                onTouchTap: this.handleShowDialog.bind(this),
-                //onClick: this.handleShowDialog.bind(this),
+                onClick: this.handleShowDialog.bind(this),
             }, __(FontIcon, { className: "fa fa-gear" })) : undefined,
             dialog,
         ]);

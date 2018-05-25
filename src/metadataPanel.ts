@@ -43,7 +43,7 @@ export function MetaDataPanel({ allowEdition, editionMode, fields, onEdit, onSav
         allowEdition ? _.div({ key: "metadata-header", className: "metadata-header" }, [
             __(FlatButton, {
                 label: editionMode ? "Save" : "Edit", primary: true, keyboardFocused: false,
-                onTouchTap: () => editionMode ? onSave(fields) : onEdit(), style: (style && style.button) ? style.button : {},
+                onClick: () => editionMode ? onSave(fields) : onEdit(), style: (style && style.button) ? style.button : {},
             }),
         ]) : _.div({ className: "metadata-header" }),
         // editable fields.

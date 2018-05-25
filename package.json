@@ -6,6 +6,7 @@
   "types": "src/index.ts",
   "scripts": {
     "installall": "npm install",
+    "postversion": "git push && git push --tags",
     "test": "karma start ./karma.conf.js --single-run",
     "test:watch": "karma start ./karma.conf.js",
     "lint": "tslint -c ./tslint.json 'src/**/*.ts'",
@@ -40,7 +41,6 @@
     "@types/node": "^8.0.53",
     "@types/react-codemirror": "^1.0.0",
     "@types/react-dom-factories": "^1.0.1",
-    "@types/react-tap-event-plugin": "0.0.30",
     "debug": "^3.1.0",
     "codemirror": "^5.31.0",
     "es6-shim": "^0.35.3",
@@ -94,7 +94,6 @@
     "postcss-loader": "^2.0.6",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
-    "react-tap-event-plugin": "^3.0.2",
     "rimraf": "^2.5.4",
     "sass-loader": "^6.0.6",
     "style-loader": "^0.13.2",

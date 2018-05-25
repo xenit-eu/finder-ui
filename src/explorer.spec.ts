@@ -3,7 +3,6 @@ import getMuiTheme from "material-ui/styles/getMuiTheme";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import { Component, createElement as __, ReactElement } from "react";
 import * as _ from "react-dom-factories";
-import * as injectTapEventPlugin from "react-tap-event-plugin";
 import { Explorer, Explorer_t, ExplorerNode_t } from "./explorer";
 import { Fixture, simulateEvent, TestWrapper } from "./testUtils";
 
@@ -49,10 +48,6 @@ function getChild(wrapper: ReactWrapper, ...idxs: number[]) {
 }
 
 describe("Explorer", () => {
-    beforeAll(() => {
-        injectTapEventPlugin();
-    });
-
     it("Should display the root node", async () => {
         let childrenResolver = null;
 

@@ -1,7 +1,6 @@
 
 import { Component, createElement as __ } from "react";
 import * as _ from "react-dom-factories";
-import * as injectTapEventPlugin from "react-tap-event-plugin";
 import { Comment_t } from "./comment";
 import { CommentsDialog, CommentsDialog_t } from "./commentsDialog";
 import { Fixture, simulateEvent } from "./testUtils";
@@ -16,9 +15,6 @@ const jasmineEnzyme = require("jasmine-enzyme"); // no typings for jasmine-engin
 
 describe("Metadata component", () => {
 
-    beforeAll(() => {
-        injectTapEventPlugin();
-    });
     beforeEach(() => {
         jasmineEnzyme();
     });
