@@ -1,5 +1,11 @@
 import {
-    AllSimpleSearchQueryElement, DatePropertySearchQueryElement, EnumPropertySearchQueryElement, FolderSearchQueryElement, IDateRange, ISearchQuery, ISimpleSearchQueryElement,
+    DATE_FROM, DATE_LASTMONTH, DATE_LASTWEEK, DATE_LASTYEAR, DATE_ON, DATE_TODAY, DATE_UNTIL,
+    FromDateRange, IDateRange, IDateRangeTranslator, LAST_MONTH_RANGE, LAST_WEEK_RANGE, LAST_YEAR_RANGE,
+    SimpleDateRange, TODAY_RANGE, UntilDateRange,
+} from "./DateRange";
+import {
+    AllSimpleSearchQueryElement, DatePropertySearchQueryElement, EnumPropertySearchQueryElement, FolderSearchQueryElement,
+    ISearchQuery, ISimpleSearchQueryElement,
     PropertyNameService_t, ReferenceSimpleSearchQueryElement, TextSearchQueryElement, TranslationService_t,
 } from "./searchquery";
 
@@ -78,7 +84,7 @@ export class AllSearchable implements ISimpleSearchableQueryElement {
     }
     public getPartiallyMatchingAutocompleteListElements(key: string, value: string): Promise<IAutocompleteListElement[]> {
         return this.translationService("All").then(translatedAll => lowercaseTrimContains(translatedAll, key) || lowercaseTrimContains("", key) ?
-            [new SimpleAutoCompleteListElement(translatedAll, value, translatedAll+":" + value)] : []);
+            [new SimpleAutoCompleteListElement(translatedAll, value, translatedAll + ":" + value)] : []);
     }
 }
 
@@ -144,14 +150,6 @@ export class TextSearchable implements ISimpleSearchableQueryElement {
     }
 }
 
-export const DATE_ON = "on";
-export const DATE_FROM = "from";
-export const DATE_UNTIL = "until";
-export const DATE_TODAY = "today";
-export const DATE_LASTWEEK = "last week";
-export const DATE_LASTMONTH = "last month";
-export const dateWords = [DATE_ON, DATE_FROM, DATE_UNTIL, DATE_TODAY, DATE_LASTWEEK, DATE_LASTMONTH];
-
 export class FolderSearchable implements ISimpleSearchableQueryElement {
 
     constructor(public qnamePath: string, public displayPath: string, private translationService: TranslationService_t) {
@@ -173,33 +171,33 @@ export interface IDateFillInType {
     fillInDate(date: Date): IDateRange;
 }
 export const DateFillInOn: IDateFillInType = {
-    fillInDate: (date: Date) => (<IDateRange>{ From: date, To: date }),
+    fillInDate: (date: Date) => new SimpleDateRange(date, date),
 };
 export const DateFillInAfter: IDateFillInType = {
-    fillInDate: (date: Date) => (<IDateRange>{ From: date, To: "MAX" }),
+    fillInDate: (date: Date) => new FromDateRange(date),
 };
 export const DateFillInBefore: IDateFillInType = {
-    fillInDate: (date: Date) => (<IDateRange>{ From: "MIN", To: date }),
+    fillInDate: (date: Date) => new UntilDateRange(date),
 };
 
 export const DateFillInTypes: IDateFillInType[] = [DateFillInOn, DateFillInAfter, DateFillInBefore];
-
+const DateFillInsearchables = [DATE_ON, DATE_FROM, DATE_UNTIL];
+const DateRangeSearchables = [TODAY_RANGE, LAST_WEEK_RANGE, LAST_MONTH_RANGE, LAST_YEAR_RANGE];
+export const DateSearchableWords = DateRangeSearchables.map(dRS => dRS.label).concat(DateFillInsearchables);
 export class DateSearchable extends PropertySearchable {
-    private DAYINMS: number = 24 * 3600 * 1000;
-    private addMonths(d: Date, months: number): Date {
-        let result = new Date(d.valueOf());
-        /*Overflow OK => https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setMonth*/
-        result.setMonth(result.getMonth() + months);
-        return result;
-    }
-
-    private addDays(d: Date, days: number): Date {
-        return new Date(d.getTime() + (days * this.DAYINMS));
+    constructor(qname: string, propertyNameService: PropertyNameService_t, private dateRangeTranslator: IDateRangeTranslator) {
+        super(qname, propertyNameService);
     }
     private dateWordToAutocompletion(translatedDateWord: string, translatedKey: string) {//TODO More complex check accounting typed date (e.g. typing "on 12/" should be aware of 12th day)
         return new SimpleAutoCompleteListElement(translatedKey, translatedDateWord, translatedKey + ":" + translatedDateWord);
     }
     private dateWordToMatch(dateWord: string): ExactValueMatch_t {//TODO More complex check accounting typed date (e.g. typing "on 12/" should be aware of 12th day)
+        for (let dateRange of DateRangeSearchables) {
+            if (dateRange.label === dateWord) {
+                return new SimpleSearchQueryElementValueMatch(new DatePropertySearchQueryElement(this.qname,
+                    dateRange, this.dateRangeTranslator, this.propertyNameService));
+            }
+        }
         switch (dateWord) {
             case DATE_ON:
                 return new DateFillinValueMatch(this, DateFillInOn);
@@ -207,44 +205,32 @@ export class DateSearchable extends PropertySearchable {
                 return new DateFillinValueMatch(this, DateFillInBefore);
             case DATE_FROM:
                 return new DateFillinValueMatch(this, DateFillInAfter);
-            case DATE_TODAY:
-                return new SimpleSearchQueryElementValueMatch(new DatePropertySearchQueryElement(this.qname,
-                    { From: new Date(), To: new Date() }, this.propertyNameService, this.translationService));
-            case DATE_LASTWEEK:
-                return new SimpleSearchQueryElementValueMatch(new DatePropertySearchQueryElement(this.qname,
-                    { From: this.addDays(new Date(), -7), To: new Date() }, this.propertyNameService, this.translationService));
-            case DATE_LASTMONTH:
-                return new SimpleSearchQueryElementValueMatch(new DatePropertySearchQueryElement(this.qname,
-                    { From: this.addMonths(new Date(), -1), To: new Date() }, this.propertyNameService, this.translationService));
             default:
                 return new NoResultValueMatch();
         }
     }
 
-    constructor(qname: string, propertyNameService: PropertyNameService_t, private translationService: TranslationService_t) {
-        super(qname, propertyNameService);
-    }
     private textToAutocompletion = {};
     public getPartiallyMatchingAutocompleteListElements(key: string, value: string): Promise<IAutocompleteListElement[]> {
         return this.propertyNameService.translatePropertyKey(this.qname).then(keyTrans => {
             if (!lowercaseTrimContains(keyTrans, key)) {
                 return [];
             }
-            return Promise.all(dateWords.map(dateWord => this.translationService(dateWord)))
+            return Promise.all(DateSearchableWords.map(dateWord => this.dateRangeTranslator.translateWord(dateWord)))
                 .then(translatedDateValues => ExistsFilter<IAutocompleteListElement>(translatedDateValues.map((translatedDateValue, i) =>
                     (lowercaseTrimContains(translatedDateValue, value)) ? this.dateWordToAutocompletion(translatedDateValue, keyTrans) : undefined)));
         });
     }
 
     protected matchesValueExact(value: string): Promise<ExactValueMatch_t> {
-        return Promise.all(dateWords.map(dateWord => this.translationService(dateWord)))
+        return Promise.all(DateSearchableWords.map(dateWord => this.dateRangeTranslator.translateWord(dateWord)))
             .then(translatedDateValues => ExistsFilter<ExactValueMatch_t>(translatedDateValues.map((translatedDateValue, i) =>
-                (lowercaseTrimEquals(translatedDateValue, value)) ? this.dateWordToMatch(dateWords[i]) : undefined)))
+                (lowercaseTrimEquals(translatedDateValue, value)) ? this.dateWordToMatch(DateSearchableWords[i]) : undefined)))
             .then(validMatches => validMatches.length > 0 ? validMatches[0] : new NoResultValueMatch());
     }
 
     public fillInRange(dRange: IDateRange): DatePropertySearchQueryElement {
-        return new DatePropertySearchQueryElement(this.qname, dRange, this.propertyNameService, this.translationService);
+        return new DatePropertySearchQueryElement(this.qname, dRange, this.dateRangeTranslator, this.propertyNameService);
 
     }
 }
@@ -268,7 +254,7 @@ export class DateRangeFillinValueMatch {
         return this.dateSearchable.fillInRange(range);
     }
     public onFillInDateList(dates: Date[]) {
-        return this.onFillIn({ From: dates[0], To: dates[1] });
+        return this.onFillIn(new SimpleDateRange(dates[0], dates[1]));
     }
 }
 export class DateFillinValueMatch {

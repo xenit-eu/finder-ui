@@ -1,17 +1,23 @@
 import * as debug from "debug";
 const d = debug("finder-ui:finderquery");
+import { IDateRange, IDateRangeTranslator } from "./DateRange";
+import { ISearchQuery } from "./searchquery";
 
 // This is a fake type. The document type is mapped to this QName to be able to put all document information in a hashmap.
 export const TYPE_QNAME = "{http://www.alfresco.org/model/content/1.0}type";
 
 export interface ISearchQuery {
     HumanReadableText(): Promise<string>;
+    GetRootSearchQueryElement(): ISearchQueryElement;
 }
 export class SimpleSearchQuery implements ISearchQuery {
     constructor(public elements: ISimpleSearchQueryElement[]) {
     }
     public HumanReadableText() {
         return Promise.all(this.elements.map(e => e.getSimpleSearchbarText())).then(texts => texts.join());
+    }
+    public GetRootSearchQueryElement(): ISearchQueryElement {
+        return new OrSearchQueryElement(this.elements);
     }
 }
 export type TranslationService_t = (s: string) => Promise<string>;
@@ -29,9 +35,14 @@ export class AdvancedSearchQuery implements ISearchQuery {
     public HumanReadableText() {
         return Promise.resolve("Advanced search query");
     }
+    public GetRootSearchQueryElement(): ISearchQueryElement {
+        throw "NotImplemented";
+    }
 }
-
-export interface ISimpleSearchQueryElement {
+export interface ISearchQueryElement {
+    visit<T>(visitor: ISearchQueryVisitor<T>): T;
+}
+export interface ISimpleSearchQueryElement extends ISearchQueryElement {
     getSimpleSearchbarText(): Promise<string>;
     getTooltipText(): Promise<string>;
     isReferential?: boolean;
@@ -47,6 +58,9 @@ export class ReferenceSimpleSearchQueryElement implements ISimpleSearchQueryElem
     public constructor(public wrappedQuery: ISearchQuery, public name: string) {
     }
     public get isReferential() { return true; }
+    public visit<T>(visitor: ISearchQueryVisitor<T>): T {
+        return visitor.visitReferenceSimpleSearchQueryElement(this);
+    }
 }
 
 export class TextSearchQueryElement implements ISimpleSearchQueryElement {
@@ -59,6 +73,10 @@ export class TextSearchQueryElement implements ISimpleSearchQueryElement {
     public getTooltipText() {
         return Promise.resolve(this.text);
     }
+    public visit<T>(visitor: ISearchQueryVisitor<T>): T {
+        return visitor.visitTextSearchQueryElement(this);
+    }
+
 }
 
 export class FolderSearchQueryElement implements ISimpleSearchQueryElement {
@@ -71,10 +89,13 @@ export class FolderSearchQueryElement implements ISimpleSearchQueryElement {
     public getTooltipText() {
         return Promise.resolve(this.displayPath);
     }
+    public visit<T>(visitor: ISearchQueryVisitor<T>): T {
+        return visitor.visitFolderSearchQueryElement(this);
+    }
 }
 
 export class AllSimpleSearchQueryElement implements ISimpleSearchQueryElement {
-    constructor(private translationService: TranslationService_t, private value: string) {
+    constructor(private translationService: TranslationService_t, public value: string) {
     }
     public getSimpleSearchbarText() {
         return this.translationService("All").then(f => f + ":" + this.value);
@@ -82,7 +103,9 @@ export class AllSimpleSearchQueryElement implements ISimpleSearchQueryElement {
     public getTooltipText() {
         return this.getSimpleSearchbarText();
     }
-
+    public visit<T>(visitor: ISearchQueryVisitor<T>): T {
+        return visitor.visitAllSimpleSearchQueryElement(this);
+    }
 }
 export abstract class PropertySearchQueryElement implements ISimpleSearchQueryElement {
     constructor(public key: string, private propertyNameService: PropertyKeyNameService_t) {
@@ -96,50 +119,58 @@ export abstract class PropertySearchQueryElement implements ISimpleSearchQueryEl
             ])
             .then(kv => kv[0] + ":" + kv[1]);
     }
+    public abstract visit<T>(visitor: ISearchQueryVisitor<T>): T;
+
     public getTooltipText() {
         return this.getSimpleSearchbarText();
     }
+
 }
 export class DatePropertySearchQueryElement extends PropertySearchQueryElement {
-    private rangeTranslator: DateRangeTranslator;
-    constructor(qname: string, public dateRange: IDateRange, propertyNameService: PropertyKeyNameService_t, translationService: TranslationService_t) {
+    constructor(qname: string, public dateRange: IDateRange, public DateRangeTranslator: IDateRangeTranslator, propertyNameService: PropertyKeyNameService_t) {
         super(qname, propertyNameService);
-        this.rangeTranslator = new DateRangeTranslator(translationService);
     }
     protected GetValueSimpleSearchbarText() {
-        return this.rangeTranslator.translateDateRange(this.dateRange);
+        return Promise.resolve(this.dateRange.ToHumanReadableString(this.DateRangeTranslator));
+    }
+    public visit<T>(visitor: ISearchQueryVisitor<T>): T {
+        return visitor.visitDatePropertySearchQueryElement(this);
     }
 }
+export class AndSearchQueryElement implements ISearchQueryElement {
+    constructor(public children: ISearchQueryElement[]) {
+    }
+    public visit<T>(visitor: ISearchQueryVisitor<T>): T {
+        return visitor.visitAndSearchQueryElement(this);
+    }
+}
+export class OrSearchQueryElement implements ISearchQueryElement {
+    constructor(public children: ISearchQueryElement[]) {
+    }
+    public visit<T>(visitor: ISearchQueryVisitor<T>): T {
+        return visitor.visitOrSearchQueryElement(this);
+    }
+}
+
 export class EnumPropertySearchQueryElement extends PropertySearchQueryElement {
-    constructor(private prop: string, private value: string, private pNameService: PropertyNameService_t) {
+    constructor(public prop: string, public value: string, private pNameService: PropertyNameService_t, public exact = false) {
         super(prop, pNameService);
     }
     protected GetValueSimpleSearchbarText() {
         return this.pNameService.translatePropertyValue(this.prop, this.value);
     }
-}
-export class DateRangeTranslator {
-    constructor(public translationService: TranslationService_t) {
+    public visit<T>(visitor: ISearchQueryVisitor<T>): T {
+        return visitor.visitEnumPropertySearchQueryElement(this);
+    }
 
-    }
-    private arrow = "\u2192";
-    private translateDate(date: Date) {
-        return date.toLocaleDateString();
-    }
-    public translateDateRange(range: IDateRange) {
-        const from = range.From;
-        const to = range.To;
-        return (from === "MIN") ?
-            to === "MAX" ?
-                this.translationService("Always") :
-                this.translationService("Until").then(l => l + " " + this.translateDate(to)) :
-            to === "MAX" ?
-                this.translationService("From").then(l => l + " " + this.translateDate(from)) :
-                Promise.resolve(this.translateDate(from) + " " + this.arrow + " " + this.translateDate(to));
-    }
 }
-
-export interface IDateRange {
-    From: "MIN" | Date;
-    To: "MAX" | Date;
+export interface ISearchQueryVisitor<T> {
+    visitEnumPropertySearchQueryElement(query: EnumPropertySearchQueryElement): T;
+    visitDatePropertySearchQueryElement(query: DatePropertySearchQueryElement): T;
+    visitAllSimpleSearchQueryElement(query: AllSimpleSearchQueryElement): T;
+    visitFolderSearchQueryElement(query: FolderSearchQueryElement): T;
+    visitTextSearchQueryElement(query: TextSearchQueryElement): T;
+    visitReferenceSimpleSearchQueryElement(query: ReferenceSimpleSearchQueryElement): T;
+    visitOrSearchQueryElement(query: OrSearchQueryElement): T;
+    visitAndSearchQueryElement(query: AndSearchQueryElement): T;
 }

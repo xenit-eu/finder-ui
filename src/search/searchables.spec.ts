@@ -1,22 +1,26 @@
 import "core-js";
 import "es6-shim";
+import { MomentDateRangeTranslator } from ".";
 import {
     DateFillinValueMatch,
     DateSearchable,
-    dateWords,
+    DateSearchableWords,
     EnumPropertySearchable,
     ReferenceSearchableQueryElement,
     SimpleSearchQueryElementValueMatch,
     TextSearchable,
 } from "./searchables";
 import { DatePropertySearchQueryElement, EnumPropertySearchQueryElement } from "./searchquery";
-
 // tslint:disable-next-line:no-var-requires
 const jasmineEnzyme = require("jasmine-enzyme"); // no typings for jasmine-engine => require instead of import.
 const debug: any = require("debug");
 
 export function DummyISearchQuery(name: string) {
-    return { HumanReadableText: () => Promise.resolve(name) };
+    return {
+        HumanReadableText: () => Promise.resolve(name),
+        GetRootSearchQueryElement: () => { throw "not impl"; },
+    };
+
 }
 
 describe("ReferenceSearchableQueryElement", () => {
@@ -125,16 +129,17 @@ describe("TextSearchable", () => {
     });
 });
 function DateSearchableDummy() {
-    return new DateSearchable("qname", dummyPropertyService(), (s) => Promise.resolve("TRANSLATED" + s));
+    return new DateSearchable("qname", dummyPropertyService(), new MomentDateRangeTranslator((s) => "TRANSLATED" + s));
 }
+//(s) => Promise.resolve("TRANSLATED" + s)
 describe("DateSearchable", () => {
     it("should propose all dateword date values for autocompletion", (done) => {
         const testdummyPropertyService = dummyPropertyService();
         DateSearchableDummy().getPartiallyMatchingAutocompleteListElements("TRANSLATEKEYqname", "").then(s => {
-            expect(s.length).toBe(dateWords.length);
+            expect(s.length).toBe(DateSearchableWords.length);
             for (let i = 0; i < s.length; i++) {
                 expect(s[i].DisplayKey()).toBe(testdummyPropertyService.translatePropertyKeyDebugDirect("qname"));
-                expect(s[i].DisplayValue()).toBe("TRANSLATED" + (dateWords[i]));
+                expect(s[i].DisplayValue()).toBe("TRANSLATED" + (DateSearchableWords[i]));
             }
             done();
         });
@@ -142,7 +147,7 @@ describe("DateSearchable", () => {
     it("should propose all dateword translations that start with last", (done) => {
         const testdummyPropertyService = dummyPropertyService();
         DateSearchableDummy().getPartiallyMatchingAutocompleteListElements("TRANSLATEKEYqname", "RANSLATEDlast").then(s => {
-            expect(s.length).toBe(2);
+            expect(s.length).toBe(3);
             done();
         });
     });
@@ -153,8 +158,8 @@ describe("DateSearchable", () => {
             const sMatch = (<SimpleSearchQueryElementValueMatch>match);
             expect(sMatch.simpleSearchQueryElement).toBeDefined();
             const sQE = (<DatePropertySearchQueryElement>sMatch.simpleSearchQueryElement);
-            expect(sQE.dateRange.From).toBeDefined();
-            expect(sQE.dateRange.To).toBeDefined();
+            expect(sQE.dateRange.From()).toBeDefined();
+            expect(sQE.dateRange.To()).toBeDefined();
             done();
         });
     });
@@ -164,8 +169,8 @@ describe("DateSearchable", () => {
             expect(match.type).toBe("DateFillinValueMatch");
             const sMatch = (<DateFillinValueMatch>match);
             const untilToday = sMatch.onFillIn(new Date());
-            expect(untilToday.dateRange.From).toBe("MIN");
-            expect(untilToday.dateRange.To).toBeDefined();
+            expect(untilToday.dateRange.From()).toBe("MIN");
+            expect(untilToday.dateRange.To()).toBeDefined();
             done();
         });
     });

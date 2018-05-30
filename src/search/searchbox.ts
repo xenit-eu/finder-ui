@@ -17,6 +17,7 @@ const Flatpickr = require("react-flatpickr");
 import { Component, createElement as __, DOM as _, KeyboardEvent, ReactElement } from "react";
 
 import "react-flatpickr/node_modules/flatpickr/dist/themes/material_blue.css";
+import { SimpleDateRange } from "./DateRange";
 import {
     DateFillinValueMatch, DateRangeFillinValueMatch, IAutocompleteListElement, ISimpleSearchableQueryElement,
 } from "./searchables";
@@ -141,7 +142,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
         }
         if (valueMatchWaiting.type === "DateRangeFillinValueMatch") {
             this.setState({ currentValueMatchWaitingForCalendar: undefined });
-            this.addNewQueryElement(valueMatchWaiting.onFillIn({ From: this.selectedDates[0], To: this.selectedDates[1] }));
+            this.addNewQueryElement(valueMatchWaiting.onFillIn(new SimpleDateRange(this.selectedDates[0], this.selectedDates[1])));
             return;
         }
         if (valueMatchWaiting.type === "DateFillinValueMatch") {
