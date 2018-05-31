@@ -10,7 +10,8 @@
     "test": "karma start ./karma.conf.js --single-run",
     "test:watch": "karma start ./karma.conf.js",
     "lint": "tslint -c ./tslint.json 'src/**/*.ts'",
-    "build": "webpack"
+    "build": "webpack",
+    "format": "tsfmt"
   },
   "repository": {
     "type": "git",
@@ -91,6 +92,7 @@
     "tslint": "^4.5.1",
     "tslint-custom": "git+ssh://git@bitbucket.org/xenit/tslint-custom.git",
     "typescript": "2.6.2",
+    "typescript-formatter": "7.2.0",
     "webpack": "^1.13.1"
   }
 }

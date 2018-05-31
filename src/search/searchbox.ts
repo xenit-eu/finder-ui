@@ -1,4 +1,4 @@
-import "es6-shim";
+import * as debug from "debug";
 import { Menu, MenuItem, Paper, Popover } from "material-ui";
 import Chip from "material-ui/Chip";
 import CircularProgress from "material-ui/CircularProgress";
@@ -8,7 +8,6 @@ import RefreshIndicator from "material-ui/RefreshIndicator";
 import * as Colors from "material-ui/styles/colors";
 import SearchIcon from "material-ui/svg-icons/action/search";
 import StarIcon from "material-ui/svg-icons/toggle/star-border";
-import debug = require("debug");
 
 declare var require: any;
 // tslint:disable-next-line:no-var-requires
@@ -19,14 +18,14 @@ import { Component, createElement as __, DOM as _, KeyboardEvent, ReactElement }
 import "react-flatpickr/node_modules/flatpickr/dist/themes/material_blue.css";
 import { SimpleDateRange } from "./DateRange";
 import {
-    DateFillinValueMatch, DateRangeFillinValueMatch, IAutocompleteListElement, ISimpleSearchableQueryElement,
+    DateFillinValueMatch, DateHandleRequired, DateRangeFillinValueMatch, IAutocompleteSuggestion, ISimpleSearchableQueryElement, SimpleSearchQueryElementValueMatch,
 } from "./searchables";
 import "./searchbox.less";
 import {
     ISimpleSearchQueryElement, SimpleSearchQuery,
 } from "./searchquery";
 
-const d = debug("finder-ui:SearchBox");
+const d = debug("finder-ui:search:searchBox");
 
 export function flatten<T>(elements: T[][]) {
     let ret: T[] = [];
@@ -61,6 +60,7 @@ export const DATEPICKERDEFAULT = {};
 export type SearchBox_data_t = {
     searching: boolean,                             // flag indicating that search process is busy => activate spinner !
     searchableQueryElements: ISimpleSearchableQueryElement[],            // suggestions to be proposed on the drop-down list.
+    searchedQueryElements: ISimpleSearchQueryElement[],
     customButtons?: Array<ReactElement<any>>,              // list of custom buttons to add besides search and save icons
     translations?: any,
     updateChipsOnConstruction?: boolean,
@@ -69,8 +69,6 @@ export type SearchBox_data_t = {
 export type SearchBox_actions_t = {
     onRemoveQueryElement: (idx: number) => void,            // remove existing term.
     onAddQueryElement: (element: ISimpleSearchQueryElement) => void,           // add new term or start search (when parameter is null)
-    registerQueryElementsListener: (handle: () => void) => void, // Notification from the outside.
-    getQueryElements: () => ISimpleSearchQueryElement[],
     onSearch: () => void,
     onInputChanged: (text: string) => void,         // called on any changes in the input box.
     onSaveAsQuery: (name: string, query: SimpleSearchQuery) => void,          // called on request to save the current query as a new saved query.
@@ -83,7 +81,7 @@ type State_t = {
     suggestionsOpened?: boolean,
     focusSuggestions?: boolean,
     currentValueMatchWaitingForCalendar: DateFillinValueMatch | DateRangeFillinValueMatch | undefined,
-    currentSuggestions: IAutocompleteListElement[],
+    currentSuggestions: IAutocompleteSuggestion[],
     currentChipVMs: ChipVM[],
 };
 class ChipVM {
@@ -119,20 +117,20 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
             currentSuggestions: [],
             currentChipVMs: [],
         };
-        const that = this;
-        props.registerQueryElementsListener(() => that.updateChips());
         if (props.updateChipsOnConstruction) {
-            that.updateChips();
+            this.updateChips(props.searchedQueryElements);
         }
     }
-
+    public componentWillReceiveProps(nextProps: SearchBox_t) {
+        this.updateChips(nextProps.searchedQueryElements);
+    }
     private isCalendarOpen() {
         return !!this.state.currentValueMatchWaitingForCalendar;
     }
 
-    private getCalendarMode(): "range" | "single" | undefined {
+    private getCalendarMode(): DateHandleRequired {
         const currentVMWFC = this.state.currentValueMatchWaitingForCalendar;
-        return currentVMWFC ? (currentVMWFC.type === "DateRangeFillinValueMatch" ? "range" : "single") : undefined;
+        return currentVMWFC ? currentVMWFC.requiredDateHandle() : DateHandleRequired.none;
     }
 
     public handleCloseDialog() {
@@ -140,12 +138,12 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
         if (!valueMatchWaiting) {
             return;
         }
-        if (valueMatchWaiting.type === "DateRangeFillinValueMatch") {
+        if (valueMatchWaiting instanceof DateRangeFillinValueMatch) {
             this.setState({ currentValueMatchWaitingForCalendar: undefined });
             this.addNewQueryElement(valueMatchWaiting.onFillIn(new SimpleDateRange(this.selectedDates[0], this.selectedDates[1])));
             return;
         }
-        if (valueMatchWaiting.type === "DateFillinValueMatch") {
+        if (valueMatchWaiting instanceof DateFillinValueMatch) {
             this.setState({ currentValueMatchWaitingForCalendar: undefined });
             this.addNewQueryElement(valueMatchWaiting.onFillIn(this.selectedDates[0]));
             return;
@@ -158,7 +156,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
         this.hideSuggestions();
     }
 
-    public onApplyAutocompleteSuggestion(suggestion: IAutocompleteListElement) {
+    public onApplyAutocompleteSuggestion(suggestion: IAutocompleteSuggestion) {
         const key = suggestion.FillInKeyIfSelected();
         const value = suggestion.FillInValueIfSelected();
         this.onApplyTextSuggestion({ key, value });
@@ -166,24 +164,23 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
 
     public onApplyTextSuggestion({ key, value }: { key: string, value: string }) {
         const toTest = this.props.searchableQueryElements;
-        return Promise.all(toTest.map(t => t.MatchKeyValue(key, value)))
+        return Promise.all(toTest.map(t => t.machKeyValue(key, value)))
             .then(matches => {
-                return matches.filter(p => p.type !== "NoResultValueMatch")[0];
+                return matches.filter(p => p.hasResult())[0];
             })
             .then(match => {
                 if (!match) {
                     return;
                 }
-                if (match.type === "SimpleSearchQueryElementValueMatch") {
+                if (match instanceof SimpleSearchQueryElementValueMatch) {
                     this.addNewQueryElement(match.simpleSearchQueryElement);
                     return;
                 }
-                if (match.type === "DateRangeFillinValueMatch" || match.type === "DateFillinValueMatch") {
+                if (match instanceof DateRangeFillinValueMatch || match instanceof DateFillinValueMatch) {
                     this.setState({ currentValueMatchWaitingForCalendar: match });
                     return;
                 }
-                d("Unhandled type, should be one of the four existing types");
-                throw "Unhandled type";
+                throw new Error("Unhandled type, should be one of the four existing types");
             });
     }
     private getCurrentKeyValue() {
@@ -199,7 +196,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
         }
         return { key: "", value: splits[0] };
     }
-    private getAutocompleteList(): Promise<IAutocompleteListElement[]> {
+    private getAutocompleteList(): Promise<IAutocompleteSuggestion[]> {
         const currentKeyValue = this.getCurrentKeyValue();
         const autocompletionsP = Promise.all(this.props.searchableQueryElements.map(p => p.getPartiallyMatchingAutocompleteListElements(currentKeyValue.key, currentKeyValue.value)));
         return autocompletionsP.then(autocompletions => flatten(autocompletions));
@@ -260,8 +257,8 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
             onRequestDelete: () => me.props.onRemoveQueryElement(chipVM.index),
         }, this.withTooltip(chipVM.searchbarText, chipVM.tooltipText));
     }
-    private updateChips() {
-        return Promise.all(this.props.getQueryElements().map((sQE, i) => this.SearchQueryElementToChipVM(sQE, i)))
+    private updateChips(queryElements: ISimpleSearchQueryElement[]) {
+        return Promise.all(queryElements.map((sQE, i) => this.SearchQueryElementToChipVM(sQE, i)))
             .then(chipVMs => this.setState({ currentChipVMs: chipVMs }))
             .then(() => {
                 if (this.props.onChipsUpdated) {
@@ -288,7 +285,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
         ];
         let me = this;
 
-        const filteredSuggestionsList: IAutocompleteListElement[] = this.state.currentSuggestions;
+        const filteredSuggestionsList: IAutocompleteSuggestion[] = this.state.currentSuggestions;
 
         const defaultChip = (this.state.currentChipVMs.length === 0) ? __(Chip, {
             className: "searchbox-chip searchbox-chip-default",
@@ -307,7 +304,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                     open: <boolean>this.state.suggestionsOpened,
                     focusAutocomplete: <boolean>this.state.focusSuggestions,
                     suggestions: filteredSuggestionsList,
-                    onSuggestionClick: (suggestion: IAutocompleteListElement) => this.onApplyAutocompleteSuggestion(suggestion),
+                    onSuggestionClick: (suggestion: IAutocompleteSuggestion) => this.onApplyAutocompleteSuggestion(suggestion),
                     onDismiss: () => this.hideSuggestions(),
                     onRequestAutocomplete: () => this.setState({ suggestionsOpened: true, focusSuggestions: true }),
                     translations: this.props.translations,
@@ -318,7 +315,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
 
                     _.div({ key: "save-icon", className: "save-icon icon", id: "searchbox_save" }, __(StarIcon, {
                         color: iconColor,
-                        onClick: () => this.props.onSaveAsQuery(prompt("Save query as") || "query", new SimpleSearchQuery(this.props.getQueryElements())),
+                        onClick: () => this.props.onSaveAsQuery(prompt("Save query as") || "query", new SimpleSearchQuery(this.props.searchedQueryElements)),
                     })),
 
                     _.div({ key: "search-icon", className: "search-icon icon", id: "searchbox_search" },
@@ -340,7 +337,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                     key: "flatpikr",
                     options: {
                         inline: true,
-                        mode: this.isCalendarOpen(),
+                        mode: this.getCalendarMode() === DateHandleRequired.range ? "range" : "single",
                         locale: this.props.translations && this.props.translations[DATEPICKERLOCALE] || DATEPICKERDEFAULT,
                     },
                     onChange: this.handleDateSelection.bind(this),
@@ -358,8 +355,8 @@ type Autocomplete_t = {
     translations?: any,
     open: boolean,
     focusAutocomplete: boolean,
-    suggestions: IAutocompleteListElement[],
-    onSuggestionClick: (suggestion: IAutocompleteListElement) => void,
+    suggestions: IAutocompleteSuggestion[],
+    onSuggestionClick: (suggestion: IAutocompleteSuggestion) => void,
     onDismiss: () => void,
     onRequestAutocomplete: () => void,
 };
@@ -453,7 +450,7 @@ class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
                     listStyle: {
                         display: "block",
                     },
-                    onChange: (event: any, item: IAutocompleteListElement) => {
+                    onChange: (event: any, item: IAutocompleteSuggestion) => {
                         if (this.inputElem) {
                             this.inputElem.focus();
                         }

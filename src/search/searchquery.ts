@@ -17,20 +17,21 @@ export class SimpleSearchQuery implements ISearchQuery {
         return Promise.all(this.elements.map(e => e.getSimpleSearchbarText())).then(texts => texts.join());
     }
     public GetRootSearchQueryElement(): ISearchQueryElement {
-        return new OrSearchQueryElement(this.elements);
+        return new AndSearchQueryElement(this.elements);
     }
 }
-export type TranslationService_t = (s: string) => Promise<string>;
-
-export type PropertyKeyNameService_t = {
-    translatePropertyKey: (key: string) => Promise<string>,
+export interface ITranslationService {
+    (s: string): Promise<string>;
+}
+export interface IPropertyKeyNameService {
+    translatePropertyKey(key: string): Promise<string>;
 };
 
-export type PropertyValueNameService_t = {
-    translatePropertyValue: (key: string, value: string) => Promise<string>;
+export interface IPropertyValueNameService {
+    translatePropertyValue(key: string, value: string): Promise<string>;
 };
 
-export type PropertyNameService_t = PropertyKeyNameService_t & PropertyValueNameService_t;
+export type PropertyNameService_t = IPropertyKeyNameService & IPropertyValueNameService;
 export class AdvancedSearchQuery implements ISearchQuery {
     public HumanReadableText() {
         return Promise.resolve("Advanced search query");
@@ -64,7 +65,7 @@ export class ReferenceSimpleSearchQueryElement implements ISimpleSearchQueryElem
 }
 
 export class TextSearchQueryElement implements ISimpleSearchQueryElement {
-    public constructor(public text: string, private translationService: TranslationService_t) {
+    public constructor(public text: string, private translationService: ITranslationService) {
     }
 
     public getSimpleSearchbarText() {
@@ -80,7 +81,7 @@ export class TextSearchQueryElement implements ISimpleSearchQueryElement {
 }
 
 export class FolderSearchQueryElement implements ISimpleSearchQueryElement {
-    constructor(public qnamePath: string, public displayPath: string, private translationService: TranslationService_t) {
+    constructor(public qnamePath: string, public displayPath: string, private translationService: ITranslationService) {
         //displayPath == Equals (the alfresco displayPath + "/"  + name), but no '/' in the begin, so for example: "Company Home/Data Dictionary"
     }
     public getSimpleSearchbarText() {
@@ -95,7 +96,7 @@ export class FolderSearchQueryElement implements ISimpleSearchQueryElement {
 }
 
 export class AllSimpleSearchQueryElement implements ISimpleSearchQueryElement {
-    constructor(private translationService: TranslationService_t, public value: string) {
+    constructor(private translationService: ITranslationService, public value: string) {
     }
     public getSimpleSearchbarText() {
         return this.translationService("All").then(f => f + ":" + this.value);
@@ -108,7 +109,7 @@ export class AllSimpleSearchQueryElement implements ISimpleSearchQueryElement {
     }
 }
 export abstract class PropertySearchQueryElement implements ISimpleSearchQueryElement {
-    constructor(public key: string, private propertyNameService: PropertyKeyNameService_t) {
+    constructor(public key: string, private propertyNameService: IPropertyKeyNameService) {
     }
     protected abstract GetValueSimpleSearchbarText(): Promise<string>;
     public getSimpleSearchbarText() {
@@ -127,7 +128,7 @@ export abstract class PropertySearchQueryElement implements ISimpleSearchQueryEl
 
 }
 export class DatePropertySearchQueryElement extends PropertySearchQueryElement {
-    constructor(qname: string, public dateRange: IDateRange, public DateRangeTranslator: IDateRangeTranslator, propertyNameService: PropertyKeyNameService_t) {
+    constructor(qname: string, public dateRange: IDateRange, public DateRangeTranslator: IDateRangeTranslator, propertyNameService: IPropertyKeyNameService) {
         super(qname, propertyNameService);
     }
     protected GetValueSimpleSearchbarText() {
@@ -152,20 +153,20 @@ export class OrSearchQueryElement implements ISearchQueryElement {
     }
 }
 
-export class EnumPropertySearchQueryElement extends PropertySearchQueryElement {
-    constructor(public prop: string, public value: string, private pNameService: PropertyNameService_t, public exact = false) {
+export class StringValuePropertySearchQueryElement extends PropertySearchQueryElement {
+    constructor(public prop: string, public value: string, private pNameService: PropertyNameService_t) {
         super(prop, pNameService);
     }
     protected GetValueSimpleSearchbarText() {
         return this.pNameService.translatePropertyValue(this.prop, this.value);
     }
     public visit<T>(visitor: ISearchQueryVisitor<T>): T {
-        return visitor.visitEnumPropertySearchQueryElement(this);
+        return visitor.visitStringValuePropertySearchQueryElement(this);
     }
 
 }
 export interface ISearchQueryVisitor<T> {
-    visitEnumPropertySearchQueryElement(query: EnumPropertySearchQueryElement): T;
+    visitStringValuePropertySearchQueryElement(query: StringValuePropertySearchQueryElement): T;
     visitDatePropertySearchQueryElement(query: DatePropertySearchQueryElement): T;
     visitAllSimpleSearchQueryElement(query: AllSimpleSearchQueryElement): T;
     visitFolderSearchQueryElement(query: FolderSearchQueryElement): T;
