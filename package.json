@@ -10,7 +10,8 @@
     "test": "karma start ./karma.conf.js --single-run",
     "test:watch": "karma start ./karma.conf.js",
     "lint": "tslint -c ./tslint.json 'src/**/*.ts'",
-    "build": "webpack"
+    "build": "webpack",
+    "format": "tsfmt"
   },
   "repository": {
     "type": "git",
@@ -36,6 +37,7 @@
     "@types/react-codemirror": "^1.0.0",
     "@types/react-dom": "^15.5.6",
     "@types/react-tap-event-plugin": "0.0.30",
+    "debug": "^3.1.0",
     "codemirror": "^5.31.0",
     "es6-shim": "^0.35.3",
     "filesize": "^3.5.11",
@@ -90,6 +92,7 @@
     "tslint": "^4.5.1",
     "tslint-custom": "git+ssh://git@bitbucket.org/xenit/tslint-custom.git",
     "typescript": "2.6.2",
+    "typescript-formatter": "7.2.0",
     "webpack": "^1.13.1"
   }
 }
