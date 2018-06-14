@@ -7,16 +7,18 @@ import { SearchQueryElementReadableStringVisitor } from "./SearchQueryElementRea
 
 // This is a fake type. The document type is mapped to this QName to be able to put all document information in a hashmap.
 export const TYPE_QNAME = "{http://www.alfresco.org/model/content/1.0}type";
-
+export interface ISynchronousTranslationService {
+    (s: string): string;
+}
 export class SearchQuery {
     private readabler: SearchQueryElementReadableStringVisitor;
-    public constructor(public elements: ISearchQueryElement[], translate: (s: string) => string) {
+    public constructor(public elements: ISearchQueryElement[], translate: ISynchronousTranslationService) {
         this.readabler = new SearchQueryElementReadableStringVisitor(translate);
     }
     public ToJSON(searchQueryElementToJSON: (e: ISearchQueryElement) => any): any {
         return { elements: this.elements.map(searchQueryElementToJSON) };
     }
-    public ParseJSON(json: any, jsonToSearchQueryElement: (json: any) => ISearchQueryElement, translateWord: (s: string) => string): SearchQuery {
+    public ParseJSON(json: any, jsonToSearchQueryElement: (json: any) => ISearchQueryElement, translateWord: ISynchronousTranslationService): SearchQuery {
         return new SearchQuery(json.elements.map(jsonToSearchQueryElement), translateWord);
     }
     public HumanReadableText() {
@@ -27,7 +29,7 @@ export class SearchQuery {
     }
 }
 
-export interface ITranslationService { (s: string): Promise<string>; };
+export interface IASynchronousTranslationService { (s: string): Promise<string>; };
 export interface IPropertyKeyNameService {
     translatePropertyKey(key: string): Promise<string>;
 }
@@ -45,12 +47,12 @@ export interface ISearchQueryElement {
 export interface ISimpleSearchQueryElement extends ISearchQueryElement {
     getSimpleSearchbarText(): Promise<string>;
     getTooltipText(): Promise<string>;
-    isReferential?: boolean;
-    isUnremovable?: boolean;
+    isReferential(): boolean;
+    isRemovable(): boolean;
 }
 
 export class ReferenceSimpleSearchQueryElement implements ISimpleSearchQueryElement {
-    public static TYPE = "ReferenceSimpleSearchQueryElement";
+    public static readonly TYPE = "ReferenceSimpleSearchQueryElement";
     public static ParseFromJSON(json: any, context: ISearchQueryElementFromJSONContext) {
         const typecheckSafety: ReferenceSimpleSearchQueryElement = json;
         return new ReferenceSimpleSearchQueryElement(context.SearchQueryFromJSON(typecheckSafety.wrappedQuery), typecheckSafety.name);
@@ -63,7 +65,9 @@ export class ReferenceSimpleSearchQueryElement implements ISimpleSearchQueryElem
     }
     public constructor(public wrappedQuery: SearchQuery, public name: string) {
     }
-    public get isReferential() { return true; }
+    public isReferential() { return true; }
+    public isRemovable() { return true; }
+
     public visit<T>(visitor: ISearchQueryElementVisitor<T>): T {
         return visitor.visitReferenceSimpleSearchQueryElement(this);
     }
@@ -73,13 +77,15 @@ export class ReferenceSimpleSearchQueryElement implements ISimpleSearchQueryElem
 }
 
 export class TextSearchQueryElement implements ISimpleSearchQueryElement {
-    public static TYPE = "TextSearchQueryElement";
+    public static readonly TYPE = "TextSearchQueryElement";
     public static ParseFromJSON(json: any, context: ISearchQueryElementFromJSONContext) {
         const typecheckSafety: TextSearchQueryElement = json;
         return new TextSearchQueryElement(typecheckSafety.text, context.GetWordTranslator());
     };
-    public constructor(public text: string, private translationService: (s: string) => string) {
+    public constructor(public text: string, private translationService: ISynchronousTranslationService) {
     }
+    public isReferential() { return false; }
+    public isRemovable() { return true; }
 
     public getSimpleSearchbarText() {
         return Promise.resolve(this.translationService(TEXT) + ":" + this.text);
@@ -97,14 +103,16 @@ export class TextSearchQueryElement implements ISimpleSearchQueryElement {
 }
 
 export class FolderSearchQueryElement implements ISimpleSearchQueryElement {
-    public static TYPE = "FolderSearchQueryElement";
+    public static readonly TYPE = "FolderSearchQueryElement";
     public static ParseFromJSON(json: any, context: ISearchQueryElementFromJSONContext) {
         const typecheckSafety: FolderSearchQueryElement = json;
         return new FolderSearchQueryElement(typecheckSafety.qnamePath, typecheckSafety.displayPath, context.GetWordTranslator(), typecheckSafety.noderef);
     };
+    public isReferential() { return false; }
+    public isRemovable() { return true; }
 
-    constructor(public qnamePath: string, public displayPath: string, private translationService: (s: string) => string, public noderef: string) {
-        //displayPath == Equals (the alfresco displayPath + "/"  + name), but no '/' in the begin, so for example: "Company Home/Data Dictionary"
+    constructor(public qnamePath: string, public displayPath: string, private translationService: ISynchronousTranslationService, public noderef: string) {
+        //displayPath here means (the alfresco displayPath + "/"  + name), but no '/' in the begin, so for example: "Company Home/Data Dictionary"
     }
     public getSimpleSearchbarText() {
         return Promise.resolve(this.translationService("Folder") + ":" + this.displayPath);
@@ -121,14 +129,16 @@ export class FolderSearchQueryElement implements ISimpleSearchQueryElement {
 }
 
 export class AllSimpleSearchQueryElement implements ISimpleSearchQueryElement {
-    public static TYPE = "AllSimpleSearchQueryElement";
+    public static readonly TYPE = "AllSimpleSearchQueryElement";
     public static ParseFromJSON(json: any, context: ISearchQueryElementFromJSONContext) {
         const typecheckSafety: AllSimpleSearchQueryElement = json;
         return new AllSimpleSearchQueryElement(context.GetWordTranslator(), typecheckSafety.value, typecheckSafety.isUnremovable);
     };
 
-    constructor(private AllWordtranslationService: (s: string) => string, public value: string, public isUnremovable = false) {
+    constructor(private AllWordtranslationService: ISynchronousTranslationService, public value: string, public isUnremovable = false) {
     }
+    public isReferential() { return false; }
+    public isRemovable() { return !this.isUnremovable; }
     public getSimpleSearchbarText() {
         return Promise.resolve(this.AllWordtranslationService(ALL) + ":" + this.value);
     }
@@ -143,13 +153,14 @@ export class AllSimpleSearchQueryElement implements ISimpleSearchQueryElement {
     }
 }
 export abstract class PropertySearchQueryElement implements ISimpleSearchQueryElement {
-    public static TYPE = "PropertySearchQueryElement";
     constructor(public key: string, private propertyNameService: IPropertyKeyNameService) {
         if (!key || key.length === 0) {
             throw new Error("Key should be a valid property key");
         }
     }
     protected abstract GetValueSimpleSearchbarText(): Promise<string>;
+    public isReferential() { return false; }
+    public isRemovable() { return true; }
     public getSimpleSearchbarText() {
         return Promise.all(
             [
@@ -169,7 +180,7 @@ export abstract class PropertySearchQueryElement implements ISimpleSearchQueryEl
 
 }
 export class DatePropertySearchQueryElement extends PropertySearchQueryElement {
-    public static TYPE = "DatePropertySearchQueryElement";
+    public static readonly TYPE = "DatePropertySearchQueryElement";
     public static ParseFromJSON(json: any, context: ISearchQueryElementFromJSONContext) {
         const typecheckSafety: DatePropertySearchQueryElement = json;
         return new DatePropertySearchQueryElement(typecheckSafety.key, context.DateRangeFromJSON(json.dateRange), context.GetDateRangeTranslator(), context.GetPropertyNameService());
@@ -185,7 +196,7 @@ export class DatePropertySearchQueryElement extends PropertySearchQueryElement {
     }
 }
 export class AndSearchQueryElement implements ISearchQueryElement {
-    public static TYPE = "AndSearchQueryElement";
+    public static readonly TYPE = "AndSearchQueryElement";
     public static ParseFromJSON(json: any, context: ISearchQueryElementFromJSONContext) {
         const typecheckSafety: AndSearchQueryElement = json;
         return new AndSearchQueryElement(typecheckSafety.children.map(e => context.SearchQueryElementFromJSON(e)));
@@ -200,7 +211,7 @@ export class AndSearchQueryElement implements ISearchQueryElement {
     }
 }
 export class OrSearchQueryElement implements ISearchQueryElement {
-    public static TYPE = "OrSearchQueryElement";
+    public static readonly TYPE = "OrSearchQueryElement";
     public static ParseFromJSON(json: any, context: ISearchQueryElementFromJSONContext) {
         const typecheckSafety: OrSearchQueryElement = json;
         return new OrSearchQueryElement(typecheckSafety.children);
@@ -217,7 +228,7 @@ export class OrSearchQueryElement implements ISearchQueryElement {
 }
 
 export class StringValuePropertySearchQueryElement extends PropertySearchQueryElement {
-    public static TYPE: "StringValuePropertySearchQueryElement";
+    public static readonly TYPE: "StringValuePropertySearchQueryElement";
     public static ParseFromJSON(json: any, context: ISearchQueryElementFromJSONContext) {
         const typecheckSafety: StringValuePropertySearchQueryElement = json;
         return new StringValuePropertySearchQueryElement(typecheckSafety.prop, typecheckSafety.value, context.GetPropertyNameService());

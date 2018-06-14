@@ -1,27 +1,22 @@
 import {
-    DATE_FROM, DATE_LASTMONTH, DATE_LASTWEEK, DATE_LASTYEAR, DATE_ON, DATE_TODAY, DATE_UNTIL,
-    DateRangeSearchables, FromDateRange, IDateRange, IDateRangeTranslator, LAST_MONTH_RANGE, LAST_WEEK_RANGE,
-    LAST_YEAR_RANGE, SimpleDateRange, TODAY_RANGE, UntilDateRange,
+    DATE_FROM, DATE_ON, DATE_UNTIL, DateRangeSearchables, FromDateRange,
+    IDateRange, IDateRangeTranslator, SimpleDateRange, UntilDateRange,
 } from "./DateRange";
 import {
     AllSimpleSearchQueryElement, DatePropertySearchQueryElement,
     FolderSearchQueryElement,
-    IPropertyKeyNameService,  ISimpleSearchQueryElement,
-    ITranslationService, PropertyNameService_t, ReferenceSimpleSearchQueryElement, SearchQuery,
+    IPropertyKeyNameService, ISimpleSearchQueryElement,
+    ISynchronousTranslationService, PropertyNameService_t, ReferenceSimpleSearchQueryElement, SearchQuery,
     StringValuePropertySearchQueryElement,
     TextSearchQueryElement,
 
 } from "./searchquery";
 import { ALL, FOLDER, TEXT } from "./WordTranslator";
-export const DUMMYEXPORT = "dummyExport";
 export interface ISimpleSearchableQueryElement {
-    machKeyValue(key: string, value: string): Promise<IExactValueMatch>;
+    matchKeyValue(key: string, value: string): Promise<IExactValueMatch>;
     getPartiallyMatchingAutocompleteListElements(key: string, value: string): Promise<IAutocompleteSuggestion[]>;
 }
 
-const reNameValue: RegExp = /^([^\:]+)\:\s*(.+)\s*$/;
-const reNoNameJustValue: RegExp = /[^\:]/;
-const reQuery: RegExp = /\[([\w\s\-\_]+)\]/;
 function ExistsFilter<T>(elements: (T | undefined | null | void)[]) {
     return elements.filter(element => element) as T[];
 }
@@ -71,7 +66,7 @@ export class ReferenceSearchableQueryElement implements ISimpleSearchableQueryEl
         return Promise.resolve(onlyKeyMatches || onlyKeyMatches ? [this.createAutocompleteListElement()] : []);
     }
 
-    public machKeyValue(key: string, value: string): Promise<SimpleSearchQueryElementValueMatch | NoResultValueMatch> {
+    public matchKeyValue(key: string, value: string): Promise<SimpleSearchQueryElementValueMatch | NoResultValueMatch> {
         const matches = empty(key) && lowercaseTrimEquals(value, this.name);
         return Promise.resolve(matches ?
             new SimpleSearchQueryElementValueMatch(new ReferenceSimpleSearchQueryElement(this.wrappedQuery, this.name)) : new NoResultValueMatch());
@@ -79,10 +74,10 @@ export class ReferenceSearchableQueryElement implements ISimpleSearchableQueryEl
 }
 
 export class AllSearchable implements ISimpleSearchableQueryElement {
-    constructor(private AllwordTranslationService: (s: string) => string) {
+    constructor(private AllwordTranslationService: ISynchronousTranslationService) {
     }
 
-    public machKeyValue(key: string, value: string): Promise<IExactValueMatch> {
+    public matchKeyValue(key: string, value: string): Promise<IExactValueMatch> {
         return Promise.resolve(this.AllwordTranslationService(ALL)).then(translatedAll => lowercaseTrimEquals(translatedAll, key) || lowercaseTrimEquals("", key) ?
             new SimpleSearchQueryElementValueMatch(new AllSimpleSearchQueryElement(this.AllwordTranslationService, value)) : new NoResultValueMatch());
     }
@@ -95,7 +90,7 @@ export class AllSearchable implements ISimpleSearchableQueryElement {
 export abstract class PropertySearchable implements ISimpleSearchableQueryElement {
     public constructor(public qname: string, protected propertykeyNameService: IPropertyKeyNameService) {
     }
-    public machKeyValue(key: string, value: string): Promise<IExactValueMatch> {
+    public matchKeyValue(key: string, value: string): Promise<IExactValueMatch> {
         return this.propertykeyNameService.translatePropertyKey(this.qname).then(tQName => {
             return lowercaseTrimEquals(key, tQName) ? this.matchesValueExact(value) : new NoResultValueMatch();
         });
@@ -151,7 +146,7 @@ export class AnyStringValuePropertySearchable extends PropertySearchable {
 }
 
 export class TextSearchable implements ISimpleSearchableQueryElement {
-    constructor(private text: string, private translationService: (s: string) => string) {
+    constructor(private text: string, private translationService: ISynchronousTranslationService) {
     }
     public getPartiallyMatchingAutocompleteListElements(key: string, value: string): Promise<IAutocompleteSuggestion[]> {
         return Promise.resolve(this.translationService(TEXT)).then(textTranslated => {
@@ -162,7 +157,7 @@ export class TextSearchable implements ISimpleSearchableQueryElement {
                 [new SimpleAutoCompleteListElement(textTranslated, this.text, textTranslated + ":" + this.text)] : [];
         });
     }
-    public machKeyValue(key: string, value: string): Promise<IExactValueMatch> {
+    public matchKeyValue(key: string, value: string): Promise<IExactValueMatch> {
         return Promise.resolve(this.translationService(TEXT)).then(textTranslated => lowercaseTrimEquals(key, textTranslated) && lowercaseTrimEquals(value, this.text) ?
             new SimpleSearchQueryElementValueMatch(new TextSearchQueryElement(this.text, this.translationService)) : new NoResultValueMatch());
     }
@@ -170,10 +165,10 @@ export class TextSearchable implements ISimpleSearchableQueryElement {
 
 export class FolderSearchable implements ISimpleSearchableQueryElement {
 
-    constructor(public qnamePath: string, public displayPath: string, private wordTranslationService: (s: string) => string, private noderef: string) {
+    constructor(public qnamePath: string, public displayPath: string, private wordTranslationService: ISynchronousTranslationService, private noderef: string) {
     }
 
-    public machKeyValue(key: string, value: string): Promise<IExactValueMatch> {
+    public matchKeyValue(key: string, value: string): Promise<IExactValueMatch> {
         return Promise.resolve(this.wordTranslationService(FOLDER)).then(folderTranslated => lowercaseTrimEquals(this.displayPath, value) && lowercaseTrimEquals(key, folderTranslated) ?
             new SimpleSearchQueryElementValueMatch(new FolderSearchQueryElement(this.qnamePath, this.displayPath, this.wordTranslationService, this.noderef)) :
             new NoResultValueMatch());

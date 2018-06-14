@@ -24,19 +24,18 @@ export interface IDateRange {
     From(): "MIN" | Date;
     To(): "MAX" | Date;
     ToHumanReadableString(translator: IDateRangeTranslator): string;
-    ToJSON(): string;
+    ToJSON(): object;
     TYPE: string;
 }
 export class SimpleDateRange implements IDateRange {
-    public static TYPE = "SimpleDateRange";
+    public static readonly TYPE = "SimpleDateRange";
     public TYPE = SimpleDateRange.TYPE;
     public ToJSON() {
-        return JSON.stringify({TYPE: this.TYPE, from: JSON.stringify(this.from), to: JSON.stringify(this.to) });
+        return { TYPE: this.TYPE, from: JSON.stringify(this.from), to: JSON.stringify(this.to) };
     }
     public static ParseFromJSON(json: any) {
         return new SimpleDateRange(new Date(json.from), new Date(json.to));
     }
-    private arrow = "\u2192";
     public constructor(private from: Date, private to: Date) {
     }
     public ToHumanReadableString(translator: IDateRangeTranslator) {
@@ -45,7 +44,7 @@ export class SimpleDateRange implements IDateRange {
         if (fromS === toS) {
             return fromS;
         }
-        return (fromS + " " + this.arrow + " " + toS);
+        return (fromS + " " + "\u2192" + " " + toS);
     }
     public From() {
         return this.from;
@@ -67,10 +66,10 @@ export function addDays(d: Date, days: number): Date {
 }
 
 export class UntilDateRange implements IDateRange {
-    public static TYPE = "UntilDateRange";
+    public static readonly TYPE = "UntilDateRange";
     public TYPE = UntilDateRange.TYPE;
     public ToJSON() {
-        return JSON.stringify(this);
+        return this;
     }
     public static ParseFromJSON(json: any) {
         return new UntilDateRange(new Date(json.to));
@@ -88,10 +87,10 @@ export class UntilDateRange implements IDateRange {
     }
 }
 export class FromDateRange implements IDateRange {
-    public static TYPE = "FromDateRange";
+    public static readonly TYPE = "FromDateRange";
     public TYPE = FromDateRange.TYPE;
     public ToJSON() {
-        return JSON.stringify(this);
+        return this;
     }
     public static ParseFromJSON(json: any) {
         return new UntilDateRange(new Date(json.from));
@@ -113,10 +112,10 @@ export class FromDateRange implements IDateRange {
 export type DateCalculation_t = (date: Date) => Date;
 
 export class LabeledDateRange implements IDateRange {
-    public static TYPE = "LabeledDateRange";
+    public static readonly TYPE = "LabeledDateRange";
     public TYPE = LabeledDateRange.TYPE;
     public ToJSON() {
-        return JSON.stringify(this);
+        return this;
     }
     public static ParseFromJSON(json: any): IDateRange {
         return DateRangeSearchables.filter(e => e.label === json.label)[0];
