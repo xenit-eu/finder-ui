@@ -211,6 +211,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
         if (evt.keyCode === 13) {
             if (!input.value) { // Enter press with empty input => call onEnter with null.
                 this.props.onSearch();
+                return;
             }
             this.onApplyTextSuggestion(getKeyValue(input.value));
             this.hideSuggestions();

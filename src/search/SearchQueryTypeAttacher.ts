@@ -5,33 +5,33 @@ import {
     StringValuePropertySearchQueryElement,
     TextSearchQueryElement,
 } from "./searchquery";
-export class SearchQueryTypeAttacher implements ISearchQueryElementVisitor<any & { type: string }> {
+export class SearchQueryTypeAttacher implements ISearchQueryElementVisitor<any & { TYPE: string }> {
     /*In case you are adding an element here do not forget to add an element in the parsing process too... otherwise your searchqueryelement will not be reloaded.*/
     public visitDatePropertySearchQueryElement(query: DatePropertySearchQueryElement) {
-        return { type: DatePropertySearchQueryElement.TYPE, ...query };
+        return { TYPE: DatePropertySearchQueryElement.TYPE, ...query };
     }
     public visitAllSimpleSearchQueryElement(query: AllSimpleSearchQueryElement) {
-        return { type: AllSimpleSearchQueryElement.TYPE, ...query };
+        return { TYPE: AllSimpleSearchQueryElement.TYPE, ...query };
     }
     public visitFolderSearchQueryElement(query: FolderSearchQueryElement) {
-        return { type: FolderSearchQueryElement.TYPE, ...query };
+        return { TYPE: FolderSearchQueryElement.TYPE, ...query };
     }
     public visitTextSearchQueryElement(query: TextSearchQueryElement) {
-        return { type: TextSearchQueryElement.TYPE, ...query };
+        return { TYPE: TextSearchQueryElement.TYPE, ...query };
     }
     public visitReferenceSimpleSearchQueryElement(query: ReferenceSimpleSearchQueryElement) {
-        return { type: ReferenceSimpleSearchQueryElement.TYPE, ...query };
+        return { TYPE: ReferenceSimpleSearchQueryElement.TYPE, ...query };
     }
     public visitOrSearchQueryElement(query: OrSearchQueryElement) {
         query.children = query.children.map(child => child.visit(this));
-        return { type: OrSearchQueryElement.TYPE, ...query };
+        return { TYPE: OrSearchQueryElement.TYPE, ...query };
     }
 
     public visitAndSearchQueryElement(query: AndSearchQueryElement) {
         query.children = query.children.map(child => child.visit(this));
-        return { type: AndSearchQueryElement.TYPE, ...query };
+        return { TYPE: AndSearchQueryElement.TYPE, ...query };
     }
     public visitStringValuePropertySearchQueryElement(query: StringValuePropertySearchQueryElement): any & { type: string } {
-        return { type: StringValuePropertySearchQueryElement.TYPE, ...query };
+        return { TYPE: StringValuePropertySearchQueryElement.TYPE, ...query };
     }
 }
