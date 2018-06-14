@@ -1,8 +1,7 @@
-import { ISearchQuery, SearchQuery } from "./searchquery";
 import {
     AllSimpleSearchQueryElement, AndSearchQueryElement, DatePropertySearchQueryElement, FolderSearchQueryElement,
     ISearchQueryElementVisitor, ISimpleSearchQueryElement,
-    OrSearchQueryElement, ReferenceSimpleSearchQueryElement, StringValuePropertySearchQueryElement,
+    OrSearchQueryElement, ReferenceSimpleSearchQueryElement,SearchQuery, StringValuePropertySearchQueryElement,
     TextSearchQueryElement,
 } from "./searchquery";
 import { SearchQueryElementReadableStringVisitor } from "./SearchQueryElementReadableStringVisitor";
