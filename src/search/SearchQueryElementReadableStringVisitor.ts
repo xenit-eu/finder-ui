@@ -1,5 +1,5 @@
 import {
-    AllSimpleSearchQueryElement, AndSearchQueryElement, DatePropertySearchQueryElement, FolderSearchQueryElement, ISearchQueryElementVisitor,
+    AllSimpleSearchQueryElement, AndSearchQueryElement, AspectSearchQueryElement, DatePropertySearchQueryElement, FolderSearchQueryElement, ISearchQueryElementVisitor,
     OrSearchQueryElement, ReferenceSimpleSearchQueryElement, StringValuePropertySearchQueryElement, TextSearchQueryElement,
 } from "./searchquery";
 import { SearchQueryNormalizeVisitor } from "./SearchQueryNormalizeVisitor";
@@ -39,6 +39,10 @@ export class SearchQueryElementReadableStringVisitor implements ISearchQueryElem
             return Promise.all(query.children.map(c => c.visit(this))).then(childText => this.translate(AND) + "(" + childText.join(", ") + ")");
         }
         return normalized.visit(this);
+    }
+    public visitAspectSearchQueryElement(query: AspectSearchQueryElement): Promise<string> {
+        return query.getSimpleSearchbarText();
+
     }
 
 }

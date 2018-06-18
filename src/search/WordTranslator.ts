@@ -3,6 +3,7 @@ import {
 } from "./DateRange";
 export const FOLDER = "Folder";
 export const TEXT = "text";
+export const ASPECT = "aspect";
 export const ALL = "All";
 export const AND = "And";
 export const OR = "Or";
@@ -104,7 +105,6 @@ export const logicWordTranslations = {
 };
 
 export const subqueryTranslations = {
-
     [ENGLISH]: {
         [SUBQUERY]: SUBQUERY,
     },
@@ -113,6 +113,17 @@ export const subqueryTranslations = {
     },
     [DUTCH]: {
         [SUBQUERY]: "Deelzoekopdracht",
+    },
+};
+export const aspectTranslations = {
+    [ENGLISH]: {
+        [ASPECT]: ASPECT,
+    },
+    [FRENCH]: {
+        [ASPECT]: "aspect",
+    },
+    [DUTCH]: {
+        [ASPECT]: "aspect",
     },
 };
 function isObject(item: any) {
@@ -135,7 +146,7 @@ export function mergeDeep(target: any, ...sources: any[]): any {
 }
 export class CombinedWordTranslator extends WordTranslator {
     public constructor(languageSelection: () => string) {
-        const merged = mergeDeep({}, datewordTranslations, folderWordTranslations, textWordTranslations, AllWordTranslations, logicWordTranslations);
+        const merged = mergeDeep({}, datewordTranslations, folderWordTranslations, textWordTranslations, AllWordTranslations, logicWordTranslations, aspectTranslations);
         super(languageSelection, merged);
     }
 }

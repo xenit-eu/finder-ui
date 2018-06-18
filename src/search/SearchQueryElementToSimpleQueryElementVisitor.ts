@@ -1,7 +1,7 @@
 import {
-    AllSimpleSearchQueryElement, AndSearchQueryElement, DatePropertySearchQueryElement, FolderSearchQueryElement,
+    AllSimpleSearchQueryElement, AndSearchQueryElement, AspectSearchQueryElement, DatePropertySearchQueryElement, FolderSearchQueryElement,
     ISearchQueryElementVisitor, ISimpleSearchQueryElement,
-    OrSearchQueryElement, ReferenceSimpleSearchQueryElement,SearchQuery, StringValuePropertySearchQueryElement,
+    OrSearchQueryElement, ReferenceSimpleSearchQueryElement, SearchQuery, StringValuePropertySearchQueryElement,
     TextSearchQueryElement,
 } from "./searchquery";
 import { SearchQueryElementReadableStringVisitor } from "./SearchQueryElementReadableStringVisitor";
@@ -42,6 +42,9 @@ export class SearchQueryElementToSimpleQueryElementVisitor implements ISearchQue
     public visitAndSearchQueryElement(query: AndSearchQueryElement): ISimpleSearchQueryElement {
         const count = ++this.renameCounter;
         return new ReferenceSimpleSearchQueryElement(this.generateDummyQuery(query), this.translate(SUBQUERY) + " " + count);
+    }
+    public visitAspectSearchQueryElement(query: AspectSearchQueryElement): ISimpleSearchQueryElement {
+        return query;
     }
 
 }

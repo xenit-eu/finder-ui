@@ -1,6 +1,6 @@
 import * as debug from "debug";
 import { DateSearchable } from "./searchables";
-import { ALL, TEXT } from "./WordTranslator";
+import { ALL, ASPECT, TEXT } from "./WordTranslator";
 const d = debug("finder-ui:finderquery");
 import { IDateRange, IDateRangeTranslator } from "./DateRange";
 import { SearchQueryElementReadableStringVisitor } from "./SearchQueryElementReadableStringVisitor";
@@ -98,6 +98,32 @@ export class TextSearchQueryElement implements ISimpleSearchQueryElement {
     }
     public conflictsWith(other: ISearchQueryElement) {
         return false;
+    }
+
+}
+
+export class AspectSearchQueryElement implements ISimpleSearchQueryElement {
+    public static readonly TYPE = "AspectSearchQueryElement";
+    public static ParseFromJSON(json: any, context: ISearchQueryElementFromJSONContext) {
+        const typecheckSafety: AspectSearchQueryElement = json;
+        return new TextSearchQueryElement(typecheckSafety.aspect, context.GetWordTranslator());
+    };
+    public constructor(public aspect: string, private translateAspect: ISynchronousTranslationService, private translateAspectName: IASynchronousTranslationService) {
+    }
+    public isReferential() { return false; }
+    public isRemovable() { return true; }
+
+    public getSimpleSearchbarText() {
+        return this.translateAspectName(this.aspect).then(translatedAspect => this.translateAspect(ASPECT) + ": " + translatedAspect);
+    }
+    public getTooltipText() {
+        return this.getSimpleSearchbarText();
+    }
+    public visit<T>(visitor: ISearchQueryElementVisitor<T>): T {
+        return visitor.visitAspectSearchQueryElement(this);
+    }
+    public conflictsWith(other: ISearchQueryElement): boolean {
+        return (other instanceof AspectSearchQueryElement) && (other.aspect === this.aspect);
     }
 
 }
@@ -263,4 +289,5 @@ export interface ISearchQueryElementVisitor<T> {
     visitReferenceSimpleSearchQueryElement(query: ReferenceSimpleSearchQueryElement): T;
     visitOrSearchQueryElement(query: OrSearchQueryElement): T;
     visitAndSearchQueryElement(query: AndSearchQueryElement): T;
+    visitAspectSearchQueryElement(query: AspectSearchQueryElement): T;
 }

@@ -1,10 +1,9 @@
-import { ISearchQueryElement } from "./searchquery";
-import { AllSimpleSearchQueryElement, AndSearchQueryElement,
-     DatePropertySearchQueryElement, FolderSearchQueryElement, ISearchQueryElementVisitor,
-     ISimpleSearchQueryElement, OrSearchQueryElement, ReferenceSimpleSearchQueryElement, StringValuePropertySearchQueryElement,
-      TextSearchQueryElement } from "./searchquery";
-import { SearchQueryElementReadableStringVisitor } from "./SearchQueryElementReadableStringVisitor";
-import { SUBQUERY } from "./WordTranslator";
+import {
+    AllSimpleSearchQueryElement, AndSearchQueryElement, AspectSearchQueryElement,
+    DatePropertySearchQueryElement, FolderSearchQueryElement, ISearchQueryElement, ISearchQueryElementVisitor,
+    OrSearchQueryElement, ReferenceSimpleSearchQueryElement, StringValuePropertySearchQueryElement,
+    TextSearchQueryElement,
+} from "./searchquery";
 
 export class SearchQueryNormalizeVisitor implements ISearchQueryElementVisitor<ISearchQueryElement> {
     public visitStringValuePropertySearchQueryElement(query: StringValuePropertySearchQueryElement): ISearchQueryElement {
@@ -36,6 +35,9 @@ export class SearchQueryNormalizeVisitor implements ISearchQueryElementVisitor<I
             return query.children[0];
         }
         return new AndSearchQueryElement(query.children.map(c => c.visit(this)));
+    }
+    public visitAspectSearchQueryElement(query: AspectSearchQueryElement): ISearchQueryElement {
+        return query;
     }
 
 }

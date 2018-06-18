@@ -1,12 +1,9 @@
-import { ISearchQueryElement } from "./searchquery";
 import {
-    AllSimpleSearchQueryElement, AndSearchQueryElement, DatePropertySearchQueryElement,
-    FolderSearchQueryElement, ISearchQueryElementVisitor,
+    AllSimpleSearchQueryElement, AndSearchQueryElement, AspectSearchQueryElement, DatePropertySearchQueryElement,
+    FolderSearchQueryElement, ISearchQueryElement, ISearchQueryElementVisitor,
     OrSearchQueryElement, ReferenceSimpleSearchQueryElement, StringValuePropertySearchQueryElement,
     TextSearchQueryElement,
 } from "./searchquery";
-import { SearchQueryElementReadableStringVisitor } from "./SearchQueryElementReadableStringVisitor";
-import { SUBQUERY } from "./WordTranslator";
 
 export class SearchQueryFilter implements ISearchQueryElementVisitor<void> {
     public matching: ISearchQueryElement[] = [];
@@ -43,5 +40,7 @@ export class SearchQueryFilter implements ISearchQueryElementVisitor<void> {
         this.filterCondition(query);
         query.children.map(c => c.visit(this));
     }
-
+    public visitAspectSearchQueryElement(query: AspectSearchQueryElement) {
+        this.AddIfConditionTrue(query);
+    }
 }

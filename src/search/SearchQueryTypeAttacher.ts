@@ -1,9 +1,10 @@
 import {
-    AllSimpleSearchQueryElement, AndSearchQueryElement,
+    AllSimpleSearchQueryElement, AndSearchQueryElement, AspectSearchQueryElement,
     DatePropertySearchQueryElement, FolderSearchQueryElement, ISearchQueryElementVisitor, OrSearchQueryElement,
     ReferenceSimpleSearchQueryElement,
     StringValuePropertySearchQueryElement,
     TextSearchQueryElement,
+
 } from "./searchquery";
 export class SearchQueryTypeAttacher implements ISearchQueryElementVisitor<any & { TYPE: string }> {
     /*In case you are adding an element here do not forget to add an element in the parsing process too... otherwise your searchqueryelement will not be reloaded.*/
@@ -34,4 +35,8 @@ export class SearchQueryTypeAttacher implements ISearchQueryElementVisitor<any &
     public visitStringValuePropertySearchQueryElement(query: StringValuePropertySearchQueryElement): any & { type: string } {
         return { TYPE: StringValuePropertySearchQueryElement.TYPE, ...query };
     }
+    public visitAspectSearchQueryElement(query: AspectSearchQueryElement) {
+        return { TYPE: AspectSearchQueryElement.TYPE, ...query };
+    }
+
 }
