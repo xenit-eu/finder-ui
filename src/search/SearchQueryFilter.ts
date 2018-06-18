@@ -1,7 +1,7 @@
 import {
     AllSimpleSearchQueryElement, AndSearchQueryElement, AspectSearchQueryElement, DatePropertySearchQueryElement,
     FolderSearchQueryElement, ISearchQueryElement, ISearchQueryElementVisitor,
-    OrSearchQueryElement, ReferenceSimpleSearchQueryElement, StringValuePropertySearchQueryElement,
+    NodeRefSearchQueryElement, OrSearchQueryElement, ReferenceSimpleSearchQueryElement, StringValuePropertySearchQueryElement,
     TextSearchQueryElement,
 } from "./searchquery";
 
@@ -41,6 +41,9 @@ export class SearchQueryFilter implements ISearchQueryElementVisitor<void> {
         query.children.map(c => c.visit(this));
     }
     public visitAspectSearchQueryElement(query: AspectSearchQueryElement) {
+        this.AddIfConditionTrue(query);
+    }
+    public visitNodeRefSearchQueryElement(query: NodeRefSearchQueryElement) {
         this.AddIfConditionTrue(query);
     }
 }

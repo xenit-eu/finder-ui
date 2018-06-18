@@ -1,6 +1,6 @@
 import {
     AllSimpleSearchQueryElement, AndSearchQueryElement, AspectSearchQueryElement,
-    DatePropertySearchQueryElement, FolderSearchQueryElement, ISearchQueryElementVisitor, OrSearchQueryElement,
+    DatePropertySearchQueryElement, FolderSearchQueryElement, ISearchQueryElementVisitor, NodeRefSearchQueryElement, OrSearchQueryElement,
     ReferenceSimpleSearchQueryElement,
     StringValuePropertySearchQueryElement,
     TextSearchQueryElement,
@@ -37,6 +37,9 @@ export class SearchQueryTypeAttacher implements ISearchQueryElementVisitor<any &
     }
     public visitAspectSearchQueryElement(query: AspectSearchQueryElement) {
         return { TYPE: AspectSearchQueryElement.TYPE, ...query };
+    }
+    public visitNodeRefSearchQueryElement(query: NodeRefSearchQueryElement) {
+        return { TYPE: NodeRefSearchQueryElement.TYPE, ...query };
     }
 
 }

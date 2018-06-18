@@ -1,8 +1,9 @@
 import {
-    AllSimpleSearchQueryElement, AndSearchQueryElement, AspectSearchQueryElement, DatePropertySearchQueryElement, FolderSearchQueryElement,
-    ISearchQueryElementVisitor, ISimpleSearchQueryElement,
-    OrSearchQueryElement, ReferenceSimpleSearchQueryElement, SearchQuery, StringValuePropertySearchQueryElement,
+    AllSimpleSearchQueryElement, AndSearchQueryElement, AspectSearchQueryElement,
+    DatePropertySearchQueryElement, FolderSearchQueryElement, ISearchQueryElement, ISearchQueryElementVisitor, ISimpleSearchQueryElement,
+    NodeRefSearchQueryElement, OrSearchQueryElement, ReferenceSimpleSearchQueryElement, SearchQuery, StringValuePropertySearchQueryElement,
     TextSearchQueryElement,
+
 } from "./searchquery";
 import { SearchQueryElementReadableStringVisitor } from "./SearchQueryElementReadableStringVisitor";
 import { SUBQUERY } from "./WordTranslator";
@@ -44,6 +45,9 @@ export class SearchQueryElementToSimpleQueryElementVisitor implements ISearchQue
         return new ReferenceSimpleSearchQueryElement(this.generateDummyQuery(query), this.translate(SUBQUERY) + " " + count);
     }
     public visitAspectSearchQueryElement(query: AspectSearchQueryElement): ISimpleSearchQueryElement {
+        return query;
+    }
+    public visitNodeRefSearchQueryElement(query: NodeRefSearchQueryElement): ISimpleSearchQueryElement {
         return query;
     }
 

@@ -1,6 +1,5 @@
 import * as debug from "debug";
-import { DateSearchable } from "./searchables";
-import { ALL, ASPECT, TEXT } from "./WordTranslator";
+import { ALL, ASPECT, NODEREF,TEXT } from "./WordTranslator";
 const d = debug("finder-ui:finderquery");
 import { IDateRange, IDateRangeTranslator } from "./DateRange";
 import { SearchQueryElementReadableStringVisitor } from "./SearchQueryElementReadableStringVisitor";
@@ -221,6 +220,34 @@ export class DatePropertySearchQueryElement extends PropertySearchQueryElement {
         return visitor.visitDatePropertySearchQueryElement(this);
     }
 }
+export class NodeRefSearchQueryElement implements ISimpleSearchQueryElement {
+    public static readonly TYPE = "NodeRefSearchQueryElement";
+    public static ParseFromJSON(json: any, context: ISearchQueryElementFromJSONContext) {
+        const typecheckSafety: NodeRefSearchQueryElement = json;
+        return new NodeRefSearchQueryElement(typecheckSafety.noderef, context.GetWordTranslator());
+    };
+    public constructor(public noderef: string, private wordTranslator: ISynchronousTranslationService) {
+    }
+    public getSimpleSearchbarText(): Promise<string> {
+        return Promise.resolve(this.wordTranslator(NODEREF) + ": " + this.noderef);
+    }
+    public getTooltipText(): Promise<string> {
+        return this.getSimpleSearchbarText();
+    }
+    public isReferential(): boolean {
+        return false;
+    }
+    public isRemovable(): boolean {
+        return true;
+    }
+    public conflictsWith(other: ISearchQueryElement): boolean {
+        return other instanceof NodeRefSearchQueryElement;
+    }
+    public visit<T>(visitor: ISearchQueryElementVisitor<T>): T {
+        return visitor.visitNodeRefSearchQueryElement(this);
+    }
+}
+
 export class AndSearchQueryElement implements ISearchQueryElement {
     public static readonly TYPE = "AndSearchQueryElement";
     public static ParseFromJSON(json: any, context: ISearchQueryElementFromJSONContext) {
@@ -290,4 +317,5 @@ export interface ISearchQueryElementVisitor<T> {
     visitOrSearchQueryElement(query: OrSearchQueryElement): T;
     visitAndSearchQueryElement(query: AndSearchQueryElement): T;
     visitAspectSearchQueryElement(query: AspectSearchQueryElement): T;
+    visitNodeRefSearchQueryElement(query: NodeRefSearchQueryElement): T;
 }

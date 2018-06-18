@@ -1,6 +1,9 @@
 import {
-    AllSimpleSearchQueryElement, AndSearchQueryElement, AspectSearchQueryElement, DatePropertySearchQueryElement, FolderSearchQueryElement, ISearchQueryElementVisitor,
-    OrSearchQueryElement, ReferenceSimpleSearchQueryElement, StringValuePropertySearchQueryElement, TextSearchQueryElement,
+    AllSimpleSearchQueryElement, AndSearchQueryElement, AspectSearchQueryElement,
+    DatePropertySearchQueryElement, FolderSearchQueryElement,  ISearchQueryElementVisitor,
+    NodeRefSearchQueryElement, OrSearchQueryElement, ReferenceSimpleSearchQueryElement, StringValuePropertySearchQueryElement,
+    TextSearchQueryElement,
+
 } from "./searchquery";
 import { SearchQueryNormalizeVisitor } from "./SearchQueryNormalizeVisitor";
 import { AND, OR } from "./WordTranslator";
@@ -43,6 +46,9 @@ export class SearchQueryElementReadableStringVisitor implements ISearchQueryElem
     public visitAspectSearchQueryElement(query: AspectSearchQueryElement): Promise<string> {
         return query.getSimpleSearchbarText();
 
+    }
+    public visitNodeRefSearchQueryElement(query: NodeRefSearchQueryElement): Promise<string> {
+        return query.getSimpleSearchbarText();
     }
 
 }
