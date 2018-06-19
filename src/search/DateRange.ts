@@ -3,6 +3,8 @@ import * as moment from "moment";
 export const DATE_ON = "on...";
 export const DATE_FROM = "from...";
 export const DATE_UNTIL = "until...";
+export const DATE_BETWEEN = "between...";
+
 export const DATE_TODAY = "today";
 export const DATE_LASTWEEK = "last week";
 export const DATE_LASTMONTH = "last month";

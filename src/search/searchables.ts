@@ -1,6 +1,6 @@
 import {
     DATE_FROM, DATE_ON, DATE_UNTIL, DateRangeSearchables, FromDateRange,
-    IDateRange, IDateRangeTranslator, SimpleDateRange, UntilDateRange,
+    IDateRange, IDateRangeTranslator, SimpleDateRange, UntilDateRange, DATE_BETWEEN,
 } from "./DateRange";
 import {
     AllSimpleSearchQueryElement, DatePropertySearchQueryElement,
@@ -194,7 +194,7 @@ const DateFillInBefore: IDateFillInType = {
 };
 
 export const DateFillInTypes: IDateFillInType[] = [DateFillInOn, DateFillInAfter, DateFillInBefore];
-const DateFillInsearchables = [DATE_ON, DATE_FROM, DATE_UNTIL];
+const DateFillInsearchables = [DATE_ON, DATE_FROM, DATE_UNTIL,DATE_BETWEEN];
 export const DateSearchableWords = DateRangeSearchables.map(dRS => dRS.label).concat(DateFillInsearchables);
 export class DateSearchable extends PropertySearchable {
     constructor(qname: string, private propertyNameService: PropertyNameService_t, private dateRangeTranslator: IDateRangeTranslator) {
@@ -217,7 +217,9 @@ export class DateSearchable extends PropertySearchable {
                 return new DateFillinValueMatch(this, DateFillInBefore);
             case DATE_FROM:
                 return new DateFillinValueMatch(this, DateFillInAfter);
-            default:
+            case DATE_BETWEEN:
+                return new DateRangeFillinValueMatch(this);
+                default:
                 return new NoResultValueMatch();
         }
     }

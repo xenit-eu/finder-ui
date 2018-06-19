@@ -1,5 +1,5 @@
 import {
-    DATE_FROM, DATE_LASTMONTH, DATE_LASTWEEK, DATE_LASTYEAR, DATE_ON, DATE_RANGE_PICK, DATE_TODAY, DATE_UNTIL,
+    DATE_FROM, DATE_LASTMONTH, DATE_LASTWEEK, DATE_LASTYEAR, DATE_ON, DATE_RANGE_PICK, DATE_TODAY, DATE_UNTIL, DATE_BETWEEN,
 } from "./DateRange";
 export const FOLDER = "Folder";
 export const TEXT = "text";
@@ -41,6 +41,7 @@ const datewordTranslations = {
         [DATE_LASTMONTH]: "cette mois",
         [DATE_LASTYEAR]: "cette annee",
         [DATE_RANGE_PICK]: "choisissez une plage de dates...",
+        [DATE_BETWEEN]: "Entre...",
     },
     [DUTCH]: {
         [DATE_ON]: "op...",
@@ -51,6 +52,8 @@ const datewordTranslations = {
         [DATE_LASTMONTH]: "deze maand",
         [DATE_LASTYEAR]: "dit jaar",
         [DATE_RANGE_PICK]: "kies een datum bereik...",
+        [DATE_BETWEEN]: "Tussen...",
+
     },
 };
 
