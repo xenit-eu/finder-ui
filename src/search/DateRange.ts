@@ -1,13 +1,13 @@
 import * as moment from "moment";
 
-export const DATE_ON = "on";
-export const DATE_FROM = "from";
-export const DATE_UNTIL = "until";
+export const DATE_ON = "on...";
+export const DATE_FROM = "from...";
+export const DATE_UNTIL = "until...";
 export const DATE_TODAY = "today";
 export const DATE_LASTWEEK = "last week";
 export const DATE_LASTMONTH = "last month";
 export const DATE_LASTYEAR = "last year";
-export const DATE_RANGE_PICK = "pick a date";
+export const DATE_RANGE_PICK = "pick a date range...";
 export interface IDateRangeTranslator {
     translateDate(date: Date): string;
     translateWord(word: string): string;
