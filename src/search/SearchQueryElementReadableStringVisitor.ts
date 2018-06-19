@@ -27,7 +27,7 @@ export class SearchQueryElementReadableStringVisitor implements ISearchQueryElem
         return query.getSimpleSearchbarText();
     }
     public visitReferenceSimpleSearchQueryElement(query: ReferenceSimpleSearchQueryElement): Promise<string> {
-        return query.wrappedQuery.GetRootSearchQueryElement().visit(this);
+        return Promise.resolve(query.name);
     }
     public visitOrSearchQueryElement(query: OrSearchQueryElement): Promise<string> {
         const normalized = query.visit(this.normalizer);

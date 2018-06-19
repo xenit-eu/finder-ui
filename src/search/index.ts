@@ -9,4 +9,3 @@ export * from "./SearchQueryElementReadableStringVisitor";
 export * from "./SearchQueryElementToSimpleQueryElementVisitor";
 export * from "./SearchQueryFilter";
 export * from "./SearchQueryNormalizeVisitor";
-export * from "./SearchQueryTypeAttacher";
