@@ -22,8 +22,12 @@ export class SearchQuery {
     public HumanReadableText() {
         return this.GetRootSearchQueryElement().visit(this.readabler);
     }
-    public GetRootSearchQueryElement() {
+    public GetRootSearchQueryElement(): ISearchQueryElement {
         return this.elements.length === 1 ? this.elements[0] : new AndSearchQueryElement(this.elements);
+    }
+
+    public equals(q: SearchQuery) {
+        return this.GetRootSearchQueryElement().equals(q.GetRootSearchQueryElement());
     }
 }
 
@@ -41,6 +45,7 @@ export type PropertyNameService_t = IPropertyKeyNameService & IPropertyValueName
 export interface ISearchQueryElement {
     visit<T>(visitor: ISearchQueryElementVisitor<T>): T;
     conflictsWith(other: ISearchQueryElement): boolean;
+    equals(other: ISearchQueryElement): boolean;
     readonly TYPE: string;
 }
 export interface ISimpleSearchQueryElement extends ISearchQueryElement {
@@ -63,7 +68,7 @@ export class ReferenceSimpleSearchQueryElement implements ISimpleSearchQueryElem
     public getTooltipText() {
         return Promise.resolve(this.name);
     }
-    public constructor(public readonly wrappedQuery: SearchQuery, public readonly  name: string) {
+    public constructor(public readonly wrappedQuery: SearchQuery, public readonly name: string) {
     }
     public isReferential() { return true; }
     public isRemovable() { return true; }
@@ -73,6 +78,10 @@ export class ReferenceSimpleSearchQueryElement implements ISimpleSearchQueryElem
     }
     public conflictsWith(other: ISearchQueryElement) {
         return this.wrappedQuery.GetRootSearchQueryElement().conflictsWith(other);
+    }
+
+    public equals(other: ISearchQueryElement): boolean {
+        return other instanceof ReferenceSimpleSearchQueryElement && other.name === this.name && this.wrappedQuery.equals(other.wrappedQuery);
     }
 }
 
@@ -99,6 +108,9 @@ export class TextSearchQueryElement implements ISimpleSearchQueryElement {
     }
     public conflictsWith(other: ISearchQueryElement) {
         return false;
+    }
+    public equals(other: ISearchQueryElement): boolean {
+        return other instanceof TextSearchQueryElement && other.text === this.text;
     }
 
 }
@@ -128,6 +140,11 @@ export class AspectSearchQueryElement implements ISimpleSearchQueryElement {
         return (other instanceof AspectSearchQueryElement) && (other.aspect === this.aspect);
     }
 
+    public equals(other: ISearchQueryElement): boolean {
+        return other instanceof AspectSearchQueryElement && other.aspect === this.aspect;
+    }
+
+
 }
 
 export class FolderSearchQueryElement implements ISimpleSearchQueryElement {
@@ -155,6 +172,10 @@ export class FolderSearchQueryElement implements ISimpleSearchQueryElement {
     public conflictsWith(other: ISearchQueryElement) {
         return other instanceof FolderSearchQueryElement;
     }
+
+    public equals(other: ISearchQueryElement): boolean {
+        return other instanceof FolderSearchQueryElement && other.noderef === this.noderef;
+    }
 }
 
 export class AllSimpleSearchQueryElement implements ISimpleSearchQueryElement {
@@ -181,6 +202,10 @@ export class AllSimpleSearchQueryElement implements ISimpleSearchQueryElement {
     public conflictsWith(other: ISearchQueryElement) {
         return false;
     }
+
+    public equals(other: ISearchQueryElement) {
+        return other instanceof AllSimpleSearchQueryElement;
+    }
 }
 export abstract class PropertySearchQueryElement implements ISimpleSearchQueryElement {
     constructor(public readonly key: string, private readonly propertyNameService: IPropertyKeyNameService) {
@@ -189,6 +214,7 @@ export abstract class PropertySearchQueryElement implements ISimpleSearchQueryEl
         }
     }
     protected abstract GetValueSimpleSearchbarText(): Promise<string>;
+    public abstract equals(other: ISearchQueryElement): boolean;
     public abstract readonly TYPE: string;
     public isReferential() { return false; }
     public isRemovable() { return true; }
@@ -208,7 +234,6 @@ export abstract class PropertySearchQueryElement implements ISimpleSearchQueryEl
     public conflictsWith(other: ISearchQueryElement): boolean {
         return ((other instanceof PropertySearchQueryElement) && other.key === this.key);
     }
-
 }
 export class DatePropertySearchQueryElement extends PropertySearchQueryElement {
     public static readonly TYPE = "DatePropertySearchQueryElement";
@@ -225,6 +250,9 @@ export class DatePropertySearchQueryElement extends PropertySearchQueryElement {
     }
     public visit<T>(visitor: ISearchQueryElementVisitor<T>): T {
         return visitor.visitDatePropertySearchQueryElement(this);
+    }
+    public equals(other: ISearchQueryElement): boolean {
+        return other instanceof DatePropertySearchQueryElement && other.key === this.key && this.dateRange.equals(other.dateRange);
     }
 }
 export class NodeRefSearchQueryElement implements ISimpleSearchQueryElement {
@@ -254,6 +282,10 @@ export class NodeRefSearchQueryElement implements ISimpleSearchQueryElement {
     public visit<T>(visitor: ISearchQueryElementVisitor<T>): T {
         return visitor.visitNodeRefSearchQueryElement(this);
     }
+
+    public equals(other: ISearchQueryElement): boolean {
+        return other instanceof NodeRefSearchQueryElement && other.noderef === this.noderef;
+    }
 }
 
 export class AndSearchQueryElement implements ISearchQueryElement {
@@ -270,6 +302,22 @@ export class AndSearchQueryElement implements ISearchQueryElement {
     }
     public conflictsWith(other: ISearchQueryElement) {
         return false;
+    }
+
+    public equals(other: ISearchQueryElement): boolean {
+        if (!(other instanceof AndSearchQueryElement)) {
+            return false;
+        }
+        if (this.children.length !== other.children.length) {
+            return false;
+        }
+
+        for (let i = 0; i < this.children.length; i++) {
+            if (!this.children[i].equals(other.children[i])) {
+                return false;
+            }
+        }
+        return true;
     }
 }
 export class OrSearchQueryElement implements ISearchQueryElement {
@@ -289,6 +337,22 @@ export class OrSearchQueryElement implements ISearchQueryElement {
         return false;
     }
 
+    public equals(other: ISearchQueryElement): boolean {
+        if (!(other instanceof OrSearchQueryElement)) {
+            return false;
+        }
+        if (this.children.length !== other.children.length) {
+            return false;
+        }
+
+        for (let i = 0; i < this.children.length; i++) {
+            if (!this.children[i].equals(other.children[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }
 
 export class StringValuePropertySearchQueryElement extends PropertySearchQueryElement {
@@ -296,16 +360,19 @@ export class StringValuePropertySearchQueryElement extends PropertySearchQueryEl
     public readonly TYPE = StringValuePropertySearchQueryElement.TYPE;
     public static ParseFromJSON(json: any, context: ISearchQueryElementFromJSONContext) {
         const typecheckSafety: StringValuePropertySearchQueryElement = json;
-        return new StringValuePropertySearchQueryElement(typecheckSafety.prop, typecheckSafety.value, context.GetPropertyNameService());
+        return new StringValuePropertySearchQueryElement(typecheckSafety.key, typecheckSafety.value, context.GetPropertyNameService());
     };
-    constructor(public readonly prop: string, public readonly value: string, private readonly pNameService: PropertyNameService_t) {
+    constructor(prop: string, public readonly value: string, private readonly pNameService: PropertyNameService_t) {
         super(prop, pNameService);
     }
     protected GetValueSimpleSearchbarText() {
-        return this.pNameService.translatePropertyValue(this.prop, this.value);
+        return this.pNameService.translatePropertyValue(this.key, this.value);
     }
     public visit<T>(visitor: ISearchQueryElementVisitor<T>): T {
         return visitor.visitStringValuePropertySearchQueryElement(this);
+    }
+    public equals(other: ISearchQueryElement): boolean {
+        return other instanceof StringValuePropertySearchQueryElement && this.key === other.key && this.value === other.value;
     }
 }
 export interface ISearchQueryElementFromJSONContext {

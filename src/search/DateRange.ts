@@ -26,6 +26,7 @@ export interface IDateRange {
     ToHumanReadableString(translator: IDateRangeTranslator): string;
     ToJSON(): object;
     TYPE: string;
+    equals(other: IDateRange): boolean;
 }
 export class SimpleDateRange implements IDateRange {
     public static readonly TYPE = "SimpleDateRange";
@@ -51,6 +52,9 @@ export class SimpleDateRange implements IDateRange {
     }
     public To() {
         return this.to;
+    }
+    public equals(other: IDateRange): boolean {
+        return other instanceof SimpleDateRange && other.from.valueOf() === this.from.valueOf() && other.to.valueOf() === this.to.valueOf();
     }
 }
 const DAYINMS: number = 24 * 3600 * 1000;
@@ -85,6 +89,10 @@ export class UntilDateRange implements IDateRange {
     public ToHumanReadableString(translator: IDateRangeTranslator): string {
         return translator.translateWord(DATE_FROM) + " " + translator.translateDate(this.to);
     }
+
+    public equals(other: IDateRange): boolean {
+        return other instanceof UntilDateRange && other.to.valueOf() === this.to.valueOf();
+    }
 }
 export class FromDateRange implements IDateRange {
     public static readonly TYPE = "FromDateRange";
@@ -108,6 +116,9 @@ export class FromDateRange implements IDateRange {
     public ToHumanReadableString(translator: IDateRangeTranslator): string {
         return translator.translateWord(DATE_FROM) + " " + translator.translateDate(this.from);
     }
+    public equals(other: IDateRange): boolean {
+        return other instanceof FromDateRange && other.from.valueOf() === this.from.valueOf();
+    }
 }
 export type DateCalculation_t = (date: Date) => Date;
 
@@ -130,6 +141,9 @@ export class LabeledDateRange implements IDateRange {
     }
     public ToHumanReadableString(translator: IDateRangeTranslator): string {
         return translator.translateWord(this.label);
+    }
+    public equals(other: IDateRange): boolean {
+        return other instanceof LabeledDateRange && this.label === other.label;
     }
 }
 
