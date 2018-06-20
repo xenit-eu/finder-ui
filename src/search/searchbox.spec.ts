@@ -1,20 +1,16 @@
 import "core-js";
-import { mount, shallow } from "enzyme";
+import { configure } from "enzyme";
+import * as Adapter from "enzyme-adapter-react-16";
 import "es6-shim";
-import {
-    Component,
-    createElement as __,
-    DOM as _,
-    PropTypes,
-} from "react";
-import * as injectTapEventPlugin from "react-tap-event-plugin";
-import { Fixture, simulateEvent } from "./../testUtils";
+import { createElement as __ } from "react";
+import { Fixture } from "./../testUtils";
 import { AllSearchable, ISimpleSearchableQueryElement, SimpleAutoCompleteListElement, TextSearchable } from "./searchables";
 import { SearchBox, SearchBox_t } from "./searchbox";
 import { ISimpleSearchQueryElement, StringValuePropertySearchQueryElement } from "./searchquery";
 // tslint:disable-next-line:no-var-requires
 const jasmineEnzyme = require("jasmine-enzyme"); // no typings for jasmine-engine => require instead of import.
-const debug: any = require("debug");
+
+configure({ adapter: new Adapter() });
 
 const ENTER_KEY_CODE: number = 13;
 export function dummyPropertyService() {
@@ -28,9 +24,6 @@ export function dummyPropertyService() {
 
 describe("SearchBox component tests", () => {
 
-    beforeAll(() => {
-        injectTapEventPlugin();
-    });
     beforeEach(() => {
         jasmineEnzyme();
     });
@@ -68,25 +61,21 @@ describe("SearchBox component tests", () => {
         };
         const wrapper = Fixture(__(SearchBox, props));
         const text = "text:name";
-        const input: any = wrapper.find("input").get(0);
-        input.value = text;
+        //        const input: any = wrapper.find("input").get(0);
 
-        wrapper.find("input").simulate("change");
+        wrapper.find("input").simulate("change", { target: { value: text } });
         wrapper.find("input").simulate("keyUp", { keyCode: ENTER_KEY_CODE });
     });
 
     it("should make a chip of a query with only value when there is an allsearchable ", (done) => {
-        const inlineExpect = expect;
         let props = SearchboxViaSearchablesProps([new AllSearchable((s) => s)], []);
         props.onAddQueryElement = (idx) => {
             done();
         };
         const wrapper = Fixture(__(SearchBox, props));
         const text = "name";
-        const input: any = wrapper.find("input").get(0);
-        input.value = text;
 
-        wrapper.find("input").simulate("change");
+        wrapper.find("input").simulate("change", { target: { value: text } });
         wrapper.find("input").simulate("keyUp", { keyCode: ENTER_KEY_CODE });
     });
 
@@ -95,6 +84,7 @@ describe("SearchBox component tests", () => {
             [new StringValuePropertySearchQueryElement("dummy1", "dummy2", dummyPropertyService()), new StringValuePropertySearchQueryElement("dummy3", "dummy4", dummyPropertyService())];
         let props = SearchboxViaSearchablesProps([new AllSearchable((s) => s)], qE);
         props.onChipsUpdated = () => {
+            wrapper.update();
             expect(wrapper.find("Chip").length).toBe(qE.length);
             Promise.all(qE.map((q, i) => q.getSimpleSearchbarText()
                 .then(ssT => expect(wrapper.find("Chip").at(i).text()).toBe(ssT))))
@@ -109,6 +99,7 @@ describe("SearchBox component tests", () => {
             [new StringValuePropertySearchQueryElement("dummy1", "dummy2", dummyPropertyService()), new StringValuePropertySearchQueryElement("dummy3", "dummy4", dummyPropertyService())];
         let props = SearchboxViaSearchablesProps([new AllSearchable((s) => s)], qE);
         props.onChipsUpdated = () => {
+            wrapper.update();
             expect(wrapper.find("Chip").length).toBe(qE.length);
             Promise.all(qE.map((q, i) => q.getSimpleSearchbarText()
                 .then(ssT => expect(wrapper.find("Chip").at(i).text()).toBe(ssT))))
@@ -132,7 +123,7 @@ describe("SearchBox component tests", () => {
         props.onDidUpdate = () => {
             Promise.resolve().then(() => {
                 const menuItem = wrapper.find("MenuItem");
-                if (menuItem.getNodes().length > 0) { //Wait till it gets loaded
+                if (menuItem.getElements().length > 0) { //Wait till it gets loaded
                     const menuItemText = menuItem.text();
                     expect(menuItemText).toBe("All:good");
                     done();

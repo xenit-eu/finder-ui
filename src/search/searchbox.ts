@@ -4,7 +4,6 @@ import Chip from "material-ui/Chip";
 import CircularProgress from "material-ui/CircularProgress";
 import Dialog from "material-ui/Dialog";
 import FlatButton from "material-ui/FlatButton";
-import RefreshIndicator from "material-ui/RefreshIndicator";
 import * as Colors from "material-ui/styles/colors";
 import SearchIcon from "material-ui/svg-icons/action/search";
 import StarIcon from "material-ui/svg-icons/toggle/star-border";
@@ -13,7 +12,8 @@ declare var require: any;
 // tslint:disable-next-line:no-var-requires
 const Flatpickr = require("react-flatpickr");
 
-import { Component, createElement as __, DOM as _, KeyboardEvent, ReactElement } from "react";
+import { Component, createElement as __, KeyboardEvent, ReactElement } from "react";
+import * as _ from "react-dom-factories";
 
 import "react-flatpickr/node_modules/flatpickr/dist/themes/material_blue.css";
 import { SimpleDateRange } from "./DateRange";

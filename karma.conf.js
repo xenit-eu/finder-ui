@@ -58,13 +58,13 @@ module.exports = function (config) {
             devtool: 'inline-source-map', //just do inline source maps instead of the default
             module: {
                 loaders: [{
-                        test: /\.tsx?$/,
-                        loader: 'awesome-typescript-loader'
-                    },
-                    {
-                        test: /\.(less|scss|css)$/,
-                        loader: 'ignore'
-                    }, // ignore inclusion of style files.
+                    test: /\.tsx?$/,
+                    loader: 'awesome-typescript-loader'
+                },
+                {
+                    test: /\.(less|scss|css)$/,
+                    loader: 'ignore'
+                }, // ignore inclusion of style files.
                 ]
             },
             externals: { /// !!!! important !!!!
