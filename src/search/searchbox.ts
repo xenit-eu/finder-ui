@@ -22,7 +22,7 @@ import {
 } from "./searchables";
 import "./searchbox.less";
 import {
-    ISimpleSearchQueryElement, SimpleSearchQuery,
+    ISimpleSearchQueryElement,
 } from "./searchquery";
 
 const d = debug("finder-ui:search:searchBox");
@@ -64,6 +64,7 @@ export type SearchBox_data_t = {
     customButtons?: Array<ReactElement<any>>,              // list of custom buttons to add besides search and save icons
     translations?: any,
     updateChipsOnConstruction?: boolean,
+    autocompleteSuggestions: IAutocompleteSuggestion[],
 };
 
 export type SearchBox_actions_t = {
@@ -71,17 +72,16 @@ export type SearchBox_actions_t = {
     onAddQueryElement: (element: ISimpleSearchQueryElement) => void,           // add new term or start search (when parameter is null)
     onSearch: () => void,
     onInputChanged: (text: string) => void,         // called on any changes in the input box.
-    onSaveAsQuery: (name: string, query: SimpleSearchQuery) => void,          // called on request to save the current query as a new saved query.
+    onSaveAsQuery: (name: string, query: ISimpleSearchQueryElement[]) => void,          // called on request to save the current query as a new saved query.
     onChipsUpdated?: () => void,
     onDidUpdate?: () => void,
 };
 export type SearchBox_t = SearchBox_actions_t & SearchBox_data_t;
 type State_t = {
-    textValue?: string,
-    suggestionsOpened?: boolean,
-    focusSuggestions?: boolean,
+    textValue: string,
+    suggestionsOpened: boolean,
+    focusSuggestions: boolean,
     currentValueMatchWaitingForCalendar: DateFillinValueMatch | DateRangeFillinValueMatch | undefined,
-    currentSuggestions: IAutocompleteSuggestion[],
     currentChipVMs: ChipVM[],
 };
 class ChipVM {
@@ -89,7 +89,19 @@ class ChipVM {
         public tooltipText: string,
         public searchbarText: string,
         public index: number,
-        public backgroundColor: string) { }
+        public backgroundColor: string,
+        public deletable: boolean) { }
+}
+
+export function getKeyValue(s: string | undefined): { key: string, value: string } {
+    if (!s) {
+        return { key: "", value: "" };
+    }
+    const splits = s.split(":");
+    if (splits.length >= 2) {
+        return { key: splits[0], value: splits[1] };
+    }
+    return { key: "", value: splits[0] };
 }
 //@Component SearchBox
 //@ComponentDescription "Input box allowing the search by terms (node name, creator, ...)."
@@ -114,7 +126,6 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
             currentValueMatchWaitingForCalendar: undefined,
             suggestionsOpened: false,
             focusSuggestions: false,
-            currentSuggestions: [],
             currentChipVMs: [],
         };
         if (props.updateChipsOnConstruction) {
@@ -164,7 +175,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
 
     public onApplyTextSuggestion({ key, value }: { key: string, value: string }) {
         const toTest = this.props.searchableQueryElements;
-        return Promise.all(toTest.map(t => t.machKeyValue(key, value)))
+        return Promise.all(toTest.map(t => t.matchKeyValue(key, value)))
             .then(matches => {
                 return matches.filter(p => p.hasResult())[0];
             })
@@ -184,46 +195,26 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
             });
     }
     private getCurrentKeyValue() {
-        return this.getKeyValue(this.state.textValue);
-    }
-    private getKeyValue(s: string | undefined): { key: string, value: string } {
-        if (!s) {
-            return { key: "", value: "" };
-        }
-        const splits = s.split(":");
-        if (splits.length >= 2) {
-            return { key: splits[0], value: splits[1] };
-        }
-        return { key: "", value: splits[0] };
-    }
-    private getAutocompleteList(): Promise<IAutocompleteSuggestion[]> {
-        const currentKeyValue = this.getCurrentKeyValue();
-        const autocompletionsP = Promise.all(this.props.searchableQueryElements.map(p => p.getPartiallyMatchingAutocompleteListElements(currentKeyValue.key, currentKeyValue.value)));
-        return autocompletionsP.then(autocompletions => flatten(autocompletions));
+        return getKeyValue(this.state.textValue);
     }
 
     private hideSuggestions() {
         this.setState({ suggestionsOpened: false, focusSuggestions: false });
     }
-    public updateAutocompletes() {
-        return this.getAutocompleteList().then(autoCompleteList => {
-            this.setState({ currentSuggestions: autoCompleteList });
-        });
-    }
     public handleInputChange(evt: KeyboardEvent<HTMLInputElement>) {
-        const target = <HTMLInputElement>evt.target;
+        const target = evt.target as HTMLInputElement;
         this.inputChanged(target.value);
     }
 
     public handleInputKey(evt: KeyboardEvent<HTMLInputElement>): void {
-        const input = <HTMLInputElement>evt.target;
+        const input = evt.target as HTMLInputElement;
         if (evt.keyCode === 13) {
             if (!input.value) { // Enter press with empty input => call onEnter with null.
                 this.props.onSearch();
+                return;
             }
-            this.onApplyTextSuggestion(this.getKeyValue(input.value));
+            this.onApplyTextSuggestion(getKeyValue(input.value));
             this.hideSuggestions();
-            this.updateAutocompletes();
             return;
         }
         this.inputChanged(input.value);
@@ -234,7 +225,6 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
         if (this.props.onInputChanged) {
             this.props.onInputChanged(t);
         }
-        this.updateAutocompletes();
     }
 
     public handleDateSelection(selected: Date[]) {
@@ -246,15 +236,14 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
     }
     private SearchQueryElementToChipVM(sQE: ISimpleSearchQueryElement, index: number) {
         return Promise.all([sQE.getTooltipText(), sQE.getSimpleSearchbarText()]).then(texts =>
-            new ChipVM(texts[0], texts[1], index, sQE.isReferential ? Colors.blue100 : Colors.white));
+            new ChipVM(texts[0], texts[1], index, sQE.isReferential() ? Colors.blue100 : Colors.grey200, sQE.isRemovable()));
     }
     private ChipVMToChip(chipVM: ChipVM) {
-        let me = this;
         return __(Chip, {
             className: "searchbox-chip",
             backgroundColor: chipVM.backgroundColor,
             key: "Q" + chipVM.index,
-            onRequestDelete: () => me.props.onRemoveQueryElement(chipVM.index),
+            onRequestDelete: chipVM.deletable ? () => this.props.onRemoveQueryElement(chipVM.index) : undefined,
         }, this.withTooltip(chipVM.searchbarText, chipVM.tooltipText));
     }
     private updateChips(queryElements: ISimpleSearchQueryElement[]) {
@@ -283,9 +272,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                 onClick: this.handleCloseDialog.bind(this),
             }),
         ];
-        let me = this;
-
-        const filteredSuggestionsList: IAutocompleteSuggestion[] = this.state.currentSuggestions;
+        const filteredSuggestionsList: IAutocompleteSuggestion[] = this.props.autocompleteSuggestions || [];
 
         const defaultChip = (this.state.currentChipVMs.length === 0) ? __(Chip, {
             className: "searchbox-chip searchbox-chip-default",
@@ -297,12 +284,12 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
             ...currentChips,
             _.div({ className: "searchbox-input-area" }, [
                 __(SearchboxAutocomplete, {
-                    value: <string>this.state.textValue,
+                    value: this.state.textValue as string,
                     onChange: this.handleInputChange.bind(this),
                     onKeyUp: this.handleInputKey.bind(this),
                     onFocus: () => this.setState({ focusSuggestions: false }),
-                    open: <boolean>this.state.suggestionsOpened,
-                    focusAutocomplete: <boolean>this.state.focusSuggestions,
+                    open: this.state.suggestionsOpened,
+                    focusAutocomplete: this.state.focusSuggestions,
                     suggestions: filteredSuggestionsList,
                     onSuggestionClick: (suggestion: IAutocompleteSuggestion) => this.onApplyAutocompleteSuggestion(suggestion),
                     onDismiss: () => this.hideSuggestions(),
@@ -315,7 +302,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
 
                     _.div({ key: "save-icon", className: "save-icon icon", id: "searchbox_save" }, __(StarIcon, {
                         color: iconColor,
-                        onClick: () => this.props.onSaveAsQuery(prompt("Save query as") || "query", new SimpleSearchQuery(this.props.searchedQueryElements)),
+                        onClick: () => this.props.onSaveAsQuery(prompt("Save query as") || "query", this.props.searchedQueryElements),
                     })),
 
                     _.div({ key: "search-icon", className: "search-icon icon", id: "searchbox_search" },
@@ -396,7 +383,7 @@ class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
             case 40: // ARROWKEY_DOWN
                 if (this.menu) {
                     this.props.onRequestAutocomplete();
-                    (<any>this.menu).setFocusIndex(e, 0, true);
+                    (this.menu as any).setFocusIndex(e, 0, true);
                 }
                 break;
             case 27: //ESC
@@ -431,7 +418,7 @@ class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
                     onChange: this.props.onChange,
                     onKeyUp: this.handleKeyUp.bind(this),
                     onFocus: this.props.onFocus,
-                    ref: input => { this.inputElem = <HTMLInputElement>input; },
+                    ref: input => { this.inputElem = input as HTMLInputElement; },
                 }),
                 __(Paper, {
                     className: "searchbox-autocomplete",
@@ -439,10 +426,10 @@ class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
                         display: this.props.open && this.props.suggestions.length > 0 ? "block" : "none",
                     },
                 }, __(Menu, {
-                    ref: (menu) => { this.menu = <Menu>menu; },
+                    ref: (menu) => { this.menu = menu as Menu; },
                     width: "100%",
                     autoWidth: false,
-                    maxHeight: <any>"80vh",
+                    maxHeight: "80vh" as any,
                     disableAutoFocus: !this.props.focusAutocomplete,
                     initiallyKeyboardFocused: true,
                     desktop: true,
@@ -455,7 +442,7 @@ class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
                             this.inputElem.focus();
                         }
                         const timeo = setInterval(() => {
-                            let elem = document.getElementById("searchbox");
+                            const elem = document.getElementById("searchbox");
                             if (elem) {
                                 clearInterval(timeo);
                                 elem.focus();
@@ -477,12 +464,10 @@ class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
 type AutocompleteSearchBox_State_t = {
     autocompleteText?: string,
     autocompleteTimer?: any,
-    searchableQueryElements?: ISimpleSearchableQueryElement[],
+    currentSuggestions?: IAutocompleteSuggestion[],
 };
 
-export type AutocompleteSearchBox_t = SearchBox_t & {
-    fetchAutocomplete: (text: string) => Promise<ISimpleSearchableQueryElement[]>,
-};
+export type AutocompleteSearchBox_t = SearchBox_t;
 
 export class AutocompleteSearchBox extends Component<AutocompleteSearchBox_t, AutocompleteSearchBox_State_t> {
     private onInputChanged: (text: string) => void;
@@ -491,13 +476,18 @@ export class AutocompleteSearchBox extends Component<AutocompleteSearchBox_t, Au
         this.state = {
             autocompleteText: "",
             autocompleteTimer: null,
-            searchableQueryElements: [],
+            currentSuggestions: [],
         };
 
         this.onInputChanged = (text: string) => {
             this._onInputChanged(text);
             this.props.onInputChanged(text);
         };
+    }
+    protected getAutocompleteList(text: string): Promise<IAutocompleteSuggestion[]> {
+        const currentKeyValue = getKeyValue(text);
+        const autocompletionsP = Promise.all(this.props.searchableQueryElements.map(p => p.getPartiallyMatchingAutocompleteListElements(currentKeyValue.key, currentKeyValue.value)));
+        return autocompletionsP.then(autocompletions => flatten(autocompletions));
     }
 
     private _onInputChanged(text: string) {
@@ -506,11 +496,9 @@ export class AutocompleteSearchBox extends Component<AutocompleteSearchBox_t, Au
                 clearTimeout(prevState.autocompleteTimer);
             }
 
-            let timer = setTimeout(() => {
-                props.fetchAutocomplete(text).then((terms: ISimpleSearchableQueryElement[]) => {
-                    this.setState({
-                        searchableQueryElements: terms,
-                    });
+            const timer = setTimeout(() => {
+                return this.getAutocompleteList(text).then(autoCompleteList => {
+                    this.setState({ currentSuggestions: autoCompleteList });
                 });
             }, 200);
             return Object.assign({}, prevState, { autocompleteText: text, autocompleteTimer: timer });
@@ -518,12 +506,10 @@ export class AutocompleteSearchBox extends Component<AutocompleteSearchBox_t, Au
     }
 
     public render() {
-        let props = Object.assign({}, this.props, {
+        const props = Object.assign({}, this.props, {
             onInputChanged: this.onInputChanged,
-            searchableQueryElements: (this.props.searchableQueryElements || []).concat(this.state.searchableQueryElements || []),
+            autocompleteSuggestions: this.state.currentSuggestions || [],
         });
-        delete props.fetchAutocomplete;
-
-        return __(SearchBox, <SearchBox_t>props);
+        return __(SearchBox, props as SearchBox_t);
     }
 }

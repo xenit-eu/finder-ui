@@ -9,8 +9,6 @@ import { cloneElement, Component, createElement as __, DOM as _ } from "react";
 import * as Colors from "material-ui/styles/colors";
 import getMuiTheme from "material-ui/styles/getMuiTheme";
 
-import { AdvancedSearchQuery } from "../searchquery";
-
 const muiTheme = getMuiTheme({
     palette: {
         primary1Color: Colors.lightBlue700,

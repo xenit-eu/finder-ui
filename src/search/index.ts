@@ -4,3 +4,8 @@ export * from "./searchables";
 export * from "./searchbox";
 export * from "./searchHistoryList";
 export * from "./searchquery";
+export * from "./WordTranslator";
+export * from "./SearchQueryElementReadableStringVisitor";
+export * from "./SearchQueryElementToSimpleQueryElementVisitor";
+export * from "./SearchQueryFilter";
+export * from "./SearchQueryNormalizeVisitor";

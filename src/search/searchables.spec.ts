@@ -1,24 +1,21 @@
-import { MomentDateRangeTranslator } from ".";
+import { MomentDateRangeTranslator } from "./DateRange";
 import {
     DateFillinValueMatch,
     DateSearchable,
     DateSearchableWords,
     EnumPropertySearchable,
+    IAutocompleteSuggestion,
     NoResultValueMatch,
     ReferenceSearchableQueryElement,
     SimpleSearchQueryElementValueMatch,
     TextSearchable,
 } from "./searchables";
-import { DatePropertySearchQueryElement, StringValuePropertySearchQueryElement } from "./searchquery";
+import { DatePropertySearchQueryElement, SearchQuery, StringValuePropertySearchQueryElement } from "./searchquery";
 // tslint:disable-next-line:no-var-requires
 const jasmineEnzyme = require("jasmine-enzyme"); // no typings for jasmine-engine => require instead of import.
 
-export function DummyISearchQuery(name: string) {
-    return {
-        HumanReadableText: () => Promise.resolve(name),
-        GetRootSearchQueryElement: () => { throw "not impl"; },
-    };
-
+function DummyISearchQuery(name: string): SearchQuery {
+    return new SearchQuery([], (s: string) => s);
 }
 
 describe("ReferenceSearchableQueryElement", () => {
@@ -33,21 +30,21 @@ describe("ReferenceSearchableQueryElement", () => {
     });
     it("should match exactly when the name is type correct", (done) => {
         const SOT = new ReferenceSearchableQueryElement("testName", DummyISearchQuery("referenceQueryName"));
-        SOT.machKeyValue("", "testName").then(match => {
+        SOT.matchKeyValue("", "testName").then(match => {
             expect(match).toEqual(jasmine.any(SimpleSearchQueryElementValueMatch));
             done();
         });
     });
     it("should match exactly when the name its letters are correct but wrongly cased.", (done) => {
         const SOT = new ReferenceSearchableQueryElement("testName", DummyISearchQuery("referenceQueryName"));
-        SOT.machKeyValue("", "TESTname").then(match => {
+        SOT.matchKeyValue("", "TESTname").then(match => {
             expect(match).toEqual(jasmine.any(SimpleSearchQueryElementValueMatch));
             done();
         });
     });
     it("should not match exactly when the name is only typed partially", (done) => {
         const SOT = new ReferenceSearchableQueryElement("testName", DummyISearchQuery("referenceQueryName"));
-        SOT.machKeyValue("", "testNam").then(matches => {
+        SOT.matchKeyValue("", "testNam").then(matches => {
             expect(matches).toEqual(jasmine.any(NoResultValueMatch));
             done();
         });
@@ -83,56 +80,56 @@ describe("EnumPropertySearchable", () => {
         });
     });
     it("should match the exact key value translations", (done) => {
-        EnumPropertySearchable12().machKeyValue("TRANSLATEKEYtestProperty", "TRANSLATEVALUE2").then(match => {
+        EnumPropertySearchable12().matchKeyValue("TRANSLATEKEYtestProperty", "TRANSLATEVALUE2").then(match => {
             expect(match).toEqual(jasmine.any(SimpleSearchQueryElementValueMatch));
-            const sMatch = (<SimpleSearchQueryElementValueMatch>match);
+            const sMatch = (match as SimpleSearchQueryElementValueMatch);
             expect(sMatch.simpleSearchQueryElement).toBeDefined();
-            const sQE = (<StringValuePropertySearchQueryElement>sMatch.simpleSearchQueryElement);
+            const sQE = (sMatch.simpleSearchQueryElement as StringValuePropertySearchQueryElement);
             expect(sQE.key).toBe("testProperty");
-            expect((<any>sQE).value).toBe("2");
+            expect((sQE as any).value).toBe("2");
             done();
         });
     });
 });
 function TextSearchable12() {
-    return new TextSearchable("12", (s) => Promise.resolve("Tekst"));
+    return new TextSearchable("12", (s) => "Tekst");
 }
 describe("TextSearchable", () => {
     it("should match the text partially", (done) => {
-        TextSearchable12().getPartiallyMatchingAutocompleteListElements("", "2").then(t => { expect(t.length).toBe(1); done(); });
+        TextSearchable12().getPartiallyMatchingAutocompleteListElements("", "2").then((t: IAutocompleteSuggestion[]) => { expect(t.length).toBe(1); done(); });
     });
     it("should not match wrong text", (done) => {
-        TextSearchable12().getPartiallyMatchingAutocompleteListElements("", "23").then(t => { expect(t.length).toBe(0); done(); });
+        TextSearchable12().getPartiallyMatchingAutocompleteListElements("", "23").then((t: IAutocompleteSuggestion[]) => { expect(t.length).toBe(0); done(); });
     });
     it("should match empty", (done) => {
-        TextSearchable12().getPartiallyMatchingAutocompleteListElements("", "").then(t => { expect(t.length).toBe(1); done(); });
+        TextSearchable12().getPartiallyMatchingAutocompleteListElements("", "").then((t: IAutocompleteSuggestion[]) => { expect(t.length).toBe(1); done(); });
     });
     it("should match if key is the translated version of 'text'", (done) => {
-        TextSearchable12().getPartiallyMatchingAutocompleteListElements("tekst", "1").then(t => { expect(t.length).toBe(1); done(); });
+        TextSearchable12().getPartiallyMatchingAutocompleteListElements("tekst", "1").then((t: IAutocompleteSuggestion[]) => { expect(t.length).toBe(1); done(); });
     });
     it("should not match if key is not translated", (done) => {
-        TextSearchable12().getPartiallyMatchingAutocompleteListElements("text", "1").then(t => { expect(t.length).toBe(0); done(); });
+        TextSearchable12().getPartiallyMatchingAutocompleteListElements("text", "1").then((t: IAutocompleteSuggestion[]) => { expect(t.length).toBe(0); done(); });
     });
     it("should match the exact key value", (done) => {
-        TextSearchable12().machKeyValue("tekst", "12").then(t => {
+        TextSearchable12().matchKeyValue("tekst", "12").then(t => {
             expect(t).toEqual(jasmine.any(SimpleSearchQueryElementValueMatch));
             done();
         });
     });
     it("should not match untranslated key", (done) => {
-        TextSearchable12().machKeyValue("text", "12").then(t => {
+        TextSearchable12().matchKeyValue("text", "12").then(t => {
             expect(t).toEqual(jasmine.any(NoResultValueMatch));
             done();
         });
     });
     it("should not match empty", (done) => {
-        TextSearchable12().machKeyValue("", "12").then(t => {
+        TextSearchable12().matchKeyValue("", "12").then(t => {
             expect(t).toEqual(jasmine.any(NoResultValueMatch));
             done();
         });
     });
     it("should not match wrong value", (done) => {
-        TextSearchable12().machKeyValue("tekst", "122").then(t => {
+        TextSearchable12().matchKeyValue("tekst", "122").then(t => {
             expect(t).toEqual(jasmine.any(NoResultValueMatch));
             done();
         });
@@ -163,11 +160,11 @@ describe("DateSearchable", () => {
     });
     it("should match exact on today translated", (done) => {
         const testdummyPropertyService = dummyPropertyService();
-        DateSearchableDummy().machKeyValue("TRANSLATEKEYqname", "TRANSLATEDtoday").then(match => {
+        DateSearchableDummy().matchKeyValue("TRANSLATEKEYqname", "TRANSLATEDtoday").then(match => {
             expect(match).toEqual(jasmine.any(SimpleSearchQueryElementValueMatch));
-            const sMatch = (<SimpleSearchQueryElementValueMatch>match);
+            const sMatch = (match as SimpleSearchQueryElementValueMatch);
             expect(sMatch.simpleSearchQueryElement).toBeDefined();
-            const sQE = (<DatePropertySearchQueryElement>sMatch.simpleSearchQueryElement);
+            const sQE = (sMatch.simpleSearchQueryElement as DatePropertySearchQueryElement);
             expect(sQE.dateRange.From()).toBeDefined();
             expect(sQE.dateRange.To()).toBeDefined();
             done();
@@ -175,9 +172,9 @@ describe("DateSearchable", () => {
     });
     it("should match exact on until translated", (done) => {
         const testdummyPropertyService = dummyPropertyService();
-        DateSearchableDummy().machKeyValue("TRANSLATEKEYqname", "TRANSLATEDuntil").then(match => {
+        DateSearchableDummy().matchKeyValue("TRANSLATEKEYqname", "TRANSLATEDuntil...").then(match => {
             expect(match).toEqual(jasmine.any(DateFillinValueMatch));
-            const sMatch = (<DateFillinValueMatch>match);
+            const sMatch = (match as DateFillinValueMatch);
             const untilToday = sMatch.onFillIn(new Date());
             expect(untilToday.dateRange.From()).toBe("MIN");
             expect(untilToday.dateRange.To()).toBeDefined();

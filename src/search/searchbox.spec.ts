@@ -9,7 +9,7 @@ import {
 } from "react";
 import * as injectTapEventPlugin from "react-tap-event-plugin";
 import { Fixture, simulateEvent } from "./../testUtils";
-import { AllSearchable, ISimpleSearchableQueryElement, TextSearchable } from "./searchables";
+import { AllSearchable, ISimpleSearchableQueryElement, SimpleAutoCompleteListElement, TextSearchable } from "./searchables";
 import { SearchBox, SearchBox_t } from "./searchbox";
 import { ISimpleSearchQueryElement, StringValuePropertySearchQueryElement } from "./searchquery";
 // tslint:disable-next-line:no-var-requires
@@ -35,8 +35,9 @@ describe("SearchBox component tests", () => {
         jasmineEnzyme();
     });
 
-    function SearchboxViaSearchablesProps(searchables: ISimpleSearchableQueryElement[], queryElements: ISimpleSearchQueryElement[]) {
+    function SearchboxViaSearchablesProps(searchables: ISimpleSearchableQueryElement[], queryElements: ISimpleSearchQueryElement[], autocompleteSuggestions: SimpleAutoCompleteListElement[] = []) {
         const retProps: SearchBox_t = {
+            autocompleteSuggestions,
             searching: false,
             searchedQueryElements: queryElements,
             searchableQueryElements: searchables,
@@ -61,7 +62,7 @@ describe("SearchBox component tests", () => {
 
     it("should call onAddQueryElement with entered text when enter key pressed after entering text in input field", (done) => {
         const inlineExpect = expect;
-        let props = SearchboxViaSearchablesProps([new TextSearchable("name", (s) => Promise.resolve(s))], []);
+        let props = SearchboxViaSearchablesProps([new TextSearchable("name", (s) => s)], []);
         props.onAddQueryElement = (idx) => {
             done();
         };
@@ -76,7 +77,7 @@ describe("SearchBox component tests", () => {
 
     it("should make a chip of a query with only value when there is an allsearchable ", (done) => {
         const inlineExpect = expect;
-        let props = SearchboxViaSearchablesProps([new AllSearchable((s) => Promise.resolve(s))], []);
+        let props = SearchboxViaSearchablesProps([new AllSearchable((s) => s)], []);
         props.onAddQueryElement = (idx) => {
             done();
         };
@@ -92,7 +93,7 @@ describe("SearchBox component tests", () => {
     it("should display provided list of terms in chips components", (done) => {
         const qE: StringValuePropertySearchQueryElement[] =
             [new StringValuePropertySearchQueryElement("dummy1", "dummy2", dummyPropertyService()), new StringValuePropertySearchQueryElement("dummy3", "dummy4", dummyPropertyService())];
-        let props = SearchboxViaSearchablesProps([new AllSearchable((s) => Promise.resolve(s))], qE);
+        let props = SearchboxViaSearchablesProps([new AllSearchable((s) => s)], qE);
         props.onChipsUpdated = () => {
             expect(wrapper.find("Chip").length).toBe(qE.length);
             Promise.all(qE.map((q, i) => q.getSimpleSearchbarText()
@@ -106,7 +107,7 @@ describe("SearchBox component tests", () => {
     it("should call onRemoveTerm with index of removed item when deleting a specific term", (done) => {
         const qE: StringValuePropertySearchQueryElement[] =
             [new StringValuePropertySearchQueryElement("dummy1", "dummy2", dummyPropertyService()), new StringValuePropertySearchQueryElement("dummy3", "dummy4", dummyPropertyService())];
-        let props = SearchboxViaSearchablesProps([new AllSearchable((s) => Promise.resolve(s))], qE);
+        let props = SearchboxViaSearchablesProps([new AllSearchable((s) => s)], qE);
         props.onChipsUpdated = () => {
             expect(wrapper.find("Chip").length).toBe(qE.length);
             Promise.all(qE.map((q, i) => q.getSimpleSearchbarText()
@@ -126,19 +127,19 @@ describe("SearchBox component tests", () => {
         let wrapper = Fixture(__(SearchBox, props));
     });
     it("should display the suggestion list when something is typed", (done) => {
-        const allSearchable = new AllSearchable((s) => Promise.resolve(s));
-        let props = SearchboxViaSearchablesProps([allSearchable], []);
+        const allSearchable = new AllSearchable((s) => s);
+        let props = SearchboxViaSearchablesProps([allSearchable], [], [new SimpleAutoCompleteListElement("All", "good", "All:good")]);
         props.onDidUpdate = () => {
             Promise.resolve().then(() => {
                 const menuItem = wrapper.find("MenuItem");
                 if (menuItem.getNodes().length > 0) { //Wait till it gets loaded
                     const menuItemText = menuItem.text();
-                    expect(menuItemText).toBe("All:");
+                    expect(menuItemText).toBe("All:good");
                     done();
                 }
             });
         };
         const wrapper = Fixture(__(SearchBox, props));
-        wrapper.find("input").at(0).simulate("change", { target: { value: "Al" } });
+        wrapper.find("input").at(0).simulate("change", { target: { value: "ood" } });
     });
 });
