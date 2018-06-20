@@ -4,46 +4,46 @@ import {
     NodeRefSearchQueryElement, OrSearchQueryElement, ReferenceSimpleSearchQueryElement, StringValuePropertySearchQueryElement,
     TextSearchQueryElement,
 } from "./searchquery";
-
-export class SearchQueryFilter implements ISearchQueryElementVisitor<void> {
+function flatten<T>(arr: T[][]) {
+    return ([] as T[]).concat(...arr);
+}
+export class SearchQueryFilter implements ISearchQueryElementVisitor<ISearchQueryElement[]> {
     public matching: ISearchQueryElement[] = [];
     constructor(private filterCondition: (el: ISearchQueryElement) => boolean) {
     }
-    public AddIfConditionTrue(queryElement: ISearchQueryElement) {
-        if (this.filterCondition(queryElement)) {
-            this.matching.push(queryElement);
-        }
+    public includeIfConditionTrue(queryElement: ISearchQueryElement) {
+        return this.filterCondition(queryElement) ? [queryElement] : [];
     }
     public visitStringValuePropertySearchQueryElement(query: StringValuePropertySearchQueryElement) {
-        this.AddIfConditionTrue(query);
+        return this.includeIfConditionTrue(query);
     }
     public visitDatePropertySearchQueryElement(query: DatePropertySearchQueryElement) {
-        this.AddIfConditionTrue(query);
+        return this.includeIfConditionTrue(query);
     }
     public visitAllSimpleSearchQueryElement(query: AllSimpleSearchQueryElement) {
-        this.AddIfConditionTrue(query);
+        return this.includeIfConditionTrue(query);
     }
     public visitFolderSearchQueryElement(query: FolderSearchQueryElement) {
-        this.AddIfConditionTrue(query);
+        return this.includeIfConditionTrue(query);
     }
     public visitTextSearchQueryElement(query: TextSearchQueryElement) {
-        this.AddIfConditionTrue(query);
+        return this.includeIfConditionTrue(query);
     }
     public visitReferenceSimpleSearchQueryElement(query: ReferenceSimpleSearchQueryElement) {
-        this.AddIfConditionTrue(query);
+        return this.includeIfConditionTrue(query);
     }
-    public visitOrSearchQueryElement(query: OrSearchQueryElement) {
-        this.filterCondition(query);
-        query.children.map(c => c.visit(this));
+    public visitOrSearchQueryElement(query: OrSearchQueryElement): ISearchQueryElement[] {
+        const base = this.includeIfConditionTrue(query);
+        return base.concat(flatten(query.children.map(c => c.visit(this))));
     }
-    public visitAndSearchQueryElement(query: AndSearchQueryElement) {
-        this.filterCondition(query);
-        query.children.map(c => c.visit(this));
+    public visitAndSearchQueryElement(query: AndSearchQueryElement): ISearchQueryElement[] {
+        const base = this.includeIfConditionTrue(query);
+        return base.concat(flatten(query.children.map(c => c.visit(this))));
     }
     public visitAspectSearchQueryElement(query: AspectSearchQueryElement) {
-        this.AddIfConditionTrue(query);
+        return this.includeIfConditionTrue(query);
     }
     public visitNodeRefSearchQueryElement(query: NodeRefSearchQueryElement) {
-        this.AddIfConditionTrue(query);
+        return this.includeIfConditionTrue(query);
     }
 }
