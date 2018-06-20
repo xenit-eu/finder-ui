@@ -172,7 +172,7 @@ describe("DateSearchable", () => {
     });
     it("should match exact on until translated", (done) => {
         const testdummyPropertyService = dummyPropertyService();
-        DateSearchableDummy().matchKeyValue("TRANSLATEKEYqname", "TRANSLATEDuntil").then(match => {
+        DateSearchableDummy().matchKeyValue("TRANSLATEKEYqname", "TRANSLATEDuntil...").then(match => {
             expect(match).toEqual(jasmine.any(DateFillinValueMatch));
             const sMatch = (match as DateFillinValueMatch);
             const untilToday = sMatch.onFillIn(new Date());
