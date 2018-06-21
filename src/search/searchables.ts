@@ -104,7 +104,9 @@ export class EnumPropertySearchable extends PropertySearchable {
     constructor(prop: string, private values: EnumPropertySearchableValue_t[], private propertyNameService: PropertyNameService_t) {
         super(prop, propertyNameService);
     }
-
+    public updateValues(values: EnumPropertySearchableValue_t[]) {
+        this.values = values;
+    }
     protected matchesValueExact(val: string) {
         const match: EnumPropertySearchableValue_t | undefined = this.values.filter(v => lowercaseTrimEquals(v, val))[0]; //TODO INCORRECT => no translations used.
         const unfilteredP = Promise.all(this.values.map(v => {
