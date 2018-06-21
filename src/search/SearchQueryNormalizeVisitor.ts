@@ -3,6 +3,7 @@ import {
     DatePropertySearchQueryElement, FolderSearchQueryElement, ISearchQueryElement, ISearchQueryElementVisitor,
     NodeRefSearchQueryElement, OrSearchQueryElement, ReferenceSimpleSearchQueryElement, StringValuePropertySearchQueryElement,
     TextSearchQueryElement,
+    TypeSearchQueryElement,
 
 } from "./searchquery";
 
@@ -38,6 +39,9 @@ export class SearchQueryNormalizeVisitor implements ISearchQueryElementVisitor<I
         return new AndSearchQueryElement(query.children.map(c => c.visit(this)));
     }
     public visitAspectSearchQueryElement(query: AspectSearchQueryElement): ISearchQueryElement {
+        return query;
+    }
+    public visitTypeSearchQueryElement(query: TypeSearchQueryElement): ISearchQueryElement {
         return query;
     }
     public visitNodeRefSearchQueryElement(query: NodeRefSearchQueryElement): ISearchQueryElement {

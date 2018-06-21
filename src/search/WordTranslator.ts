@@ -9,10 +9,10 @@ export const AND = "And";
 export const OR = "Or";
 export const SUBQUERY = "Subquery";
 export const NODEREF = "Noderef";
+export const TYPE = "Type";
 const FRENCH = "fr-be";
 const ENGLISH = "en-us";
 const DUTCH = "nl-be";
-const TYPE = "Type";
 export class WordTranslator {
     public constructor(private languageSelection: () => string, private translations: { [lang: string]: { [word: string]: string } } = {}) {
     }

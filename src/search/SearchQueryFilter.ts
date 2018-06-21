@@ -3,6 +3,7 @@ import {
     FolderSearchQueryElement, ISearchQueryElement, ISearchQueryElementVisitor,
     NodeRefSearchQueryElement, OrSearchQueryElement, ReferenceSimpleSearchQueryElement, StringValuePropertySearchQueryElement,
     TextSearchQueryElement,
+    TypeSearchQueryElement,
 } from "./searchquery";
 function flatten<T>(arr: T[][]) {
     return ([] as T[]).concat(...arr);
@@ -41,6 +42,9 @@ export class SearchQueryFilter implements ISearchQueryElementVisitor<ISearchQuer
         return base.concat(flatten(query.children.map(c => c.visit(this))));
     }
     public visitAspectSearchQueryElement(query: AspectSearchQueryElement) {
+        return this.includeIfConditionTrue(query);
+    }
+    public visitTypeSearchQueryElement(query: TypeSearchQueryElement) {
         return this.includeIfConditionTrue(query);
     }
     public visitNodeRefSearchQueryElement(query: NodeRefSearchQueryElement) {

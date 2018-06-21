@@ -2,7 +2,7 @@ import * as debug from "debug";
 import { IDateRange, IDateRangeTranslator } from "./DateRange";
 import { ISynchronousTranslationService } from "./searchquery";
 import { SearchQueryElementReadableStringVisitor } from "./SearchQueryElementReadableStringVisitor";
-import { ALL, ASPECT, NODEREF, TEXT } from "./WordTranslator";
+import { ALL, ASPECT, NODEREF, TEXT, TYPE } from "./WordTranslator";
 const d = debug("finder-ui:finderquery");
 
 // This is a fake type. The document type is mapped to this QName to be able to put all document information in a hashmap.
@@ -140,6 +140,36 @@ export class AspectSearchQueryElement implements ISimpleSearchQueryElement {
 
     public equals(other: ISearchQueryElement): boolean {
         return other instanceof AspectSearchQueryElement && other.aspect === this.aspect;
+    }
+
+}
+export class TypeSearchQueryElement implements ISimpleSearchQueryElement {
+    public static readonly TYPE = "TYPESearchQueryElement";
+    public readonly TYPE = TypeSearchQueryElement.TYPE;
+    public static ParseFromJSON(json: any, context: ISearchQueryElementFromJSONContext) {
+        const typecheckSafety: TypeSearchQueryElement = json;
+        return new TypeSearchQueryElement(typecheckSafety.pType, context.GetWordTranslator(), context.GetTypeNameTranslator());
+    }
+    public constructor(public readonly pType: string, private readonly translateType: ISynchronousTranslationService, private readonly translateTypeName: IASynchronousTranslationService) {
+    }
+    public isReferential() { return false; }
+    public isRemovable() { return true; }
+
+    public getSimpleSearchbarText() {
+        return this.translateTypeName(this.pType).then(translatedType => this.translateType(TYPE) + ": " + translatedType);
+    }
+    public getTooltipText() {
+        return this.getSimpleSearchbarText();
+    }
+    public visit<T>(visitor: ISearchQueryElementVisitor<T>): T {
+        return visitor.visitTypeSearchQueryElement(this);
+    }
+    public conflictsWith(other: ISearchQueryElement): boolean {
+        return (other instanceof TypeSearchQueryElement) && (other.pType === this.pType);
+    }
+
+    public equals(other: ISearchQueryElement): boolean {
+        return other instanceof TypeSearchQueryElement && other.pType === this.pType;
     }
 
 }
@@ -380,6 +410,7 @@ export interface ISearchQueryElementFromJSONContext {
     GetPropertyNameService(): PropertyNameService_t;
     GetWordTranslator(): ISynchronousTranslationService;
     GetAspectNameTranslator(): IASynchronousTranslationService;
+    GetTypeNameTranslator(): IASynchronousTranslationService;
 
 }
 
@@ -396,4 +427,5 @@ export interface ISearchQueryElementVisitor<T> {
     visitAndSearchQueryElement(query: AndSearchQueryElement): T;
     visitAspectSearchQueryElement(query: AspectSearchQueryElement): T;
     visitNodeRefSearchQueryElement(query: NodeRefSearchQueryElement): T;
+    visitTypeSearchQueryElement(query: TypeSearchQueryElement): T;
 }

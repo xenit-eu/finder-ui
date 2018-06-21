@@ -3,6 +3,7 @@ import {
     DatePropertySearchQueryElement, FolderSearchQueryElement,  ISearchQueryElementVisitor,
     NodeRefSearchQueryElement, OrSearchQueryElement, ReferenceSimpleSearchQueryElement, StringValuePropertySearchQueryElement,
     TextSearchQueryElement,
+    TypeSearchQueryElement,
 
 } from "./searchquery";
 import { SearchQueryNormalizeVisitor } from "./SearchQueryNormalizeVisitor";
@@ -44,6 +45,10 @@ export class SearchQueryElementReadableStringVisitor implements ISearchQueryElem
         return normalized.visit(this);
     }
     public visitAspectSearchQueryElement(query: AspectSearchQueryElement): Promise<string> {
+        return query.getSimpleSearchbarText();
+
+    }
+    public visitTypeSearchQueryElement(query: TypeSearchQueryElement): Promise<string> {
         return query.getSimpleSearchbarText();
 
     }
