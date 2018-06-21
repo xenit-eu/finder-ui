@@ -1,5 +1,6 @@
 
-import { createElement as __, DOM as _, ReactElement } from "react";
+import { createElement as __, ReactElement } from "react";
+import * as _ from "react-dom-factories";
 
 import FontIcon from "material-ui/FontIcon";
 import IconButton from "material-ui/IconButton";
@@ -26,22 +27,22 @@ type MenuItemWrapper_t = {
     onMenuSelected: (menuIdx: number, key?: string) => void,
 };
 
-function MenuItemWrapper({idx, menuItem, onMenuSelected}: MenuItemWrapper_t): ReactElement<any> {
+function MenuItemWrapper({ idx, menuItem, onMenuSelected }: MenuItemWrapper_t): ReactElement<any> {
     return __(MenuItem, {
         key: menuItem.key,
-        leftIcon: menuItem.iconName !== undefined ? __(FontIcon, {className: `fa ${menuItem.iconName}`}) : undefined,
-        rightIcon: menuItem.children !== undefined &&  menuItem.children.length > 0 ?  __(ArrowDropRight) : undefined,
+        leftIcon: menuItem.iconName !== undefined ? __(FontIcon, { className: `fa ${menuItem.iconName}` }) : undefined,
+        rightIcon: menuItem.children !== undefined && menuItem.children.length > 0 ? __(ArrowDropRight) : undefined,
         primaryText: menuItem.label,
-        onTouchTap: () => menuItem.children ? undefined : onMenuSelected(idx, menuItem.key),
-        menuItems: menuItem.children &&  menuItem.children.map((mi, i) => MenuItemWrapper({idx: (idx * 100) + i, menuItem: mi, onMenuSelected})),
+        onClick: () => menuItem.children ? undefined : onMenuSelected(idx, menuItem.key),
+        menuItems: menuItem.children && menuItem.children.map((mi, i) => MenuItemWrapper({ idx: (idx * 100) + i, menuItem: mi, onMenuSelected })),
     });
 }
 
-export function PageMenu({menuItems, onMenuSelected}: PageMenu_t): ReactElement<any> {
+export function PageMenu({ menuItems, onMenuSelected }: PageMenu_t): ReactElement<any> {
     return __(IconMenu, {
-            iconButtonElement: __(IconButton, {}, __(MoreVertIcon, { color: "white" })),
-            targetOrigin: { horizontal: "left", vertical: "top" },
-            anchorOrigin: { horizontal: "left", vertical: "top" },
-        }, menuItems.map((m, i) => MenuItemWrapper({idx: i, menuItem: m, onMenuSelected }),
-    ));
+        iconButtonElement: __(IconButton, {}, __(MoreVertIcon, { color: "white" })),
+        targetOrigin: { horizontal: "left", vertical: "top" },
+        anchorOrigin: { horizontal: "left", vertical: "top" },
+    }, menuItems.map((m, i) => MenuItemWrapper({ idx: i, menuItem: m, onMenuSelected }),
+        ));
 }

@@ -2,10 +2,15 @@
 import { mount, shallow, ShallowWrapper } from "enzyme";
 import getMuiTheme from "material-ui/styles/getMuiTheme";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import { Component, createElement as __, DOM as _, ReactElement } from "react";
-import * as injectTapEventPlugin from "react-tap-event-plugin";
+import { Component, createElement as __, ReactElement } from "react";
+import * as _ from "react-dom-factories";
 import { Facets, Facets_t } from "./facets";
 import { simulateEvent, TestWrapper } from "./testUtils";
+
+import { configure } from "enzyme";
+import * as Adapter from "enzyme-adapter-react-16";
+
+configure({ adapter: new Adapter() });
 
 const muiTheme = getMuiTheme();
 
@@ -26,11 +31,7 @@ const case1: Facets_t = {
 
 describe("Facets test", () => {
 
-    beforeAll(() => {
-        injectTapEventPlugin();
-    });
-
-    it("should display 2 nested Lists with corresponding ListItems",  () => {
+    it("should display 2 nested Lists with corresponding ListItems", () => {
 
         const wrapper = shallow(__(Facets, case1));
         // console.log(wrapper.debug());
@@ -61,9 +62,7 @@ describe("Facets test", () => {
         const topListItem = wrapper.find("ListItem");
         const subListItems = (<any>topListItem).prop("nestedItems").map((c: ReactElement<any>) => mount(c, { context: { muiTheme } }));
 
-        // subListItems[1].simulate('touchTap');  // doesn't work !
-        // console.log(subListItems[1].debug());
-        simulateEvent(subListItems[1].find("EnhancedButton"), "touchTap");
+        simulateEvent(subListItems[1].find("EnhancedButton"), "click");
 
         expect(case1.onFacetSelected).toHaveBeenCalledWith("F1", "Facet1", "V2", "Label2");
 

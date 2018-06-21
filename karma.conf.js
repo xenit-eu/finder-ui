@@ -3,7 +3,7 @@ var path = require('path');
 module.exports = function (config) {
     config.set({
 
-        frameworks: ["jasmine"],
+        frameworks: ["jasmine", "es6-shim"],
 
         files: [{
             pattern: "src/**/*.spec.ts"
@@ -16,7 +16,8 @@ module.exports = function (config) {
             'karma-chrome-launcher',
             'karma-phantomjs-launcher',
             'karma-edge-launcher',
-            'karma-junit-reporter'
+            'karma-junit-reporter',
+            'karma-es6-shim'
         ],
 
         preprocessors: {
@@ -42,6 +43,7 @@ module.exports = function (config) {
             //"Chrome", 
             'PhantomJS'
         ],
+        // fix typescript serving video/mp2t mime type
         mime: {
             'text/x-typescript': ['ts', 'tsx']
         },
@@ -56,16 +58,16 @@ module.exports = function (config) {
             devtool: 'inline-source-map', //just do inline source maps instead of the default
             module: {
                 loaders: [{
-                        test: /\.tsx?$/,
-                        loader: 'awesome-typescript-loader'
-                    },
-                    {
-                        test: /\.(less|scss|css)$/,
-                        loader: 'ignore'
-                    }, // ignore inclusion of style files.
+                    test: /\.tsx?$/,
+                    loader: 'awesome-typescript-loader'
+                },
+                {
+                    test: /\.(less|scss|css)$/,
+                    loader: 'ignore'
+                }, // ignore inclusion of style files.
                 ]
             },
-            externals: { /// !!!! important !!!! 
+            externals: { /// !!!! important !!!!
                 'cheerio': 'window',
                 'react/addons': true,
                 'react/lib/ExecutionEnvironment': true,

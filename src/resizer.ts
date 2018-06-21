@@ -1,4 +1,5 @@
-import { Component, createElement as __, DOM as _, ReactElement } from "react";
+import { Component, createElement as __, ReactElement } from "react";
+import * as _ from "react-dom-factories";
 import "./resizer.less";
 
 type State_t = {
@@ -31,7 +32,7 @@ export class Resizer extends Component<Resizable_t, State_t> {
     }
 
     public componentWillReceiveProps(newProps: Resizable_t) {
-        if(newProps.width !== undefined && newProps.width !== this.state.width) {
+        if (newProps.width !== undefined && newProps.width !== this.state.width) {
             this.setState({ width: newProps.width } as State_t);
         }
     }
@@ -46,19 +47,19 @@ export class Resizer extends Component<Resizable_t, State_t> {
         if (ok && onResize(newWidth)) {
             this.setState({ width: newWidth } as State_t);
         }
-        if(!ok) {
+        if (!ok) {
             const clampedWidth = Math.min(Math.max(newWidth, minWidth), maxWidth);
-            this.setState({width: clampedWidth} as State_t);
+            this.setState({ width: clampedWidth } as State_t);
         }
     }
 
     private onResizeStart() {
         // display placeholder during move because otherwise laggy behaviour when content is complex.
-        this.setState({displayContent: false} as State_t);
+        this.setState({ displayContent: false } as State_t);
     }
 
     private onResizeEnd() {
-        this.setState({displayContent: true} as State_t);
+        this.setState({ displayContent: true } as State_t);
     }
 
     public render() {
@@ -67,7 +68,7 @@ export class Resizer extends Component<Resizable_t, State_t> {
             maxWidth: this.state.width,
             flexBase: this.state.width,
         };
-        const widthElem = _.span({}, [_.i({className: "fa fa-arrow-left"}), " " + this.state.width + "px ", _.i({className: "fa fa-arrow-right"})]);
+        const widthElem = _.span({}, [_.i({ className: "fa fa-arrow-left" }), " " + this.state.width + "px ", _.i({ className: "fa fa-arrow-right" })]);
         const children = this.state.displayContent ? this.props.children : [_.div({ key: "placeholder", className: "place-holder" }, widthElem)];
         return __(this.props.ReactResizer, {
             onResize: this.onResize,

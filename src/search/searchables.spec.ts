@@ -11,8 +11,6 @@ import {
     TextSearchable,
 } from "./searchables";
 import { DatePropertySearchQueryElement, SearchQuery, StringValuePropertySearchQueryElement } from "./searchquery";
-// tslint:disable-next-line:no-var-requires
-const jasmineEnzyme = require("jasmine-enzyme"); // no typings for jasmine-engine => require instead of import.
 
 function DummyISearchQuery(name: string): SearchQuery {
     return new SearchQuery([], (s: string) => s);

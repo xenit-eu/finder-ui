@@ -1,6 +1,7 @@
 import * as ld from "lodash";
 import { Menu, MenuItem, SelectField, TextField } from "material-ui";
-import { Component, createElement as __, DOM as _, FormEvent, ReactElement, SyntheticEvent } from "react";
+import { Component, createElement as __, FormEvent, ReactElement, SyntheticEvent } from "react";
+import * as _ from "react-dom-factories";
 
 import { FieldSkeleton_Props_t, RenderMode } from "../fields";
 import { PropertyRenderConfig_t, PropertyRenderer_t } from "./interface";

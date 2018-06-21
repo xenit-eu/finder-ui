@@ -10,7 +10,8 @@ import Subtitles from "material-ui/svg-icons/av/subtitles";
 import SocialPerson from "material-ui/svg-icons/social/person";
 
 import * as moment from "moment";
-import { Component, createElement as __, CSSProperties, DOM as _, ReactElement } from "react";
+import { Component, createElement as __, CSSProperties, ReactElement } from "react";
+import * as _ from "react-dom-factories";
 export type Version_t = {
     title: string
     editor: string,
@@ -31,16 +32,16 @@ const person = __(Avatar, { size: iconsize, icon: __(SocialPerson, {}) });
 const input = __(Avatar, { size: iconsize, icon: __(Input) });
 const actionassignment = __(Avatar, { size: iconsize, icon: __(ActionAssignment, {}) });
 const subtitles = __(Avatar, { size: iconsize, icon: __(Subtitles) });
-export function VersionsHistoryPanel({show, versions}: VersionsHistoryPanel_t): ReactElement<any> {
+export function VersionsHistoryPanel({ show, versions }: VersionsHistoryPanel_t): ReactElement<any> {
     if (show) {
         if (versions.length === 0) {
             return _.div({ className: "docversions" }, "Document has no version history.");
         }
-        const textcenteredstyle: {style: CSSProperties} = { style: { display: "inline-block", position: "relative", top: "-4px", left: "8px", width: "125px" } };
-        const outerspanStyle: {style: CSSProperties} = { style: { display: "inline-block", marginTop: "3px", marginBottom: "3px", marginLeft: "8px", marginRight: "8px", width: "165px" } };
+        const textcenteredstyle: { style: CSSProperties } = { style: { display: "inline-block", position: "relative", top: "-4px", left: "8px", width: "125px" } };
+        const outerspanStyle: { style: CSSProperties } = { style: { display: "inline-block", marginTop: "3px", marginBottom: "3px", marginLeft: "8px", marginRight: "8px", width: "165px" } };
         const singleVersion = (v: Version_t) => {
             const momentText = moment(new Date(Number.parseInt(v.editDate))).fromNow();
-            const noderefSpan = Object.assign({ title: v.nodeRef}, outerspanStyle);
+            const noderefSpan = Object.assign({ title: v.nodeRef }, outerspanStyle);
             let childsToDisplay: any[] = [
                 // __(ListItem, { leftAvatar: person }, "" + v.editor),
                 // __(ListItem, { leftAvatar: actionalarm }, (moment(new Date(Number.parseInt(v.editDate))).fromNow())),
@@ -49,7 +50,7 @@ export function VersionsHistoryPanel({show, versions}: VersionsHistoryPanel_t): 
                 _.span(outerspanStyle, [actionalarm, _.span(textcenteredstyle, "" + momentText)]),
                 _.span(noderefSpan, input),
             ];
-            childsToDisplay = ((v.title && v.title.trim().length > 0) ? [_.span(outerspanStyle,[subtitles,_.span(textcenteredstyle, v.title)])] : []).concat(childsToDisplay);
+            childsToDisplay = ((v.title && v.title.trim().length > 0) ? [_.span(outerspanStyle, [subtitles, _.span(textcenteredstyle, v.title)])] : []).concat(childsToDisplay);
             childsToDisplay = childsToDisplay.concat(v.editComment ?
                 [_.span(outerspanStyle, [actionassignment, _.span(textcenteredstyle, "" + v.editComment)])] : []);
             childsToDisplay = [_.span(outerspanStyle, [changeHistory, _.span(textcenteredstyle, v.versionNumber)])].concat(childsToDisplay);

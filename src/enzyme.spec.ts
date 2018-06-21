@@ -1,9 +1,13 @@
 // tslint:disable:only-arrow-functions
 
-import { mount, shallow } from "enzyme";
-import { Component, createElement as __, DOM as _, PropTypes } from "react";
-import * as injectTapEventPlugin from "react-tap-event-plugin";
-import { simulateEvent, TestWrapper } from "./testUtils";
+import { mount } from "enzyme";
+import { createElement as __ } from "react";
+import * as _ from "react-dom-factories";
+
+import { configure } from "enzyme";
+import * as Adapter from "enzyme-adapter-react-16";
+
+configure({ adapter: new Adapter() });
 
 /**
  *  enzyme lib playground
@@ -18,10 +22,9 @@ describe("enzyme usage", () => {
         //      cfr https://github.com/airbnb/enzyme/issues/262
         //      cfr https://github.com/airbnb/javascript/tree/master/react#class-vs-reactcreateclass-vs-stateless
 
-        const InnerComponent = function InnerComponent () { return _.div({className: "inner"}, "foobar"); } ;
-        const OuterComponent = function OuterComponent () { return _.div({className: "outer"}, __(InnerComponent)); };
+        const InnerComponent = function InnerComponent() { return _.div({ className: "inner" }, "foobar"); };
+        const OuterComponent = function OuterComponent() { return _.div({ className: "outer" }, __(InnerComponent)); };
 
-        const inner = mount(__(InnerComponent));
         const outer = mount(__(OuterComponent));
 
         // console.log(inner.debug());

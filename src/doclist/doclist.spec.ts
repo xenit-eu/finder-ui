@@ -1,21 +1,23 @@
 
 import { mount, shallow } from "enzyme";
-import { Component, createElement as __, DOM as _, PropTypes } from "react";
+import { Component, createElement as __ } from "react";
+import * as _ from "react-dom-factories";
 
-import * as injectTapEventPlugin from "react-tap-event-plugin";
 import { Fixture, simulateEvent } from "../testUtils";
 
 import { Pager_t } from "../pager";
 import { DocList, DocList_t, MenuItem_t, SortDirection_t } from "./doclist";
+
+import { configure } from "enzyme";
+import * as Adapter from "enzyme-adapter-react-16";
+
+configure({ adapter: new Adapter() });
 
 // tslint:disable-next-line:no-var-requires
 const jasmineEnzyme = require("jasmine-enzyme"); // no typings for jasmine-engine => require instead of import.
 
 describe("DocList component tests", () => {
 
-    beforeAll(() => {
-        injectTapEventPlugin();
-    });
     beforeEach(() => {
         jasmineEnzyme();
     });

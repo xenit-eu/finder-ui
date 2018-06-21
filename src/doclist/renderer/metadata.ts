@@ -1,4 +1,5 @@
-import { createElement as __, DOM as _ } from "react";
+import { createElement as __ } from "react";
+import * as _ from "react-dom-factories";
 
 import { Node_t, PropertyRenderConfig_t, PropertyRenderer_t, PropertyRenderers, RenderMode } from "../../metadata";
 import { ColumnRenderer_Config_t, ColumnRenderer_Factory_t, ColumnRenderer_Props_t, ColumnRenderer_t } from "./interface";
@@ -19,7 +20,7 @@ function wrapMetadataRenderer<T>(metadataRendererFactory: PropertyRenderer_t<T>)
         return (props: ColumnRenderer_Props_t) => {
             return __(metadataRenderer, {
                 node: [props.node],
-                onChange: () => {},
+                onChange: () => { },
                 renderMode: RenderMode.VIEW,
             });
         };

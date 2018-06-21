@@ -1,10 +1,9 @@
 import CircularProgress from "material-ui/CircularProgress";
-import DatePicker from "material-ui/DatePicker";
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import SearchIcon from "material-ui/svg-icons/action/search";
 import ErrorIcon from "material-ui/svg-icons/alert/error";
 import StarIcon from "material-ui/svg-icons/toggle/star-border";
-import { cloneElement, Component, createElement as __, DOM as _ } from "react";
+import { Component, createElement as __ } from "react";
+import * as _ from "react-dom-factories";
 
 import * as Colors from "material-ui/styles/colors";
 import getMuiTheme from "material-ui/styles/getMuiTheme";

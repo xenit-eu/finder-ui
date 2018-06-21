@@ -1,10 +1,15 @@
 
-import { Component, createElement as __, DOM as _, PropTypes } from "react";
-import * as injectTapEventPlugin from "react-tap-event-plugin";
+import { Component, createElement as __ } from "react";
+import * as _ from "react-dom-factories";
 import { Fixture, simulateEvent } from "./testUtils";
 
 import { MetadataType_t } from "./metadata";
 import { MetaDataDialog, MetaDataDialog_t } from "./metadataDialog";
+
+import { configure } from "enzyme";
+import * as Adapter from "enzyme-adapter-react-16";
+
+configure({ adapter: new Adapter() });
 
 // tslint:disable-next-line:no-var-requires
 const jasmineEnzyme = require("jasmine-enzyme"); // no typings for jasmine-engine => require instead of import.
@@ -12,9 +17,6 @@ const debug: any = require("debug");
 
 describe("Metadata component", () => {
 
-    beforeAll(() => {
-        injectTapEventPlugin();
-    });
     beforeEach(() => {
         jasmineEnzyme();
     });
@@ -127,7 +129,7 @@ describe("Metadata component", () => {
 
         // simulate a click on save button.
         const saveButton = layerWrapper.find("FlatButton").at(1); // second button is save button
-        simulateEvent(saveButton, "touchTap");
+        simulateEvent(saveButton, "click");
 
         expect(props.onSave).toHaveBeenCalledWith([{
             name: "F1",

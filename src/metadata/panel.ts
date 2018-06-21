@@ -1,12 +1,13 @@
 import { CircularProgress, Dialog, FlatButton } from "material-ui";
-import { Component, ComponentType, createElement as __, DOM as _, ReactElement } from "react";
+import { Component, ComponentType, createElement as __, ReactElement } from "react";
+import * as _ from "react-dom-factories";
 import { RenderMode } from "./index";
 
 export function arrayEquals<T>(a: T[], b: T[], cmp: (a: T, b: T) => boolean = (x: T, y: T) => x === y): boolean {
-    if(a.length !== b.length) {
+    if (a.length !== b.length) {
         return false;
     }
-    for(let i = a.length-1; i >= 0; i--) {
+    for (let i = a.length - 1; i >= 0; i--) {
         if (!cmp(a[i], b[i])) {
             return false;
         }
@@ -14,7 +15,7 @@ export function arrayEquals<T>(a: T[], b: T[], cmp: (a: T, b: T) => boolean = (x
     return true;
 }
 
-type MetadataPanel_Item_t<T> = ComponentType<{node: T[], onChange: (node: T[]) => void, renderMode: RenderMode}>;
+type MetadataPanel_Item_t<T> = ComponentType<{ node: T[], onChange: (node: T[]) => void, renderMode: RenderMode }>;
 
 export type MetadataPanel_Props_t<T> = {
     /**
@@ -58,20 +59,20 @@ export type MetadataPanel_Props_t<T> = {
     onSave: (node: T, originalNode: T) => Promise<boolean>,
     onSaveAll?: never,
 } | {
-    /**
-     * Called when the save button is pressed in edit mode
-     * Called once for all nodes that have to be saved
-     */
-    onSaveAll: (node: T[], originalNode: T[]) => Promise<boolean>,
-    onSave?: never,
-});
+        /**
+         * Called when the save button is pressed in edit mode
+         * Called once for all nodes that have to be saved
+         */
+        onSaveAll: (node: T[], originalNode: T[]) => Promise<boolean>,
+        onSave?: never,
+    });
 
 type MetadataPanel_State_t<T> = {
     nodes: T[],
     renderMode: RenderMode,
     skeletons: Array<MetadataPanel_Item_t<T>> | null,
     loading: boolean,
-    error: string|null,
+    error: string | null,
 };
 
 export class MetadataPanel<T> extends Component<MetadataPanel_Props_t<T>, MetadataPanel_State_t<T>> {
@@ -111,7 +112,7 @@ export class MetadataPanel<T> extends Component<MetadataPanel_Props_t<T>, Metada
     }
 
     public componentWillReceiveProps(nextProps: MetadataPanel_Props_t<T>) {
-        if(!arrayEquals(this.props.nodes, nextProps.nodes, (a, b) => !this.didNodeChange(a, b))) {
+        if (!arrayEquals(this.props.nodes, nextProps.nodes, (a, b) => !this.didNodeChange(a, b))) {
             this.setState({
                 nodes: nextProps.nodes,
                 renderMode: this.props.initialRenderMode || RenderMode.VIEW,
@@ -123,7 +124,7 @@ export class MetadataPanel<T> extends Component<MetadataPanel_Props_t<T>, Metada
     }
 
     protected getButtons(): Array<ReactElement<any>> {
-        if(!this.props.showButtons) {
+        if (!this.props.showButtons) {
             return [];
         }
         switch (this.state.renderMode) {
@@ -160,7 +161,7 @@ export class MetadataPanel<T> extends Component<MetadataPanel_Props_t<T>, Metada
     }
 
     public render(): ReactElement<any> {
-        if(this.state.loading) {
+        if (this.state.loading) {
             return __(CircularProgress);
         } else if (!this.state.skeletons) {
             return _.span({ style: { color: "red" } }, "Error loading metadata form skeleton: " + this.state.error);
@@ -178,7 +179,7 @@ export class MetadataPanel<T> extends Component<MetadataPanel_Props_t<T>, Metada
     }
 
     private _getSavePromise(): Promise<boolean> {
-        if(this.props.onSaveAll) {
+        if (this.props.onSaveAll) {
             return this.props.onSaveAll(this.state.nodes, this.props.nodes);
         } else {
             return Promise.all(this.state.nodes.map((node, index) => this.props.onSave!(node, this.props.nodes[index])))

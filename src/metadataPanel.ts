@@ -1,7 +1,8 @@
 import Dialog from "material-ui/Dialog";
 import FlatButton from "material-ui/FlatButton";
 import TextField from "material-ui/TextField";
-import { createElement as __, DOM as _ } from "react";
+import { createElement as __ } from "react";
+import * as _ from "react-dom-factories";
 import { Metadata_t, metadataFields } from "./metadata";
 
 const customContentStyle = {
@@ -36,13 +37,13 @@ export type MetaDataPanelGroupInfo_t = {
     itemToGroup: { [id: string]: string },
 };
 
-export function MetaDataPanel({allowEdition, editionMode, fields, onEdit, onSave, groups}: MetaDataPanel_t, style?: MetaDataPanelStyle_t) {
+export function MetaDataPanel({ allowEdition, editionMode, fields, onEdit, onSave, groups }: MetaDataPanel_t, style?: MetaDataPanelStyle_t) {
     return _.div({ className: "metadata" }, fields.length > 0 ? [
         // header with "Save" button
         allowEdition ? _.div({ key: "metadata-header", className: "metadata-header" }, [
             __(FlatButton, {
                 label: editionMode ? "Save" : "Edit", primary: true, keyboardFocused: false,
-                onTouchTap: () => editionMode ? onSave(fields) : onEdit(), style: (style && style.button) ? style.button : {},
+                onClick: () => editionMode ? onSave(fields) : onEdit(), style: (style && style.button) ? style.button : {},
             }),
         ]) : _.div({ className: "metadata-header" }),
         // editable fields.

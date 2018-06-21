@@ -2,7 +2,8 @@
 import Badge from "material-ui/Badge";
 import { List, ListItem } from "material-ui/List";
 import ActionInfo from "material-ui/svg-icons/action/info";
-import { createElement as __, DOM as _, ReactElement } from "react";
+import { createElement as __, ReactElement } from "react";
+import * as _ from "react-dom-factories";
 
 import "./facets.less";
 
@@ -24,7 +25,7 @@ type FacetSub_t = {
     onFacetSelected: OnFacetSelected_t,
 };
 
-function FacetSub({facet, onFacetSelected}: FacetSub_t): ReactElement<any> {
+function FacetSub({ facet, onFacetSelected }: FacetSub_t): ReactElement<any> {
     return __(ListItem, {
         key: facet.name,
         primaryText: facet.label,
@@ -32,12 +33,13 @@ function FacetSub({facet, onFacetSelected}: FacetSub_t): ReactElement<any> {
         initiallyOpen: false,
         primaryTogglesNestedList: true,
         nestedItems: facet.values.map(c =>
-                __(ListItem, {
-                    key: c.value,
-                    onTouchTap: () => onFacetSelected(facet.name, facet.label, c.value, c.label),
-                    primaryText: c.label,
-                    rightIcon: __(Badge, { className: "badge", badgeContent: c.count }) }),
-            ),
+            __(ListItem, {
+                key: c.value,
+                onClick: () => onFacetSelected(facet.name, facet.label, c.value, c.label),
+                primaryText: c.label,
+                rightIcon: __(Badge, { className: "badge", badgeContent: c.count }),
+            }),
+        ),
     });
 }
 
@@ -61,8 +63,8 @@ export type Facets_t = {
 //@MethodDescription "Facets({param1: value1, param2: value2, ...})"
 //@Param facets     Facet_t[] "facets data to be displayed (see below for more details)"
 //@Param onFacetSelected OnFacetSelected_t "callback called when a specific facet value has been clicked"
-export function Facets({facets, onFacetSelected}: Facets_t): ReactElement<any> {
-    return _.div({className: "facets"},
+export function Facets({ facets, onFacetSelected }: Facets_t): ReactElement<any> {
+    return _.div({ className: "facets" },
         __(List, { key: "first" }, facets.filter((k) => k.values.length > 0).map((facet) => FacetSub({ facet, onFacetSelected }))),
     );
 }

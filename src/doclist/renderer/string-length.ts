@@ -1,4 +1,4 @@
-import { DOM as _ } from "react";
+import * as _ from "react-dom-factories";
 import { Node_t } from "../../metadata/fields";
 import { ColumnRenderer_Config_t, ColumnRenderer_Factory_t, ColumnRenderer_Props_t, ColumnRenderer_t } from "./interface";
 import PropertyRenderer from "./property";

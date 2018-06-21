@@ -1,6 +1,7 @@
-import { createElement as __, DOM as _, ReactElement } from "react";
+import { createElement as __, ReactElement } from "react";
+import * as _ from "react-dom-factories";
 
-export function DocPreviewPdfJs({src}: { src: string }): ReactElement<any> {
+export function DocPreviewPdfJs({ src }: { src: string }): ReactElement<any> {
     if (!src || src.length === 0) {
         return _.div({ className: "PDFJS_Without_file" });
     }

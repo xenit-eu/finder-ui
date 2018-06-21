@@ -1,5 +1,6 @@
 import TextField from "material-ui/TextField";
-import { Component, createElement as __, DOM as _, FormEvent } from "react";
+import { Component, createElement as __, FormEvent } from "react";
+import * as _ from "react-dom-factories";
 
 import { FieldSkeleton_Props_t, RenderMode } from "../fields";
 import { ChangeOnBlurTextField } from "./helpers";
