@@ -9,6 +9,7 @@ export const AND = "And";
 export const OR = "Or";
 export const SUBQUERY = "Subquery";
 export const NODEREF = "Noderef";
+export const TYPE = "Type";
 const FRENCH = "fr-be";
 const ENGLISH = "en-us";
 const DUTCH = "nl-be";
@@ -141,6 +142,18 @@ export const noderefTranslations = {
         [NODEREF]: NODEREF,
     },
 };
+export const typeTranslations = {
+    [ENGLISH]: {
+        [TYPE]: TYPE,
+    },
+    [FRENCH]: {
+        [TYPE]: TYPE,
+    },
+    [DUTCH]: {
+        [TYPE]: TYPE,
+    },
+};
+
 function isObject(item: any) {
     return (item && typeof item === "object" && !Array.isArray(item));
 }
@@ -161,7 +174,8 @@ export function mergeDeep(target: any, ...sources: any[]): any {
 }
 export class CombinedWordTranslator extends WordTranslator {
     public constructor(languageSelection: () => string) {
-        const merged = mergeDeep({}, datewordTranslations, folderWordTranslations, textWordTranslations, AllWordTranslations, logicWordTranslations, aspectTranslations, noderefTranslations);
+        const merged = mergeDeep({}, datewordTranslations, folderWordTranslations, textWordTranslations,
+            AllWordTranslations, logicWordTranslations, aspectTranslations, noderefTranslations, typeTranslations);
         super(languageSelection, merged);
     }
 }

@@ -3,6 +3,7 @@ import {
     DatePropertySearchQueryElement, FolderSearchQueryElement, ISearchQueryElement, ISearchQueryElementVisitor, ISimpleSearchQueryElement,
     NodeRefSearchQueryElement, OrSearchQueryElement, ReferenceSimpleSearchQueryElement, SearchQuery, StringValuePropertySearchQueryElement,
     TextSearchQueryElement,
+    TypeSearchQueryElement,
 
 } from "./searchquery";
 import { SearchQueryElementReadableStringVisitor } from "./SearchQueryElementReadableStringVisitor";
@@ -45,6 +46,9 @@ export class SearchQueryElementToSimpleQueryElementVisitor implements ISearchQue
         return new ReferenceSimpleSearchQueryElement(this.generateDummyQuery(query), this.translate(SUBQUERY) + " " + count);
     }
     public visitAspectSearchQueryElement(query: AspectSearchQueryElement): ISimpleSearchQueryElement {
+        return query;
+    }
+    public visitTypeSearchQueryElement(query: TypeSearchQueryElement): ISimpleSearchQueryElement {
         return query;
     }
     public visitNodeRefSearchQueryElement(query: NodeRefSearchQueryElement): ISimpleSearchQueryElement {
