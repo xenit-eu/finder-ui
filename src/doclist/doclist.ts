@@ -185,7 +185,9 @@ function SortableTh(c: Doclist_Column_t, onSortColumnSelected: OnSortColumnSelec
 //@Param togglable boolean "Whether rows are togglable or not"
 //@Param columnsPicker any "Column picker element"
 //@Param toggledRows number "The number of rows that have been toggled in total"
-
+/**
+ * @deprecated use NodeTable instead
+ */
 export function DocList({ className, columns, data, nodes, onDownloadButtonClick, onMenuSelected, onPageSelected, onRowSelected,
     onRowToggled, onSortColumnSelected, pager, rowMenu, rowStyle, rowToggled, togglable, columnsPicker, documentNotFoundText,
     toggledRows, translations }: DocList_t): ReactElement<any> {
