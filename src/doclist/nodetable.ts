@@ -13,12 +13,14 @@ type MenuItem_t<T> = {
     disabled: boolean,
 };
 
-export interface INodeTableColumn {
+export interface INodeTableBasicColumn {
     name: string;
+    sortDirection: NodeTableSortDirection;
+}
+export interface INodeTableColumn extends INodeTableBasicColumn {
     label: string;
     alignRight: boolean;
     sortable: boolean;
-    sortDirection: NodeTableSortDirection;
     renderer: ColumnRenderer_t;
 };
 
@@ -42,18 +44,18 @@ type Translations_t = {
     [K in NodeTableTranslations]: string
 };
 
-type OnColumnSort_t = (sorts: Array<{ column: INodeTableColumn, direction: NodeTableSortDirection }>) => void;
+type OnColumnSort_t = (sorts: INodeTableBasicColumn[]) => void;
 type OnMenuSelected_t<T> = (node: Node_t, menuKey: T, rowIndex: number, menuIndex: number) => void;
 
-type Row_t<T> = {
-    node: Node_t, // The node to show in this row
-    rowMenu: Array<MenuItem_t<T>>, // The menu items to show for this node
-    toggled?: boolean, // Whether the node has its checkbox enabled or not (only effective when togglable is true)
-    rowStyle: CSSProperties, // Additional CSS properties to apply to the row
+export interface INodeTableRow<T> {
+    node: Node_t; // The node to show in this row
+    rowMenu: Array<MenuItem_t<T>>; // The menu items to show for this node
+    toggled?: boolean; // Whether the node has its checkbox enabled or not (only effective when togglable is true)
+    rowStyle: CSSProperties; // Additional CSS properties to apply to the row
 };
 
 export interface INodeTableProps<T> {
-    rows: Row_t<T>[]; // List of rows to show in the table
+    rows: INodeTableRow<T>[]; // List of rows to show in the table
     columns: INodeTableColumn[]; // Columns to show in the table
     pager: {
         totalItems: number, // Total number of available items
@@ -75,11 +77,11 @@ export function NodeTable<T>(props: INodeTableProps<T>) {
         {
             id: "--menu",
             Header: "",
-            accessor: (row: Row_t<T>) => row,
+            accessor: (row: INodeTableRow<T>) => row,
             sortable: false,
             resizable: false,
             minWidth: 60,
-            Cell: (prop: { value: Row_t<T>, index: number }) => __(RowMenu, {
+            Cell: (prop: { value: INodeTableRow<T>, index: number }) => __(RowMenu, {
                 menuItems: prop.value.rowMenu,
                 onMenuItemSelected: (menuKey: T, menuIndex: number) => {
                     props.onRowMenuItemClicked(prop.value.node, menuKey, prop.index, menuIndex);
@@ -103,11 +105,11 @@ export function NodeTable<T>(props: INodeTableProps<T>) {
             headerStyle: {
                 textAlign: "initial",
             },
-            accessor: (row: Row_t<T>) => row,
+            accessor: (row: INodeTableRow<T>) => row,
             sortable: false,
             resizable: false,
             minWidth: 32,
-            Cell: (prop: { value: Row_t<T>, index: number }) => __(Checkbox, {
+            Cell: (prop: { value: INodeTableRow<T>, index: number }) => __(Checkbox, {
                 checked: prop.value.toggled || false,
                 onCheck: (event: any, checked: boolean) => props.onRowToggled!(prop.value.node, checked, prop.index),
             }),
@@ -116,7 +118,7 @@ export function NodeTable<T>(props: INodeTableProps<T>) {
     const columns: Column[] = props.columns.map(col => ({
         id: col.name,
         Header: col.label,
-        accessor: (row: Row_t<T>) => row.node,
+        accessor: (row: INodeTableRow<T>) => row.node,
         Cell: (prop: any) => __(col.renderer, { node: prop.value, row: 0 }),
     }));
 
@@ -145,24 +147,24 @@ export function NodeTable<T>(props: INodeTableProps<T>) {
         multiSort: false,
         sorted,
         onSortedChange: (newSorted: SortingRule[], column: Column, additive: boolean) => {
-            const sorts = props.columns.map(col => {
+            const sorts: INodeTableBasicColumn[] = props.columns.map(col => {
                 const sortingRule = newSorted.find(sort => sort.id === col.name);
                 if (!sortingRule) {
                     return {
-                        column: col,
-                        direction: NodeTableSortDirection.NONE,
+                        name: col.name,
+                        sortDirection: NodeTableSortDirection.NONE,
                     };
                 }
 
                 return {
-                    column: col,
-                    direction: sortingRule.desc ? NodeTableSortDirection.DESC : NodeTableSortDirection.ASC,
+                    name: col.name,
+                    sortDirection: sortingRule.desc ? NodeTableSortDirection.DESC : NodeTableSortDirection.ASC,
                 };
             });
             props.onSortChanged(sorts);
         },
         getTdProps: (state: TableProps, rowInfo?: RowInfo, column?: Column) => (rowInfo && column ? {
-            onClick: column.id!.startsWith("--") ? undefined : (event: MouseEvent) => {
+            onClick: column.id!.startsWith("--") ? undefined : (event: MouseEvent<any>) => {
                 props.onRowSelected(rowInfo.original.node, rowInfo.index);
             },
             style: rowInfo.original.rowStyle,
@@ -195,7 +197,7 @@ function RowMenu<T>({ menuItems, onMenuItemSelected }: RowMenu_Props_t<T>) {
                 key: i,
                 primaryText: mi.label,
                 disabled: mi.disabled,
-                onClick: (event: MouseEvent) => {
+                onClick: (event: MouseEvent<any>) => {
                     onMenuItemSelected(mi.key, i);
                     event.stopPropagation();
                     event.preventDefault();

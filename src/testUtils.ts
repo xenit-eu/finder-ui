@@ -2,8 +2,7 @@
 import { mount } from "enzyme";
 import getMuiTheme from "material-ui/styles/getMuiTheme";
 import * as PropTypes from "prop-types";
-import { Component, createElement as __, ReactElement } from "react";
-import * as _ from "react-dom-factories";
+import { Children, cloneElement, Component, createElement as __, ReactElement } from "react";
 import * as TestUtils from "react-dom/test-utils";
 
 /**
@@ -37,10 +36,13 @@ export class TestWrapper extends Component<any, any> {
         return { muiTheme: getMuiTheme() };
     }
     public render() {
-        return _.div({}, this.props.children);
+        const { children, ...rest } = this.props;
+        const child = Children.only(children);
+
+        return cloneElement(child, rest);
     }
 }
 
-export function Fixture(component: ReactElement<any>, context: any = {}) {
-    return mount(__(TestWrapper, context, component));
+export function Fixture(component: ReactElement<any>, props: any = {}) {
+    return mount(__(TestWrapper, props, component));
 }
