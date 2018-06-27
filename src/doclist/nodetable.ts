@@ -163,11 +163,13 @@ export function NodeTable<T>(props: INodeTableProps<T>) {
             });
             props.onSortChanged(sorts);
         },
+        getTrProps: (state: TableProps, rowInfo?: RowInfo) => (rowInfo ? {
+            style: rowInfo.original.rowStyle,
+        } : {}),
         getTdProps: (state: TableProps, rowInfo?: RowInfo, column?: Column) => (rowInfo && column ? {
             onClick: column.id!.startsWith("--") ? undefined : (event: MouseEvent<any>) => {
                 props.onRowSelected(rowInfo.original.node, rowInfo.index);
             },
-            style: rowInfo.original.rowStyle,
         } : {}),
         previousText: props.translations[NodeTableTranslations.PREVIOUS],
         nextText: props.translations[NodeTableTranslations.NEXT],
