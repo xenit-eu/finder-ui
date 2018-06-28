@@ -20,7 +20,7 @@ const translations = {
     [NodeTableTranslations.ROWS]: "ROWS",
 };
 
-fdescribe("NodeList", () => {
+describe("NodeList", () => {
     beforeEach(() => (<any>jasmineEnzyme)());
 
     it("Renders an empty table when no data is passed", () => {
