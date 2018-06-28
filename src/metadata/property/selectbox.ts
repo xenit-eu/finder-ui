@@ -21,13 +21,6 @@ type SelectBox_State_t = {
     searchFilter?: string,
 };
 
-/*
-XENFIN-770
-This is required! because otherwise we loose focus each time we type in the filter.
-Before thinking about removing this, can you not pass parameter?
-*/
-(<any>Menu).defaultProps.disableAutoFocus = true;
-
 const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRenderConfig_t<string | string[]>) => {
     class SelectBoxInner extends Component<FieldSkeleton_Props_t, SelectBox_State_t> {
         constructor(props: FieldSkeleton_Props_t) {
@@ -132,7 +125,15 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
                         fullWidth: true,
                         multiple: isMultiValue,
                         onChange: (evt: ChangeEvent<HTMLSelectElement>) => {
-                            this.props.onChange(config.mapToModel(this.props.node, evt.target.value));
+                            let val = evt.target.value as string | string[];
+                            // Filter out "undefined" values from clicking the searchbox
+                            if (!val) {
+                                return;
+                            }
+                            if (Array.isArray(val)) {
+                                val = val.filter(v => !!v);
+                            }
+                            this.props.onChange(config.mapToModel(this.props.node, val));
                         },
                         MenuProps: {
                             onExited: () => this.lookupMenuItems(),
