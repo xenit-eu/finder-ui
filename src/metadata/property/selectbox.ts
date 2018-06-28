@@ -1,9 +1,12 @@
-import * as ld from "lodash";
-import { Menu, MenuItem, SelectField, TextField } from "material-ui";
-import { Component, createElement as __, FormEvent, ReactElement, SyntheticEvent, Fragment, ChangeEvent } from "react";
-import * as _ from "react-dom-factories";
-import Select from "@material-ui/core/Select";
+import Checkbox from "@material-ui/core/Checkbox";
 import Chip from "@material-ui/core/Chip";
+import ListItemText from "@material-ui/core/ListItemText";
+import MenuItem from "@material-ui/core/MenuItem";
+import Select from "@material-ui/core/Select";
+import * as ld from "lodash";
+import { TextField } from "material-ui";
+import { ChangeEvent, Component, createElement as __, SyntheticEvent } from "react";
+import * as _ from "react-dom-factories";
 
 import { FieldSkeleton_Props_t, RenderMode } from "../fields";
 import { PropertyRenderConfig_t, PropertyRenderer_t } from "./interface";
@@ -19,6 +22,7 @@ type SelectBox_State_t = {
     currentValues: KV_t[],
     currentValuesLoaded: boolean,
     searchFilter?: string,
+    open: boolean,
 };
 
 const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRenderConfig_t<string | string[]>) => {
@@ -31,12 +35,13 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
                 currentValues: [],
                 currentValuesLoaded: false,
                 searchFilter: undefined,
+                open: false,
             };
         }
 
-        private _getSanitizedValue(): string[] | string | null {
+        private _getSanitizedValue(): string[] | string {
             const value = config.mapToView(this.props.node);
-            return Array.isArray(value) ? value.map(v => v.toString()) : value ? value.toString() : null;
+            return Array.isArray(value) ? value.map(v => v.toString()) : value ? value.toString() : "";
         }
 
         private _getViewValue(): string[] {
@@ -99,17 +104,19 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
                 const useCurrentValues = this.state.menuItems.length === 0 && !this.state.searchFilter && !isMultiValue;
                 const menuItems = useCurrentValues ? this.state.currentValues.filter(v => !!v) : this.state.menuItems;
 
-                const menuItemComponents = menuItems.map((item: KV_t) => __(MenuItem, {
+                const menuItemComponents = (isMultiValue || config.parameters.required ? [] : [{ key: "", value: "Empty" }]).concat(menuItems).map((item: KV_t) => __(MenuItem, {
                     key: item.key,
                     value: item.key,
-                    primaryText: item.value,
-                    insetChildren: isMultiValue,
-                    checked: isMultiValue && value !== null ? value.indexOf(item.key) >= 0 : false,
-                }));
-                const searchBox = _.div({
-                    style: {
-                        padding: "0 24px",
-                    },
+                }, [
+                        isMultiValue && __(Checkbox, {
+                            checked: value !== null ? value.indexOf(item.key) >= 0 : false,
+                        }),
+                        __(ListItemText, {
+                            primary: item.value,
+                        }),
+                    ]));
+                const searchBox = __(MenuItem, {
+                    key: "--searchBox",
                 },
                     __(TextField, {
                         fullWidth: true,
@@ -120,27 +127,56 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
                     }),
                 );
 
+                /*
+                 * The story of *open*
+                 *
+                 * A singlevalue selectbox closes as soon as one value is selected, or when a click outside the menu happens.
+                 * A multivalue selectbox only closes when a click outside the menu happens.
+                 *
+                 * We have a searchbox embedded inside the menu. Clicking the searchbox triggers a selection on the menu, which
+                 * causes the single value selectbox to close immediately.
+                 *
+                 * To avoid this undesired closing, we keep the Select as a controlled component, which we explicitly tell to open and close.
+                 * However, in case of multivalue, we still want to close as the default action.
+                 *
+                 * For the single value case:
+                 * * Because we still want to close on clickaway, even in the single value select, we also attach an eventlistener to MenuProps.onClose.
+                 * * Because we also want to close on change, we close when the evt.target.value is not empty
+                 */
                 return _.span({ className: "metadata-field metadata-field-selectbox" },
                     __(Select, {
                         fullWidth: true,
+                        displayEmpty: true,
                         multiple: isMultiValue,
-                        onChange: (evt: ChangeEvent<HTMLSelectElement>) => {
-                            let val = evt.target.value as string | string[];
+                        open: this.state.open,
+                        onOpen: () => this.setState({ open: true }),
+                        onClose: isMultiValue ? () => this.setState({ open: false }) : () => { },
+                        onChange: isMultiValue ? (evt: ChangeEvent<HTMLSelectElement>) => {
+                            let val = evt.target.value as any as string[];
                             // Filter out "undefined" values from clicking the searchbox
-                            if (!val) {
-                                return;
-                            }
                             if (Array.isArray(val)) {
                                 val = val.filter(v => !!v);
                             }
                             this.props.onChange(config.mapToModel(this.props.node, val));
+                        } : (evt: ChangeEvent<HTMLSelectElement>) => {
+                            if (evt.target.value !== undefined) {
+                                this.setState({ open: false });
+                                this.props.onChange(config.mapToModel(this.props.node, evt.target.value));
+                            }
                         },
                         MenuProps: {
                             onExited: () => this.lookupMenuItems(),
+                            onClose: () => this.setState({ open: false }),
                         },
-                        renderValue: (values: string | string[]) => Array.isArray(values) ? __(Fragment, {}, values.map((va: string) => __(Chip, { key: va, label: va }))) : values,
-
-                        value: value!,
+                        renderValue: () => {
+                            if (!Array.isArray(value)) {
+                                const items = this.state.currentValues;
+                                return (items.length >= 1 ? items[0].value : value) || "Empty";
+                            } else {
+                                return _.div({ style: { display: "flex", flexWrap: "wrap" } }, this.state.currentValues.map((va: KV_t) => __(Chip, { key: va.key, label: va.value })));
+                            }
+                        },
+                        value,
                     },
                         searchBox,
                         ...menuItemComponents,
