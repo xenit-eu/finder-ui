@@ -261,7 +261,7 @@ function upgradeDataToNodes(data?: Row_t[], nodes?: Node_t[]): Node_t[] {
         return data.map((row: Row_t) => {
             let node = {
                 type: "",
-                aspects: [],
+                aspects: <any[]>[],
                 properties: {},
             };
 
