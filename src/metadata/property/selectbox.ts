@@ -1,7 +1,9 @@
 import * as ld from "lodash";
 import { Menu, MenuItem, SelectField, TextField } from "material-ui";
-import { Component, createElement as __, FormEvent, ReactElement, SyntheticEvent } from "react";
+import { Component, createElement as __, FormEvent, ReactElement, SyntheticEvent, Fragment, ChangeEvent } from "react";
 import * as _ from "react-dom-factories";
+import Select from "@material-ui/core/Select";
+import Chip from "@material-ui/core/Chip";
 
 import { FieldSkeleton_Props_t, RenderMode } from "../fields";
 import { PropertyRenderConfig_t, PropertyRenderer_t } from "./interface";
@@ -41,12 +43,12 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
 
         private _getSanitizedValue(): string[] | string | null {
             const value = config.mapToView(this.props.node);
-            return Array.isArray(value) ? value.map(v => v.toString()) : value !== null ? value.toString() : null;
+            return Array.isArray(value) ? value.map(v => v.toString()) : value ? value.toString() : null;
         }
 
         private _getViewValue(): string[] {
             const value = this._getSanitizedValue();
-            return Array.isArray(value) ? value : value !== null ? [value] : [];
+            return Array.isArray(value) ? value : value ? [value] : [];
         }
 
         private setStateP<K extends keyof SelectBox_State_t>(state: Pick<SelectBox_State_t, K>): Promise<void> {
@@ -126,19 +128,18 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
                 );
 
                 return _.span({ className: "metadata-field metadata-field-selectbox" },
-                    __(SelectField, <any>{
+                    __(Select, {
                         fullWidth: true,
                         multiple: isMultiValue,
-                        hintText: "Select value",
-                        onChange: (evt: FormEvent<{}>, key: number, values: string | string[]) => {
-                            this.props.onChange(config.mapToModel(this.props.node, values));
+                        onChange: (evt: ChangeEvent<HTMLSelectElement>) => {
+                            this.props.onChange(config.mapToModel(this.props.node, evt.target.value));
                         },
-                        dropDownMenuProps: {
-                            onClose: () => this.lookupMenuItems(),
-                            autoWidth: true,
+                        MenuProps: {
+                            onExited: () => this.lookupMenuItems(),
                         },
-                        selectionRenderer: () => viewValues.join(", "),
-                        value,
+                        renderValue: (values: string | string[]) => Array.isArray(values) ? __(Fragment, {}, values.map((va: string) => __(Chip, { key: va, label: va }))) : values,
+
+                        value: value!,
                     },
                         searchBox,
                         ...menuItemComponents,
