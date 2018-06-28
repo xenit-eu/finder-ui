@@ -312,7 +312,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                     ),
                 ]),
             ]),
-            __(Dialog, { // Dialog to display the date (range) selector.
+            this.isCalendarOpen() && __(Dialog, { // Dialog to display the date (range) selector.
                 key: "dialog",
                 actions: dialogButtons,
                 open: this.isCalendarOpen() || false,
@@ -420,50 +420,96 @@ class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
                     onFocus: this.props.onFocus,
                     ref: input => { this.inputElem = input as HTMLInputElement; },
                 }),
-                __(Paper, {
-                    className: "searchbox-autocomplete",
-                    style: {
-                        display: this.props.open && this.props.suggestions.length > 0 ? "block" : "none",
-                    },
-                }, __(Menu, {
-                    ref: (menu) => { this.menu = menu as Menu; },
-                    width: "100%",
-                    autoWidth: false,
-                    maxHeight: "80vh" as any,
-                    disableAutoFocus: !this.props.focusAutocomplete,
-                    initiallyKeyboardFocused: true,
-                    desktop: true,
-                    onEscKeyDown: this.handleDismiss.bind(this),
-                    listStyle: {
-                        display: "block",
-                    },
-                    onChange: (event: any, item: IAutocompleteSuggestion) => {
-                        if (this.inputElem) {
-                            this.inputElem.focus();
-                        }
-                        const timeo = setInterval(() => {
-                            const elem = document.getElementById("searchbox");
-                            if (elem) {
-                                clearInterval(timeo);
-                                elem.focus();
-                            }
-                        }, 10);
-                        this.props.onSuggestionClick(item);
-                    },
-                }, this.props.suggestions.map((option, i) => __(MenuItem, {
-                    key: i,
-                    value: option,
-                    primaryText: option.DisplayKey() + ":" + option.DisplayValue(),
-                })),
-                    ),
-                ),
+                __(AutocompleteMenu, {
+                    key: "autocomplete-menu",
+                    open: this.props.open,
+                    onFocusInput: () => this.inputElem.focus(),
+                    focusAutocomplete: this.props.focusAutocomplete,
+                    suggestions: this.props.suggestions,
+                    onSuggestionClick: this.props.onSuggestionClick,
+                    onDismiss: this.handleDismiss.bind(this),
+                    menuRef: (menu: any) => { this.menu = menu; },
+                }),
             ]);
     }
 }
 
+type AutocompleteMenu_Props_t = {
+    open: boolean,
+    onFocusInput: () => void,
+    focusAutocomplete: boolean,
+    suggestions: IAutocompleteSuggestion[],
+    onSuggestionClick: (suggestion: IAutocompleteSuggestion) => void,
+    onDismiss: () => void,
+    menuRef: any;
+};
+
+class AutocompleteMenu extends Component<AutocompleteMenu_Props_t> {
+    public shouldComponentUpdate(nextProps: AutocompleteMenu_Props_t) {
+        if (nextProps.focusAutocomplete !== this.props.focusAutocomplete) {
+            return true;
+        }
+        if (nextProps.suggestions.length !== this.props.suggestions.length) {
+            return true;
+        }
+
+        if (nextProps.open !== this.props.open) {
+            return true;
+        }
+
+        for (let i = 0; i < this.props.suggestions.length; i++) {
+            if (nextProps.suggestions[i].DisplayKey() !== this.props.suggestions[i].DisplayKey()) {
+                return true;
+            } else if (nextProps.suggestions[i].DisplayValue() !== this.props.suggestions[i].DisplayValue()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    public render() {
+        return __(Paper, {
+            className: "searchbox-autocomplete",
+            style: {
+                display: this.props.open && this.props.suggestions.length > 0 ? "block" : "none",
+            },
+        },
+            __(Menu, {
+                ref: this.props.menuRef,
+                width: "100%",
+                autoWidth: false,
+                maxHeight: "80vh" as any,
+                disableAutoFocus: !this.props.focusAutocomplete,
+                initiallyKeyboardFocused: true,
+                desktop: true,
+                onEscKeyDown: this.props.onDismiss,
+                listStyle: {
+                    display: "block",
+                },
+                onChange: (event: any, item: IAutocompleteSuggestion) => {
+                    this.props.onFocusInput();
+                    const timeo = setInterval(() => {
+                        const elem = document.getElementById("searchbox");
+                        if (elem) {
+                            clearInterval(timeo);
+                            elem.focus();
+                        }
+                    }, 10);
+                    this.props.onSuggestionClick(item);
+                },
+            }, this.props.suggestions.map((option, i) => __(MenuItem, {
+                key: option.DisplayKey() + "-" + option.DisplayValue(),
+                value: option,
+                primaryText: option.DisplayKey() + ":" + option.DisplayValue(),
+            })),
+            ),
+        );
+    }
+
+}
+
 type AutocompleteSearchBox_State_t = {
     autocompleteText?: string,
-    autocompleteTimer?: any,
     currentSuggestions?: IAutocompleteSuggestion[],
 };
 
@@ -471,11 +517,13 @@ export type AutocompleteSearchBox_t = SearchBox_t;
 
 export class AutocompleteSearchBox extends Component<AutocompleteSearchBox_t, AutocompleteSearchBox_State_t> {
     private onInputChanged: (text: string) => void;
+
+    private autocompleteTimer: any = null;
+
     constructor(props: AutocompleteSearchBox_t) {
         super(props);
         this.state = {
             autocompleteText: "",
-            autocompleteTimer: null,
             currentSuggestions: [],
         };
 
@@ -491,18 +539,18 @@ export class AutocompleteSearchBox extends Component<AutocompleteSearchBox_t, Au
     }
 
     private _onInputChanged(text: string) {
-        this.setState((prevState: AutocompleteSearchBox_State_t, props: AutocompleteSearchBox_t) => {
-            if (prevState.autocompleteTimer) {
-                clearTimeout(prevState.autocompleteTimer);
-            }
+        if (this.autocompleteTimer) {
+            clearTimeout(this.autocompleteTimer);
+        }
 
-            const timer = setTimeout(() => {
-                return this.getAutocompleteList(text).then(autoCompleteList => {
-                    this.setState({ currentSuggestions: autoCompleteList });
-                });
-            }, 200);
-            return Object.assign({}, prevState, { autocompleteText: text, autocompleteTimer: timer });
-        });
+        this.autocompleteTimer = setTimeout(() => {
+            this.autocompleteTimer = null;
+            return this.getAutocompleteList(text).then(autoCompleteList => {
+                this.setState({ currentSuggestions: autoCompleteList });
+            });
+        }, 200);
+
+        this.setState({ autocompleteText: text });
     }
 
     public render() {
