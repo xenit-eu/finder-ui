@@ -104,7 +104,7 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
                 const useCurrentValues = this.state.menuItems.length === 0 && !this.state.searchFilter && !isMultiValue;
                 const menuItems = useCurrentValues ? this.state.currentValues.filter(v => !!v) : this.state.menuItems;
 
-                const menuItemComponents = (isMultiValue || config.parameters.required ? [] : [{ key: "", value: "Empty" }]).concat(menuItems).map((item: KV_t) => __(MenuItem, {
+                const menuItemComponents = menuItems.map((item: KV_t) => __(MenuItem, {
                     key: item.key,
                     value: item.key,
                 }, [
@@ -115,6 +115,18 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
                             primary: item.value,
                         }),
                     ]));
+
+                if (!isMultiValue && !config.parameters.required) {
+                    menuItemComponents.unshift(__(MenuItem, {
+                        key: "--empty",
+                        value: "",
+                    },
+                        __(ListItemText, {
+                            primary: _.em({}, "Empty"),
+                        }),
+                    ));
+                }
+
                 const searchBox = __(MenuItem, {
                     key: "--searchBox",
                 },
@@ -126,6 +138,39 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
                         value: this.state.searchFilter,
                     }),
                 );
+
+                const selectProps = isMultiValue ? {
+                    multiple: true,
+                    onClose: () => this.setState({ open: false }),
+                    onChange: (evt: ChangeEvent<HTMLSelectElement>) => {
+                        let val = evt.target.value as any as string[];
+                        // Filter out "undefined" values from clicking the searchbox
+                        if (Array.isArray(val)) {
+                            val = val.filter(v => !!v);
+                        }
+                        this.props.onChange(config.mapToModel(this.props.node, val));
+                    },
+                    renderValue: () => {
+                        if(this.state.currentValues.length === 0) {
+                            return _.em({}, "None");
+                        }
+                        return _.div({ style: { display: "flex", flexWrap: "wrap" } }, this.state.currentValues.map((va: KV_t) => __(Chip, { key: va.key, label: va.value })));
+
+                    },
+                } : {
+                        multiple: false,
+                        onClose: () => { }, // Required when controlled component
+                        onChange: (evt: ChangeEvent<HTMLSelectElement>) => {
+                            if (evt.target.value !== undefined) {
+                                this.setState({ open: false });
+                                this.props.onChange(config.mapToModel(this.props.node, evt.target.value));
+                            }
+                        },
+                        renderValue: () => {
+                            const items = this.state.currentValues;
+                            return (items.length >= 1 ? items[0].value : value) || _.em({}, "Empty");
+                        },
+                    };
 
                 /*
                  * The story of *open*
@@ -150,33 +195,12 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
                         multiple: isMultiValue,
                         open: this.state.open,
                         onOpen: () => this.setState({ open: true }),
-                        onClose: isMultiValue ? () => this.setState({ open: false }) : () => { },
-                        onChange: isMultiValue ? (evt: ChangeEvent<HTMLSelectElement>) => {
-                            let val = evt.target.value as any as string[];
-                            // Filter out "undefined" values from clicking the searchbox
-                            if (Array.isArray(val)) {
-                                val = val.filter(v => !!v);
-                            }
-                            this.props.onChange(config.mapToModel(this.props.node, val));
-                        } : (evt: ChangeEvent<HTMLSelectElement>) => {
-                            if (evt.target.value !== undefined) {
-                                this.setState({ open: false });
-                                this.props.onChange(config.mapToModel(this.props.node, evt.target.value));
-                            }
-                        },
                         MenuProps: {
                             onExited: () => this.lookupMenuItems(),
                             onClose: () => this.setState({ open: false }),
                         },
-                        renderValue: () => {
-                            if (!Array.isArray(value)) {
-                                const items = this.state.currentValues;
-                                return (items.length >= 1 ? items[0].value : value) || "Empty";
-                            } else {
-                                return _.div({ style: { display: "flex", flexWrap: "wrap" } }, this.state.currentValues.map((va: KV_t) => __(Chip, { key: va.key, label: va.value })));
-                            }
-                        },
                         value,
+                        ...selectProps,
                     },
                         searchBox,
                         ...menuItemComponents,
