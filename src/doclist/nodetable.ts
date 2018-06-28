@@ -62,7 +62,7 @@ export interface INodeTableProps<T> {
         pageSize: number, // Paging size
         selectedPage: number, // The index of the selected page (1-based)
     }; // Pagination information
-    translations: Translations_t;
+    translations?: Translations_t;
 
     onPageChanged(pageIndex: number): void; // Called when a request is made to change pages in the result list (1-based)
     onRowSelected(node: Node_t, rowIndex: number): void; // Called when a row is selected
@@ -132,6 +132,16 @@ export function NodeTable<T>(props: INodeTableProps<T>) {
             desc: col.sortDirection === NodeTableSortDirection.DESC,
         };
     }).filter(c => !!c) as SortingRule[];
+
+    const translations = props.translations ? {
+        previousText: props.translations[NodeTableTranslations.PREVIOUS],
+        nextText: props.translations[NodeTableTranslations.NEXT],
+        loadingText: props.translations[NodeTableTranslations.LOADING],
+        noDataText: props.translations[NodeTableTranslations.NODATA],
+        pageText: props.translations[NodeTableTranslations.PAGE],
+        ofText: props.translations[NodeTableTranslations.OF],
+        rowsText: props.translations[NodeTableTranslations.ROWS],
+    } : {};
     return __(ReactTable, {
         manual: true,
         data: props.rows,
@@ -171,13 +181,7 @@ export function NodeTable<T>(props: INodeTableProps<T>) {
                 props.onRowSelected(rowInfo.original.node, rowInfo.index);
             },
         } : {}),
-        previousText: props.translations[NodeTableTranslations.PREVIOUS],
-        nextText: props.translations[NodeTableTranslations.NEXT],
-        loadingText: props.translations[NodeTableTranslations.LOADING],
-        noDataText: props.translations[NodeTableTranslations.NODATA],
-        pageText: props.translations[NodeTableTranslations.PAGE],
-        ofText: props.translations[NodeTableTranslations.OF],
-        rowsText: props.translations[NodeTableTranslations.ROWS],
+        ...translations,
     });
 
 }

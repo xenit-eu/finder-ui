@@ -10,16 +10,6 @@ import { Property } from "./renderer";
 
 configure({ adapter: new Adapter() });
 
-const translations = {
-    [NodeTableTranslations.LOADING]: "LOADING",
-    [NodeTableTranslations.NEXT]: "NEXT",
-    [NodeTableTranslations.NODATA]: "NODATA",
-    [NodeTableTranslations.OF]: "OF",
-    [NodeTableTranslations.PAGE]: "PAGE",
-    [NodeTableTranslations.PREVIOUS]: "PREVIOUS",
-    [NodeTableTranslations.ROWS]: "ROWS",
-};
-
 describe("NodeList", () => {
     beforeEach(() => (<any>jasmineEnzyme)());
 
@@ -39,7 +29,6 @@ describe("NodeList", () => {
                 pageSize: 20,
                 selectedPage: 1,
             },
-            translations,
             onPageChanged: () => { },
             onRowSelected: () => { },
             onRowMenuItemClicked: () => { },
@@ -93,7 +82,6 @@ describe("NodeList", () => {
                 pageSize: 20,
                 selectedPage: 1,
             },
-            translations,
             onPageChanged: () => { },
             onRowSelected: () => { },
             onRowMenuItemClicked: () => { },
@@ -159,7 +147,6 @@ describe("NodeList", () => {
                 pageSize: 20,
                 selectedPage: 1,
             },
-            translations,
             onPageChanged: () => { },
             onRowSelected,
             onRowMenuItemClicked: () => { },
@@ -211,7 +198,6 @@ describe("NodeList", () => {
                 pageSize: 20,
                 selectedPage: 1,
             },
-            translations,
             onPageChanged,
             onRowSelected: () => { },
             onRowMenuItemClicked: () => { },
@@ -319,7 +305,6 @@ describe("NodeList", () => {
                 pageSize: 20,
                 selectedPage: 1,
             },
-            translations,
             onPageChanged: () => { },
             onRowSelected: () => { },
             onRowMenuItemClicked,
@@ -381,7 +366,6 @@ describe("NodeList", () => {
                 pageSize: 20,
                 selectedPage: 1,
             },
-            translations,
             onPageChanged: () => { },
             onRowSelected: () => { },
             onRowMenuItemClicked: () => { },
