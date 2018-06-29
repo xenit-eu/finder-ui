@@ -75,7 +75,7 @@ export interface INodeTableProps<T> {
 export function NodeTable<T>(props: INodeTableProps<T>) {
     const firstColumns: Column[] = [
         {
-            id: "--menu",
+            id: "--norowselect-menu",
             Header: "",
             accessor: (row: INodeTableRow<T>) => row,
             sortable: false,
@@ -91,12 +91,13 @@ export function NodeTable<T>(props: INodeTableProps<T>) {
     ];
 
     if (props.onRowToggled !== undefined) {
-        const onToggleAll = props.onToggleAll || ((checked: boolean) => props.rows.forEach((row, i) => props.onRowToggled!(row.node, checked, i)));
+        const onToggleAllFallback = (checked: boolean) => props.rows.forEach((row, i) => props.onRowToggled!(row.node, checked, i));
+        const onToggleAll = props.onToggleAll || onToggleAllFallback;
         const allRowsToggled = props.rows.every(row => row.toggled || false);
         const noRowsToggled = props.rows.every(row => !row.toggled);
         const indeterminate = !allRowsToggled && !noRowsToggled;
         firstColumns.push({
-            id: "--toggle",
+            id: "--norowselect-toggle",
             Header: (prop: any) => __(Checkbox, {
                 checked: !noRowsToggled,
                 checkedIcon: indeterminate ? __(ToggleIndeterminateCheckBox) : undefined,
@@ -115,23 +116,9 @@ export function NodeTable<T>(props: INodeTableProps<T>) {
             }),
         });
     }
-    const columns: Column[] = props.columns.map(col => ({
-        id: col.name,
-        Header: col.label,
-        accessor: (row: INodeTableRow<T>) => row.node,
-        Cell: (prop: any) => __(col.renderer, { node: prop.value, row: 0 }),
-    }));
+    const columns: Column[] = props.columns.map(createColumn);
 
-    const sorted: SortingRule[] = props.columns.map(col => {
-        if (col.sortDirection === NodeTableSortDirection.NONE) {
-            return null;
-        }
-
-        return {
-            id: col.name,
-            desc: col.sortDirection === NodeTableSortDirection.DESC,
-        };
-    }).filter(c => !!c) as SortingRule[];
+    const sorted: SortingRule[] = props.columns.map(createSortingRule).filter(c => !!c) as SortingRule[];
 
     const translations = props.translations ? {
         previousText: props.translations[NodeTableTranslations.PREVIOUS],
@@ -157,33 +144,56 @@ export function NodeTable<T>(props: INodeTableProps<T>) {
         multiSort: false,
         sorted,
         onSortedChange: (newSorted: SortingRule[], column: Column, additive: boolean) => {
-            const sorts: INodeTableBasicColumn[] = props.columns.map(col => {
-                const sortingRule = newSorted.find(sort => sort.id === col.name);
-                if (!sortingRule) {
-                    return {
-                        name: col.name,
-                        sortDirection: NodeTableSortDirection.NONE,
-                    };
-                }
-
-                return {
-                    name: col.name,
-                    sortDirection: sortingRule.desc ? NodeTableSortDirection.DESC : NodeTableSortDirection.ASC,
-                };
-            });
+            const sorts: INodeTableBasicColumn[] = props.columns.map(col => sortingRuleToBasicColumn(col, newSorted));
             props.onSortChanged(sorts);
         },
         getTrProps: (state: TableProps, rowInfo?: RowInfo) => (rowInfo ? {
             style: rowInfo.original.rowStyle,
         } : {}),
         getTdProps: (state: TableProps, rowInfo?: RowInfo, column?: Column) => (rowInfo && column ? {
-            onClick: column.id!.startsWith("--") ? undefined : (event: MouseEvent<any>) => {
+            onClick: column.id!.startsWith("--norowselect-") ? undefined : (event: MouseEvent<any>) => {
                 props.onRowSelected(rowInfo.original.node, rowInfo.index);
             },
         } : {}),
         ...translations,
     });
 
+}
+
+function sortingRuleToBasicColumn(col: INodeTableBasicColumn, rules: SortingRule[]): INodeTableBasicColumn {
+    const sortingRule = rules.find(sort => sort.id === col.name);
+    if (!sortingRule) {
+        return {
+            name: col.name,
+            sortDirection: NodeTableSortDirection.NONE,
+        };
+    }
+
+    return {
+        name: col.name,
+        sortDirection: sortingRule.desc ? NodeTableSortDirection.DESC : NodeTableSortDirection.ASC,
+    };
+}
+
+function createSortingRule(col: INodeTableBasicColumn): SortingRule | null {
+    if (col.sortDirection === NodeTableSortDirection.NONE) {
+        return null;
+    }
+
+    return {
+        id: col.name,
+        desc: col.sortDirection === NodeTableSortDirection.DESC || undefined,
+        asc: col.sortDirection === NodeTableSortDirection.ASC || undefined,
+    };
+}
+
+function createColumn(col: INodeTableColumn): Column {
+    return {
+        id: col.name,
+        Header: col.label,
+        accessor: (row: INodeTableRow<any>) => row.node,
+        Cell: (prop: any) => __(col.renderer, { node: prop.value, row: 0 }),
+    };
 }
 
 type RowMenu_Props_t<T> = {
