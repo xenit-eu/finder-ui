@@ -497,7 +497,7 @@ class AutocompleteMenu extends Component<AutocompleteMenu_Props_t> {
                     }, 10);
                     this.props.onSuggestionClick(item);
                 },
-            }, this.props.suggestions.map((option, i) => __(MenuItem, {
+            }, this.props.suggestions.filter(uniqueSuggestionsFilter).map((option) => __(MenuItem, {
                 key: option.DisplayKey() + "-" + option.DisplayValue(),
                 value: option,
                 primaryText: option.DisplayKey() + ":" + option.DisplayValue(),
@@ -505,7 +505,11 @@ class AutocompleteMenu extends Component<AutocompleteMenu_Props_t> {
             ),
         );
     }
+}
 
+function uniqueSuggestionsFilter(suggestion: IAutocompleteSuggestion, i: number, suggestions: IAutocompleteSuggestion[]): boolean {
+    const firstIndex = suggestions.findIndex(sug => sug.DisplayKey() === suggestion.DisplayKey() && sug.DisplayValue() === suggestion.DisplayValue());
+    return i === firstIndex;
 }
 
 type AutocompleteSearchBox_State_t = {
