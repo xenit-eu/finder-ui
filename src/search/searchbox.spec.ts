@@ -117,6 +117,22 @@ describe("SearchBox component tests", () => {
         };
         let wrapper = Fixture(__(SearchBox, props));
     });
+
+    it("Should call onRemoveTerm with the index of the latest item when pressing backspace in an empty input field", (done) => {
+        const qE: StringValuePropertySearchQueryElement[] =
+            [new StringValuePropertySearchQueryElement("dummy1", "dummy2", dummyPropertyService()), new StringValuePropertySearchQueryElement("dummy3", "dummy4", dummyPropertyService())];
+        let props = SearchboxViaSearchablesProps([new AllSearchable((s) => s)], qE);
+        props.onChipsUpdated = () => {
+            wrapper.update();
+            wrapper.find("input").at(0).simulate("keydown", { keyCode: 8 });
+        };
+        props.onRemoveQueryElement = (idx) => {
+            expect(idx).toBe(1);
+            done();
+        };
+        let wrapper = Fixture(__(SearchBox, props));
+    });
+
     it("should display the suggestion list when something is typed", (done) => {
         const allSearchable = new AllSearchable((s) => s);
         let props = SearchboxViaSearchablesProps([allSearchable], [], [new SimpleAutoCompleteListElement("All", "good", "All:good")]);
