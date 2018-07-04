@@ -12,7 +12,7 @@ declare var require: any;
 // tslint:disable-next-line:no-var-requires
 const Flatpickr = require("react-flatpickr");
 
-import { Component, createElement as __, KeyboardEvent, ReactElement } from "react";
+import { cloneElement, Component, createElement as __, KeyboardEvent, ReactElement } from "react";
 import * as _ from "react-dom-factories";
 
 import "react-flatpickr/node_modules/flatpickr/dist/themes/material_blue.css";
@@ -194,9 +194,6 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                 throw new Error("Unhandled type, should be one of the four existing types");
             });
     }
-    private getCurrentKeyValue() {
-        return getKeyValue(this.state.textValue);
-    }
 
     private hideSuggestions() {
         this.setState({ suggestionsOpened: false, focusSuggestions: false });
@@ -282,8 +279,9 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
         return _.div({ key: "search-box", className: "search-box" }, [
             defaultChip,
             ...currentChips,
-            _.div({ className: "searchbox-input-area" }, [
+            _.div({ className: "searchbox-input-area", key: "--searchbox-input" }, [
                 __(SearchboxAutocomplete, {
+                    key: "autocomplete",
                     value: this.state.textValue as string,
                     onChange: this.handleInputChange.bind(this),
                     onKeyUp: this.handleInputKey.bind(this),
@@ -293,12 +291,13 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                     suggestions: filteredSuggestionsList,
                     onSuggestionClick: (suggestion: IAutocompleteSuggestion) => this.onApplyAutocompleteSuggestion(suggestion),
                     onDismiss: () => this.hideSuggestions(),
+                    onBackspace: () => this.state.currentChipVMs.length > 0 && this.props.onRemoveQueryElement(this.state.currentChipVMs.length - 1),
                     onRequestAutocomplete: () => this.setState({ suggestionsOpened: true, focusSuggestions: true }),
                     translations: this.props.translations,
                 }),
-                _.div({ className: "searchbox-icon-wrapper" }, [
+                _.div({ className: "searchbox-icon-wrapper", key: "icons" }, [
 
-                    ...(this.props.customButtons || []),
+                    ...(this.props.customButtons || []).map((item, i) => cloneElement(item, { key: i })),
 
                     _.div({ key: "save-icon", className: "save-icon icon", id: "searchbox_save" }, __(StarIcon, {
                         color: iconColor,
@@ -345,6 +344,7 @@ type Autocomplete_t = {
     suggestions: IAutocompleteSuggestion[],
     onSuggestionClick: (suggestion: IAutocompleteSuggestion) => void,
     onDismiss: () => void,
+    onBackspace: () => void,
     onRequestAutocomplete: () => void,
 };
 
@@ -389,6 +389,8 @@ class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
             case 27: //ESC
                 this.handleDismiss();
                 break;
+            case 8: // Backspace
+                this.handleBackspace();
             default:
         }
 
@@ -401,6 +403,16 @@ class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
         }
         this.props.onDismiss();
     }
+
+    private handleBackspace() {
+        if (this.props.value === "") {
+            this.props.onBackspace();
+        }
+        if (this.inputElem) {
+            this.inputElem.focus();
+        }
+    }
+
     private getPlaceHolder() {
         const translated: string | undefined = this.props.translations ? this.props.translations[PLACEHOLDERTRANSLATION] : undefined;
         return translated ? translated : PLACEHOLDERDEFAULT;
