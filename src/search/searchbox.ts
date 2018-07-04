@@ -378,7 +378,7 @@ class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
         }
     }
 
-    private handleKeyUp(e: any) {
+    private handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
         switch (e.keyCode) {
             case 40: // ARROWKEY_DOWN
                 if (this.menu) {
@@ -390,11 +390,11 @@ class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
                 this.handleDismiss();
                 break;
             case 8: // Backspace
-                this.handleBackspace();
+                if (e.currentTarget.selectionStart === e.currentTarget.selectionEnd && e.currentTarget.selectionStart === 0) {
+                    this.handleBackspace();
+                }
             default:
         }
-
-        this.props.onKeyUp(e);
     }
 
     private handleDismiss() {
@@ -405,12 +405,7 @@ class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
     }
 
     private handleBackspace() {
-        if (this.props.value === "") {
-            this.props.onBackspace();
-        }
-        if (this.inputElem) {
-            this.inputElem.focus();
-        }
+        this.props.onBackspace();
     }
 
     private getPlaceHolder() {
@@ -428,7 +423,8 @@ class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
                     id: "searchbox",
                     placeholder: this.getPlaceHolder(),
                     onChange: this.props.onChange,
-                    onKeyUp: this.handleKeyUp.bind(this),
+                    onKeyDown: this.handleKeyDown.bind(this),
+                    onKeyUp: this.props.onKeyUp,
                     onFocus: this.props.onFocus,
                     ref: input => { this.inputElem = input as HTMLInputElement; },
                 }),
