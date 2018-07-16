@@ -5,8 +5,9 @@ import {
     IRetrievePathOfFolder, ISearchQueryElement, ISynchronousTranslationService,
     NodeRefSearchQueryElement, OrSearchQueryElement, PropertyNameService_t,
     ReferenceSimpleSearchQueryElement, SearchQuery,
-    StringValuePropertySearchQueryElement, TextSearchQueryElement, TypeSearchQueryElement
-} from './searchquery';
+    StringValuePropertySearchQueryElement, TextSearchQueryElement, TypeSearchQueryElement,
+} from "./searchquery";
+
 export interface IFolderSearchQueryElementFactory {
     buildFolderQueryElement(noderef: string): FolderSearchQueryElement;
 }
@@ -21,40 +22,40 @@ export class SearchQueryFactory implements IFolderSearchQueryElementFactory {
     ) {
 
     }
-    buildSearchQuery(elements: ISearchQueryElement[]) {
+    public buildSearchQuery(elements: ISearchQueryElement[]) {
         return new SearchQuery(elements, this.wordTranslator);
     }
-    buildDatePropertyQueryElement(qname: string, dateRange: IDateRange): DatePropertySearchQueryElement {
+    public buildDatePropertyQueryElement(qname: string, dateRange: IDateRange): DatePropertySearchQueryElement {
         return new DatePropertySearchQueryElement(qname, dateRange, this.dateRangeTranslator, this.propertyNameService);
     }
-    buildStringValuePropertyQueryElement(qname: string, value: string) {
+    public buildStringValuePropertyQueryElement(qname: string, value: string) {
         return new StringValuePropertySearchQueryElement(qname, value, this.propertyNameService);
     }
-    buildAllQueryElement(value: string, isUnRemovable?: boolean) {
+    public buildAllQueryElement(value: string, isUnRemovable?: boolean) {
         return new AllSimpleSearchQueryElement(this.wordTranslator, value, isUnRemovable);
     }
-    buildTextQueryElement(text: string) {
+    public buildTextQueryElement(text: string) {
         return new TextSearchQueryElement(text, this.wordTranslator);
     }
-    buildFolderQueryElement(noderef: string) {
+    public buildFolderQueryElement(noderef: string) {
         return new FolderSearchQueryElement(noderef, this.folderPathRetrieval, this.wordTranslator);
     }
-    buildAspectQueryElement(aspect: string) {
+    public buildAspectQueryElement(aspect: string) {
         return new AspectSearchQueryElement(aspect, this.wordTranslator, this.aspectNameTranslator);
     }
-    buildNodeQueryElement(noderef: string) {
+    public buildNodeQueryElement(noderef: string) {
         return new NodeRefSearchQueryElement(noderef, this.wordTranslator);
     }
-    buildTypeQueryElement(pType: string) {
+    public buildTypeQueryElement(pType: string) {
         return new TypeSearchQueryElement(pType, this.wordTranslator, this.typeNameTranslator);
     }
-    buildReferenceQueryElement(wrappedQuery: SearchQuery, name: string) {
+    public buildReferenceQueryElement(wrappedQuery: SearchQuery, name: string) {
         return new ReferenceSimpleSearchQueryElement(wrappedQuery, name);
     }
-    buildAndQueryElement(children: ISearchQueryElement[]) {
+    public buildAndQueryElement(children: ISearchQueryElement[]) {
         return new AndSearchQueryElement(children);
     }
-    buildOrQueryElement(children: ISearchQueryElement[]) {
+    public buildOrQueryElement(children: ISearchQueryElement[]) {
         return new OrSearchQueryElement(children);
     }
 }

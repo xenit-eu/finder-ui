@@ -2,7 +2,7 @@ import * as debug from "debug";
 import { IDateRange, IDateRangeTranslator } from "./DateRange";
 import { ISynchronousTranslationService } from "./searchquery";
 import { SearchQueryElementReadableStringVisitor } from "./SearchQueryElementReadableStringVisitor";
-import { SearchQueryFactory } from './SearchQueryFactory';
+import { SearchQueryFactory } from "./SearchQueryFactory";
 import { ALL, ASPECT, NODEREF, TEXT, TYPE } from "./WordTranslator";
 const d = debug("finder-ui:finderquery");
 
@@ -186,7 +186,7 @@ export class FolderSearchQueryElement implements ISimpleSearchQueryElement {
     }
     public isReferential() { return false; }
     public isRemovable() { return true; }
-    //public readonly qnamePath: string, public readonly displayPath: string, 
+    //public readonly qnamePath: string, public readonly displayPath: string,
     private cachedDisplayPath: string | undefined;
     private cachedQnamePath: string | undefined;
     private loadPaths() {
@@ -288,7 +288,7 @@ export class DatePropertySearchQueryElement extends PropertySearchQueryElement {
     public readonly TYPE = DatePropertySearchQueryElement.TYPE;
     public static ParseFromJSON(json: any, context: ISearchQueryElementFromJSONContext) {
         const typecheckSafety: DatePropertySearchQueryElement = json;
-        return context.searchQueryFactory().buildDatePropertyQueryElement(typecheckSafety.key,context.DateRangeFromJSON(json.dateRange));
+        return context.searchQueryFactory().buildDatePropertyQueryElement(typecheckSafety.key, context.DateRangeFromJSON(json.dateRange));
     }
     constructor(qname: string, public readonly dateRange: IDateRange, private readonly DateRangeTranslator: IDateRangeTranslator, propertyNameService: IPropertyKeyNameService) {
         super(qname, propertyNameService);

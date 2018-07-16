@@ -11,8 +11,8 @@ import {
     TextSearchQueryElement,
 
 } from "./searchquery";
-import { ALL, FOLDER, TEXT } from "./WordTranslator";
 import { IFolderSearchQueryElementFactory } from "./SearchQueryFactory";
+import { ALL, FOLDER, TEXT } from "./WordTranslator";
 export interface ISimpleSearchableQueryElement {
     matchKeyValue(key: string, value: string): Promise<IExactValueMatch>;
     getPartiallyMatchingAutocompleteListElements(key: string, value: string): Promise<IAutocompleteSuggestion[]>;
