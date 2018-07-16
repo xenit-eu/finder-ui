@@ -54,11 +54,22 @@ function RowMenu({ rowIndex, menuItems, onMenuSelected }: RowMenu_t): ReactEleme
 export type Row_t = { [k: string]: string };
 
 export enum SortDirection_t {
-    NONE,
-    ASC,
-    DESC,
+    NONE = "NONE",
+    ASC = "ASC",
+    DESC = "DESC",
 };
-
+export function SortDirectionFromString(s: string) {
+    if (s === SortDirection_t.NONE) {
+        return SortDirection_t.NONE;
+    }
+    if (s === SortDirection_t.ASC) {
+        return SortDirection_t.ASC;
+    }
+    if (s === SortDirection_t.DESC) {
+        return SortDirection_t.DESC;
+    }
+    throw new Error("Unknown sorting direction");
+}
 /*
 #### columns hash description
 

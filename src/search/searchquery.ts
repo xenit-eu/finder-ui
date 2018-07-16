@@ -2,12 +2,15 @@ import * as debug from "debug";
 import { IDateRange, IDateRangeTranslator } from "./DateRange";
 import { ISynchronousTranslationService } from "./searchquery";
 import { SearchQueryElementReadableStringVisitor } from "./SearchQueryElementReadableStringVisitor";
+import { SearchQueryFactory } from "./SearchQueryFactory";
 import { ALL, ASPECT, NODEREF, TEXT, TYPE } from "./WordTranslator";
 const d = debug("finder-ui:finderquery");
 
 // This is a fake type. The document type is mapped to this QName to be able to put all document information in a hashmap.
 export const TYPE_QNAME = "{http://www.alfresco.org/model/content/1.0}type";
 export interface ISynchronousTranslationService { (s: string): string; }
+export interface IASynchronousTranslationService { (s: string): Promise<string>; }
+export interface IRetrievePathOfFolder { (noderef: string): Promise<{ qnamePath: string, displayPath: string }>; }
 export class SearchQuery {
     private readabler: SearchQueryElementReadableStringVisitor;
     public constructor(public readonly elements: ISearchQueryElement[], readonly translate: ISynchronousTranslationService) {
@@ -29,7 +32,6 @@ export class SearchQuery {
     }
 }
 
-export interface IASynchronousTranslationService { (s: string): Promise<string>; }
 export interface IPropertyKeyNameService {
     translatePropertyKey(key: string): Promise<string>;
 }
@@ -88,7 +90,7 @@ export class TextSearchQueryElement implements ISimpleSearchQueryElement {
     public readonly TYPE = TextSearchQueryElement.TYPE;
     public static ParseFromJSON(json: any, context: ISearchQueryElementFromJSONContext) {
         const typecheckSafety: TextSearchQueryElement = json;
-        return new TextSearchQueryElement(typecheckSafety.text, context.GetWordTranslator());
+        return context.searchQueryFactory().buildTextQueryElement(typecheckSafety.text);
     }
     public constructor(public readonly text: string, private readonly translationService: ISynchronousTranslationService) {
     }
@@ -118,7 +120,7 @@ export class AspectSearchQueryElement implements ISimpleSearchQueryElement {
     public readonly TYPE = AspectSearchQueryElement.TYPE;
     public static ParseFromJSON(json: any, context: ISearchQueryElementFromJSONContext) {
         const typecheckSafety: AspectSearchQueryElement = json;
-        return new AspectSearchQueryElement(typecheckSafety.aspect, context.GetWordTranslator(), context.GetAspectNameTranslator());
+        return context.searchQueryFactory().buildAspectQueryElement(typecheckSafety.aspect);
     }
     public constructor(public readonly aspect: string, private readonly translateAspect: ISynchronousTranslationService, private readonly translateAspectName: IASynchronousTranslationService) {
     }
@@ -148,7 +150,7 @@ export class TypeSearchQueryElement implements ISimpleSearchQueryElement {
     public readonly TYPE = TypeSearchQueryElement.TYPE;
     public static ParseFromJSON(json: any, context: ISearchQueryElementFromJSONContext) {
         const typecheckSafety: TypeSearchQueryElement = json;
-        return new TypeSearchQueryElement(typecheckSafety.pType, context.GetWordTranslator(), context.GetTypeNameTranslator());
+        return context.searchQueryFactory().buildTypeQueryElement(typecheckSafety.pType);
     }
     public constructor(public readonly pType: string, private readonly translateType: ISynchronousTranslationService, private readonly translateTypeName: IASynchronousTranslationService) {
     }
@@ -179,19 +181,38 @@ export class FolderSearchQueryElement implements ISimpleSearchQueryElement {
     public readonly TYPE = FolderSearchQueryElement.TYPE;
     public static ParseFromJSON(json: any, context: ISearchQueryElementFromJSONContext) {
         const typecheckSafety: FolderSearchQueryElement = json;
-        return new FolderSearchQueryElement(typecheckSafety.qnamePath, typecheckSafety.displayPath, context.GetWordTranslator(), typecheckSafety.noderef);
+        return context.searchQueryFactory().buildFolderQueryElement(typecheckSafety.noderef);
+
     }
     public isReferential() { return false; }
     public isRemovable() { return true; }
+    //public readonly qnamePath: string, public readonly displayPath: string,
+    private cachedDisplayPath: string | undefined;
+    private cachedQnamePath: string | undefined;
+    private loadPaths() {
 
-    constructor(public readonly qnamePath: string, public readonly displayPath: string, private readonly translationService: ISynchronousTranslationService, public readonly noderef: string) {
+    }
+    public getDisplayPath(): Promise<string> {
+        return this.cachedDisplayPath ? Promise.resolve(this.cachedDisplayPath) : this.getPaths().then(() => "" + this.cachedDisplayPath);
+    }
+    public getQnamePath(): Promise<string> {
+        return this.cachedQnamePath ? Promise.resolve(this.cachedQnamePath) : this.getPaths().then(() => "" + this.cachedQnamePath);
+    }
+    private getPaths(): Promise<void> {
+        return this.retrievePath(this.noderef).then(p => {
+            this.cachedQnamePath = p.qnamePath;
+            this.cachedDisplayPath = p.displayPath;
+        });
+    }
+
+    constructor(public readonly noderef: string, private retrievePath: IRetrievePathOfFolder, private readonly translationService: ISynchronousTranslationService) {
         //displayPath here means (the alfresco displayPath + "/"  + name), but no '/' in the begin, so for example: "Company Home/Data Dictionary"
     }
     public getSimpleSearchbarText() {
-        return Promise.resolve(this.translationService("Folder") + ":" + this.displayPath);
+        return this.getDisplayPath().then(displayPath => this.translationService("Folder") + ":" + displayPath);
     }
     public getTooltipText() {
-        return Promise.resolve(this.displayPath);
+        return this.getDisplayPath();
     }
     public visit<T>(visitor: ISearchQueryElementVisitor<T>): T {
         return visitor.visitFolderSearchQueryElement(this);
@@ -210,7 +231,7 @@ export class AllSimpleSearchQueryElement implements ISimpleSearchQueryElement {
     public readonly TYPE = AllSimpleSearchQueryElement.TYPE;
     public static ParseFromJSON(json: any, context: ISearchQueryElementFromJSONContext) {
         const typecheckSafety: AllSimpleSearchQueryElement = json;
-        return new AllSimpleSearchQueryElement(context.GetWordTranslator(), typecheckSafety.value, typecheckSafety.isUnremovable);
+        return context.searchQueryFactory().buildAllQueryElement(typecheckSafety.value, typecheckSafety.isUnremovable);
     }
 
     constructor(private readonly AllWordtranslationService: ISynchronousTranslationService, public readonly value: string, public readonly isUnremovable = false) {
@@ -267,7 +288,7 @@ export class DatePropertySearchQueryElement extends PropertySearchQueryElement {
     public readonly TYPE = DatePropertySearchQueryElement.TYPE;
     public static ParseFromJSON(json: any, context: ISearchQueryElementFromJSONContext) {
         const typecheckSafety: DatePropertySearchQueryElement = json;
-        return new DatePropertySearchQueryElement(typecheckSafety.key, context.DateRangeFromJSON(json.dateRange), context.GetDateRangeTranslator(), context.GetPropertyNameService());
+        return context.searchQueryFactory().buildDatePropertyQueryElement(typecheckSafety.key, context.DateRangeFromJSON(json.dateRange));
     }
     constructor(qname: string, public readonly dateRange: IDateRange, private readonly DateRangeTranslator: IDateRangeTranslator, propertyNameService: IPropertyKeyNameService) {
         super(qname, propertyNameService);
@@ -287,7 +308,7 @@ export class NodeRefSearchQueryElement implements ISimpleSearchQueryElement {
     public readonly TYPE = NodeRefSearchQueryElement.TYPE;
     public static ParseFromJSON(json: any, context: ISearchQueryElementFromJSONContext) {
         const typecheckSafety: NodeRefSearchQueryElement = json;
-        return new NodeRefSearchQueryElement(typecheckSafety.noderef, context.GetWordTranslator());
+        return context.searchQueryFactory().buildNodeQueryElement(typecheckSafety.noderef);
     }
     public constructor(public readonly noderef: string, private readonly wordTranslator: ISynchronousTranslationService) {
     }
@@ -320,7 +341,7 @@ export class AndSearchQueryElement implements ISearchQueryElement {
     public readonly TYPE = AndSearchQueryElement.TYPE;
     public static ParseFromJSON(json: any, context: ISearchQueryElementFromJSONContext) {
         const typecheckSafety: AndSearchQueryElement = json;
-        return new AndSearchQueryElement(typecheckSafety.children.map(e => context.SearchQueryElementFromJSON(e)));
+        return context.searchQueryFactory().buildAndQueryElement(typecheckSafety.children.map(e => context.SearchQueryElementFromJSON(e)));
     }
     constructor(public readonly children: ISearchQueryElement[]) {
     }
@@ -353,7 +374,7 @@ export class OrSearchQueryElement implements ISearchQueryElement {
     public readonly TYPE = OrSearchQueryElement.TYPE;
     public static ParseFromJSON(json: any, context: ISearchQueryElementFromJSONContext) {
         const typecheckSafety: OrSearchQueryElement = json;
-        return new OrSearchQueryElement(typecheckSafety.children);
+        return context.searchQueryFactory().buildOrQueryElement(typecheckSafety.children.map(e => context.SearchQueryElementFromJSON(e)));
     }
     constructor(public readonly children: ISearchQueryElement[]) {
     }
@@ -387,7 +408,7 @@ export class StringValuePropertySearchQueryElement extends PropertySearchQueryEl
     public readonly TYPE = StringValuePropertySearchQueryElement.TYPE;
     public static ParseFromJSON(json: any, context: ISearchQueryElementFromJSONContext) {
         const typecheckSafety: StringValuePropertySearchQueryElement = json;
-        return new StringValuePropertySearchQueryElement(typecheckSafety.key, typecheckSafety.value, context.GetPropertyNameService());
+        return context.searchQueryFactory().buildStringValuePropertyQueryElement(typecheckSafety.key, typecheckSafety.value);
     }
     constructor(prop: string, public readonly value: string, private readonly pNameService: PropertyNameService_t) {
         super(prop, pNameService);
@@ -406,12 +427,7 @@ export interface ISearchQueryElementFromJSONContext {
     DateRangeFromJSON(json: any): IDateRange;
     SearchQueryFromJSON(searchQuery: any): SearchQuery;
     SearchQueryElementFromJSON(childJson: any): ISearchQueryElement;
-    GetDateRangeTranslator(): IDateRangeTranslator;
-    GetPropertyNameService(): PropertyNameService_t;
-    GetWordTranslator(): ISynchronousTranslationService;
-    GetAspectNameTranslator(): IASynchronousTranslationService;
-    GetTypeNameTranslator(): IASynchronousTranslationService;
-
+    searchQueryFactory(): SearchQueryFactory;
 }
 
 export interface ISearchQueryElementParseFromJSON { (jsonData: any, context: ISearchQueryElementFromJSONContext): ISearchQueryElement; }

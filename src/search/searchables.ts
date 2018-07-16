@@ -11,6 +11,7 @@ import {
     TextSearchQueryElement,
 
 } from "./searchquery";
+import { IFolderSearchQueryElementFactory } from "./SearchQueryFactory";
 import { ALL, FOLDER, TEXT } from "./WordTranslator";
 export interface ISimpleSearchableQueryElement {
     matchKeyValue(key: string, value: string): Promise<IExactValueMatch>;
@@ -167,13 +168,12 @@ export class TextSearchable implements ISimpleSearchableQueryElement {
 
 export class FolderSearchable implements ISimpleSearchableQueryElement {
 
-    constructor(public qnamePath: string, public displayPath: string, private wordTranslationService: ISynchronousTranslationService, private noderef: string) {
+    constructor(private noderef: string, private displayPath: string, private folderSQEFactory: IFolderSearchQueryElementFactory, private wordTranslationService: ISynchronousTranslationService) {
     }
 
     public matchKeyValue(key: string, value: string): Promise<IExactValueMatch> {
         return Promise.resolve(this.wordTranslationService(FOLDER)).then(folderTranslated => lowercaseTrimEquals(this.displayPath, value) && lowercaseTrimEquals(key, folderTranslated) ?
-            new SimpleSearchQueryElementValueMatch(new FolderSearchQueryElement(this.qnamePath, this.displayPath, this.wordTranslationService, this.noderef)) :
-            new NoResultValueMatch());
+            new SimpleSearchQueryElementValueMatch(this.folderSQEFactory.buildFolderQueryElement(this.noderef)) : new NoResultValueMatch());
     }
 
     public getPartiallyMatchingAutocompleteListElements(key: string, value: string): Promise<IAutocompleteSuggestion[]> {

@@ -29,7 +29,16 @@ export interface IDateRange {
     ToJSON(): object;
     TYPE: string;
     equals(other: IDateRange): boolean;
+    visit<T>(visitor: IDateRangeVisitor<T>): T;
 }
+
+export interface IDateRangeVisitor<T> {
+    visitSimpleDateRange(simpleDateRange: SimpleDateRange): T;
+    visitUntilDateRange(untilDateRange: UntilDateRange): T;
+    visitFromDateRange(fromDateRange: FromDateRange): T;
+    visitLabeledDateRange(labeledDateRange: LabeledDateRange): T;
+}
+
 export class SimpleDateRange implements IDateRange {
     public static readonly TYPE = "SimpleDateRange";
     public TYPE = SimpleDateRange.TYPE;
@@ -57,6 +66,9 @@ export class SimpleDateRange implements IDateRange {
     }
     public equals(other: IDateRange): boolean {
         return other instanceof SimpleDateRange && other.from.valueOf() === this.from.valueOf() && other.to.valueOf() === this.to.valueOf();
+    }
+    public visit<T>(visitor: IDateRangeVisitor<T>) {
+        return visitor.visitSimpleDateRange(this);
     }
 }
 const DAYINMS: number = 24 * 3600 * 1000;
@@ -95,6 +107,9 @@ export class UntilDateRange implements IDateRange {
     public equals(other: IDateRange): boolean {
         return other instanceof UntilDateRange && other.to.valueOf() === this.to.valueOf();
     }
+    public visit<T>(visitor: IDateRangeVisitor<T>) {
+        return visitor.visitUntilDateRange(this);
+    }
 }
 export class FromDateRange implements IDateRange {
     public static readonly TYPE = "FromDateRange";
@@ -121,6 +136,9 @@ export class FromDateRange implements IDateRange {
     public equals(other: IDateRange): boolean {
         return other instanceof FromDateRange && other.from.valueOf() === this.from.valueOf();
     }
+    public visit<T>(visitor: IDateRangeVisitor<T>) {
+        return visitor.visitFromDateRange(this);
+    }
 }
 export type DateCalculation_t = (date: Date) => Date;
 
@@ -146,6 +164,9 @@ export class LabeledDateRange implements IDateRange {
     }
     public equals(other: IDateRange): boolean {
         return other instanceof LabeledDateRange && this.label === other.label;
+    }
+    public visit<T>(visitor: IDateRangeVisitor<T>) {
+        return visitor.visitLabeledDateRange(this);
     }
 }
 
