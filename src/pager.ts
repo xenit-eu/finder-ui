@@ -102,7 +102,7 @@ export function Pager({ totalItems, pageSize, selected, pageSelected }: Pager_t)
     const pageRange = Math.min(totalPages, 15);
     selected = selected || 1;
     const pages = calculatePages(selected, totalPages, pageRange);
-    let pageElements = pages.map((i: number) => __(Page, { key: 'page' + i, value: i, isActive: selected === i, onClick: () => pageSelected(i) }));
+    let pageElements = pages.map((i: number) => __(Page, { key: "page" + i, value: i, isActive: selected === i, onClick: () => pageSelected(i) }));
 
     // __(FirstPageLink, {isActive: true, onClick: onClick}),
     // __(LastPageLink, {isActive: true, onClick: onClick}),
