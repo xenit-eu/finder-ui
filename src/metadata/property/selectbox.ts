@@ -107,14 +107,14 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
                 const menuItemComponents = menuItems.map((item: KV_t) => __(MenuItem, {
                     key: item.key,
                     value: item.key,
-                }, [
-                        isMultiValue && __(Checkbox, {
-                            checked: value !== null ? value.indexOf(item.key) >= 0 : false,
-                        }),
-                        __(ListItemText, {
-                            primary: item.value,
-                        }),
-                    ]));
+                },
+                    isMultiValue && __(Checkbox, {
+                        checked: value !== null ? value.indexOf(item.key) >= 0 : false,
+                    }),
+                    __(ListItemText, {
+                        primary: item.value,
+                    }),
+                ));
 
                 if (!isMultiValue && !config.parameters.required) {
                     menuItemComponents.unshift(__(MenuItem, {
@@ -151,7 +151,7 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
                         this.props.onChange(config.mapToModel(this.props.node, val));
                     },
                     renderValue: () => {
-                        if(this.state.currentValues.length === 0) {
+                        if (this.state.currentValues.length === 0) {
                             return _.em({}, "None");
                         }
                         return _.div({ style: { display: "flex", flexWrap: "wrap" } }, this.state.currentValues.map((va: KV_t) => __(Chip, { key: va.key, label: va.value })));

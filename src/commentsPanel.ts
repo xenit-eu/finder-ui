@@ -32,7 +32,7 @@ export function CommentsPanel({ show, language, comments,
     return _.div({ className: "comments-panel" },
         _.div({ className: "comments-content" },
             show ? [
-                canAdd ? __(NewCommentCard, { onSaveNewComment }) : undefined,
+                canAdd ? __(NewCommentCard, { key: "newCommentCard", onSaveNewComment }) : undefined,
                 ...CommentCards(language, comments, onDeleteComment, onStartEditing, onSaveEditing, onCancelEditing),
             ] : []),
     );

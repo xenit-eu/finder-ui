@@ -190,12 +190,12 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
             }),
         ];
 
-        const setsList = this.state.sets.map(o => __(MenuItem, { value: o.id, primaryText: o.label }));
+        const setsList = this.state.sets.map((o, i) => __(MenuItem, { key: i, value: o.id, primaryText: o.label }));
 
-        setsList.unshift(__(MenuItem, { value: "", primaryText: "(None)", disabled: true }));
+        setsList.unshift(__(MenuItem, { value: "", key: "None", primaryText: "(None)", disabled: true }));
 
         if (selectedSet && columnsModified) {
-            setsList.push(__(MenuItem, { value: "--mod-" + selectedSet.id, primaryText: selectedSet.label + "*" }));
+            setsList.push(__(MenuItem, { key: "selectedSetColumnsModified", value: "--mod-" + selectedSet.id, primaryText: selectedSet.label + "*" }));
         }
 
         const dialog = __(Dialog, {
@@ -208,44 +208,43 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
             bodyClassName: "columns-picker-content",
             actionsContainerClassName: "actions-container",
             autoScrollBodyContent: true,
-        }, [
+        },
 
-                __("h3", { key: "hdr-1" }, "Saved column sets"),
+            __("h3", { key: "hdr-1" }, "Saved column sets"),
 
-                __(SelectField, {
-                    key: "sf",
-                    className: "select-display",
-                    value: (columnsModified ? "--mod-" : "") + this.state.selectedSet,
-                    onChange: this.handleChangeSet.bind(this),
-                }, setsList),
-                _.div({ key: "columns-actions", className: "columns-actions" },
-                    __(FlatButton, { key: "bs", style: saveButtonStyle, label: "Save", onClick: this.handleSave.bind(this), disabled: !selectedSet || selectedSet.readonly }),
-                    __(FlatButton, { key: "bsa", style: saveButtonStyle, label: "Save as new...", onClick: this.handleSaveAsNew.bind(this) }),
-                    __(FlatButton, { key: "bd", style: saveButtonStyle, label: "Delete", onClick: this.handleDelete.bind(this), disabled: !selectedSet || selectedSet.readonly }),
-                ),
+            __(SelectField, {
+                key: "sf",
+                className: "select-display",
+                value: (columnsModified ? "--mod-" : "") + this.state.selectedSet,
+                onChange: this.handleChangeSet.bind(this),
+            }, setsList),
+            _.div({ key: "columns-actions", className: "columns-actions" },
+                __(FlatButton, { key: "bs", style: saveButtonStyle, label: "Save", onClick: this.handleSave.bind(this), disabled: !selectedSet || selectedSet.readonly }),
+                __(FlatButton, { key: "bsa", style: saveButtonStyle, label: "Save as new...", onClick: this.handleSaveAsNew.bind(this) }),
+                __(FlatButton, { key: "bd", style: saveButtonStyle, label: "Delete", onClick: this.handleDelete.bind(this), disabled: !selectedSet || selectedSet.readonly }),
+            ),
 
-                __("hr", { key: "hr-1" }),
+            __("hr", { key: "hr-1" }),
 
-                __("h3", { key: "hdr-2" }, "Columns to display"),
-                __("div", { key: "selected" }),
+            __("h3", { key: "hdr-2" }, "Columns to display"),
+            __("div", { key: "selected" }),
+            __(Sortable, {
+                options: sortableOptions,
+                className: "block-list-target",
+                onChange: this.handleChangeTargetSortable.bind(this),
+                tag: "ul",
+            }, selected),
+            __("hr", { key: "hr-2" }),
+            __("h3", { key: "hdr-3" }, "Other available columns"),
+            __("div", { key: "other", style: { marginBottom: 40 } },
                 __(Sortable, {
                     options: sortableOptions,
-                    className: "block-list-target",
-                    onChange: this.handleChangeTargetSortable.bind(this),
+                    className: "block-list-source",
+                    onChange: this.handleChangeSourceSortable.bind(this),
                     tag: "ul",
-                }, selected),
-                __("hr", { key: "hr-2" }),
-                __("h3", { key: "hdr-3" }, "Other available columns"),
-                __("div", { key: "other", style: { marginBottom: 40 } },
-                    __(Sortable, {
-                        options: sortableOptions,
-                        className: "block-list-source",
-                        onChange: this.handleChangeSourceSortable.bind(this),
-                        tag: "ul",
-                    }, others),
-                ),
-                __("p", { key: "footer" }, "Drag and drop the name on the above section to display it."),
-            ],
+                }, others),
+            ),
+            __("p", { key: "footer" }, "Drag and drop the name on the above section to display it."),
         );
 
         return _.div({ className: "columns-picker" }, [

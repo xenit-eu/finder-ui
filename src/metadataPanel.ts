@@ -38,21 +38,22 @@ export type MetaDataPanelGroupInfo_t = {
 };
 
 export function MetaDataPanel({ allowEdition, editionMode, fields, onEdit, onSave, groups }: MetaDataPanel_t, style?: MetaDataPanelStyle_t) {
-    return _.div({ className: "metadata" }, fields.length > 0 ? [
+    return fields.length > 0 ? _.div({ className: "metadata" },
         // header with "Save" button
-        allowEdition ? _.div({ key: "metadata-header", className: "metadata-header" }, [
-            __(FlatButton, {
-                label: editionMode ? "Save" : "Edit", primary: true, keyboardFocused: false,
-                onClick: () => editionMode ? onSave(fields) : onEdit(), style: (style && style.button) ? style.button : {},
-            }),
-        ]) : _.div({ className: "metadata-header" }),
+        allowEdition ? _.div({ key: "metadata-header", className: "metadata-header" },
+             __(FlatButton,
+                {
+                    key: editionMode ? "Save" : "Edit",
+                    label: editionMode ? "Save" : "Edit", primary: true, keyboardFocused: false,
+                    onClick: () => editionMode ? onSave(fields) : onEdit(), style: (style && style.button) ? style.button : {},
+                }),
+        ) : _.div({ key: "emptyMetadataHeader", className: "metadata-header" }),
         // editable fields.
         _.div({
             key: "metadata-content",
             className: "metadata-content" + (editionMode ? " edited" : ""),
             style: style && style.contentStyle ? style.contentStyle : {},
         }, metadataFields(fields, editionMode, groups)),
-    ] : [],
-    );
+    ) : _.div({ key: "emptyMetadataContent", className: "metadata" });
 
 }
