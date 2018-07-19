@@ -168,13 +168,13 @@ function SortableTh(c: Doclist_Column_t, onSortColumnSelected: OnSortColumnSelec
     return _.th({
         key: c.name + c.label,
         onClick: c.sortable ? () => { onSortColumnSelected(0, c.name, nextSort); } : () => { },
-    }, [
-            c.sortable ? __(FontIcon, {
-                className: `header-icon fa fa-${iconName}`,
-                title,
-            }) : null,
-            _.div({ className: "doclist-column-title" }, c.label),
-        ]);
+    },
+        c.sortable ? __(FontIcon, {
+            className: `header-icon fa fa-${iconName}`,
+            title,
+        }) : null,
+        _.div({ className: "doclist-column-title" }, c.label),
+    );
 }
 
 //@Component DocList
@@ -217,21 +217,23 @@ export function DocList({ className, columns, data, nodes, onDownloadButtonClick
             width: "initial",
         };
 
-        downloadComponents = _.div({ style: { display: "flex", flexDirection: "row", alignItems: "center" } }, [
+        downloadComponents = _.div({ key: "downloadComponents", style: { display: "flex", flexDirection: "row", alignItems: "center" } },
             !allRowsToggled && !noRowsToggled ?
                 __(Checkbox, {
+                    key: "allRowsToggled",
                     style,
                     checked: true,
                     checkedIcon: __(ToggleIndeterminateCheckBox),
                     onCheck: () => (<Node_t[]>nodes).forEach((node, i) => onRowToggled(true, i, nodeToRow(node))),
                 }) :
                 __(Checkbox, {
+                    key: "notAllRowsToggled",
                     style,
                     checked: allRowsToggled && !noRowsToggled,
                     onCheck: (ev: any, checked: boolean) => (<Node_t[]>nodes).forEach((node, i) => onRowToggled(checked, i, nodeToRow(node))),
                 }),
-            __(IconButton, { disabled: toggledRows === 0, tooltip: toggledRows + " selected", onClick: onDownloadButtonClick }, [__(FileDownload)]),
-        ]);
+            __(IconButton, { key: "iconButton", disabled: toggledRows === 0, tooltip: toggledRows + " selected", onClick: onDownloadButtonClick }, [__(FileDownload, { key: "FileDownload" })]),
+        );
     }
     const headerelements = (<ReactElement<any>[]>[_.th({ key: "Menu" }, "")])
         .concat(togglable ? [_.th({ key: "toggle", style: { textAlign: "center", width: "1px" } }, downloadComponents)] : [])
@@ -246,13 +248,14 @@ export function DocList({ className, columns, data, nodes, onDownloadButtonClick
             ] : []))
             .concat(columns.map(col => buildSingleTD(col, node, onRowSelected, i)));
 
-    const bodycontent = nodes.map((node, i) => _.tr({ style: style(i), key: i }, singleRowElements(node, i)));
+    const bodycontent = nodes.map((node, i) => _.tr({ style: style(i), key: "tableRow" + i }, singleRowElements(node, i)));
     const body = _.tbody({ key: "body" }, bodycontent);
     const tableProps = { key: "table", className: className || "table table-hover table-striped table-mc-purple table-condensed", id: "doclist-table" };
-    const table = _.div({ className: "table-scroll-wrapper" }, _.table(tableProps, [header, body])); // table
+    const table = _.div({ key: "table-scroll-wrapper", className: "table-scroll-wrapper" }, _.table(tableProps, header, body)); // table
     const pagerComponent = __(Pager, { totalItems: pager.totalItems, pageSize: pager.pageSize, selected: pager.selected, pageSelected: onPageSelected });
-    const emptyDocList = _.div({ className: "doclist-message" }, [documentNotFoundText]);
-    return _.div({ className: "doclist" }, pager.totalItems > 0 ? [_.div({ className: "doclist-header" }, [pagerComponent, columnsPicker]), table] : [emptyDocList]);
+    const emptyDocList = _.div({ className: "doclist-message" }, documentNotFoundText);
+    return _.div({ key: "doclist", className: "doclist" }, pager.totalItems > 0 ?
+        [_.div({ key: "doclist-header", className: "doclist-header" }, pagerComponent, columnsPicker), table] : emptyDocList);
 }
 function buildSingleTD(col: Doclist_Column_t, node: Node_t, onRowSelected: (i: number) => void, i: number) {
     return _.td(

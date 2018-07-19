@@ -45,7 +45,7 @@ export function CommentsDialog({ language, opened, comments, onClose, onSaveNewC
         contentStyle: customContentStyle,
         autoScrollBodyContent: true,
     }, [
-            __(NewCommentCard, { onSaveNewComment }),
+            __(NewCommentCard, { onSaveNewComment, key: "newComment" }),
             ...CommentCards(language, comments, onDeleteComment, onStartEditing, onSaveEditing, onCancelEditing),
         ],
     );

@@ -41,7 +41,7 @@ function ItemsOnThisPage({ selected, pageSize, totalItems }: Pager_t): ReactElem
     const showTotalItems = noValidResults ? 0 : totalItems;
     const currentStart = noValidResults ? 0 : pageSize * (selected - 1) + 1;
     const currentEnd = noValidResults ? 0 : Math.min(pageSize * selected, totalItems);
-    return _.span({ className: "items-on-this-page" }, [_.b({}, [currentStart]), "-", _.b({}, [currentEnd]), " of ", _.b({}, showTotalItems)]);
+    return _.span({ className: "items-on-this-page" }, _.b({}, currentStart), "-", _.b({}, currentEnd), " of ", _.b({}, showTotalItems));
 }
 
 /*
@@ -102,19 +102,19 @@ export function Pager({ totalItems, pageSize, selected, pageSelected }: Pager_t)
     const pageRange = Math.min(totalPages, 15);
     selected = selected || 1;
     const pages = calculatePages(selected, totalPages, pageRange);
-    let pageElements = pages.map((i: number) => __(Page, { /*key: 'page' + i,*/ value: i, isActive: selected === i, onClick: () => pageSelected(i) }));
+    let pageElements = pages.map((i: number) => __(Page, { key: 'page' + i, value: i, isActive: selected === i, onClick: () => pageSelected(i) }));
 
     // __(FirstPageLink, {isActive: true, onClick: onClick}),
     // __(LastPageLink, {isActive: true, onClick: onClick}),
 
-    return _.div({ className: "pager" }, [
+    return _.div({ className: "pager" },
         __(PreviousPageLink, { /*key: "previous",*/ isActive: selected > 1, onClick: () => pageSelected(selected - 1) }),
         pages[0] > 1 ? "..." : "",
         _.span({ key: "pages" }, pageElements),
         pages.slice(-1)[0] < totalPages ? "..." : "",
         __(NextPageLink, { /*key: "next",*/ isActive: selected < totalPages, onClick: () => pageSelected(selected + 1) }),
         __(ItemsOnThisPage, { totalItems, pageSize, selected }),
-    ]);
+    );
 }
 
 export default Pager;

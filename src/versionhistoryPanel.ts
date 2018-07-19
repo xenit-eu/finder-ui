@@ -55,8 +55,8 @@ const avatarSvgStyle: CSSProperties = {
 };
 
 const avatar = _.div({ style: avatarStyle }, [
-    _.svg({ viewBox: "0 0 24 24", style: avatarSvgStyle }, [
-        _.path({ d: "M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" }),
+    _.svg({ key: "svg", viewBox: "0 0 24 24", style: avatarSvgStyle }, [
+        _.path({ key: "path", d: "M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" }),
     ]),
 ]);
 
@@ -67,13 +67,13 @@ export function VersionsHistoryPanel({ show, versions }: VersionsHistoryPanel_t)
         }
 
         const versionItem = (v: Version_t) => _.div({ className: "history-item" }, [
-            _.div({}, [
-                _.div({ className: "history-version" }, [v.versionNumber]),
+            _.div({ key: "history-version-parent" }, [
+                _.div({ key: "history-version", className: "history-version" }, [v.versionNumber]),
             ]),
-            _.div({ className: "history-meta-data" }, [
+            _.div({ key: "history-meta-data-parent", className: "history-meta-data" }, [
                 v.title && v.title.length > 0 ? _.div({ className: "history-doc-name" }, [v.title]) : undefined,
-                _.div({ className: "history-details" }, [
-                    _.div({ className: "history-avatar" }, [
+                _.div({ key: "history-details", className: "history-details" }, [
+                    _.div({ key: "history-avatar", className: "history-avatar" }, [
                         avatar,
                     ]),
                     _.div({}, [

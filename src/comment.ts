@@ -87,7 +87,7 @@ export function CommentCards(
     onSaveEditing: (updatedComment: Comment_t) => void,
     onCancelEditing: (canceledComment: Comment_t) => void,
 ) {
-    return comments.map((comment: Comment_t) => {
+    return comments.map((comment: Comment_t, i: number) => {
         let cardText: any;
         if (!comment.editing || !comment.editable) {
             cardText = _.div({ className: "comment-card-body" },
@@ -138,6 +138,6 @@ export function CommentCards(
 
             );
         }
-        return _.div({ className: "comment-card" }, __(Card, {}, cardText));
+        return _.div({ className: "comment-card" }, __(Card, { key: "comment" + i }, cardText));
     });
 }

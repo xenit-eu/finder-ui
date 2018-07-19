@@ -97,6 +97,6 @@ class ExplorerNode<T extends ExplorerNode_t> extends Component<ExplorerNode_Prop
 
 export function Explorer<T extends ExplorerNode_t>(props: Explorer_t<T>) {
     return __(List, <any>{ className: "explorer" }, [
-        __(ExplorerNode, { ...props, nestedLevel: 0 }),
+        __(ExplorerNode, { key:"rootExplorerNode",...props, nestedLevel: 0 }),
     ]);
 }

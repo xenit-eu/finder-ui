@@ -29,7 +29,7 @@ type MenuItemWrapper_t = {
 
 function MenuItemWrapper({ idx, menuItem, onMenuSelected }: MenuItemWrapper_t): ReactElement<any> {
     return __(MenuItem, {
-        key: menuItem.key,
+        key: idx,
         leftIcon: menuItem.iconName !== undefined ? __(FontIcon, { className: `fa ${menuItem.iconName}` }) : undefined,
         rightIcon: menuItem.children !== undefined && menuItem.children.length > 0 ? __(ArrowDropRight) : undefined,
         primaryText: menuItem.label,

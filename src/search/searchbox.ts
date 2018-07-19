@@ -486,7 +486,6 @@ class AutocompleteMenu extends Component<AutocompleteMenu_Props_t> {
                 ref: this.props.menuRef,
                 width: "100%",
                 autoWidth: false,
-                maxHeight: "80vh" as any,
                 disableAutoFocus: !this.props.focusAutocomplete,
                 initiallyKeyboardFocused: true,
                 desktop: true,

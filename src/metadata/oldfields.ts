@@ -57,14 +57,14 @@ function metadataFilter(a: Metadata_t): boolean {
     return !/\}(store\-protocol|node\-dbid|content|locale|store\-identifier|lastThumbnailModification|node\-uuid)$/.test(a.name);
 }
 
-export function metadataField(field: Metadata_t, editable: boolean): ReactElement<any> {
+export function metadataField(field: Metadata_t, editable: boolean, key: string): ReactElement<any> {
     let disable = field.disable;
     if (!editable) {
         disable = true;
     }
     switch (field.type) {
         case MetadataType_t.DATE:
-            return _.span({ className: "metadata-field" }, __(DatePicker, {
+            return _.span({ key, className: "metadata-field" }, __(DatePicker, {
                 hintText: "Portrait Inline Dialog",
                 container: "inline",
                 disabled: disable,
@@ -75,13 +75,13 @@ export function metadataField(field: Metadata_t, editable: boolean): ReactElemen
             }));
 
         case MetadataType_t.LIST:
-            return _.span({ className: "metadata-field select" }, __(SelectionField, {
+            return _.span({ key, className: "metadata-field select" }, __(SelectionField, {
                 field,
                 disable,
             }));
 
         case MetadataType_t.STRING:
-            return _.span({ className: "metadata-field" }, __(TextField, {
+            return _.span({ key, className: "metadata-field" }, __(TextField, {
                 key: field.name + field.value,
                 hintText: "Type value...",
                 onChange: (evt: any) => field.value = evt.target.value,
@@ -114,15 +114,15 @@ function fieldsInGroups(fields: Metadata_t[], groupInfo: MetaDataPanelGroupInfo_
 export function metadataFields(fields: Metadata_t[], editable: boolean = true, groupInfo: MetaDataPanelGroupInfo_t | undefined = undefined): Array<ReactElement<any>> {
     const filteredFields = fields.filter(metadataFilter);
     if (!groupInfo) {
-        return filteredFields.map(f => metadataField(f, editable));
+        return filteredFields.map((f, i) => metadataField(f, editable, ""+i));
     } else {
         let groupsWithChildrenList = fieldsInGroups(fields, groupInfo);
-        return groupsWithChildrenList.map(g => {
+        return groupsWithChildrenList.map((g, i) => {
             const expandable = g.group.id !== "default";
-            const childItems = g.items.map(f => __(CardText, { expandable }, _.div({}, metadataField(f, editable))));
-            const header = __(CardHeader, { title: g.group.label, actAsExpander: expandable, showExpandableButton: expandable });
+            const childItems = g.items.map((f, j) => __(CardText, { key: "text" + j, expandable }, _.div({}, metadataField(f, editable, "" + j))));
+            const header = __(CardHeader, { key: "header", title: g.group.label, actAsExpander: expandable, showExpandableButton: expandable });
             const items = [header, ...childItems];
-            return __(Card, { initiallyExpanded: g.group.expanded }, items);
+            return __(Card, { key: i, initiallyExpanded: g.group.expanded }, items);
         });
     }
 }

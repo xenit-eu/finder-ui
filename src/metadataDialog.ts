@@ -11,8 +11,8 @@ type DialogActions_t = {
 
 function DialogActions({ handleClose, handleSave }: DialogActions_t) {
     return [
-        __(FlatButton, { label: "Cancel", primary: true, onClick: handleClose }),
-        __(FlatButton, { label: "Save", primary: true, keyboardFocused: true, onClick: handleSave }),
+        __(FlatButton, { key:"cancel",label: "Cancel", primary: true, onClick: handleClose }),
+        __(FlatButton, { key:"save",label: "Save", primary: true, keyboardFocused: true, onClick: handleSave }),
     ];
 }
 
