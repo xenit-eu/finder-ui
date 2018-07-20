@@ -16,5 +16,6 @@ export * from "./pager";
 export * from "./resizer";
 export * from "./search";
 export * from "./tabspanel";
+export * from "./testUtils";
 export * from "./upload";
 export * from "./versionhistoryPanel";
