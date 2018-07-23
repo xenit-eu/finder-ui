@@ -255,7 +255,7 @@ export function DocList({ className, columns, data, nodes, onDownloadButtonClick
     const pagerComponent = __(Pager, { totalItems: pager.totalItems, pageSize: pager.pageSize, selected: pager.selected, pageSelected: onPageSelected });
     const emptyDocList = _.div({ className: "doclist-message" }, documentNotFoundText);
     return _.div({ key: "doclist", className: "doclist" }, pager.totalItems > 0 ?
-        [_.div({ key: "doclist-header", className: "doclist-header" }, pagerComponent, columnsPicker), table] : emptyDocList);
+        [table, _.div({ key: "doclist-header", className: "doclist-header" }, pagerComponent, columnsPicker)] : emptyDocList);
 }
 function buildSingleTD(col: Doclist_Column_t, node: Node_t, onRowSelected: (i: number) => void, i: number) {
     return _.td(
