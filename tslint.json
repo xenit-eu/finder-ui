@@ -12,16 +12,15 @@
         "arrow-parens": false,
         "no-empty": false,
         "no-var-requires": false,
-        "type-name": true,
+        "type-name": false,
         "comment-format": [
             false
         ],
-        "max-classes-per-file": [
-            false
-        ],
+        "max-classes-per-file": false,
         "member-ordering": [
             false
         ],
+        "ordered-imports": false,
         "interface-name": false,
         "interface-over-type-literal": false,
         "array-type": false,

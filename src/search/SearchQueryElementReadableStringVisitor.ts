@@ -1,8 +1,9 @@
 import {
     AllSimpleSearchQueryElement, AndSearchQueryElement, AspectSearchQueryElement,
-    DatePropertySearchQueryElement, FolderSearchQueryElement,  ISearchQueryElementVisitor,
+    DatePropertySearchQueryElement, FolderSearchQueryElement, ISearchQueryElementVisitor,
     NodeRefSearchQueryElement, OrSearchQueryElement, ReferenceSimpleSearchQueryElement, StringValuePropertySearchQueryElement,
     TextSearchQueryElement,
+    ToFillInSearchQueryElement,
     TypeSearchQueryElement,
 
 } from "./searchquery";
@@ -53,6 +54,9 @@ export class SearchQueryElementReadableStringVisitor implements ISearchQueryElem
 
     }
     public visitNodeRefSearchQueryElement(query: NodeRefSearchQueryElement): Promise<string> {
+        return query.getSimpleSearchbarText();
+    }
+    public visitToFillInSearchQueryElement(query: ToFillInSearchQueryElement): Promise<string> {
         return query.getSimpleSearchbarText();
     }
 

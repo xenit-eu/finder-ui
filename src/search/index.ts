@@ -6,7 +6,7 @@ export * from "./searchHistoryList";
 export * from "./searchquery";
 export * from "./WordTranslator";
 export * from "./SearchQueryElementReadableStringVisitor";
-export * from "./SearchQueryElementToSimpleQueryElementVisitor";
 export * from "./SearchQueryFactory";
 export * from "./SearchQueryFilter";
 export * from "./SearchQueryNormalizeVisitor";
+export * from "./SearchQueryOperator";

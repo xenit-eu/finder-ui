@@ -1,21 +1,17 @@
 import {
-    DATE_BETWEEN, DATE_FROM, DATE_ON, DATE_UNTIL, DateRangeSearchables, FromDateRange,
-    IDateRange, IDateRangeTranslator, SimpleDateRange, UntilDateRange,
+    DATE_BETWEEN, DateRangeSearchables, DATE_FROM, DATE_ON, DATE_UNTIL, FromDateRange, IDateRange,
+    IDateRangeTranslator, SimpleDateRange, UntilDateRange,
 } from "./DateRange";
 import {
-    AllSimpleSearchQueryElement, DatePropertySearchQueryElement,
-    FolderSearchQueryElement,
-    IPropertyKeyNameService, ISimpleSearchQueryElement,
-    ISynchronousTranslationService, PropertyNameService_t, ReferenceSimpleSearchQueryElement, SearchQuery,
-    StringValuePropertySearchQueryElement,
-    TextSearchQueryElement,
-
+    AllSimpleSearchQueryElement, DatePropertySearchQueryElement, IPropertyKeyNameService, ISearchQueryElement,
+    ISimpleSearchQueryElement, ISynchronousTranslationService, PropertyNameService_t, ReferenceSimpleSearchQueryElement,
+    SearchQuery, StringValuePropertySearchQueryElement, TextSearchQueryElement,
 } from "./searchquery";
 import { IFolderSearchQueryElementFactory } from "./SearchQueryFactory";
 import { ALL, FOLDER, TEXT } from "./WordTranslator";
-export interface ISimpleSearchableQueryElement {
+export interface ISearchableQueryElement {
     matchKeyValue(key: string, value: string): Promise<IExactValueMatch>;
-    getPartiallyMatchingAutocompleteListElements(key: string, value: string): Promise<IAutocompleteSuggestion[]>;
+    getPartiallyMatchingAutocompleteListElements(key: string, value: string): Promise<ReadonlyArray<IAutocompleteSuggestion>>;
 }
 
 function ExistsFilter<T>(elements: (T | undefined | null | void)[]) {
@@ -53,7 +49,7 @@ function empty(s: string | undefined) {
 }
 function ContainsOrKeyOrValueOtherEmpty(key: string, value: string, container: string) {
 }
-export class ReferenceSearchableQueryElement implements ISimpleSearchableQueryElement {
+export class ReferenceSearchableQueryElement implements ISearchableQueryElement {
     public constructor(public name: string, public wrappedQuery: SearchQuery) {
     }
 
@@ -74,7 +70,7 @@ export class ReferenceSearchableQueryElement implements ISimpleSearchableQueryEl
     }
 }
 
-export class AllSearchable implements ISimpleSearchableQueryElement {
+export class AllSearchable implements ISearchableQueryElement {
     constructor(private AllwordTranslationService: ISynchronousTranslationService) {
     }
 
@@ -88,7 +84,7 @@ export class AllSearchable implements ISimpleSearchableQueryElement {
     }
 }
 
-export abstract class PropertySearchable implements ISimpleSearchableQueryElement {
+export abstract class PropertySearchable implements ISearchableQueryElement {
     public constructor(public qname: string, protected propertykeyNameService: IPropertyKeyNameService) {
     }
     public matchKeyValue(key: string, value: string): Promise<IExactValueMatch> {
@@ -148,7 +144,7 @@ export class AnyStringValuePropertySearchable extends PropertySearchable {
     }
 }
 
-export class TextSearchable implements ISimpleSearchableQueryElement {
+export class TextSearchable implements ISearchableQueryElement {
     constructor(private text: string, private translationService: ISynchronousTranslationService) {
     }
     public getPartiallyMatchingAutocompleteListElements(key: string, value: string): Promise<IAutocompleteSuggestion[]> {
@@ -166,7 +162,7 @@ export class TextSearchable implements ISimpleSearchableQueryElement {
     }
 }
 
-export class FolderSearchable implements ISimpleSearchableQueryElement {
+export class FolderSearchable implements ISearchableQueryElement {
 
     constructor(private noderef: string, private displayPath: string, private folderSQEFactory: IFolderSearchQueryElementFactory, private wordTranslationService: ISynchronousTranslationService) {
     }
@@ -198,6 +194,41 @@ const DateFillInBefore: IDateFillInType = {
 export const DateFillInTypes: IDateFillInType[] = [DateFillInOn, DateFillInAfter, DateFillInBefore];
 const DateFillInsearchables = [DATE_ON, DATE_FROM, DATE_UNTIL, DATE_BETWEEN];
 export const DateSearchableWords = DateRangeSearchables.map(dRS => dRS.label).concat(DateFillInsearchables);
+export type HierachyInformation = {
+    requiresUserChoice: boolean,
+    possibilities: Array<{
+        index: number[],
+        structure: ISearchQueryElement,
+    }>,
+};
+export class HierarchicQuerySearchable implements ISearchableQueryElement {
+
+    public constructor(
+        private getOrTranslated: () => string,
+        private getAndTranslated: () => string,
+        public getHierarchyInformation: (type: "and" | "or") => HierachyInformation) {
+
+    }
+    public matchKeyValue(key: string, value: string): Promise<IExactValueMatch> {
+        if (key) {
+            return Promise.resolve(new NoResultValueMatch());
+        }
+        return Promise.resolve(
+            lowercaseTrimEquals(this.getOrTranslated(), value) ? new HierarchicQueryValueMatch("or", this.getHierarchyInformation("or")) :
+                lowercaseTrimEquals(this.getAndTranslated(), value) ? new HierarchicQueryValueMatch("and", this.getHierarchyInformation("and")) :
+                    new NoResultValueMatch());
+    }
+    public getPartiallyMatchingAutocompleteListElements(key: string, value: string): Promise<IAutocompleteSuggestion[]> {
+        return Promise.resolve(
+            [
+                lowercaseTrimContains(this.getOrTranslated(), value) ? new SimpleAutoCompleteListElement("", this.getOrTranslated(), this.getOrTranslated()) : undefined,
+                lowercaseTrimEquals(this.getAndTranslated(), value) ? new SimpleAutoCompleteListElement("", this.getAndTranslated(), this.getAndTranslated()) : undefined,
+            ]
+                .filter(e => e).map(e => e as SimpleAutoCompleteListElement));
+    }
+
+}
+
 export class DateSearchable extends PropertySearchable {
     constructor(qname: string, private propertyNameService: PropertyNameService_t, private dateRangeTranslator: IDateRangeTranslator) {
         super(qname, propertyNameService);
@@ -250,30 +281,34 @@ export class DateSearchable extends PropertySearchable {
 
     }
 }
-export enum DateHandleRequired {
-    range, single, none,
+export enum InputHandleRequired {
+    dateRange, dateSingle, none, hierarchicSelection,
 }
 export interface IExactValueMatch {
-    requiredDateHandle(): DateHandleRequired;
+    requiredDateHandle(): InputHandleRequired;
     hasResult(): boolean;
+    isHierarchic(): boolean;
 }
 export class SimpleSearchQueryElementValueMatch implements IExactValueMatch {
     //public type: "SimpleSearchQueryElementValueMatch" = "SimpleSearchQueryElementValueMatch"
     constructor(public simpleSearchQueryElement: ISimpleSearchQueryElement) {
     }
-    public requiredDateHandle(): DateHandleRequired {
-        return DateHandleRequired.none;
+    public requiredDateHandle(): InputHandleRequired {
+        return InputHandleRequired.none;
     }
     public hasResult() {
         return true;
+    }
+    public isHierarchic() {
+        return false;
     }
 }
 export class DateRangeFillinValueMatch implements IExactValueMatch {
     //public type: "DateRangeFillinValueMatch" = "DateRangeFillinValueMatch"
     constructor(private dateSearchable: DateSearchable) {
     }
-    public requiredDateHandle(): DateHandleRequired {
-        return DateHandleRequired.range;
+    public requiredDateHandle(): InputHandleRequired {
+        return InputHandleRequired.dateRange;
     }
     public hasResult() {
         return true;
@@ -284,14 +319,17 @@ export class DateRangeFillinValueMatch implements IExactValueMatch {
     public onFillInDateList(dates: Date[]) {
         return this.onFillIn(new SimpleDateRange(dates[0], dates[1]));
     }
+    public isHierarchic() {
+        return false;
+    }
 }
 export class DateFillinValueMatch implements IExactValueMatch {
     public hasResult() {
         return true;
     }
 
-    public requiredDateHandle(): DateHandleRequired {
-        return DateHandleRequired.single;
+    public requiredDateHandle(): InputHandleRequired {
+        return InputHandleRequired.dateSingle;
     }
 
     //public type: "DateFillinValueMatch" = "DateFillinValueMatch"
@@ -304,15 +342,33 @@ export class DateFillinValueMatch implements IExactValueMatch {
     public onFillInDateList(dates: Date[]) {
         return this.onFillIn(dates[0]);
     }
+    public isHierarchic() {
+        return false;
+    }
 }
 export class NoResultValueMatch implements IExactValueMatch {
-    public requiredDateHandle(): DateHandleRequired {
-        return DateHandleRequired.none;
+    public requiredDateHandle(): InputHandleRequired {
+        return InputHandleRequired.none;
     }
     public hasResult() {
         return false;
     }
-
+    public isHierarchic() {
+        return false;
+    }
+}
+export class HierarchicQueryValueMatch implements IExactValueMatch {
+    constructor(public type: "and" | "or", public hierarchyInfo: HierachyInformation) {
+    }
+    public requiredDateHandle(): InputHandleRequired {
+        return InputHandleRequired.hierarchicSelection;
+    }
+    public hasResult() {
+        return true;
+    }
+    public isHierarchic() {
+        return true;
+    }
 }
 
 export interface IAutocompleteSuggestion {

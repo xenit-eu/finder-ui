@@ -1,12 +1,14 @@
+import { SearchQueryFactory } from "../SearchQueryFactory";
 import "core-js";
 import { configure } from "enzyme";
 import * as Adapter from "enzyme-adapter-react-16";
 import "es6-shim";
 import { createElement as __ } from "react";
-import { Fixture } from "./../testUtils";
-import { AllSearchable, ISimpleSearchableQueryElement, SimpleAutoCompleteListElement, TextSearchable } from "./searchables";
-import { SearchBox, SearchBox_t } from "./searchbox";
-import { ISimpleSearchQueryElement, StringValuePropertySearchQueryElement } from "./searchquery";
+import { Fixture } from "../../testUtils";
+import { AllSearchable, ISearchableQueryElement, SimpleAutoCompleteListElement, TextSearchable } from "../searchables";
+import { SearchBox } from "./searchbox";
+import { ISimpleSearchQueryElement, StringValuePropertySearchQueryElement } from "../searchquery";
+import { SearchBox_t } from "./common";
 // tslint:disable-next-line:no-var-requires
 const jasmineEnzyme = require("jasmine-enzyme"); // no typings for jasmine-engine => require instead of import.
 
@@ -23,23 +25,25 @@ export function dummyPropertyService() {
 }
 
 describe("SearchBox component tests", () => {
-
+    const fac: SearchQueryFactory = SearchQueryFactory.GetDummySearchQueryFactory();
     beforeEach(() => {
         jasmineEnzyme();
     });
 
-    function SearchboxViaSearchablesProps(searchables: ISimpleSearchableQueryElement[], queryElements: ISimpleSearchQueryElement[], autocompleteSuggestions: SimpleAutoCompleteListElement[] = []) {
+    function SearchboxViaSearchablesProps(searchables: ISearchableQueryElement[], queryElements: ISimpleSearchQueryElement[], autocompleteSuggestions: SimpleAutoCompleteListElement[] = []) {
         const retProps: SearchBox_t = {
             autocompleteSuggestions,
             searching: false,
             searchedQueryElements: queryElements,
             searchableQueryElements: searchables,
             onRemoveQueryElement: (idx) => { },
+            onRemoveLastQueryElement: () => { },
             onAddQueryElement: (idx) => { },
             onSearch: () => { },
             onInputChanged: () => { },
             onSaveAsQuery: () => { },
             updateChipsOnConstruction: true,
+            onAddHierarchyElement: () => { },
         };
         return retProps;
     }
@@ -81,7 +85,7 @@ describe("SearchBox component tests", () => {
 
     it("should display provided list of terms in chips components", (done) => {
         const qE: StringValuePropertySearchQueryElement[] =
-            [new StringValuePropertySearchQueryElement("dummy1", "dummy2", dummyPropertyService()), new StringValuePropertySearchQueryElement("dummy3", "dummy4", dummyPropertyService())];
+            [fac.buildStringValuePropertyQueryElement("dummy1", "dummy2"), fac.buildStringValuePropertyQueryElement("dummy3", "dummy4")];
         const props = SearchboxViaSearchablesProps([new AllSearchable((s) => s)], qE);
         props.onChipsUpdated = () => {
             wrapper.update();
@@ -96,7 +100,7 @@ describe("SearchBox component tests", () => {
 
     it("should call onRemoveTerm with index of removed item when deleting a specific term", (done) => {
         const qE: StringValuePropertySearchQueryElement[] =
-            [new StringValuePropertySearchQueryElement("dummy1", "dummy2", dummyPropertyService()), new StringValuePropertySearchQueryElement("dummy3", "dummy4", dummyPropertyService())];
+            [fac.buildStringValuePropertyQueryElement("dummy1", "dummy2"), fac.buildStringValuePropertyQueryElement("dummy3", "dummy4")];
         const props = SearchboxViaSearchablesProps([new AllSearchable((s) => s)], qE);
         props.onChipsUpdated = () => {
             wrapper.update();
@@ -112,7 +116,7 @@ describe("SearchBox component tests", () => {
                 });
         };
         props.onRemoveQueryElement = (idx) => {
-            expect(idx).toBe(1);
+            expect(idx).toEqual([1]);
             done();
         };
         const wrapper = Fixture(__(SearchBox, props));
@@ -120,14 +124,13 @@ describe("SearchBox component tests", () => {
 
     it("Should call onRemoveTerm with the index of the latest item when pressing backspace in an empty input field", (done) => {
         const qE: StringValuePropertySearchQueryElement[] =
-            [new StringValuePropertySearchQueryElement("dummy1", "dummy2", dummyPropertyService()), new StringValuePropertySearchQueryElement("dummy3", "dummy4", dummyPropertyService())];
+            [fac.buildStringValuePropertyQueryElement("dummy1", "dummy2"), fac.buildStringValuePropertyQueryElement("dummy3", "dummy4")];
         const props = SearchboxViaSearchablesProps([new AllSearchable((s) => s)], qE);
         props.onChipsUpdated = () => {
             wrapper.update();
             wrapper.find("input").at(0).simulate("keydown", { keyCode: 8 });
         };
-        props.onRemoveQueryElement = (idx) => {
-            expect(idx).toBe(1);
+        props.onRemoveLastQueryElement = () => {
             done();
         };
         const wrapper = Fixture(__(SearchBox, props));

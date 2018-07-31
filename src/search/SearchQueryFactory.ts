@@ -5,13 +5,26 @@ import {
     IRetrievePathOfFolder, ISearchQueryElement, ISynchronousTranslationService,
     NodeRefSearchQueryElement, OrSearchQueryElement, PropertyNameService_t,
     ReferenceSimpleSearchQueryElement, SearchQuery,
-    StringValuePropertySearchQueryElement, TextSearchQueryElement, TypeSearchQueryElement,
+    StringValuePropertySearchQueryElement, TextSearchQueryElement, ToFillInSearchQueryElement, TypeSearchQueryElement,
 } from "./searchquery";
 
 export interface IFolderSearchQueryElementFactory {
     buildFolderQueryElement(noderef: string): FolderSearchQueryElement;
 }
 export class SearchQueryFactory implements IFolderSearchQueryElementFactory {
+    public static GetDummySearchQueryFactory(): SearchQueryFactory {
+        return new SearchQueryFactory(
+            { translateWord: (s) => s, translateDate: (d: Date) => d.toDateString() },
+            {
+                translatePropertyKey: (key: string) => Promise.resolve(key),
+                translatePropertyValue: (key: string, value: string) => Promise.resolve(value),
+            },
+            (s: string) => s,
+            (s: string) => Promise.resolve(s),
+            (s: string) => Promise.resolve(s),
+            (noderef: string) => Promise.resolve({ qnamePath: noderef, displayPath: noderef }),
+        );
+    }
     public constructor(
         private dateRangeTranslator: IDateRangeTranslator,
         private propertyNameService: PropertyNameService_t,
@@ -53,9 +66,12 @@ export class SearchQueryFactory implements IFolderSearchQueryElementFactory {
         return new ReferenceSimpleSearchQueryElement(wrappedQuery, name);
     }
     public buildAndQueryElement(children: ISearchQueryElement[]) {
-        return new AndSearchQueryElement(children);
+        return new AndSearchQueryElement(children, this.wordTranslator);
     }
     public buildOrQueryElement(children: ISearchQueryElement[]) {
-        return new OrSearchQueryElement(children);
+        return new OrSearchQueryElement(children, this.wordTranslator);
+    }
+    public buildToFillInQueryElement() {
+        return new ToFillInSearchQueryElement();
     }
 }
