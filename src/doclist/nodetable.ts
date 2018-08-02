@@ -80,7 +80,7 @@ export function NodeTable<T>(props: INodeTableProps<T>) {
             accessor: (row: INodeTableRow<T>) => row,
             sortable: false,
             resizable: false,
-            minWidth: 60,
+            width: 60,
             Cell: (prop: { value: INodeTableRow<T>, index: number }) => __(RowMenu, {
                 menuItems: prop.value.rowMenu,
                 onMenuItemSelected: (menuKey: T, menuIndex: number) => {
@@ -109,7 +109,7 @@ export function NodeTable<T>(props: INodeTableProps<T>) {
             accessor: (row: INodeTableRow<T>) => row,
             sortable: false,
             resizable: false,
-            minWidth: 32,
+            width: 32,
             Cell: (prop: { value: INodeTableRow<T>, index: number }) => __(Checkbox, {
                 checked: prop.value.toggled || false,
                 onCheck: (event: any, checked: boolean) => props.onRowToggled!(prop.value.node, checked, prop.index),
