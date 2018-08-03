@@ -69,6 +69,7 @@ class SubMenuItem extends Component<MenuItemWrapper_t, SubMenuItem_State_t> {
                     onCloseSubMenu: () => this.onClose(),
                 }),
             __(Menu, {
+                className: "pagemenu-menu",
                 anchorOrigin: {
                     vertical: "top",
                     horizontal: "right",
@@ -98,11 +99,13 @@ class SubMenuItem extends Component<MenuItemWrapper_t, SubMenuItem_State_t> {
 
 function MenuItemWrapper({ idx, menuItem, onMenuSelected, onOpenSubMenu, inset }: MenuItemWrapper_t): ReactElement<any> {
     return __(MenuItem, {
+        className: "pagemenu-item " + (onOpenSubMenu ? "pagemenu-item-submenu" : ""),
         key: idx,
         onClick: (event: MouseEvent<HTMLElement>) => onOpenSubMenu ? onOpenSubMenu(event) : onMenuSelected(idx, menuItem.key),
     }, [
             menuItem.iconName && __(ListItemIcon, undefined, __(FontIcon, { className: `fa ${menuItem.iconName}` })),
             __(ListItemText, {
+                className: "pagemenu-label",
                 primary: menuItem.label,
                 secondary: menuItem.secondaryLabel,
                 inset,
