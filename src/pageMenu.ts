@@ -1,11 +1,8 @@
-
-import { Component, createElement as __, Fragment, MouseEvent, ReactElement } from "react";
-import * as _ from "react-dom-factories";
-
 import { Fade, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, withStyles } from "@material-ui/core";
+import { IconButtonProps } from "@material-ui/core/IconButton";
 import { ArrowRight, MoreVert } from "@material-ui/icons";
 import FontIcon from "material-ui/FontIcon";
-import { IconButtonProps } from "@material-ui/core/IconButton";
+import { Component, createElement as __, Fragment, MouseEvent, ReactElement } from "react";
 
 export type PageMenuItem_t = {
     key?: string,
@@ -24,6 +21,7 @@ type MenuItemWrapper_t = {
     idx: number,
     menuItem: PageMenuItem_t,
     rootMenu?: boolean,
+    inset: boolean,
     onMenuSelected: (menuIdx: number, key?: string) => void,
     onOpenSubMenu?: (event: MouseEvent<HTMLElement>) => void,
     onCloseSubMenu?: () => void,
@@ -51,6 +49,10 @@ class SubMenuItem extends Component<MenuItemWrapper_t, SubMenuItem_State_t> {
         }
     }
 
+    private menuItemsNeedInset() {
+        return this.props.menuItem.children!.find(menuItem => !!menuItem.iconName) !== undefined;
+    }
+
     public render() {
         return __(Fragment, {}, [
             this.props.rootMenu ?
@@ -60,6 +62,7 @@ class SubMenuItem extends Component<MenuItemWrapper_t, SubMenuItem_State_t> {
                 }, __(MoreVert))
                 : __(MenuItemWrapper, {
                     idx: this.props.idx,
+                    inset: this.props.inset,
                     menuItem: this.props.menuItem,
                     onMenuSelected: this.props.onMenuSelected,
                     onOpenSubMenu: (event: MouseEvent<HTMLElement>) => this.setState({ anchorEl: event.currentTarget }),
@@ -81,6 +84,7 @@ class SubMenuItem extends Component<MenuItemWrapper_t, SubMenuItem_State_t> {
             }, this.props.menuItem.children!.map((m, i) => MenuItemSwitcher({
                 idx: i,
                 menuItem: m,
+                inset: this.menuItemsNeedInset(),
                 onCloseSubMenu: () => this.onClose(),
                 onMenuSelected: (menuIdx: number, key?: string) => {
                     this.props.onMenuSelected(menuIdx, key);
@@ -92,7 +96,7 @@ class SubMenuItem extends Component<MenuItemWrapper_t, SubMenuItem_State_t> {
     }
 }
 
-function MenuItemWrapper({ idx, menuItem, onMenuSelected, onOpenSubMenu }: MenuItemWrapper_t): ReactElement<any> {
+function MenuItemWrapper({ idx, menuItem, onMenuSelected, onOpenSubMenu, inset }: MenuItemWrapper_t): ReactElement<any> {
     return __(MenuItem, {
         key: idx,
         onClick: (event: MouseEvent<HTMLElement>) => onOpenSubMenu ? onOpenSubMenu(event) : onMenuSelected(idx, menuItem.key),
@@ -101,7 +105,7 @@ function MenuItemWrapper({ idx, menuItem, onMenuSelected, onOpenSubMenu }: MenuI
             __(ListItemText, {
                 primary: menuItem.label,
                 secondary: menuItem.secondaryLabel,
-                inset: true,
+                inset,
             }),
             onOpenSubMenu && __(ArrowRight),
         ]);
@@ -119,9 +123,10 @@ export function PageMenu(props: PageMenu_t): ReactElement<any> {
     return __(SubMenuItem, {
         rootMenu: true,
         idx: 0,
+        inset: false,
         menuItem: {
             label: "ROOT",
-            children: props.menuItems
+            children: props.menuItems,
         },
         onMenuSelected: props.onMenuSelected,
     });
