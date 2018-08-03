@@ -5,6 +5,7 @@ import * as _ from "react-dom-factories";
 import { Fade, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, withStyles } from "@material-ui/core";
 import { ArrowRight, MoreVert } from "@material-ui/icons";
 import FontIcon from "material-ui/FontIcon";
+import { IconButtonProps } from "@material-ui/core/IconButton";
 
 export type PageMenuItem_t = {
     key?: string,
@@ -22,13 +23,24 @@ export type PageMenu_t = {
 type MenuItemWrapper_t = {
     idx: number,
     menuItem: PageMenuItem_t,
+    rootMenu?: boolean,
     onMenuSelected: (menuIdx: number, key?: string) => void,
     onOpenSubMenu?: (event: MouseEvent<HTMLElement>) => void,
     onCloseSubMenu?: () => void,
 };
 
-class SubMenuItem extends Component<MenuItemWrapper_t, PageMenu_State_t> {
-    public state: PageMenu_State_t = {
+type SubMenuItem_State_t = {
+    anchorEl: HTMLElement | null,
+};
+
+const WhiteIconButton = withStyles({
+    root: {
+        color: "white",
+    },
+})((props: IconButtonProps) => __(IconButton, props));
+
+class SubMenuItem extends Component<MenuItemWrapper_t, SubMenuItem_State_t> {
+    public state: SubMenuItem_State_t = {
         anchorEl: null,
     };
 
@@ -41,13 +53,18 @@ class SubMenuItem extends Component<MenuItemWrapper_t, PageMenu_State_t> {
 
     public render() {
         return __(Fragment, {}, [
-            __(MenuItemWrapper, {
-                idx: this.props.idx,
-                menuItem: this.props.menuItem,
-                onMenuSelected: this.props.onMenuSelected,
-                onOpenSubMenu: (event: MouseEvent<HTMLElement>) => this.setState({ anchorEl: event.currentTarget }),
-                onCloseSubMenu: () => this.onClose(),
-            }),
+            this.props.rootMenu ?
+                __(WhiteIconButton, {
+                    key: "button",
+                    onClick: (event: MouseEvent<HTMLElement>) => this.setState({ anchorEl: event.currentTarget }),
+                }, __(MoreVert))
+                : __(MenuItemWrapper, {
+                    idx: this.props.idx,
+                    menuItem: this.props.menuItem,
+                    onMenuSelected: this.props.onMenuSelected,
+                    onOpenSubMenu: (event: MouseEvent<HTMLElement>) => this.setState({ anchorEl: event.currentTarget }),
+                    onCloseSubMenu: () => this.onClose(),
+                }),
             __(Menu, {
                 anchorOrigin: {
                     vertical: "top",
@@ -98,50 +115,14 @@ function MenuItemSwitcher(props: MenuItemWrapper_t): ReactElement<any> {
     }
 }
 
-type PageMenu_State_t = {
-    anchorEl: HTMLElement | null,
-};
-
-class PageMenuInternal extends Component<PageMenu_t & { classes: { menuButton: string } }, PageMenu_State_t> {
-    public state: PageMenu_State_t = {
-        anchorEl: null,
-    };
-
-    private onClose() {
-        this.setState({ anchorEl: null });
-    }
-
-    public render() {
-        return _.div({}, [
-            __(IconButton, {
-                key: "button",
-                className: this.props.classes.menuButton,
-                onClick: (event: MouseEvent<HTMLElement>) => this.setState({ anchorEl: event.currentTarget }),
-            }, __(MoreVert)),
-            __(Menu, {
-                TransitionComponent: Fade,
-                anchorEl: this.state.anchorEl,
-                open: this.state.anchorEl !== null,
-                onClose: () => this.onClose(),
-            }, this.props.menuItems.map((m, i) => MenuItemSwitcher({
-                idx: i,
-                menuItem: m,
-                onMenuSelected: (menuIdx: number, key?: string) => {
-                    this.props.onMenuSelected(menuIdx, key);
-                    this.onClose();
-                },
-                onCloseSubMenu: () => this.onClose(),
-            }))),
-        ]);
-    }
-}
-
-const PageMenuStyled = withStyles(theme => ({
-    menuButton: {
-        color: "white",
-    },
-}))(PageMenuInternal);
-
 export function PageMenu(props: PageMenu_t): ReactElement<any> {
-    return __(PageMenuStyled, props);
+    return __(SubMenuItem, {
+        rootMenu: true,
+        idx: 0,
+        menuItem: {
+            label: "ROOT",
+            children: props.menuItems
+        },
+        onMenuSelected: props.onMenuSelected,
+    });
 }
