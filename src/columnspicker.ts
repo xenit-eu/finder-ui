@@ -23,12 +23,18 @@ export type Column_t = {
 
 export type ColumnsPicker_t = {
     visible: boolean,
-    allColumns: Column_t[],
     selectedColumns: string[], // list of names
     sets?: ColumnSet_t[],
     onSetsChange?: (sets: ColumnSet_t[]) => void,
     onDone: (selectedColumns: string[]) => void,
-};
+} & ({
+    allColumns: never
+    columnGroups: ColumnGroup_t[],
+} | {
+    columnGroups: never
+    /** @deprecated, use columnGroups instead */
+    allColumns: Column_t[],
+});
 
 const saveButtonStyle: CSSProperties = {
     position: "relative",
@@ -51,6 +57,14 @@ type State_t = {
 
 const storageKey = "users-column-sets";
 
+function findColumn(props: ColumnsPicker_t, name: string): Column_t | null {
+    if (props.columnGroups) {
+        return props.columnGroups.reduce((a, b) => a || b.columns.find(col => col.name === name) || null, null);
+    }
+
+    return props.allColumns.find(col => col.name === name) || null;
+}
+
 //@Component ColumnsPicker
 //@ComponentDescription "presents a dialog to select the columns to be displayed in the DocList"
 //@ComponentDescription "this components allows also to save current column sets for later selection."
@@ -67,7 +81,7 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
         super(props);
         this.state = {
             opened: false,
-            selected: <Column_t[]>props.selectedColumns.map(name => props.allColumns.find(c => c.name === name)).filter(col => !!col),
+            selected: <Column_t[]>props.selectedColumns.map(name => findColumn(props, name)).filter(col => !!col),
             sets: (props.sets || JSON.parse(localStorage.getItem(storageKey) || "[]")).map((set: ColumnSet_t) => ({ id: "auto-" + set.label, ...set })),
             selectedSet: "",
         };
@@ -75,7 +89,7 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
 
     public componentWillReceiveProps(props: ColumnsPicker_t) {
         this.setState({
-            selected: <Column_t[]>props.selectedColumns.map(name => props.allColumns.find(c => c.name === name)).filter(col => !!col),
+            selected: <Column_t[]>props.selectedColumns.map(name => findColumn(props, name)).filter(col => !!col),
             sets: (props.sets || JSON.parse(localStorage.getItem(storageKey) || "[]")).map((set: ColumnSet_t) => ({ id: "auto-" + set.label, ...set })),
         } as State_t);
     }
@@ -121,9 +135,16 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
         });
     }
 
-    private _getColumnsIncludingFixed(columns: string[]): Column_t[] {
-        const fixedColumns = this.props.allColumns.filter(c => c.fixed).filter(c => columns.indexOf(c.name) === -1);
-        return fixedColumns.concat(columns.map(name => <Column_t>this.props.allColumns.find(c => c.name === name)));
+    private _getAllColumns(): Column_t[] {
+        if (this.props.columnGroups) {
+            return this.props.columnGroups.reduce((a, b) => a.concat(b.columns), [] as Column_t[]);
+        }
+        return this.props.allColumns;
+    }
+
+    private _getDisplayedColumns(columns: string[]): Column_t[] {
+        const fixedColumns = this._getAllColumns().filter(c => c.fixed).filter(c => columns.indexOf(c.name) === -1);
+        return fixedColumns.concat(columns.map(name => findColumn(this.props, name)!));
     }
 
     private handleChangeSet(event: any, index: number, value: string) {
@@ -133,7 +154,7 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
                 return {
                     ...prevState,
                     selectedSet: value,
-                    selected: this._getColumnsIncludingFixed(set.columns),
+                    selected: this._getDisplayedColumns(set.columns),
                 };
             }
             return prevState;
@@ -146,14 +167,14 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
             const selectedSet = newSets.length > 0 ? newSets[0] : null;
             return {
                 sets: newSets,
-                selected: this._getColumnsIncludingFixed(selectedSet ? selectedSet.columns : []),
+                selected: this._getDisplayedColumns(selectedSet ? selectedSet.columns : []),
                 selectedSet: selectedSet ? selectedSet.id : "",
             };
         });
     }
 
     private handleChangeTargetSortable(items: string[]) {
-        this.setState({ selected: this._getColumnsIncludingFixed(items) });
+        this.setState({ selected: this._getDisplayedColumns(items) });
     }
 
     public render() {
@@ -166,7 +187,7 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
         };
 
         const selectedSet = this.state.sets.find(s => s.id === this.state.selectedSet);
-        const selectedSetColumns = selectedSet ? this._getColumnsIncludingFixed(selectedSet.columns) : [];
+        const selectedSetColumns = selectedSet ? this._getDisplayedColumns(selectedSet.columns) : [];
         const columnsModified = selectedSet && (this.state.selected.length !== selectedSetColumns.length || !this.state.selected.every((value, i) => value.name === selectedSetColumns[i].name));
 
         const dialogButtons = [
@@ -227,7 +248,7 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
             __("h3", { key: "hdr-3" }, "Other available columns"),
             __("div", { key: "other", style: { marginBottom: 40 } },
                 __(AvailableColumns, {
-                    availableColumns: [{
+                    availableColumns: this.props.columnGroups || [{
                         name: "all",
                         label: "All",
                         columns: this.props.allColumns,
@@ -261,14 +282,14 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
     }
 }
 
-export type ColumnGrouping_t = {
+export type ColumnGroup_t = {
     name: string,
     label: string,
     columns: Column_t[],
 };
 
 type AvailableColumns_Props_t = {
-    availableColumns: ColumnGrouping_t[],
+    availableColumns: ColumnGroup_t[],
     selectedColumns: string[],
     onClickColumn: (col: Column_t) => void,
 } & StyledComponentProps<"root" | "header" | "content">;
