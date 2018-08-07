@@ -2,7 +2,7 @@ import Dialog from "material-ui/Dialog";
 import FlatButton from "material-ui/FlatButton";
 import FontIcon from "material-ui/FontIcon";
 import IconButton from "material-ui/IconButton";
-import { Component, createElement as __, CSSProperties } from "react";
+import { Component, createElement as __, CSSProperties, Fragment } from "react";
 import * as _ from "react-dom-factories";
 
 import MenuItem from "material-ui/MenuItem";
@@ -12,6 +12,7 @@ declare var require: any;
 // tslint:disable-next-line:no-var-requires
 const Sortable: any = require("react-sortablejs");
 
+import { Chip, ListSubheader, StyledComponentProps, withStyles } from "@material-ui/core";
 import "./columnspicker.less";
 
 export type Column_t = {
@@ -155,25 +156,13 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
         this.setState({ selected: this._getColumnsIncludingFixed(items) });
     }
 
-    private handleChangeSourceSortable(items: string[]) {
-        this.setState((prevState: State_t) => ({
-            selected: prevState.selected.filter(c => c.fixed || items.indexOf(c.name) === -1),
-        }));
-    }
-
     public render() {
 
         const selected = this.state.selected.map((col) => __("li", { "key": col.name, "data-id": col.name, "className": col.fixed ? "column-picker-fixed" : "" }, col.label));
-        const others = this.props.allColumns.filter(a => !this.state.selected.some(b => a.name === b.name)).map((col) => __("li", { "key": col.name, "data-id": col.name }, col.label));
 
         const sortableOptions = {
             animation: 150,
             sort: true,
-            group: {
-                name: "clone2",
-                pull: <T>(to: T, from: T, element: HTMLElement) => (to === from || !element.classList.contains("column-picker-fixed")),
-                put: true,
-            },
         };
 
         const selectedSet = this.state.sets.find(s => s.id === this.state.selectedSet);
@@ -237,12 +226,25 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
             __("hr", { key: "hr-2" }),
             __("h3", { key: "hdr-3" }, "Other available columns"),
             __("div", { key: "other", style: { marginBottom: 40 } },
-                __(Sortable, {
-                    options: sortableOptions,
-                    className: "block-list-source",
-                    onChange: this.handleChangeSourceSortable.bind(this),
-                    tag: "ul",
-                }, others),
+                __(AvailableColumns, {
+                    availableColumns: [{
+                        name: "all",
+                        label: "All",
+                        columns: this.props.allColumns,
+                    }],
+                    selectedColumns: this.state.selected.map(col => col.name),
+                    onClickColumn: (col: Column_t) => {
+                        if (this.state.selected.find(sC => sC.name === col.name)) {
+                            this.setState({
+                                selected: this.state.selected.filter(sC => sC.name !== col.name),
+                            });
+                        } else {
+                            this.setState({
+                                selected: this.state.selected.concat([col]),
+                            });
+                        }
+                    },
+                }),
             ),
             __("p", { key: "footer" }, "Drag and drop the name on the above section to display it."),
         );
@@ -258,3 +260,62 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
 
     }
 }
+
+export type ColumnGrouping_t = {
+    name: string,
+    label: string,
+    columns: Column_t[],
+};
+
+type AvailableColumns_Props_t = {
+    availableColumns: ColumnGrouping_t[],
+    selectedColumns: string[],
+    onClickColumn: (col: Column_t) => void,
+} & StyledComponentProps<"root" | "header" | "content">;
+
+const AvailableColumns = withStyles({
+    root: {},
+    header: {},
+    content: {
+        flexShrink: "unset",
+    },
+})((props: AvailableColumns_Props_t) => {
+    return _.div({
+        className: props.classes!.root,
+    }, props.availableColumns.map((grouping, i) => __(Fragment, { key: i }, [
+        __(ListSubheader, {
+            className: props.classes!.header,
+            key: "header",
+            component: "div",
+        }, grouping.label),
+        _.div({
+            className: props.classes!.content,
+            key: "content",
+        }, grouping.columns.map((column, j) => __(ColumnChip, {
+            key: j,
+            column,
+            onClick: () => props.onClickColumn(column),
+            selectedColumns: props.selectedColumns,
+        })),
+        ),
+    ])));
+});
+
+type ColumnChip_Props_t = {
+    column: Column_t,
+    selectedColumns: string[],
+    onClick: () => void,
+} & StyledComponentProps<"root">;
+
+const ColumnChip = withStyles(theme => ({
+    root: {
+        margin: theme.spacing.unit / 2,
+    },
+}))((props: ColumnChip_Props_t) => {
+    return __(Chip, {
+        className: props.classes!.root,
+        label: props.column.label,
+        onClick: props.onClick,
+        color: props.selectedColumns.indexOf(props.column.name) >= 0 ? "primary" : "default",
+    });
+});
