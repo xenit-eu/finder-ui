@@ -12,7 +12,7 @@ declare var require: any;
 // tslint:disable-next-line:no-var-requires
 const Sortable: any = require("react-sortablejs");
 
-import { Chip, ListSubheader, StyledComponentProps, withStyles } from "@material-ui/core";
+import { Chip, Divider, ListSubheader, StyledComponentProps, withStyles } from "@material-ui/core";
 import "./columnspicker.less";
 
 export type Column_t = {
@@ -28,10 +28,10 @@ export type ColumnsPicker_t = {
     onSetsChange?: (sets: ColumnSet_t[]) => void,
     onDone: (selectedColumns: string[]) => void,
 } & ({
-    allColumns: never
+    allColumns?: never,
     columnGroups: ColumnGroup_t[],
 } | {
-    columnGroups: never
+    columnGroups?: never,
     /** @deprecated, use columnGroups instead */
     allColumns: Column_t[],
 });
@@ -59,10 +59,14 @@ const storageKey = "users-column-sets";
 
 function findColumn(props: ColumnsPicker_t, name: string): Column_t | null {
     if (props.columnGroups) {
-        return props.columnGroups.reduce((a, b) => a || b.columns.find(col => col.name === name) || null, null);
+        return props.columnGroups.reduce((a, b) => a.concat(...b.columns), [] as Column_t[]).find(col => col.name === name) || null;
     }
 
-    return props.allColumns.find(col => col.name === name) || null;
+    if (props.allColumns) {
+        return props.allColumns.find(col => col.name === name) || null;
+    }
+
+    return null;
 }
 
 //@Component ColumnsPicker
@@ -137,9 +141,12 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
 
     private _getAllColumns(): Column_t[] {
         if (this.props.columnGroups) {
-            return this.props.columnGroups.reduce((a, b) => a.concat(b.columns), [] as Column_t[]);
+            return this.props.columnGroups.reduce((a, b) => a.concat(...b.columns), [] as Column_t[]);
         }
-        return this.props.allColumns;
+        if (this.props.allColumns) {
+            return this.props.allColumns;
+        }
+        return [];
     }
 
     private _getDisplayedColumns(columns: string[]): Column_t[] {
@@ -251,7 +258,7 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
                     availableColumns: this.props.columnGroups || [{
                         name: "all",
                         label: "All",
-                        columns: this.props.allColumns,
+                        columns: [this.props.allColumns!],
                     }],
                     selectedColumns: this.state.selected.map(col => col.name),
                     onClickColumn: (col: Column_t) => {
@@ -285,20 +292,23 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
 export type ColumnGroup_t = {
     name: string,
     label: string,
-    columns: Column_t[],
+    columns: Column_t[][],
 };
 
 type AvailableColumns_Props_t = {
     availableColumns: ColumnGroup_t[],
     selectedColumns: string[],
     onClickColumn: (col: Column_t) => void,
-} & StyledComponentProps<"root" | "header" | "content">;
+} & StyledComponentProps<"root" | "header" | "content" | "divider">;
 
 const AvailableColumns = withStyles({
     root: {},
     header: {},
     content: {
         flexShrink: "unset",
+    },
+    divider: {
+        margin: 0,
     },
 })((props: AvailableColumns_Props_t) => {
     return _.div({
@@ -308,16 +318,22 @@ const AvailableColumns = withStyles({
             className: props.classes!.header,
             key: "header",
             component: "div",
+            disableSticky: true,
         }, grouping.label),
         _.div({
             className: props.classes!.content,
             key: "content",
-        }, grouping.columns.map((column, j) => __(ColumnChip, {
-            key: j,
-            column,
-            onClick: () => props.onClickColumn(column),
-            selectedColumns: props.selectedColumns,
-        })),
+        }, grouping.columns.map((columns, j) => __(Fragment,
+            { key: j }, [
+                j !== 0 ? __(Divider, { className: props.classes!.divider }) : null,
+                ...columns.map((column, k) => __(ColumnChip, {
+                    key: k,
+                    column,
+                    onClick: () => props.onClickColumn(column),
+                    selectedColumns: props.selectedColumns,
+                })),
+            ]),
+            ),
         ),
     ])));
 });
