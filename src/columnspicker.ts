@@ -8,11 +8,9 @@ import * as _ from "react-dom-factories";
 import MenuItem from "material-ui/MenuItem";
 import SelectField from "material-ui/SelectField";
 
-declare var require: any;
-// tslint:disable-next-line:no-var-requires
-const Sortable: any = require("react-sortablejs");
+import { arrayMove, SortableContainer, SortableElement, SortEnd } from "react-sortable-hoc";
 
-import { Chip, Divider, ListSubheader, StyledComponentProps, withStyles } from "@material-ui/core";
+import { Chip, Divider, ListSubheader, Paper, StyledComponentProps, withStyles } from "@material-ui/core";
 import "./columnspicker.less";
 
 export type Column_t = {
@@ -186,13 +184,6 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
 
     public render() {
 
-        const selected = this.state.selected.map((col) => __("li", { "key": col.name, "data-id": col.name, "className": col.fixed ? "column-picker-fixed" : "" }, col.label));
-
-        const sortableOptions = {
-            animation: 150,
-            sort: true,
-        };
-
         const selectedSet = this.state.sets.find(s => s.id === this.state.selectedSet);
         const selectedSetColumns = selectedSet ? this._getDisplayedColumns(selectedSet.columns) : [];
         const columnsModified = selectedSet && (this.state.selected.length !== selectedSetColumns.length || !this.state.selected.every((value, i) => value.name === selectedSetColumns[i].name));
@@ -228,7 +219,6 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
         },
 
             __("h3", { key: "hdr-1" }, "Saved column sets"),
-
             __(SelectField, {
                 key: "sf",
                 className: "select-display",
@@ -240,18 +230,25 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
                 __(FlatButton, { key: "bsa", style: saveButtonStyle, label: "Save as new...", onClick: this.handleSaveAsNew.bind(this) }),
                 __(FlatButton, { key: "bd", style: saveButtonStyle, label: "Delete", onClick: this.handleDelete.bind(this), disabled: !selectedSet || selectedSet.readonly }),
             ),
-
-            __("hr", { key: "hr-1" }),
-
             __("h3", { key: "hdr-2" }, "Columns to display"),
-            __("div", { key: "selected" }),
-            __(Sortable, {
-                options: sortableOptions,
-                className: "block-list-target",
-                onChange: this.handleChangeTargetSortable.bind(this),
-                tag: "ul",
-            }, selected),
-            __("hr", { key: "hr-2" }),
+            __(SortableColumns, {
+                axis: "xy",
+                columns: this.state.selected,
+                helperClass: "columns-picker-sortable-helper",
+                lockToContainerEdges: true,
+                distance: 1,
+                lockOffset: ["0%", "0%"],
+                onSortEnd: ({ oldIndex, newIndex }: SortEnd) => {
+                    this.setState({
+                        selected: arrayMove(this.state.selected, oldIndex, newIndex),
+                    });
+                },
+                onDeleteColumn: (col: Column_t) => {
+                    this.setState({
+                        selected: this.state.selected.filter(sC => sC.name !== col.name),
+                    });
+                },
+            }),
             __("h3", { key: "hdr-3" }, "Other available columns"),
             __("div", { key: "other", style: { marginBottom: 40 } },
                 __(AvailableColumns, {
@@ -325,7 +322,7 @@ const AvailableColumns = withStyles({
             key: "content",
         }, grouping.columns.map((columns, j) => __(Fragment,
             { key: j }, [
-                j !== 0 ? __(Divider, { className: props.classes!.divider }) : null,
+                j !== 0 ? __(Divider, { key: "divider", className: props.classes!.divider }) : null,
                 ...columns.map((column, k) => __(ColumnChip, {
                     key: k,
                     column,
@@ -341,7 +338,8 @@ const AvailableColumns = withStyles({
 type ColumnChip_Props_t = {
     column: Column_t,
     selectedColumns: string[],
-    onClick: () => void,
+    onClick?: () => void,
+    onDelete?: () => void,
 } & StyledComponentProps<"root">;
 
 const ColumnChip = withStyles(theme => ({
@@ -352,7 +350,18 @@ const ColumnChip = withStyles(theme => ({
     return __(Chip, {
         className: props.classes!.root,
         label: props.column.label,
-        onClick: props.onClick,
+        onClick: props.column.fixed ? undefined : props.onClick,
+        onDelete: props.column.fixed ? undefined : props.onDelete,
         color: props.selectedColumns.indexOf(props.column.name) >= 0 ? "primary" : "default",
     });
+});
+
+const SortableColumnChip = SortableElement(({ column, onDelete }: { column: Column_t, onDelete: () => void }) => __(ColumnChip, {
+    column,
+    selectedColumns: [],
+    onDelete,
+}));
+
+const SortableColumns = SortableContainer(({ columns, onDeleteColumn }: { columns: Column_t[], onDeleteColumn: (column: Column_t) => void }) => {
+    return __(Paper, {}, columns.map((column, i) => __(SortableColumnChip, { key: i, column, onDelete: () => onDeleteColumn(column), index: i })));
 });
