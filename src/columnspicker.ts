@@ -149,7 +149,7 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
 
     private _getDisplayedColumns(columns: string[]): Column_t[] {
         const fixedColumns = this._getAllColumns().filter(c => c.fixed).filter(c => columns.indexOf(c.name) === -1);
-        return fixedColumns.concat(columns.map(name => findColumn(this.props, name)!));
+        return fixedColumns.concat(columns.map(name => findColumn(this.props, name)!).filter(c => !!c));
     }
 
     private handleChangeSet(event: any, index: number, value: string) {
@@ -176,10 +176,6 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
                 selectedSet: selectedSet ? selectedSet.id : "",
             };
         });
-    }
-
-    private handleChangeTargetSortable(items: string[]) {
-        this.setState({ selected: this._getDisplayedColumns(items) });
     }
 
     public render() {
@@ -232,22 +228,14 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
             ),
             __("h3", { key: "hdr-2" }, "Columns to display"),
             __(SortableColumns, {
-                axis: "xy",
+                key: "selected-columns",
                 columns: this.state.selected,
-                helperClass: "columns-picker-sortable-helper",
-                lockToContainerEdges: true,
-                distance: 1,
-                lockOffset: ["0%", "0%"],
-                onSortEnd: ({ oldIndex, newIndex }: SortEnd) => {
-                    this.setState({
-                        selected: arrayMove(this.state.selected, oldIndex, newIndex),
-                    });
+                onDeleteColumn: (column: Column_t) => {
+                    this.setState(s => ({
+                        selected: s.selected.filter(col => col.name !== column.name),
+                    }));
                 },
-                onDeleteColumn: (col: Column_t) => {
-                    this.setState({
-                        selected: this.state.selected.filter(sC => sC.name !== col.name),
-                    });
-                },
+                onSortColumns: (columns: Column_t[]) => this.setState({ selected: columns }),
             }),
             __("h3", { key: "hdr-3" }, "Other available columns"),
             __("div", { key: "other", style: { marginBottom: 40 } },
@@ -362,6 +350,27 @@ const SortableColumnChip = SortableElement(({ column, onDelete }: { column: Colu
     onDelete,
 }));
 
-const SortableColumns = SortableContainer(({ columns, onDeleteColumn }: { columns: Column_t[], onDeleteColumn: (column: Column_t) => void }) => {
+const SortableColumnsInternal = SortableContainer(({ columns, onDeleteColumn }: { columns: Column_t[], onDeleteColumn: (column: Column_t) => void }) => {
     return __(Paper, {}, columns.map((column, i) => __(SortableColumnChip, { key: i, column, onDelete: () => onDeleteColumn(column), index: i })));
 });
+
+type SortableColumns_Props_t = {
+    columns: Column_t[],
+    onDeleteColumn: (col: Column_t) => void,
+    onSortColumns: (col: Column_t[]) => void,
+};
+
+function SortableColumns(props: SortableColumns_Props_t) {
+    return __(SortableColumnsInternal, {
+        axis: "xy",
+        columns: props.columns,
+        helperClass: "columns-picker-sortable-helper",
+        lockToContainerEdges: true,
+        distance: 1,
+        lockOffset: ["0%", "0%"],
+        onSortEnd: ({ oldIndex, newIndex }: SortEnd) => {
+            props.onSortColumns(arrayMove(props.columns, oldIndex, newIndex));
+        },
+        onDeleteColumn: props.onDeleteColumn,
+    });
+}
