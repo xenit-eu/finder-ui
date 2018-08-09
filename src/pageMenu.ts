@@ -54,7 +54,7 @@ class SubMenuItem extends Component<MenuItemWrapper_t, SubMenuItem_State_t> {
     }
 
     public render() {
-        return __(Fragment, {}, [
+        return __(Fragment, { key: this.props.idx }, [
             this.props.rootMenu ?
                 __(WhiteIconButton, {
                     key: "button",
@@ -134,6 +134,7 @@ export function PageMenu(props: PageMenu_t): ReactElement<any> {
     return __(SubMenuItem, {
         rootMenu: true,
         idx: 0,
+        key: 0,
         inset: false,
         menuItem: {
             label: "ROOT",

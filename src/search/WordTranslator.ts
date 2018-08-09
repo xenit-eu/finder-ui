@@ -1,12 +1,14 @@
 import {
     DATE_BETWEEN, DATE_FROM, DATE_LASTMONTH, DATE_LASTWEEK, DATE_LASTYEAR, DATE_ON, DATE_RANGE_PICK, DATE_TODAY, DATE_UNTIL,
 } from "./DateRange";
+import { PLACEHOLDERTRANSLATION } from "./searchbox";
 export const FOLDER = "Folder";
 export const TEXT = "text";
 export const ASPECT = "aspect";
 export const ALL = "All";
 export const AND = "And";
 export const OR = "Or";
+export const SELECTINTENDEDQUERY = "Select the intended query.";
 export const SUBQUERY = "Subquery";
 export const NODEREF = "Noderef";
 export const TYPE = "Type";
@@ -153,6 +155,22 @@ export const typeTranslations = {
         [TYPE]: TYPE,
     },
 };
+export const translateSearchboxTranslations = {
+    [ENGLISH]: {
+        [PLACEHOLDERTRANSLATION]: "Type search term/query or 'Enter' to start searching",
+        [SELECTINTENDEDQUERY]: SELECTINTENDEDQUERY,
+    },
+    [FRENCH]: {
+        [PLACEHOLDERTRANSLATION]: "Taper un terme de recherche ou 'Entrer' pour lancer la recherche",
+        [SELECTINTENDEDQUERY]: "Sélectionnez la requête souhaitée.",
+    },
+    [DUTCH]: {
+        [SELECTINTENDEDQUERY]: "Selecteer de bedoelde zoekopdracht.",
+        [PLACEHOLDERTRANSLATION]: "Vul een zoekterm in of type 'Enter' om te zoeken",
+
+    },
+
+};
 
 function isObject(item: any) {
     return (item && typeof item === "object" && !Array.isArray(item));
@@ -175,7 +193,7 @@ export function mergeDeep(target: any, ...sources: any[]): any {
 export class CombinedWordTranslator extends WordTranslator {
     public constructor(languageSelection: () => string) {
         const merged = mergeDeep({}, datewordTranslations, folderWordTranslations, textWordTranslations,
-            AllWordTranslations, logicWordTranslations, aspectTranslations, noderefTranslations, typeTranslations);
+            AllWordTranslations, logicWordTranslations, aspectTranslations, noderefTranslations, typeTranslations, translateSearchboxTranslations);
         super(languageSelection, merged);
     }
 }

@@ -11,10 +11,11 @@ import "react-flatpickr/node_modules/flatpickr/dist/themes/material_blue.css";
 import { SimpleDateRange } from "../DateRange";
 import { DateFillinValueMatch, DateRangeFillinValueMatch, HierarchicQueryValueMatch, IAutocompleteSuggestion, InputHandleRequired, SimpleSearchQueryElementValueMatch } from "../searchables";
 import { ISearchQueryElement, ISimpleSearchQueryElement } from "../searchquery";
-import { ChipVMToChip, ChipVM_t, getKeyValue, SearchBox_t, SearchQueryElementToChipVM } from "./common";
+import { ChipVMToChip, ChipVM_t, getKeyValue, SearchBox_t, SearchQueryElementToChipVM, HaveChipsFillIn } from "./common";
 import "./searchbox.less";
 import { SearchboxAutocomplete } from "./SearchboxAutocomplete";
-import { SearchboxHierarchyPicker } from "./searchboxHierarchyPicker";
+import { SearchboxHierarchyPicker, SearchboxHierarchyPickerProps } from "./searchboxHierarchyPicker";
+import { SELECTINTENDEDQUERY } from "../WordTranslator";
 
 declare var require: any;
 // tslint:disable-next-line:no-var-requires
@@ -47,7 +48,6 @@ type State_t = {
 
 export class SearchBox extends Component<SearchBox_t, State_t> {
 
-    private inputElem: HTMLInputElement | null;
     private selectedDates: Date[] = [];
     private selectedHierarchy: number[];
     constructor(props: SearchBox_t) {
@@ -208,6 +208,27 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
             this.props.onDidUpdate();
         }
     }
+    private renderInputBox() {
+        const me = this;
+        const filteredSuggestionsList: IAutocompleteSuggestion[] = this.props.autocompleteSuggestions || [];
+        return __(SearchboxAutocomplete, {
+            key: "autocomplete",
+            onChange: me.handleInputChange.bind(me),
+            onKeyUp: me.handleInputKey.bind(me),
+            onFocus: () => me.setState({ focusSuggestions: false }),
+            open: me.state.suggestionsOpened,
+            focusAutocomplete: me.state.focusSuggestions,
+            suggestions: filteredSuggestionsList,
+            onSuggestionClick: (suggestion: IAutocompleteSuggestion) => me.onApplyAutocompleteSuggestion(suggestion),
+            onDismiss: () => me.hideSuggestions(),
+            onBackspace: () => {
+                me.props.onRemoveLastQueryElement();
+            },
+            onRequestAutocomplete: () => me.setState({ suggestionsOpened: true, focusSuggestions: true }),
+            translate: this.props.translate,
+            value: me.state.textValue as string,
+        });
+    }
 
     public render() {
         const doneButton = [
@@ -220,76 +241,62 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                 onClick: this.handleCloseDialog.bind(this),
             }),
         ];
-        const filteredSuggestionsList: IAutocompleteSuggestion[] = this.props.autocompleteSuggestions || [];
 
         const defaultChip = (this.state.currentChipVMs.length === 0) ? __(Chip, {
             className: "searchbox-chip searchbox-chip-default",
             key: "Default",
         }, "All:*") : undefined;
-        const currentChips = this.state.currentChipVMs.map((c) => ChipVMToChip(c));
-        const me = this;
+        const currentChips = this.state.currentChipVMs.map((c) => ChipVMToChip(c, () => this.renderInputBox()));
+        const haveChipsFillIn = HaveChipsFillIn(this.state.currentChipVMs);
+        const inputbox = haveChipsFillIn ? undefined : this.renderInputBox();
+        const searchIcon =
+            _.div({ key: "search-icon", className: "search-icon icon", id: "searchbox_search" },
+                this.props.searching ? __(CircularProgress, { size: 24 }) : __(SearchIcon, { color: iconColor, onClick: () => this.props.onSearch() }));
+        const saveIcon = _.div({ key: "save-icon", className: "save-icon icon", id: "searchbox_save" },
+            __(StarIcon, {
+                color: iconColor,
+                onClick: () => this.props.onSaveAsQuery(prompt("Save query as") || "query", this.props.searchedQueryElements),
+            }));
+        const hierarchyPicker = this.isHierarchyPickerOpen() && __(SearchboxHierarchyPicker,<SearchboxHierarchyPickerProps> {
+            open: this.isHierarchyPickerOpen() || false,
+            handleClose: () => this.handleCloseDialog.bind(this),
+            getHierarchicQueryValueMatch: () => this.getHierarchicQueryValueMatch(),
+            pickedChip: (id: number[]) => {
+                this.selectedHierarchy = id;
+                this.handleCloseDialog();
+            },
+            translateSelectQuery:(s) => this.props.translate(s),
+        });
+        const icons = _.div({ className: "searchbox-icon-wrapper", key: "icons" },
+            [...(this.props.customButtons || []).map((item, i) => cloneElement(item, { key: i })), saveIcon, searchIcon]);
+        const calendarPicker = this.isCalendarOpen() && __(Dialog, { // Dialog to display the date (range) selector.
+            key: "dialog",
+            actions: doneButton,
+            open: this.isCalendarOpen() || false,
+            onRequestClose: this.handleCloseDialog.bind(this),
+            contentStyle: { width: "365px" },
+            contentClassName: "searchbox-datepicker-dialog",
+        },
+            __(Flatpickr.default, {
+                key: "flatpikr",
+                options: {
+                    inline: true,
+                    mode: this.getCalendarMode() === InputHandleRequired.dateRange ? "range" : "single",
+                    locale: this.props.translate && this.props.translate(DATEPICKERLOCALE) || DATEPICKERDEFAULT,
+                },
+                onChange: this.handleDateSelection.bind(this),
+            }),
+        );
         return _.div({ key: "search-box", className: "search-box" }, [
             defaultChip,
             ...currentChips,
-            _.div({ className: "searchbox-input-area", key: "--searchbox-input" }, [
-                __(SearchboxAutocomplete, {
-                    key: "autocomplete",
-                    value: this.state.textValue as string,
-                    onChange: this.handleInputChange.bind(this),
-                    onKeyUp: this.handleInputKey.bind(this),
-                    onFocus: () => this.setState({ focusSuggestions: false }),
-                    open: this.state.suggestionsOpened,
-                    focusAutocomplete: this.state.focusSuggestions,
-                    suggestions: filteredSuggestionsList,
-                    onSuggestionClick: (suggestion: IAutocompleteSuggestion) => this.onApplyAutocompleteSuggestion(suggestion),
-                    onDismiss: () => this.hideSuggestions(),
-                    onBackspace: () => this.props.onRemoveLastQueryElement(),
-                    onRequestAutocomplete: () => this.setState({ suggestionsOpened: true, focusSuggestions: true }),
-                    translations: this.props.translations,
-                }),
-                _.div({ className: "searchbox-icon-wrapper", key: "icons" }, [
-
-                    ...(this.props.customButtons || []).map((item, i) => cloneElement(item, { key: i })),
-
-                    _.div({ key: "save-icon", className: "save-icon icon", id: "searchbox_save" }, __(StarIcon, {
-                        color: iconColor,
-                        onClick: () => this.props.onSaveAsQuery(prompt("Save query as") || "query", this.props.searchedQueryElements),
-                    })),
-
-                    _.div({ key: "search-icon", className: "search-icon icon", id: "searchbox_search" },
-                        this.props.searching
-                            ? __(CircularProgress, { size: 24 })
-                            : __(SearchIcon, { color: iconColor, onClick: () => this.props.onSearch() }),
-                    ),
+            _.div({ className: "searchbox-input-area " + (haveChipsFillIn ? "contains-no-fill-in" : "contains-fill-in"), key: "--searchbox-input" },
+                [
+                    inputbox,
+                    icons,
                 ]),
-            ]),
-            this.isCalendarOpen() && __(Dialog, { // Dialog to display the date (range) selector.
-                key: "dialog",
-                actions: doneButton,
-                open: this.isCalendarOpen() || false,
-                onRequestClose: this.handleCloseDialog.bind(this),
-                contentStyle: { width: "365px" },
-                contentClassName: "searchbox-datepicker-dialog",
-            },
-                __(Flatpickr.default, {
-                    key: "flatpikr",
-                    options: {
-                        inline: true,
-                        mode: this.getCalendarMode() === InputHandleRequired.dateRange ? "range" : "single",
-                        locale: this.props.translations && this.props.translations[DATEPICKERLOCALE] || DATEPICKERDEFAULT,
-                    },
-                    onChange: this.handleDateSelection.bind(this),
-                }),
-            ),
-            this.isHierarchyPickerOpen() && __(SearchboxHierarchyPicker, {
-                open: this.isHierarchyPickerOpen() || false,
-                handleClose: () => me.handleCloseDialog.bind(this),
-                getHierarchicQueryValueMatch: () => this.getHierarchicQueryValueMatch(),
-                pickedChip: (id: number[]) => {
-                    this.selectedHierarchy = id;
-                    me.handleCloseDialog();
-                },
-            }),
+            calendarPicker,
+            hierarchyPicker,
         ]);
     }
 }

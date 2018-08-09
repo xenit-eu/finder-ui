@@ -2,12 +2,12 @@ import { Menu, MenuItem, Paper } from "material-ui";
 import { Component, createElement as __, KeyboardEvent } from "react";
 import * as _ from "react-dom-factories";
 import { IAutocompleteSuggestion } from "../searchables";
+import { ISynchronousTranslationService } from "../searchquery";
 type Autocomplete_t = {
     value: string,
     onChange: (ev: any) => void,
     onKeyUp: (ev: any) => void,
     onFocus: () => void,
-    translations?: any,
     open: boolean,
     focusAutocomplete: boolean,
     suggestions: IAutocompleteSuggestion[],
@@ -15,6 +15,7 @@ type Autocomplete_t = {
     onDismiss: () => void,
     onBackspace: () => void,
     onRequestAutocomplete: () => void,
+    translate: ISynchronousTranslationService,
 };
 export const PLACEHOLDERTRANSLATION = "PLACEHOLDERTRANSLATION";
 export const PLACEHOLDERDEFAULT = "Type search term/query or 'Enter' to start searching...";
@@ -50,6 +51,7 @@ export class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
     }
 
     private handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
+        e.stopPropagation();
         switch (e.keyCode) {
             case 40: // ARROWKEY_DOWN
                 if (this.menu) {
@@ -80,7 +82,7 @@ export class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
     }
 
     private getPlaceHolder() {
-        const translated: string | undefined = this.props.translations ? this.props.translations[PLACEHOLDERTRANSLATION] : undefined;
+        const translated: string | undefined = this.props.translate(PLACEHOLDERTRANSLATION);
         return translated ? translated : PLACEHOLDERDEFAULT;
     }
     public render() {

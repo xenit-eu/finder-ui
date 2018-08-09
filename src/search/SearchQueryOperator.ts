@@ -102,7 +102,7 @@ export class SearchQueryOperator {
         if (searchQuery.elements.length === 1) {
             return this.GetAttachableHierarchicElementCombinationsOnElement(searchQuery.elements[0], [0], type, false);
         }
-        return this.GetAttachableHierarchicElementCombinationsOnElement(searchQuery.ToAndQueryElement(), [], type, type === "and");
+        return this.GetAttachableHierarchicElementCombinationsOnElement(searchQuery.ToAndQueryElement(), [], type, false); //Has no parent, therefore always false.
     }
     private GetAttachableHierarchicElementCombinationsOnElement(searchQueryElement: ISearchQueryElement, index: number[], type: "and" | "or", parentMatchesType: boolean): number[][] {
         const withSelf = parentMatchesType ? [] : [index];
@@ -123,8 +123,13 @@ export class SearchQueryOperator {
         }
         return buildHierarchicElement([searchQueryElement, buildToFillInElement()]);
     }
-    public addHierarchy(searchQuery: SearchQuery, index: number[], buildHierarchy: (child: ISearchQueryElement) => ISearchQueryElement) {
-        const hierarchy = buildHierarchy(this.GetElementFromQueryAt(index, searchQuery));
+    public addHierarchy2(
+        searchQuery: SearchQuery,
+        index: number[],
+        buildHierarchicElement: (children: ISearchQueryElement[]) => ISearchQueryElement,
+        buildToFillinElement: () => ToFillInSearchQueryElement,
+        type: "and" | "or") {
+        const hierarchy = this.buildHierarchyOver(this.GetElementFromQueryAt(index, searchQuery), type, buildHierarchicElement, buildToFillinElement);
         const ret = this.ReplaceElementAt(index, searchQuery, hierarchy);
         return ret;
     }

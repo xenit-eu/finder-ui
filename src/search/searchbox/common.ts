@@ -3,9 +3,8 @@ import * as Colors from "material-ui/styles/colors";
 import { createElement as __, ReactElement } from "react";
 import * as _ from "react-dom-factories";
 import { IAutocompleteSuggestion, ISearchableQueryElement, ISimpleSearchQueryElement } from "..";
-import { HierarchicChip, HierarchicChipProps } from "../HierarchicChip";
-import { ISearchQueryElement, isHierarchicSearchQueryElement } from "./../searchquery";
-
+import { ISearchQueryElement, isHierarchicSearchQueryElement, ToFillInSearchQueryElement } from "../searchquery";
+import { HierarchicChip, HierarchicChipProps } from "./Chips/HierarchicChip";
 export function getKeyValue(s: string | undefined): { key: string, value: string } {
     if (!s) {
         return { key: "", value: "" };
@@ -23,49 +22,53 @@ export function SearchQueryElementToChipVM(sQE: ISearchQueryElement, index: numb
     if (isHierarchicSearchQueryElement(sQE)) {
         const childVMsP = Promise.all(sQE.children.map((e, i) => SearchQueryElementToChipVM(e, index.concat([i]), onRemoveAtIndex)));
         const tooltip = sQE.getTooltipText();
-        return Promise.all([childVMsP, tooltip] as any[]).then(data => new HierarchicChipVM(sQE.getConnectWord(), data[1], index, true, data[0]));
+        return Promise.all([childVMsP, tooltip] as any[]).then(data => new HierarchicChipVM(sQE.getConnectWord(), data[1], index, true, data[0], () => onRemoveAtIndex(index)));
     }
 
     return Promise.all([sQE.getTooltipText(), sQE.getSimpleSearchbarText()]).then(texts =>
-        new LeafChipVM(texts[0], texts[1], index, sQE.isReferential() ? Colors.blue100 : Colors.grey200, sQE.isRemovable(), () => onRemoveAtIndex(index)));
+        new LeafChipVM(texts[0], texts[1], index, sQE.isReferential() ? Colors.blue100 : Colors.grey200, sQE.isRemovable(), () => onRemoveAtIndex(index), sQE instanceof ToFillInSearchQueryElement));
 }
 
-export function ChipVMToChip(chipVM: ChipVM_t): ReactElement<any> {
+export const hasChipFillIn = (chipVM: ChipVM_t): boolean => (chipVM.leaf) ? chipVM.isFillIn : (<any>chipVM).children.some(hasChipFillIn);
+export const HaveChipsFillIn = (chips: ChipVM_t[]): boolean => chips.some(hasChipFillIn);
+export function ChipVMToChip(chipVM: ChipVM_t, getInputBox: () => any): ReactElement<any> {
     const deleteAction = chipVM.deletable ? () => chipVM.onDelete && chipVM.onDelete() : undefined;
     if (!chipVM.leaf) {
         const props: HierarchicChipProps = {
-            children: (chipVM as HierarchicChipVM).children.map(c => ChipVMToChip(c)),
+            children: (chipVM as HierarchicChipVM).children.map(c => ChipVMToChip(c, getInputBox)),
             label: (chipVM as HierarchicChipVM).connectWord,
             onDelete: deleteAction,
             onClick: () => { },
             onKeyDown: () => { },
-            key: chipVM.index.join(","),
+            chipKey: chipVM.index.join(","),
+            containsFillInChip: hasChipFillIn(chipVM),
         };
         const hierarchic = __(HierarchicChip, props);
         return hierarchic;
     }
+    const nonHierarchicChipContext = chipVM.isFillIn ? getInputBox() : withTooltip(chipVM.searchbarText, chipVM.tooltipText);
     return __(Chip, {
-        className: "searchbox-chip",
+        className: "searchbox-chip " + (chipVM.isFillIn ? "contains-fill-in" : ""),
         backgroundColor: chipVM.backgroundColor,
         key: "Q" + chipVM.index.join("_"),
         onRequestDelete: deleteAction,
-    }, withTooltip(chipVM.searchbarText, chipVM.tooltipText));
+    }, nonHierarchicChipContext);
 }
 export class LeafChipVM {
-    public readonly leaf = true;
+    public readonly leaf: true = true;
     constructor(
         public tooltipText: string,
         public searchbarText: string,
         public index: number[],
         public backgroundColor: string,
-
         public deletable: boolean,
-        public onDelete?: () => void) {
+        public onDelete?: () => void,
+        public isFillIn = false) {
 
     }
 }
 export class HierarchicChipVM {
-    public readonly leaf = false;
+    public readonly leaf: false = false;
     constructor(
         public connectWord: string,
         public tooltip: string,
@@ -83,7 +86,7 @@ export type SearchBox_data_t = {
     searchableQueryElements: ISearchableQueryElement[],            // suggestions to be proposed on the drop-down list.
     searchedQueryElements: ISimpleSearchQueryElement[],
     customButtons?: Array<ReactElement<any>>,              // list of custom buttons to add besides search and save icons
-    translations?: any,
+    translate: any,
     updateChipsOnConstruction?: boolean,
     autocompleteSuggestions: IAutocompleteSuggestion[],
 };

@@ -198,7 +198,7 @@ export type HierachyInformation = {
     requiresUserChoice: boolean,
     possibilities: Array<{
         index: number[],
-        structure: ISearchQueryElement,
+        structure: SearchQuery,
     }>,
 };
 export class HierarchicQuerySearchable implements ISearchableQueryElement {

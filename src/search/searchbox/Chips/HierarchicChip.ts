@@ -11,22 +11,14 @@ export interface HierarchicChipProps {
     onDelete?: (event: any) => void;
     onClick?: (event: any) => void;
     onKeyDown?: (event: any) => void;
-    key: string;
+    chipKey: string;
+    containsFillInChip: boolean;
 }
 export class HierarchicChip extends Component<HierarchicChipProps, {}> {
-    public colors = {
-        background: "#0002",
-        deleteIcon: "#888",
-        deleteIconHover: "#FFF",
-
-    };
-
     public handleDeleteIconClick(event: any) {
-        // Stop the event from bubbling up to the `Chip`
         event.stopPropagation();
-        const { onDelete } = this.props;
-        if (onDelete) {
-            onDelete(event);
+        if (this.props.onDelete) {
+            this.props.onDelete(event);
         }
     }
 
@@ -62,12 +54,14 @@ export class HierarchicChip extends Component<HierarchicChipProps, {}> {
                 childrenInterleaved.push(_.text({ style: { margin: "2px" }, key: "inter" + i }, this.props.label));
             }
         });
+        const growChipAdd = (this.props.containsFillInChip ? " growing-chip" : "");
         return _.div({
-            className: "hierarchic-chip",
-            key: this.props.key,
+            className: "base-chip" + growChipAdd,
+            key: this.props.chipKey,
         }, childrenInterleaved, __(CancelIcon, {
             color: "#000A",
             className: "cancel-icon",
+            key:"CANCELINCON",
             onClick: (event: any) => this.handleDeleteIconClick(event),
 
         }));
