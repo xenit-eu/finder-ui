@@ -1,16 +1,12 @@
-import Dialog from "material-ui/Dialog";
-import FlatButton from "material-ui/FlatButton";
+import classNames from "classnames";
 import FontIcon from "material-ui/FontIcon";
 import IconButton from "material-ui/IconButton";
-import { Component, createElement as __, CSSProperties, Fragment } from "react";
+import { ChangeEvent, Component, createElement as __, Fragment } from "react";
 import * as _ from "react-dom-factories";
-
-import MenuItem from "material-ui/MenuItem";
-import SelectField from "material-ui/SelectField";
 
 import { arrayMove, SortableContainer, SortableElement, SortEnd } from "react-sortable-hoc";
 
-import { Chip, Divider, ListSubheader, Paper, StyledComponentProps, withStyles } from "@material-ui/core";
+import { Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Divider, ListSubheader, MenuItem, Paper, Select, StyledComponentProps, Typography, withStyles } from "@material-ui/core";
 import "./columnspicker.less";
 
 export type Column_t = {
@@ -33,11 +29,6 @@ export type ColumnsPicker_t = {
     /** @deprecated, use columnGroups instead */
     allColumns: Column_t[],
 });
-
-const saveButtonStyle: CSSProperties = {
-    position: "relative",
-    float: "right",
-};
 
 export type ColumnSet_t = {
     id: string,
@@ -83,33 +74,29 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
         super(props);
         this.state = {
             opened: false,
-            selected: this._getDisplayedColumns(props.selectedColumns).map(col => col.name),
-            sets: props.sets.map(set => ({
-                ...set,
-                columns: this._getDisplayedColumns(set.columns).map(col => col.name),
-            })),
             selectedSet: "",
+            ...this._getSelectedAndSetsState(props),
         };
     }
 
     public componentWillReceiveProps(props: ColumnsPicker_t) {
-        this.setState({
+        this.setState(this._getSelectedAndSetsState(props));
+    }
+
+    private _getSelectedAndSetsState(props: ColumnsPicker_t) {
+        return {
             selected: this._getDisplayedColumns(props.selectedColumns).map(col => col.name),
             sets: props.sets.map(set => ({
                 ...set,
                 columns: this._getDisplayedColumns(set.columns).map(col => col.name),
             })),
-        } as State_t);
+        };
+
     }
 
     private handleDone() {
         this.props.onDone(this._getDisplayedColumns(this.state.selected).map(col => col.name));
-
-        if (this.props.onSetsChange) {
-            this.props.onSetsChange(this.state.sets);
-        } else {
-            localStorage.setItem(storageKey, JSON.stringify(this.state.sets));
-        }
+        this.props.onSetsChange(this.state.sets);
         this.setState({ opened: false } as State_t);
     }
 
@@ -134,114 +121,106 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
 
     public render() {
 
-        const selectedSet = this.state.sets.find(s => s.id === this.state.selectedSet);
-        const selectedSetColumns = selectedSet ? selectedSet.columns : [];
-        const columnsModified = selectedSet && (this.state.selected.length !== selectedSetColumns.length || !this.state.selected.every((value, i) => value === selectedSetColumns[i]));
-
         const dialogButtons = [
-            __(FlatButton, {
+            __(Button, {
+                key: "buttonCancel",
+                onClick: () => this.setState({
+                    opened: false,
+                    ...this._getSelectedAndSetsState(this.props),
+                }),
+            }, "Cancel"),
+            __(Button, {
                 key: "buttonDone",
-                label: "Done",
-                primary: true,
-                keyboardFocused: false,
+                variant: "contained",
+                color: "primary",
                 onClick: this.handleDone.bind(this),
-            }),
+            }, "Done"),
         ];
-
-        const setsList = this.state.sets.map((o, i) => __(MenuItem, { key: i, value: o.id, primaryText: o.label }));
-
-        setsList.unshift(__(MenuItem, { value: "", key: "None", primaryText: "(None)", disabled: true }));
-
-        if (selectedSet && columnsModified) {
-            setsList.push(__(MenuItem, { key: "selectedSetColumnsModified", value: "--mod-" + selectedSet.id, primaryText: selectedSet.label + "*" }));
-        }
 
         const dialog = __(Dialog, {
             key: "dialog",
-            title: "Columns to display",
-            actions: dialogButtons,
-            modal: true,
             open: this.state.opened,
             className: "columns-picker-dialog",
-            bodyClassName: "columns-picker-content",
-            actionsContainerClassName: "actions-container",
-            autoScrollBodyContent: true,
-        },
-
-            __("h3", { key: "hdr-1" }, "Saved column sets"),
-            __(ColumnSetManager, {
-                key: "csm",
-                columnSets: this.state.sets,
-                currentSet: this.state.selectedSet,
-                currentColumns: this.state.selected,
-                onSelect: (set: ColumnSet_t | null) => {
-                    if (!set) {
-                        this.setState({ selectedSet: null });
-                    } else {
-                        this.setState({
-                            selectedSet: set.id,
-                            selected: set.columns,
-                        });
-                    }
-                },
-                onCreate: (set: ColumnSet_t) => {
-                    this.setState(state => {
-                        const existingSet = state.sets.findIndex(s => s.id === set.id);
-                        if (existingSet === -1) {
-                            return {
-                                selectedSet: set.id,
-                                sets: state.sets.concat(set),
-                            };
-                        } else {
-                            return {
-                                selectedSet: set.id,
-                                sets: [...state.sets.slice(0, existingSet), set, ...state.sets.slice(existingSet + 1)],
-                            };
-                        }
-                    });
-                },
-                onDelete: (set: ColumnSet_t) => {
-                    this.setState(state => ({
-                        sets: state.sets.filter(s => s.id !== set.id),
-                        selectedSet: null,
-                    }));
-                },
-            }),
-            __("h3", { key: "hdr-2" }, "Columns to display"),
-            __(SortableColumns, {
-                key: "selected-columns",
-                columns: this._getDisplayedColumns(this.state.selected),
-                onDeleteColumn: (column: Column_t) => {
-                    this.setState(s => ({
-                        selected: s.selected.filter(col => col !== column.name),
-                    }));
-                },
-                onSortColumns: (columns: Column_t[]) => this.setState({ selected: columns.map(col => col.name) }),
-            }),
-            __("h3", { key: "hdr-3" }, "Other available columns"),
-            __("div", { key: "other", style: { marginBottom: 40 } },
-                __(AvailableColumns, {
-                    availableColumns: this.props.columnGroups || [{
-                        name: "all",
-                        label: "All",
-                        columns: [this.props.allColumns!],
-                    }],
-                    selectedColumns: this.state.selected,
-                    onClickColumn: (col: Column_t) => {
-                        if (this.state.selected.find(sC => sC === col.name)) {
-                            this.setState({
-                                selected: this.state.selected.filter(sC => sC !== col.name),
+            scroll: "paper",
+            fullWidth: true,
+        }, [
+                __(DialogTitle, { key: "title" }, "Columns to display"),
+                __(DialogContent, { key: "content", className: "columns-picker-content" }, [
+                    __(Typography, { key: "column-sets-title", variant: "subheading" }, "Saved column sets"),
+                    __(ColumnSetManager, {
+                        key: "column-sets",
+                        columnSets: this.state.sets,
+                        currentSet: this.state.selectedSet,
+                        currentColumns: this.state.selected,
+                        onSelect: (set: ColumnSet_t | null) => {
+                            if (!set) {
+                                this.setState({ selectedSet: null });
+                            } else {
+                                this.setState({
+                                    selectedSet: set.id,
+                                    selected: set.columns,
+                                });
+                            }
+                        },
+                        onCreate: (set: ColumnSet_t) => {
+                            this.setState(state => {
+                                const existingSet = state.sets.findIndex(s => s.id === set.id);
+                                if (existingSet === -1) {
+                                    return {
+                                        selectedSet: set.id,
+                                        sets: state.sets.concat(set),
+                                    };
+                                } else {
+                                    return {
+                                        selectedSet: set.id,
+                                        sets: [...state.sets.slice(0, existingSet), set, ...state.sets.slice(existingSet + 1)],
+                                    };
+                                }
                             });
-                        } else {
-                            this.setState({
-                                selected: this.state.selected.concat([col.name]),
-                            });
-                        }
-                    },
-                }),
-            ),
-            __("p", { key: "footer" }, "Drag and drop the name on the above section to display it."),
-        );
+                        },
+                        onDelete: (set: ColumnSet_t) => {
+                            this.setState(state => ({
+                                sets: state.sets.filter(s => s.id !== set.id),
+                                selectedSet: null,
+                            }));
+                        },
+                    }),
+                    __(Typography, { key: "selected-columns-title", variant: "subheading" }, "Columns to display"),
+                    __(SortableColumns, {
+                        key: "selected-columns",
+                        columns: this._getDisplayedColumns(this.state.selected),
+                        onDeleteColumn: (column: Column_t) => {
+                            this.setState(s => ({
+                                selected: s.selected.filter(col => col !== column.name),
+                            }));
+                        },
+                        onSortColumns: (columns: Column_t[]) => this.setState({ selected: columns.map(col => col.name) }),
+                    }),
+                    __(Typography, { key: "other-title", variant: "subheading" }, "Other available columns"),
+                    __(AvailableColumns, {
+                        key: "other-content",
+                        availableColumns: this.props.columnGroups || [{
+                            name: "all",
+                            label: "All",
+                            columns: [this.props.allColumns!],
+                        }],
+                        selectedColumns: this.state.selected,
+                        onClickColumn: (col: Column_t) => {
+                            if (this.state.selected.find(sC => sC === col.name)) {
+                                this.setState({
+                                    selected: this.state.selected.filter(sC => sC !== col.name),
+                                });
+                            } else {
+                                this.setState({
+                                    selected: this.state.selected.concat([col.name]),
+                                });
+                            }
+                        },
+                    }),
+                    __(Typography, { key: "footer" }, "Drag and drop the name on the above section to display it."),
+                ]),
+                __(DialogActions, { key: "actions", className: "actions-container" }, dialogButtons),
+            ]);
 
         return _.div({ className: "columns-picker" }, [
             this.props.visible ? __(IconButton, {
@@ -363,8 +342,22 @@ type ColumnSetManager_Props_t = {
     onSelect: (set: ColumnSet_t | null) => void,
     onCreate: (set: ColumnSet_t) => void,
     onDelete: (set: ColumnSet_t) => void,
-};
-function ColumnSetManager(props: ColumnSetManager_Props_t) {
+} & StyledComponentProps<"root" | "select" | "actions" | "button">;
+
+const ColumnSetManager = withStyles(theme => ({
+    root: {
+        display: "flex",
+        alignItems: "center",
+    },
+    select: {
+        flex: 0,
+        flexGrow: 1,
+        marginRight: theme.spacing.unit / 2,
+    },
+    button: {
+        margin: theme.spacing.unit / 2,
+    },
+}), { name: "FinderUIColumnSetManager" })((props: ColumnSetManager_Props_t) => {
     const selectedSet = props.columnSets.find(set => set.id === props.currentSet);
 
     let selectedValue = "";
@@ -374,22 +367,25 @@ function ColumnSetManager(props: ColumnSetManager_Props_t) {
         selectedValue = selectedSet.id;
     }
 
-    const setsList = props.columnSets.map((set, i) => __(MenuItem, { key: i, value: set.id, primaryText: set.label }));
+    const setsList = props.columnSets.map((set, i) => __(MenuItem, { key: i, value: set.id }, set.label));
 
-    setsList.unshift(__(MenuItem, { value: "", key: "None", primaryText: "(None)", disabled: true }));
+    setsList.unshift(__(MenuItem, { value: "", key: "None", disabled: true }, "(None)"));
 
     if (selectedSet && isModified) {
-        setsList.push(__(MenuItem, { key: "selectedSetColumnsModified", value: "--mod-" + selectedSet.id, primaryText: selectedSet.label + "*" }));
+        setsList.push(__(MenuItem, { key: "selectedSetColumnsModified", value: "--mod-" + selectedSet.id }, selectedSet.label + "*"));
         selectedValue = "--mod-" + selectedSet.id;
     }
 
-    return __(Fragment, {},
-        __(SelectField, {
+    return _.div({
+        className: props.classes!.root,
+    },
+        __(Select, {
             key: "sf",
-            className: "select-display",
+            className: classNames("columns-picker-set-select", props.classes!.select),
+            displayEmpty: true,
             value: selectedValue,
-            // tslint:disable-next-line:variable-name
-            onChange: (_event: any, _index: any, value: string) => {
+            onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+                const value = event.target.value;
                 if (value === "") {
                     props.onSelect(null);
                 } else {
@@ -397,11 +393,11 @@ function ColumnSetManager(props: ColumnSetManager_Props_t) {
                 }
             },
         }, setsList),
-        _.div({ key: "columns-actions", className: "columns-actions" },
-            __(FlatButton, {
+        _.div({ key: "columns-actions", className: classNames("columns-picker-set-actions", props.classes!.actions) },
+            __(Button, {
                 key: "bs",
-                style: saveButtonStyle,
-                label: "Save",
+                className: classNames(props.classes!.button),
+                variant: "outlined",
                 onClick: () => {
                     const newSet = {
                         ...selectedSet!,
@@ -410,11 +406,11 @@ function ColumnSetManager(props: ColumnSetManager_Props_t) {
                     props.onCreate(newSet);
                 },
                 disabled: !selectedSet || selectedSet.readonly,
-            }),
-            __(FlatButton, {
+            }, "Save"),
+            __(Button, {
                 key: "bsa",
-                style: saveButtonStyle,
-                label: "Save as new...",
+                className: classNames(props.classes!.button),
+                variant: "outlined",
                 onClick: () => {
                     const name: string | null = prompt("Column set name");
                     if (!name) {
@@ -428,15 +424,15 @@ function ColumnSetManager(props: ColumnSetManager_Props_t) {
                     };
                     props.onCreate(newSet);
                 },
-            }),
-            __(FlatButton, {
+            }, "Save as new..."),
+            __(Button, {
                 key: "bd",
-                style: saveButtonStyle,
-                label: "Delete",
+                className: classNames(props.classes!.button),
+                variant: "outlined",
                 onClick: () => {
                     props.onDelete(selectedSet!);
                 },
                 disabled: !selectedSet || selectedSet.readonly,
-            }),
+            }, "Delete"),
         ));
-}
+});
