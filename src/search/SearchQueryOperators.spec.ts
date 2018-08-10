@@ -60,15 +60,6 @@ describe("Searchquery operator tests", () => {
         const backspaced = operator.RemoveLastQueryElement(withLastRoot);
         expect(backspaced.elements.length).toBe(0);
     });
-    it("Should fill in a hierarchy", () => {
-        const baseQuery = factory.buildSearchQuery([factory.buildStringValuePropertyQueryElement("creator", "system")]);
-        const hierarchied = operator.addHierarchy(baseQuery, [0], (c) => factory.buildAndQueryElement([c, factory.buildToFillInQueryElement()]));
-        expect(operator.GetElementFromQueryAt([0, 1], hierarchied).TYPE).toBe(ToFillInSearchQueryElement.TYPE);
-        expect(operator.GetElementFromQueryAt([0, 0], hierarchied).TYPE).toBe(StringValuePropertySearchQueryElement.TYPE);
-        expect(operator.GetElementFromQueryAt([0], hierarchied).TYPE).toBe(AndSearchQueryElement.TYPE);
-        expect(hierarchied.elements.length).toBe(1);
-
-    });
     it("Should show 1 possible hierarchy to add for a simple all search query element", () => {
         const query = factory.buildSearchQuery([factory.buildAllQueryElement("*")]);
         const combinations = operator.GetAttachableHierarchicElementCombinations(query, "and");

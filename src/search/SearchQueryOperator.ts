@@ -123,7 +123,7 @@ export class SearchQueryOperator {
         }
         return buildHierarchicElement([searchQueryElement, buildToFillInElement()]);
     }
-    public addHierarchy2(
+    public addHierarchy(
         searchQuery: SearchQuery,
         index: number[],
         buildHierarchicElement: (children: ISearchQueryElement[]) => ISearchQueryElement,

@@ -44,6 +44,7 @@ describe("SearchBox component tests", () => {
             onSaveAsQuery: () => { },
             updateChipsOnConstruction: true,
             onAddHierarchyElement: () => { },
+            translate: (s: string) => s,
         };
         return retProps;
     }
