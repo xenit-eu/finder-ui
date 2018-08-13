@@ -1,4 +1,3 @@
-import * as debug from "debug";
 import Chip from "material-ui/Chip";
 import CircularProgress from "material-ui/CircularProgress";
 import Dialog from "material-ui/Dialog";
@@ -15,7 +14,6 @@ import { ChipVMToChip, ChipVM_t, getKeyValue, SearchBox_t, SearchQueryElementToC
 import "./searchbox.less";
 import { SearchboxAutocomplete } from "./SearchboxAutocomplete";
 import { SearchboxHierarchyPicker, SearchboxHierarchyPickerProps } from "./searchboxHierarchyPicker";
-import { SELECTINTENDEDQUERY } from "../WordTranslator";
 
 declare var require: any;
 // tslint:disable-next-line:no-var-requires
