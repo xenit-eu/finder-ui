@@ -11,11 +11,12 @@ const PropertyRenderer: ColumnRenderer_Factory_t<Property_t | Property_t[]> = (c
         if (!Array.isArray(value)) {
             value = [value];
         }
-        return _.span({}, value.map(v => convertToString(config.parameters, v)).join(", "));
+        const stringRepresentation = value.map(v => convertToString(config.parameters, v)).join(", ");
+        return _.span({ title: stringRepresentation }, stringRepresentation);
     };
 };
 export default PropertyRenderer;
-
+/*We can use the metadata renderers of the metadata panel here instead of this function*/
 function convertToString(parameters: { [k: string]: any }, value: Property_t) {
     if (typeof value === "string") {
         return value;
