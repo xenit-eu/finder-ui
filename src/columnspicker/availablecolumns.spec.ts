@@ -1,7 +1,7 @@
 import { Chip, Divider, ListSubheader } from "@material-ui/core";
 import { configure, mount } from "enzyme";
 import * as Adapter from "enzyme-adapter-react-16";
-import { Component, createElement as __ } from "react";
+import { createElement as __ } from "react";
 import AvailableColumns from "./availablecolumns";
 import ColumnChip from "./chip";
 
