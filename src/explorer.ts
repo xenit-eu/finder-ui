@@ -1,10 +1,8 @@
-import { ListItem as ListItemMUIV1, ListItemIcon, ListItemAvatar, Avatar, ListItemText, Collapse } from "@material-ui/core";
-import { ExpandLess, ExpandMore } from "@material-ui/icons";
+import { Avatar, Collapse, ListItem as ListItemMUIV1, ListItemAvatar, ListItemText } from "@material-ui/core";
 import FolderIcon from "@material-ui/icons/Folder";
-
 import { CircularProgress, IconButton, List, ListItem } from "material-ui";
 import { NavigationExpandLess, NavigationExpandMore } from "material-ui/svg-icons";
-import { Component, createElement as __, ReactElement, SyntheticEvent } from "react";
+import { Component, createElement as __, ReactElement } from "react";
 
 export type Explorer_t<T extends ExplorerNode_t> = {
     onClick: (node: T) => void,
@@ -30,7 +28,7 @@ type Explorer_State_t = {
     loaded: boolean,
     open: boolean,
 };
-/*DEPRECATED, use V2*/ 
+/*DEPRECATED, use V2*/
 class ExplorerNode<T extends ExplorerNode_t> extends Component<ExplorerNode_Props_t<T>, Explorer_State_t> {
     constructor(props: ExplorerNode_Props_t<T>) {
         super(props);
