@@ -1,4 +1,4 @@
-import { allButFirst, last, lastMust, replaceLast, replaceOrRemoveAt } from "./ImmutableListExtensions";
+import { allButFirst, last, lastMust, replaceLast, replaceOrRemoveAt } from "finder-utils";
 import { AndSearchQueryElement, ISearchQueryElement, isHierarchicSearchQueryElement, OrSearchQueryElement, SearchQuery, ToFillInSearchQueryElement } from "./searchquery";
 import { SearchQueryNormalizeVisitor } from "./SearchQueryNormalizeVisitor";
 type ComplexSearchQueryElement_t = AndSearchQueryElement | OrSearchQueryElement;
