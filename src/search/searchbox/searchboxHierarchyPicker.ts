@@ -1,12 +1,11 @@
 import { List, ListItem } from "@material-ui/core";
-import Dialog from "material-ui/Dialog";
 import { Component, createElement as __ } from "react";
 import { HierarchicQueryValueMatch } from "../searchables";
 import { ChipVM_t, SearchQueryElementToChipVM, ChipVMToChip } from "./common";
 import * as _ from "react-dom-factories";
 import { SearchQuery, ISynchronousTranslationService } from "../searchquery";
 import { SELECTINTENDEDQUERY } from "../WordTranslator";
-
+import { Dialog } from "@material-ui/core"
 export type SearchboxHierarchyPickerProps = {
     open: boolean,
     pickedChip: (id: number[]) => void,
@@ -20,6 +19,7 @@ export type SearchboxHierarchyPickerState = {
 };
 
 export class SearchboxHierarchyPicker extends Component<SearchboxHierarchyPickerProps, SearchboxHierarchyPickerState> {
+
     public constructor(props: SearchboxHierarchyPickerProps) {
         super(props);
         this.state = { showPossibilities: [] };
@@ -38,9 +38,10 @@ export class SearchboxHierarchyPicker extends Component<SearchboxHierarchyPicker
         return __(Dialog, { // Dialog to display the date (range) selector.
             key: "hierarchydialog",
             open: this.props.open,
-            onRequestClose: () => { this.props.pickedChip([]); this.props.handleClose(); },
-            contentStyle: { width: "500px" },
-            contentClassName: "searchbox-hierarchy-dialog",
+            onClose: () => { this.props.pickedChip([]); this.props.handleClose(); },
+            fullWidth: true,
+            maxWidth: "md",
+            className: "searchbox-hierarchy-dialog",
         },
 
             _.h3({ key: "select" }, this.props.translateSelectQuery(SELECTINTENDEDQUERY),

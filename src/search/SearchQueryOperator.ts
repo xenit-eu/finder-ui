@@ -13,7 +13,7 @@ export class SearchQueryOperator {
         }
         const removeIndex = index[0];
         const removedOrReplaced = this.ReplaceElementFromElementAt(allButFirst(index), query.elements[removeIndex], replaceWith);
-        return query.CreateFromChildren(replaceOrRemoveAt(query.elements, removedOrReplaced, removeIndex));
+        return this.normalizer.visitSearchQuery(query.CreateFromChildren(replaceOrRemoveAt(query.elements, removedOrReplaced, removeIndex)));
     }
     private GetComplexQueryElement(element: ISearchQueryElement): ComplexSearchQueryElement_t {
         if (isHierarchicSearchQueryElement(element)) {
@@ -62,7 +62,7 @@ export class SearchQueryOperator {
         const canAddOnExisting = lastChild !== undefined && this.CanAppendElementOnElement(lastChild);
         const newChildren = canAddOnExisting ? replaceLast(onto.elements, this.AppendElementOnElement(toAdd, lastChild as ComplexSearchQueryElement_t)) :
             onto.elements.concat([toAdd]);
-        return onto.CreateFromChildren(newChildren);
+        return this.normalizer.visitSearchQuery(onto.CreateFromChildren(newChildren));
     }
     private CanAppendElementOnElement(onto: ISearchQueryElement): boolean {
         if (!isHierarchicSearchQueryElement(onto)) {

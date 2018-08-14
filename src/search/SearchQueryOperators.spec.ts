@@ -49,6 +49,11 @@ describe("Searchquery operator tests", () => {
         const replaced = operator.RemoveLastQueryElement(base);
         expect(operator.GetElementFromQueryAt([0], replaced).TYPE).toBe(AllSimpleSearchQueryElement.TYPE);
     });
+    it("should leave an empty search query, in case of removing the single element before a to fill in.", () => {
+        const q = factory.buildSearchQuery([factory.buildAndQueryElement([factory.buildAllQueryElement("*"), factory.buildToFillInQueryElement()])]);
+        const firstRemoved = operator.RemoveElementAt([0, 0], q);
+        expect(firstRemoved.elements.length).toBe(0);
+    });
     it("If an hierarchic query element has two elements and a fill in, the fill in should be removed on remove last", () => {
         const base = factory.buildSearchQuery([factory.buildAndQueryElement([factory.buildAllQueryElement("*"), factory.buildAllQueryElement("*"), factory.buildToFillInQueryElement()])]);
         const replaced = operator.RemoveLastQueryElement(base);
@@ -79,4 +84,5 @@ describe("Searchquery operator tests", () => {
         const combinations = operator.GetAttachableHierarchicElementCombinations(query, "or");
         expect(combinations.length).toBe(2);
     });
+
 });

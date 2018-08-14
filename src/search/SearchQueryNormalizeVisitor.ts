@@ -5,6 +5,7 @@ import {
     TextSearchQueryElement,
     ToFillInSearchQueryElement,
     TypeSearchQueryElement,
+    SearchQuery,
 
 } from "./searchquery";
 
@@ -50,6 +51,10 @@ export class SearchQueryNormalizeVisitor implements ISearchQueryElementVisitor<I
     }
     public visitToFillInSearchQueryElement(query: ToFillInSearchQueryElement): ISearchQueryElement {
         return query;
+    }
+    public visitSearchQuery(query: SearchQuery): SearchQuery {
+        const onlyFillInChild = query.elements.length === 1 && query.elements[0] instanceof ToFillInSearchQueryElement;
+        return onlyFillInChild ? query.CreateFromChildren([]) : query;
     }
 
 }
