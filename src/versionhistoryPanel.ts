@@ -88,7 +88,7 @@ export function VersionsHistoryPanel({ show, versions }: VersionsHistoryPanel_t)
                     ]),
                 ]),
             ]);
-        }
+        };
 
         return _.div({ className: "docversions" }, versions.map(v => versionItem(v)));
     } else {
