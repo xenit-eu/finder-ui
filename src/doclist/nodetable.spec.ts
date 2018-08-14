@@ -7,10 +7,12 @@ import { Node_t } from "../metadata";
 import { Fixture } from "../testUtils";
 import { INodeTableRow, NodeTable, NodeTableSortDirection, NodeTableTranslations } from "./nodetable";
 import { Property } from "./renderer";
-
+function isRunningPhantom() {
+    return navigator.userAgent.toLocaleLowerCase().indexOf("phantom") >= 0;
+}
+const phantomDescribe = isRunningPhantom() ? xdescribe : describe;
 configure({ adapter: new Adapter() });
-const magic = Number.isNaN(3);
-describe("NodeList", () => {
+phantomDescribe("NodeList", () => {
     beforeEach(() => (<any>jasmineEnzyme)());
 
     it("Renders an empty table when no data is passed", () => {

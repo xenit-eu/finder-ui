@@ -17,7 +17,7 @@ module.exports = function (config) {
             'karma-phantomjs-launcher',
             'karma-edge-launcher',
             'karma-junit-reporter',
-            'karma-es6-shim'
+            'karma-es6-shim',
         ],
 
         preprocessors: {

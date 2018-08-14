@@ -59,31 +59,36 @@ const avatar = _.div({ style: avatarStyle }, [
         _.path({ key: "path", d: "M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" }),
     ]),
 ]);
-
+function isNumeric(num: string | number) {
+    return !isNaN(+num);
+}
 export function VersionsHistoryPanel({ show, versions }: VersionsHistoryPanel_t): ReactElement<any> {
     if (show) {
         if (versions.length === 0) {
             return _.div({ className: "docversions" }, "Document has no version history.");
         }
 
-        const versionItem = (v: Version_t) => _.div({ className: "history-item" }, [
-            _.div({ key: "history-version-parent" }, [
-                _.div({ key: "history-version", className: "history-version" }, [v.versionNumber]),
-            ]),
-            _.div({ key: "history-meta-data-parent", className: "history-meta-data" }, [
-                v.title && v.title.length > 0 ? _.div({ className: "history-doc-name" }, [v.title]) : undefined,
-                _.div({ key: "history-details", className: "history-details" }, [
-                    _.div({ key: "history-avatar", className: "history-avatar" }, [
-                        avatar,
-                    ]),
-                    _.div({}, [
-                        _.span({ className: "history-user" }, [v.editor]),
-                        _.span({ className: "history-edited" }, [moment(new Date(Number.parseInt(v.editDate))).fromNow()]),
-                        _.span({ className: "history-comment" }, [v.editComment]),
+        const versionItem = (v: Version_t) => {
+            const dateRep = moment(new Date(isNumeric(v.editDate) ? Number.parseInt(v.editDate) : v.editDate)).fromNow();
+            return _.div({ className: "history-item" }, [
+                _.div({ key: "history-version-parent" }, [
+                    _.div({ key: "history-version", className: "history-version" }, [v.versionNumber]),
+                ]),
+                _.div({ key: "history-meta-data-parent", className: "history-meta-data" }, [
+                    v.title && v.title.length > 0 ? _.div({ className: "history-doc-name" }, [v.title]) : undefined,
+                    _.div({ key: "history-details", className: "history-details" }, [
+                        _.div({ key: "history-avatar", className: "history-avatar" }, [
+                            avatar,
+                        ]),
+                        _.div({}, [
+                            _.span({ className: "history-user" }, v.editor),
+                            _.span({ className: "history-edited" }, dateRep),
+                            _.span({ className: "history-comment" }, v.editComment),
+                        ]),
                     ]),
                 ]),
-            ]),
-        ]);
+            ]);
+        };
 
         return _.div({ className: "docversions" }, versions.map(v => versionItem(v)));
     } else {
