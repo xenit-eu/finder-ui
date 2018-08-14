@@ -16,7 +16,7 @@ const TextArea: PropertyRenderer_t<string | string[]> = (config: PropertyRenderC
         const stringValue = Array.isArray(value) ? value.join(", ") : value;
         if (props.renderMode !== RenderMode.VIEW) {
             if (!isMultiValue) {
-                return _.span({ className: "metadata-field metadata-field-textarea", title: <string>value }, __(ChangeOnBlurTextField, {
+                return _.span({ className: "metadata-field metadata-field-textarea" }, __(ChangeOnBlurTextField, {
                     fullWidth: true,
                     hintText: "Type value...",
                     onChange: (evt: FormEvent<{}>, v: string) => {

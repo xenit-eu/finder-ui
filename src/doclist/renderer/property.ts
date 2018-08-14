@@ -8,10 +8,8 @@ const PropertyRenderer: ColumnRenderer_Factory_t<Property_t | Property_t[]> = (c
     // tslint:disable-next-line:only-arrow-functions
     return function Property(props: ColumnRenderer_Props_t) {
         let value = config.mapToView(props.node);
-        if (!Array.isArray(value)) {
-            value = [value];
-        }
-        const stringRepresentation = value.map(v => convertToString(config.parameters, v)).join(", ");
+        const valueAsList = !Array.isArray(value) ? [value] : value;
+        const stringRepresentation = valueAsList.map(v => convertToString(config.parameters, v)).join(", ");
         return _.span({ title: stringRepresentation }, stringRepresentation);
     };
 };
