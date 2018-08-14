@@ -9,7 +9,7 @@ import { INodeTableRow, NodeTable, NodeTableSortDirection, NodeTableTranslations
 import { Property } from "./renderer";
 
 configure({ adapter: new Adapter() });
-
+const magic = Number.isNaN(3);
 describe("NodeList", () => {
     beforeEach(() => (<any>jasmineEnzyme)());
 
