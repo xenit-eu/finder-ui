@@ -30,7 +30,7 @@ export default class ColumnsPickerContent extends Component<ColumnsPickerContent
     constructor(props: ColumnsPickerContent_Props_t) {
         super(props);
         this.state = {
-            selectedSet: "",
+            selectedSet: null,
             ...this._getSelectedAndSetsState(props),
         };
     }
@@ -134,15 +134,17 @@ export default class ColumnsPickerContent extends Component<ColumnsPickerContent
                     }],
                     selectedColumns: this.state.selected,
                     onClickColumn: (col: Column_t) => {
-                        if (this.state.selected.find(sC => sC === col.name)) {
-                            this.setState({
-                                selected: this.state.selected.filter(sC => sC !== col.name),
-                            });
-                        } else {
-                            this.setState({
-                                selected: this.state.selected.concat([col.name]),
-                            });
-                        }
+                        this.setState(state => {
+                            if (state.selected.find(sC => sC === col.name)) {
+                                return {
+                                    selected: state.selected.filter(sC => sC !== col.name),
+                                };
+                            } else {
+                                return {
+                                    selected: state.selected.concat([col.name]),
+                                };
+                            }
+                        });
                     },
                 }),
                 __(Typography, { key: "footer" }, "Drag and drop the name on the above section to display it."),
