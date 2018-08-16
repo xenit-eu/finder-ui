@@ -157,7 +157,7 @@ class ExplorerNodeV2<T extends ExplorerNode_t> extends Component<ExplorerNodeV2_
             }).catch(e => this.setState({ loading: false, open: false }));
         });
     }
-    private isOpenAndLoaded(){
+    private isOpenAndLoaded() {
         return this.state.open && this.state.loaded;
     }
     private _getRightIconButton() {
@@ -184,7 +184,7 @@ class ExplorerNodeV2<T extends ExplorerNode_t> extends Component<ExplorerNodeV2_
             __(ListItemAvatar, {}, __(Avatar, {}, __(FolderIcon))),
             __(ListItemText, { primary: this.props.node.primaryText }),
             this._getRightIconButton());
-        const collapsible = __(Collapse, { in: this.state.open && this.state.loaded, style: { paddingLeft: "8px" } }, nestedItems);
+        const collapsible = __(Collapse, { in: this.isOpenAndLoaded(), style: { paddingLeft: "8px" } }, nestedItems);
         return __(List, {}, listItem, collapsible);
     }
 }
