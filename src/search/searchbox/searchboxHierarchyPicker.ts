@@ -5,7 +5,7 @@ import { ChipVM_t, SearchQueryElementToChipVM, ChipVMToChip } from "./common";
 import * as _ from "react-dom-factories";
 import { SearchQuery, ISynchronousTranslationService } from "../searchquery";
 import { SELECTINTENDEDQUERY } from "../WordTranslator";
-import { Dialog } from "@material-ui/core"
+import { Dialog } from "@material-ui/core";
 export type SearchboxHierarchyPickerProps = {
     open: boolean,
     pickedChip: (id: number[]) => void,
