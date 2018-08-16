@@ -28,7 +28,10 @@ type Explorer_State_t = {
     loaded: boolean,
     open: boolean,
 };
-/*DEPRECATED, use V2*/
+
+/**
+ * @deprecated Use V2
+ */
 class ExplorerNode<T extends ExplorerNode_t> extends Component<ExplorerNode_Props_t<T>, Explorer_State_t> {
     constructor(props: ExplorerNode_Props_t<T>) {
         super(props);
@@ -96,7 +99,9 @@ class ExplorerNode<T extends ExplorerNode_t> extends Component<ExplorerNode_Prop
         });
     }
 }
-
+/**
+ * @deprecated Use V2
+ */
 export function Explorer<T extends ExplorerNode_t>(props: Explorer_t<T>) {
     console.warn("Deprecated, use V2 instead.");
     return __(List, <any>{ className: "explorer" }, [
