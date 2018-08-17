@@ -61,6 +61,7 @@ class SubMenuItem extends Component<MenuItemWrapper_t, SubMenuItem_State_t> {
                     onClick: (event: MouseEvent<HTMLElement>) => this.setState({ anchorEl: event.currentTarget }),
                 }, __(MoreVert))
                 : __(MenuItemWrapper, {
+                    key: "wrapper",
                     idx: this.props.idx,
                     inset: this.props.inset,
                     menuItem: this.props.menuItem,
@@ -69,6 +70,7 @@ class SubMenuItem extends Component<MenuItemWrapper_t, SubMenuItem_State_t> {
                     onCloseSubMenu: () => this.onClose(),
                 }),
             __(Menu, {
+                key: "menu",
                 className: "pagemenu-menu",
                 anchorOrigin: {
                     vertical: "top",
@@ -82,7 +84,8 @@ class SubMenuItem extends Component<MenuItemWrapper_t, SubMenuItem_State_t> {
                 anchorEl: this.state.anchorEl,
                 onClose: () => this.onClose(),
                 TransitionComponent: Fade,
-            }, this.props.menuItem.children!.map((m, i) => MenuItemSwitcher({
+            }, this.props.menuItem.children!.map((m, i) => __(MenuItemSwitcher, {
+                key: i,
                 idx: i,
                 menuItem: m,
                 inset: this.menuItemsNeedInset(),
@@ -100,17 +103,22 @@ class SubMenuItem extends Component<MenuItemWrapper_t, SubMenuItem_State_t> {
 function MenuItemWrapper({ idx, menuItem, onMenuSelected, onOpenSubMenu, inset }: MenuItemWrapper_t): ReactElement<any> {
     return __(MenuItem, {
         className: "pagemenu-item " + (onOpenSubMenu ? "pagemenu-item-submenu" : ""),
-        key: idx,
         onClick: (event: MouseEvent<HTMLElement>) => onOpenSubMenu ? onOpenSubMenu(event) : onMenuSelected(idx, menuItem.key),
     }, [
-            menuItem.iconName && __(ListItemIcon, undefined, __(FontIcon, { className: `fa ${menuItem.iconName}` })),
+            menuItem.iconName && __(ListItemIcon, {
+                key: "icon",
+                children: __(FontIcon, { className: `fa ${menuItem.iconName}` }),
+            }),
             __(ListItemText, {
+                key: "text",
                 className: "pagemenu-label",
                 primary: menuItem.label,
                 secondary: menuItem.secondaryLabel,
                 inset,
             }),
-            onOpenSubMenu && __(ArrowRight),
+            onOpenSubMenu && __(ArrowRight, {
+                key: "expand",
+            }),
         ]);
 }
 
