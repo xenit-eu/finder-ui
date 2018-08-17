@@ -1,4 +1,4 @@
-import { Button, DialogActions, DialogContent, DialogTitle, StyledComponentProps, Theme, Typography, withStyles } from "@material-ui/core";
+import { Button, DialogActions, DialogContent, DialogTitle, Theme, Typography, WithStyles, withStyles } from "@material-ui/core";
 import { Component, createElement as __, Fragment } from "react";
 import { Column_t, ColumnGroup_t, ColumnSet_t, ColumnsPicker_t } from "..";
 import AvailableColumns from "./availablecolumns";
@@ -12,7 +12,7 @@ type ColumnsPickerContent_Props_t = {
     onDone: (selectedColumns: string[]) => void,
     columnGroups: ColumnGroup_t[],
     onDismiss: () => void,
-} & StyledComponentProps<"dialogTitle" | "dialogTitleText" | "subheading" | "hintText">;
+} & WithStyles<"dialogTitle" | "dialogTitleText" | "subheading" | "hintText">;
 
 type ColumnsPickerContent_State_t = {
     selected: string[],
@@ -22,9 +22,6 @@ type ColumnsPickerContent_State_t = {
 
 /* @internal */
 export class ColumnsPickerContent extends Component<ColumnsPickerContent_Props_t, ColumnsPickerContent_State_t> {
-    public static defaultProps: Partial<ColumnsPickerContent_Props_t> = {
-        classes: {},
-    };
     constructor(props: ColumnsPickerContent_Props_t) {
         super(props);
         this.state = {
@@ -184,4 +181,4 @@ export default withStyles((theme: Theme) => ({
         marginTop: theme.spacing.unit,
         ...theme.typography.caption,
     },
-}), { name: "FinderUIColumnsPicker" })((props: ColumnsPickerContent_Props_t) => __(ColumnsPickerContent, props));
+}), { name: "FinderUIColumnsPicker" })(ColumnsPickerContent);

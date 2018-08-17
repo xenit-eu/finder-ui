@@ -85,6 +85,13 @@ describe("ColumnsPicker: ColumnsPickerContent", () => {
         },
     ];
 
+    const classes = {
+        dialogTitle: "",
+        dialogTitleText: "",
+        hintText: "",
+        subheading: "",
+    };
+
     it("Selecting/deselecting sets", () => {
         const props = {
             sets: columnSets,
@@ -93,6 +100,7 @@ describe("ColumnsPicker: ColumnsPickerContent", () => {
             onSetsChange: () => { },
             onDone: () => { },
             onDismiss: () => { },
+            classes,
         };
 
         const component = mount(__(ColumnsPickerContent, props));
@@ -156,6 +164,7 @@ describe("ColumnsPicker: ColumnsPickerContent", () => {
             onSetsChange: () => { },
             onDone: () => { },
             onDismiss: () => { },
+            classes,
         };
         const onSetsChangeSpy = spyOn(props, "onSetsChange");
         const onDoneSpy = spyOn(props, "onDone");
@@ -237,6 +246,7 @@ describe("ColumnsPicker: ColumnsPickerContent", () => {
             onSetsChange: () => { },
             onDone: () => { },
             onDismiss: () => { },
+            classes,
         };
         const onSetsChangeSpy = spyOn(props, "onSetsChange");
         const onDoneSpy = spyOn(props, "onDone");

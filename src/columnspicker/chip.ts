@@ -1,4 +1,4 @@
-import { Chip, StyledComponentProps, withStyles } from "@material-ui/core";
+import { Chip, WithStyles, withStyles } from "@material-ui/core";
 import { createElement as __ } from "react";
 import { Column_t } from "..";
 
@@ -7,11 +7,11 @@ type ColumnChip_Props_t = {
     selectedColumns: string[],
     onClick?: () => void,
     onDelete?: () => void,
-} & StyledComponentProps<"root">;
+} & WithStyles<"root">;
 
 function ColumnChip(props: ColumnChip_Props_t) {
     return __(Chip, {
-        className: props.classes!.root,
+        className: props.classes.root,
         label: props.column.label,
         onClick: props.column.fixed ? undefined : props.onClick,
         onDelete: props.column.fixed ? undefined : props.onDelete,

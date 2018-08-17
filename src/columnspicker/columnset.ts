@@ -1,4 +1,4 @@
-import { Button, MenuItem, Select, StyledComponentProps, withStyles } from "@material-ui/core";
+import { Button, MenuItem, Select, WithStyles, withStyles } from "@material-ui/core";
 import classNames from "classnames";
 import { ChangeEvent, createElement as __, ReactElement } from "react";
 import * as _ from "react-dom-factories";
@@ -11,7 +11,7 @@ type ColumnSetManager_Props_t = {
     onSelect: (set: ColumnSet_t | null) => void,
     onCreate: (set: ColumnSet_t) => void,
     onDelete: (set: ColumnSet_t) => void,
-} & StyledComponentProps<"root" | "select" | "actions" | "button">;
+} & WithStyles<"root" | "select" | "actions" | "button">;
 
 function ColumnSetManager(props: ColumnSetManager_Props_t) {
     const selectedSet = props.columnSets.find(set => set.id === props.currentSet);
@@ -35,10 +35,10 @@ function ColumnSetManager(props: ColumnSetManager_Props_t) {
     const setsList = [noneItem].concat(columnSetItems).concat(modifiedSetItem);
 
     return _.div({
-        className: props.classes!.root,
+        className: props.classes.root,
     },
         __(Select, {
-            className: classNames("columns-picker-set-select", props.classes!.select),
+            className: classNames("columns-picker-set-select", props.classes.select),
             displayEmpty: true,
             value: selectedValue,
             onChange: (event: ChangeEvent<HTMLSelectElement>) => {
@@ -50,9 +50,9 @@ function ColumnSetManager(props: ColumnSetManager_Props_t) {
                 }
             },
         }, setsList),
-        _.div({ key: "columns-actions", className: classNames("columns-picker-set-actions", props.classes!.actions) },
+        _.div({ key: "columns-actions", className: classNames("columns-picker-set-actions", props.classes.actions) },
             __(Button, {
-                className: classNames(props.classes!.button),
+                className: classNames(props.classes.button),
                 variant: "outlined",
                 color: "primary",
                 onClick: () => {
@@ -65,7 +65,7 @@ function ColumnSetManager(props: ColumnSetManager_Props_t) {
                 disabled: !selectedSet || selectedSet.readonly,
             }, "Save"),
             __(Button, {
-                className: classNames(props.classes!.button),
+                className: classNames(props.classes.button),
                 variant: "outlined",
                 color: "primary",
                 onClick: () => {
@@ -83,7 +83,7 @@ function ColumnSetManager(props: ColumnSetManager_Props_t) {
                 },
             }, "Save as new..."),
             __(Button, {
-                className: classNames(props.classes!.button),
+                className: classNames(props.classes.button),
                 variant: "outlined",
                 color: "primary",
                 onClick: () => {
