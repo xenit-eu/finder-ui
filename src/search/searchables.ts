@@ -209,20 +209,45 @@ export class HierarchicQuerySearchable implements ISearchableQueryElement {
         public getHierarchyInformation: (type: "and" | "or") => HierachyInformation) {
 
     }
+    private _getMatchingSearchType(searchTerm: string): "and" | "or" | null {
+        if (lowercaseTrimEquals(this.getOrTranslated(), searchTerm)) {
+            return "or";
+        }
+
+        if (lowercaseTrimEquals(this.getAndTranslated(), searchTerm)) {
+            return "and";
+        }
+
+        return null;
+    }
     public matchKeyValue(key: string, value: string): Promise<IExactValueMatch> {
         if (key) {
             return Promise.resolve(new NoResultValueMatch());
         }
-        return Promise.resolve(
-            lowercaseTrimEquals(this.getOrTranslated(), value) ? new HierarchicQueryValueMatch("or", this.getHierarchyInformation("or")) :
-                lowercaseTrimEquals(this.getAndTranslated(), value) ? new HierarchicQueryValueMatch("and", this.getHierarchyInformation("and")) :
-                    new NoResultValueMatch());
+
+        const searchType = this._getMatchingSearchType(value);
+        if (!searchType) {
+            return Promise.resolve(new NoResultValueMatch());
+        }
+        const hierarchyInfo = this.getHierarchyInformation(searchType);
+        if (hierarchyInfo.possibilities.length === 0) {
+            return Promise.resolve(new NoResultValueMatch());
+        }
+
+        return Promise.resolve(new HierarchicQueryValueMatch(searchType, hierarchyInfo));
     }
     public getPartiallyMatchingAutocompleteListElements(key: string, value: string): Promise<IAutocompleteSuggestion[]> {
+        if (key) {
+            return Promise.resolve([]);
+        }
+
+        const matchesOr = lowercaseTrimContains(this.getOrTranslated(), value) && this.getHierarchyInformation("or").possibilities.length > 0;
+        const matchesAnd = lowercaseTrimContains(this.getAndTranslated(), value) && this.getHierarchyInformation("and").possibilities.length > 0;
+
         return Promise.resolve(
             [
-                lowercaseTrimContains(this.getOrTranslated(), value) ? new SimpleAutoCompleteListElement("", this.getOrTranslated(), this.getOrTranslated()) : undefined,
-                lowercaseTrimEquals(this.getAndTranslated(), value) ? new SimpleAutoCompleteListElement("", this.getAndTranslated(), this.getAndTranslated()) : undefined,
+                matchesOr ? new SimpleAutoCompleteListElement("", this.getOrTranslated(), this.getOrTranslated()) : undefined,
+                matchesAnd ? new SimpleAutoCompleteListElement("", this.getAndTranslated(), this.getAndTranslated()) : undefined,
             ]
                 .filter(e => e).map(e => e as SimpleAutoCompleteListElement));
     }

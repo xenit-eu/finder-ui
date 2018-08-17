@@ -149,7 +149,9 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                         this.setState({ currentValueMatchWaitingForInput: hierarchicMatch });
                         return;
                     }
-                    this.addHierarchyElement(hierarchicMatch.hierarchyInfo.possibilities[0].index, hierarchicMatch.type);
+                    if (hierarchicMatch.hierarchyInfo.possibilities.length > 0) {
+                        this.addHierarchyElement(hierarchicMatch.hierarchyInfo.possibilities[0].index, hierarchicMatch.type);
+                    }
                     return;
                 }
                 throw new Error("Unhandled type, should be one of the four existing types");
