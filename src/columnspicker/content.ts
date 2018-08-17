@@ -19,7 +19,12 @@ type ColumnsPickerContent_State_t = {
     sets: ColumnSet_t[],
     selectedSet: string | null, // selected ColumnSet id.
 };
-class ColumnsPickerContent extends Component<ColumnsPickerContent_Props_t, ColumnsPickerContent_State_t> {
+
+/* @internal */
+export class ColumnsPickerContent extends Component<ColumnsPickerContent_Props_t, ColumnsPickerContent_State_t> {
+    public static defaultProps: Partial<ColumnsPickerContent_Props_t> = {
+        classes: {},
+    };
     constructor(props: ColumnsPickerContent_Props_t) {
         super(props);
         this.state = {

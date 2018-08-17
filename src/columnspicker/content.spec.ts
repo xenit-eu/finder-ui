@@ -4,7 +4,7 @@ import * as Adapter from "enzyme-adapter-react-16";
 import { createElement as __ } from "react";
 import AvailableColumns from "./availablecolumns";
 import ColumnSetManager from "./columnset";
-import ColumnsPickerContent from "./content";
+import { ColumnsPickerContent } from "./content";
 import SortableColumns from "./sortablecolumns";
 
 configure({ adapter: new Adapter() });
