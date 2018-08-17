@@ -1,6 +1,6 @@
 import { Button, MenuItem, Select, StyledComponentProps, withStyles } from "@material-ui/core";
 import classNames from "classnames";
-import { ChangeEvent, createElement as __ } from "react";
+import { ChangeEvent, createElement as __, ReactElement } from "react";
 import * as _ from "react-dom-factories";
 import { ColumnSet_t } from "..";
 
@@ -23,14 +23,16 @@ function ColumnSetManager(props: ColumnSetManager_Props_t) {
         selectedValue = selectedSet.id;
     }
 
-    const setsList = props.columnSets.map((set, i) => __(MenuItem, { key: i, value: set.id }, set.label));
-
-    setsList.unshift(__(MenuItem, { value: "", key: "None", disabled: true }, "(None)"));
+    const noneItem = __(MenuItem, { value: "", key: "None", disabled: true }, "(None)");
+    const columnSetItems = props.columnSets.map((set, i) => __(MenuItem, { key: i, value: set.id }, set.label));
+    let modifiedSetItem = [] as ReactElement<any>[];
 
     if (selectedSet && isModified) {
-        setsList.push(__(MenuItem, { key: "selectedSetColumnsModified", value: "--mod-" + selectedSet.id }, selectedSet.label + "*"));
+        modifiedSetItem = [__(MenuItem, { key: "selectedSetColumnsModified", value: "--mod-" + selectedSet.id }, selectedSet.label + "*")];
         selectedValue = "--mod-" + selectedSet.id;
     }
+
+    const setsList = [noneItem].concat(columnSetItems).concat(modifiedSetItem);
 
     return _.div({
         className: props.classes!.root,

@@ -24,6 +24,7 @@ export type ColumnsPicker_t = {
     onSetsChange: (sets: ColumnSet_t[]) => void,
     onDone: (selectedColumns: string[]) => void,
 } & ({
+    /** @deprecated, use columnGroups instead */
     allColumns?: never,
     columnGroups: ColumnGroup_t[],
 } | {
@@ -63,6 +64,9 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
         this.state = {
             opened: false,
         };
+        if(props.allColumns && process.env.NODE_ENV !== "production") {
+            console.warn("finder-ui: ColumnsPicker: prop allColumns is deprecated. Use columnGroups instead");
+        }
     }
     public render() {
         const dialog = __(Dialog, {
@@ -73,7 +77,15 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
             fullWidth: true,
             onClose: () => this.setState({ opened: false }),
         }, __(ColumnsPickerContent, {
-            ...<ColumnsPicker_t>this.props,
+            selectedColumns: this.props.selectedColumns,
+            sets: this.props.sets,
+            onSetsChange: this.props.onSetsChange,
+            onDone: this.props.onDone,
+            columnGroups: this.props.columnGroups || [{
+                name: "all",
+                label: "All",
+                columns: [this.props.allColumns!],
+            }],
             onDismiss: () => this.setState({ opened: false }),
         }));
 
