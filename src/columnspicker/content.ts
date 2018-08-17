@@ -1,4 +1,4 @@
-import { Button, DialogActions, DialogContent, DialogTitle, Typography } from "@material-ui/core";
+import { Button, DialogActions, DialogContent, DialogTitle, StyledComponentProps, Theme, Typography, withStyles } from "@material-ui/core";
 import { Component, createElement as __, Fragment } from "react";
 import { Column_t, ColumnSet_t, ColumnsPicker_t } from "..";
 import AvailableColumns from "./availablecolumns";
@@ -7,7 +7,7 @@ import SortableColumns from "./sortablecolumns";
 
 type ColumnsPickerContent_Props_t = {
     onDismiss: () => void,
-} & ColumnsPicker_t;
+} & ColumnsPicker_t & StyledComponentProps<"dialogTitle" | "dialogTitleText" | "subheading" | "hintText">;
 
 type ColumnsPickerContent_State_t = {
     selected: string[],
@@ -26,7 +26,7 @@ function findColumn(props: ColumnsPicker_t, name: string): Column_t | null {
     return null;
 }
 
-export default class ColumnsPickerContent extends Component<ColumnsPickerContent_Props_t, ColumnsPickerContent_State_t> {
+class ColumnsPickerContent extends Component<ColumnsPickerContent_Props_t, ColumnsPickerContent_State_t> {
     constructor(props: ColumnsPickerContent_Props_t) {
         super(props);
         this.state = {
@@ -71,12 +71,14 @@ export default class ColumnsPickerContent extends Component<ColumnsPickerContent
         return fixedColumns.concat(columns.map(name => findColumn(this.props, name)!).filter(c => !!c));
     }
     public render() {
-        return __(Fragment, {}, [
-            __(DialogTitle, { key: "title" }, "Columns to display"),
-            __(DialogContent, { key: "content", className: "columns-picker-content" },
-                __(Typography, { key: "column-sets-title", variant: "subheading" }, "Saved column sets"),
+        return __(Fragment, {},
+            __(DialogTitle, {
+                className: this.props.classes!.dialogTitle,
+                disableTypography: true,
+            }, __(Typography, { className: this.props.classes!.dialogTitleText, variant: "title" }, "Columns to display")),
+            __(DialogContent, { className: "columns-picker-content" },
+                __(Typography, { variant: "subheading", className: this.props.classes!.subheading }, "Saved column sets"),
                 __(ColumnSetManager, {
-                    key: "column-sets",
                     columnSets: this.state.sets,
                     currentSet: this.state.selectedSet,
                     currentColumns: this.state.selected,
@@ -113,9 +115,8 @@ export default class ColumnsPickerContent extends Component<ColumnsPickerContent
                         }));
                     },
                 }),
-                __(Typography, { key: "selected-columns-title", variant: "subheading" }, "Columns to display"),
+                __(Typography, { variant: "subheading", className: this.props.classes!.subheading }, "Columns to display"),
                 __(SortableColumns, {
-                    key: "selected-columns",
                     columns: this._getDisplayedColumns(this.state.selected),
                     onDeleteColumn: (column: Column_t) => {
                         this.setState(s => ({
@@ -124,9 +125,8 @@ export default class ColumnsPickerContent extends Component<ColumnsPickerContent
                     },
                     onSortColumns: (columns: Column_t[]) => this.setState({ selected: columns.map(col => col.name) }),
                 }),
-                __(Typography, { key: "other-title", variant: "subheading" }, "Other available columns"),
+                __(Typography, { variant: "subheading", className: this.props.classes!.subheading }, "Other available columns"),
                 __(AvailableColumns, {
-                    key: "other-content",
                     availableColumns: this.props.columnGroups || [{
                         name: "all",
                         label: "All",
@@ -147,11 +147,10 @@ export default class ColumnsPickerContent extends Component<ColumnsPickerContent
                         });
                     },
                 }),
-                __(Typography, { key: "footer" }, "Drag and drop the name on the above section to display it."),
+                __(Typography, { className: this.props.classes!.hintText }, "Drag and drop the name on the above section to display it."),
             ),
-            __(DialogActions, { key: "actions", className: "actions-container" }, [
+            __(DialogActions, { className: "actions-container" },
                 __(Button, {
-                    key: "buttonCancel",
                     onClick: () => {
                         this.setState({
                             ...this._getSelectedAndSetsState(this.props),
@@ -160,12 +159,27 @@ export default class ColumnsPickerContent extends Component<ColumnsPickerContent
                     },
                 }, "Cancel"),
                 __(Button, {
-                    key: "buttonDone",
                     variant: "contained",
                     color: "primary",
                     onClick: this.handleDone.bind(this),
                 }, "Done"),
-            ]),
-        ]);
+            ),
+        );
     }
 }
+
+export default withStyles((theme: Theme) => ({
+    dialogTitle: {
+        backgroundColor: theme.palette.primary.main,
+    },
+    dialogTitleText: {
+        color: theme.palette.primary.contrastText,
+    },
+    subheading: {
+        marginTop: theme.spacing.unit,
+    },
+    hintText: {
+        marginTop: theme.spacing.unit,
+        ...theme.typography.caption,
+    },
+}), { name: "FinderUIColumnsPicker" })((props: ColumnsPickerContent_Props_t) => __(ColumnsPickerContent, props));

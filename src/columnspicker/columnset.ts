@@ -36,7 +36,6 @@ function ColumnSetManager(props: ColumnSetManager_Props_t) {
         className: props.classes!.root,
     },
         __(Select, {
-            key: "sf",
             className: classNames("columns-picker-set-select", props.classes!.select),
             displayEmpty: true,
             value: selectedValue,
@@ -51,9 +50,9 @@ function ColumnSetManager(props: ColumnSetManager_Props_t) {
         }, setsList),
         _.div({ key: "columns-actions", className: classNames("columns-picker-set-actions", props.classes!.actions) },
             __(Button, {
-                key: "bs",
                 className: classNames(props.classes!.button),
                 variant: "outlined",
+                color: "primary",
                 onClick: () => {
                     const newSet = {
                         ...selectedSet!,
@@ -64,9 +63,9 @@ function ColumnSetManager(props: ColumnSetManager_Props_t) {
                 disabled: !selectedSet || selectedSet.readonly,
             }, "Save"),
             __(Button, {
-                key: "bsa",
                 className: classNames(props.classes!.button),
                 variant: "outlined",
+                color: "primary",
                 onClick: () => {
                     const name: string | null = prompt("Column set name");
                     if (!name) {
@@ -82,9 +81,9 @@ function ColumnSetManager(props: ColumnSetManager_Props_t) {
                 },
             }, "Save as new..."),
             __(Button, {
-                key: "bd",
                 className: classNames(props.classes!.button),
                 variant: "outlined",
+                color: "primary",
                 onClick: () => {
                     props.onDelete(selectedSet!);
                 },
