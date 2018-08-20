@@ -1,11 +1,10 @@
-import { List, ListItem } from "@material-ui/core";
+import { List, ListItem, Dialog, DialogTitle } from "@material-ui/core";
 import { Component, createElement as __ } from "react";
 import { HierarchicQueryValueMatch } from "../searchables";
 import { ChipVM_t, SearchQueryElementToChipVM, ChipVMToChip } from "./common";
 import * as _ from "react-dom-factories";
 import { SearchQuery, ISynchronousTranslationService } from "../searchquery";
 import { SELECTINTENDEDQUERY } from "../WordTranslator";
-import { Dialog } from "@material-ui/core";
 export type SearchboxHierarchyPickerProps = {
     open: boolean,
     pickedChip: (id: number[]) => void,
@@ -43,14 +42,15 @@ export class SearchboxHierarchyPicker extends Component<SearchboxHierarchyPicker
             maxWidth: "md",
             className: "searchbox-hierarchy-dialog",
         },
-
-            _.h3({ key: "select" }, this.props.translateSelectQuery(SELECTINTENDEDQUERY),
-                __(List, { key: "itemsList" },
-                    this.state.showPossibilities.map((p, i) => __(ListItem, {
-                        key: i,
-                        button: true,
-                        onClick: () => this.props.pickedChip(p.id),
-                    }, _.span({}, p.chips.map(chip => ChipVMToChip(chip, () => "..."))),
-                    )))));
+            __(DialogTitle, {}, this.props.translateSelectQuery(SELECTINTENDEDQUERY)),
+            __(List, { key: "itemsList" },
+                this.state.showPossibilities.map((p, i) => __(ListItem, {
+                    key: i,
+                    button: true,
+                    onClick: () => this.props.pickedChip(p.id),
+                }, _.span({}, p.chips.map(chip => ChipVMToChip(chip, () => "..."))),
+                )),
+            ),
+        );
     }
 }
