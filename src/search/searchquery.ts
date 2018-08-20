@@ -8,12 +8,12 @@ const d = debug("finder-ui:finderquery");
 
 // This is a fake type. The document type is mapped to this QName to be able to put all document information in a hashmap.
 export const TYPE_QNAME = "{http://www.alfresco.org/model/content/1.0}type";
-export interface ISynchronousTranslationService { (s: string): string; }
-export interface IASynchronousTranslationService { (s: string): Promise<string>; }
-export interface IRetrievePathOfFolder { (noderef: string): Promise<{ qnamePath: string, displayPath: string }>; }
+export type ISynchronousTranslationService = (s: string) => string;
+export type IASynchronousTranslationService = (s: string) => Promise<string>;
+export type IRetrievePathOfFolder = (noderef: string) => Promise<{ qnamePath: string, displayPath: string }>;
 export class SearchQuery {
     private readabler: SearchQueryElementReadableStringVisitor;
-    public constructor(public readonly elements: ISearchQueryElement[], readonly translate: ISynchronousTranslationService) {
+    public constructor(public readonly elements: ReadonlyArray<ISearchQueryElement>, private readonly translate: ISynchronousTranslationService) {
         this.readabler = new SearchQueryElementReadableStringVisitor(translate);
     }
     public ToJSON(searchQueryElementToJSON: (e: ISearchQueryElement) => any): any {
@@ -24,7 +24,13 @@ export class SearchQuery {
         return this.GetRootSearchQueryElement().visit(this.readabler);
     }
     public GetRootSearchQueryElement(): ISearchQueryElement {
-        return this.elements.length === 1 ? this.elements[0] : new AndSearchQueryElement(this.elements);
+        return this.elements.length === 1 ? this.elements[0] : new AndSearchQueryElement(this.elements, () => this.translate(AndSearchQueryElement.AND));
+    }
+    public ToAndQueryElement(): AndSearchQueryElement {
+        return new AndSearchQueryElement(this.elements, () => this.translate(AndSearchQueryElement.AND));
+    }
+    public CreateFromChildren(children: ReadonlyArray<ISearchQueryElement>) {
+        return new SearchQuery(children, this.translate);
     }
 
     public equals(q: SearchQuery) {
@@ -46,13 +52,13 @@ export interface ISearchQueryElement {
     visit<T>(visitor: ISearchQueryElementVisitor<T>): T;
     conflictsWith(other: ISearchQueryElement): boolean;
     equals(other: ISearchQueryElement): boolean;
+    getTooltipText(): Promise<string>;
     readonly TYPE: string;
+    isRemovable(): boolean;
+    getSimpleSearchbarText(): Promise<string>;
+    isReferential(): boolean;
 }
 export interface ISimpleSearchQueryElement extends ISearchQueryElement {
-    getSimpleSearchbarText(): Promise<string>;
-    getTooltipText(): Promise<string>;
-    isReferential(): boolean;
-    isRemovable(): boolean;
 }
 
 export class ReferenceSimpleSearchQueryElement implements ISimpleSearchQueryElement {
@@ -182,7 +188,6 @@ export class FolderSearchQueryElement implements ISimpleSearchQueryElement {
     public static ParseFromJSON(json: any, context: ISearchQueryElementFromJSONContext) {
         const typecheckSafety: FolderSearchQueryElement = json;
         return context.searchQueryFactory().buildFolderQueryElement(typecheckSafety.noderef);
-
     }
     public isReferential() { return false; }
     public isRemovable() { return true; }
@@ -335,15 +340,58 @@ export class NodeRefSearchQueryElement implements ISimpleSearchQueryElement {
         return other instanceof NodeRefSearchQueryElement && other.noderef === this.noderef;
     }
 }
+export interface HierarchicSearchQueryElement<T> {
+    getChildren(): ReadonlyArray<ISearchQueryElement>;
+    withChildren(children: ReadonlyArray<ISearchQueryElement>): T;
+}
+export function isHierarchicSearchQueryElement(element: ISearchQueryElement):
+    element is (OrSearchQueryElement | AndSearchQueryElement) {
+    return element instanceof AndSearchQueryElement || element instanceof OrSearchQueryElement;
+}
 
-export class AndSearchQueryElement implements ISearchQueryElement {
+export function containsToFillInSearchQueryElement(element: ISearchQueryElement): boolean {
+    if (element instanceof ToFillInSearchQueryElement) {
+        return true;
+    }
+    if (isHierarchicSearchQueryElement(element)) {
+        return element.getChildren().some(elem => containsToFillInSearchQueryElement(elem));
+    }
+    return false;
+}
+export class AndSearchQueryElement implements ISearchQueryElement, HierarchicSearchQueryElement<AndSearchQueryElement> {
+
+    public getTooltipText(): Promise<string> {
+        return Promise.all(this.children.map(c => c.getTooltipText())).then(childTexts => childTexts.join(this.getConnectWord()));
+    }
+    public getConnectWord() {
+        return this.getAndText(AndSearchQueryElement.AND);
+    }
+    public isRemovable(): boolean {
+        return true;
+    }
+    public getSimpleSearchbarText(): Promise<string> {
+        return this.getTooltipText();
+    }
+    public isReferential(): boolean {
+        return false;
+    }
+    public getChildren(): ReadonlyArray<ISearchQueryElement> {
+        return this.children;
+    }
+    public withChildren(children: ReadonlyArray<ISearchQueryElement>) {
+        return new AndSearchQueryElement(children, this.getAndText);
+    }
     public static readonly TYPE = "AndSearchQueryElement";
     public readonly TYPE = AndSearchQueryElement.TYPE;
+    public static readonly AND = "and";
+    public getHierarchicType(): "and" {
+        return AndSearchQueryElement.AND;
+    }
     public static ParseFromJSON(json: any, context: ISearchQueryElementFromJSONContext) {
         const typecheckSafety: AndSearchQueryElement = json;
         return context.searchQueryFactory().buildAndQueryElement(typecheckSafety.children.map(e => context.SearchQueryElementFromJSON(e)));
     }
-    constructor(public readonly children: ISearchQueryElement[]) {
+    constructor(public readonly children: ReadonlyArray<ISearchQueryElement>, public readonly getAndText: (and: string) => string) {
     }
     public visit<T>(visitor: ISearchQueryElementVisitor<T>): T {
         return visitor.visitAndSearchQueryElement(this);
@@ -368,7 +416,33 @@ export class AndSearchQueryElement implements ISearchQueryElement {
         return true;
     }
 }
-export class OrSearchQueryElement implements ISearchQueryElement {
+export class OrSearchQueryElement implements ISearchQueryElement, HierarchicSearchQueryElement<OrSearchQueryElement> {
+    public static readonly OR = "or";
+    public getTooltipText(): Promise<string> {
+        return Promise.all(this.children.map(c => c.getTooltipText())).then(childTexts => childTexts.join(this.getConnectWord()));
+    }
+    public getConnectWord() {
+        return this.getOrText(OrSearchQueryElement.OR);
+    }
+    public isRemovable(): boolean {
+        return true;
+    }
+    public getSimpleSearchbarText(): Promise<string> {
+        return this.getTooltipText();
+    }
+    public isReferential(): boolean {
+        return false;
+    }
+    public getHierarchicType(): "or" {
+        return OrSearchQueryElement.OR;
+    }
+
+    public getChildren(): ReadonlyArray<ISearchQueryElement> {
+        return this.children;
+    }
+    public withChildren(children: ReadonlyArray<ISearchQueryElement>) {
+        return new OrSearchQueryElement(children, this.getOrText);
+    }
 
     public static readonly TYPE = "OrSearchQueryElement";
     public readonly TYPE = OrSearchQueryElement.TYPE;
@@ -376,7 +450,7 @@ export class OrSearchQueryElement implements ISearchQueryElement {
         const typecheckSafety: OrSearchQueryElement = json;
         return context.searchQueryFactory().buildOrQueryElement(typecheckSafety.children.map(e => context.SearchQueryElementFromJSON(e)));
     }
-    constructor(public readonly children: ISearchQueryElement[]) {
+    constructor(public readonly children: ReadonlyArray<ISearchQueryElement>, public readonly getOrText: (or: string) => string) {
     }
     public visit<T>(visitor: ISearchQueryElementVisitor<T>): T {
         return visitor.visitOrSearchQueryElement(this);
@@ -423,6 +497,39 @@ export class StringValuePropertySearchQueryElement extends PropertySearchQueryEl
         return other instanceof StringValuePropertySearchQueryElement && this.key === other.key && this.value === other.value;
     }
 }
+
+export class ToFillInSearchQueryElement implements ISimpleSearchQueryElement {
+    public conflictsWith(other: ISearchQueryElement): boolean {
+        return other instanceof ToFillInSearchQueryElement;
+    }
+    public static readonly TYPE = "ToFillInSearchQueryElement";
+    public readonly TYPE = ToFillInSearchQueryElement.TYPE;
+    public static ParseFromJSON(json: any, context: ISearchQueryElementFromJSONContext) {
+        const typecheckSafety: ToFillInSearchQueryElement = json;
+        return context.searchQueryFactory().buildToFillInQueryElement();
+    }
+    constructor() {
+    }
+    public getSimpleSearchbarText() {
+        return Promise.resolve("...");
+    }
+    public getTooltipText() {
+        return this.getSimpleSearchbarText();
+    }
+    public visit<T>(visitor: ISearchQueryElementVisitor<T>): T {
+        return visitor.visitToFillInSearchQueryElement(this);
+    }
+    public equals(other: ISearchQueryElement): boolean {
+        return other instanceof ToFillInSearchQueryElement;
+    }
+    public isReferential() {
+        return false;
+    }
+    public isRemovable() {
+        return true;
+    }
+}
+
 export interface ISearchQueryElementFromJSONContext {
     DateRangeFromJSON(json: any): IDateRange;
     SearchQueryFromJSON(searchQuery: any): SearchQuery;
@@ -430,7 +537,7 @@ export interface ISearchQueryElementFromJSONContext {
     searchQueryFactory(): SearchQueryFactory;
 }
 
-export interface ISearchQueryElementParseFromJSON { (jsonData: any, context: ISearchQueryElementFromJSONContext): ISearchQueryElement; }
+export type ISearchQueryElementParseFromJSON = (jsonData: any, context: ISearchQueryElementFromJSONContext) => ISearchQueryElement;
 
 export interface ISearchQueryElementVisitor<T> {
     visitStringValuePropertySearchQueryElement(query: StringValuePropertySearchQueryElement): T;
@@ -444,4 +551,5 @@ export interface ISearchQueryElementVisitor<T> {
     visitAspectSearchQueryElement(query: AspectSearchQueryElement): T;
     visitNodeRefSearchQueryElement(query: NodeRefSearchQueryElement): T;
     visitTypeSearchQueryElement(query: TypeSearchQueryElement): T;
+    visitToFillInSearchQueryElement(query: ToFillInSearchQueryElement): T;
 }

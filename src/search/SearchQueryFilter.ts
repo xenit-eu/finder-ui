@@ -3,6 +3,7 @@ import {
     FolderSearchQueryElement, ISearchQueryElement, ISearchQueryElementVisitor,
     NodeRefSearchQueryElement, OrSearchQueryElement, ReferenceSimpleSearchQueryElement, StringValuePropertySearchQueryElement,
     TextSearchQueryElement,
+    ToFillInSearchQueryElement,
     TypeSearchQueryElement,
 } from "./searchquery";
 function flatten<T>(arr: T[][]) {
@@ -48,6 +49,9 @@ export class SearchQueryFilter implements ISearchQueryElementVisitor<ISearchQuer
         return this.includeIfConditionTrue(query);
     }
     public visitNodeRefSearchQueryElement(query: NodeRefSearchQueryElement) {
+        return this.includeIfConditionTrue(query);
+    }
+    public visitToFillInSearchQueryElement(query: ToFillInSearchQueryElement) {
         return this.includeIfConditionTrue(query);
     }
 }

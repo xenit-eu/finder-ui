@@ -80,7 +80,7 @@ export function addMonths(d: Date, months: number): Date {
 }
 
 export function addDays(d: Date, days: number): Date {
-    return new Date(d.getTime() + (days * this.DAYINMS));
+    return new Date(d.getTime() + (days * DAYINMS));
 }
 
 export class UntilDateRange implements IDateRange {
