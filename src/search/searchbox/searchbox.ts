@@ -257,15 +257,15 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                 color: iconColor,
                 onClick: () => this.props.onSaveAsQuery(prompt("Save query as") || "query", this.props.searchedQueryElements),
             }));
-        const hierarchyPicker = this.isHierarchyPickerOpen() && __(SearchboxHierarchyPicker,<SearchboxHierarchyPickerProps> {
+        const hierarchyPicker = this.isHierarchyPickerOpen() && __(SearchboxHierarchyPicker, <SearchboxHierarchyPickerProps>{
             open: this.isHierarchyPickerOpen() || false,
-            handleClose: () => this.handleCloseDialog.bind(this),
+            handleClose: this.handleCloseDialog.bind(this),
             getHierarchicQueryValueMatch: () => this.getHierarchicQueryValueMatch(),
             pickedChip: (id: number[]) => {
                 this.selectedHierarchy = id;
                 this.handleCloseDialog();
             },
-            translateSelectQuery:(s) => this.props.translate(s),
+            translateSelectQuery: (s) => this.props.translate(s),
         });
         const icons = _.div({ className: "searchbox-icon-wrapper", key: "icons" },
             [...(this.props.customButtons || []).map((item, i) => cloneElement(item, { key: i })), saveIcon, searchIcon]);
