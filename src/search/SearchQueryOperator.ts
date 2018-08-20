@@ -1,5 +1,8 @@
 import { allButFirst, last, lastMust, replaceLast, replaceOrRemoveAt } from "finder-utils";
-import { AndSearchQueryElement, ISearchQueryElement, isHierarchicSearchQueryElement, OrSearchQueryElement, SearchQuery, ToFillInSearchQueryElement } from "./searchquery";
+import {
+    AndSearchQueryElement, ISearchQueryElement, isHierarchicSearchQueryElement, OrSearchQueryElement, SearchQuery,
+    ToFillInSearchQueryElement, containsToFillInSearchQueryElement,
+} from "./searchquery";
 import { SearchQueryNormalizeVisitor } from "./SearchQueryNormalizeVisitor";
 type ComplexSearchQueryElement_t = AndSearchQueryElement | OrSearchQueryElement;
 export class SearchQueryOperator {
@@ -106,6 +109,9 @@ export class SearchQueryOperator {
     }
     private GetAttachableHierarchicElementCombinationsOnElement(searchQueryElement: ISearchQueryElement, index: number[], type: "and" | "or", parentMatchesType: boolean): number[][] {
         const withSelf = parentMatchesType ? [] : [index];
+        if (searchQueryElement && containsToFillInSearchQueryElement(searchQueryElement)) { // ToFillInSearchQueryElement can never be used to combine an AND or OR with
+            return [];
+        }
         if (!searchQueryElement || !isHierarchicSearchQueryElement(searchQueryElement)) {
             return withSelf;
         }

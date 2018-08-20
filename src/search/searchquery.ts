@@ -348,6 +348,16 @@ export function isHierarchicSearchQueryElement(element: ISearchQueryElement):
     element is (OrSearchQueryElement | AndSearchQueryElement) {
     return element instanceof AndSearchQueryElement || element instanceof OrSearchQueryElement;
 }
+
+export function containsToFillInSearchQueryElement(element: ISearchQueryElement): boolean {
+    if (element instanceof ToFillInSearchQueryElement) {
+        return true;
+    }
+    if (isHierarchicSearchQueryElement(element)) {
+        return element.getChildren().some(elem => containsToFillInSearchQueryElement(elem));
+    }
+    return false;
+}
 export class AndSearchQueryElement implements ISearchQueryElement, HierarchicSearchQueryElement<AndSearchQueryElement> {
 
     public getTooltipText(): Promise<string> {

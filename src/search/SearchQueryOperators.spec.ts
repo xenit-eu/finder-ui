@@ -85,4 +85,16 @@ describe("Searchquery operator tests", () => {
         expect(combinations.length).toBe(2);
     });
 
+    it("Does not allow to split a ToFillIn query element into two when using the same operators", () => {
+        const query = factory.buildSearchQuery([factory.buildAndQueryElement([factory.buildStringValuePropertyQueryElement("cm:name", "ABC"), factory.buildToFillInQueryElement()])]);
+        const combinations = operator.GetAttachableHierarchicElementCombinations(query, "and");
+        expect(combinations.length).toBe(0);
+    });
+
+    it("Does not allow to split a ToFillIn query element into two when using different operators", () => {
+        const query = factory.buildSearchQuery([factory.buildAndQueryElement([factory.buildStringValuePropertyQueryElement("cm:name", "ABC"), factory.buildToFillInQueryElement()])]);
+        const combinations = operator.GetAttachableHierarchicElementCombinations(query, "or");
+        expect(combinations.length).toBe(0);
+    });
+
 });
