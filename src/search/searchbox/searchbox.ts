@@ -259,7 +259,10 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
             }));
         const hierarchyPicker = this.isHierarchyPickerOpen() && __(SearchboxHierarchyPicker, <SearchboxHierarchyPickerProps>{
             open: this.isHierarchyPickerOpen() || false,
-            handleClose: this.handleCloseDialog.bind(this),
+            handleClose: () => {
+                this.selectedHierarchy = this.getHierarchicQueryValueMatch().hierarchyInfo.possibilities[0].index;
+                this.handleCloseDialog();
+            },
             getHierarchicQueryValueMatch: () => this.getHierarchicQueryValueMatch(),
             pickedChip: (id: number[]) => {
                 this.selectedHierarchy = id;

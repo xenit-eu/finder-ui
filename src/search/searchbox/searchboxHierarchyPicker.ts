@@ -37,7 +37,7 @@ export class SearchboxHierarchyPicker extends Component<SearchboxHierarchyPicker
         return __(Dialog, { // Dialog to display the date (range) selector.
             key: "hierarchydialog",
             open: this.props.open,
-            onClose: () => { this.props.pickedChip([]); this.props.handleClose(); },
+            onClose: () => { this.props.handleClose(); },
             fullWidth: true,
             maxWidth: "md",
             className: "searchbox-hierarchy-dialog",
