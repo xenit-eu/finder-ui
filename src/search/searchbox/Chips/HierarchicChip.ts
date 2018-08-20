@@ -51,7 +51,7 @@ export class HierarchicChip extends Component<HierarchicChipProps, {}> {
         this.props.children.forEach((c, i) => {
             childrenInterleaved.push(c);
             if (i < this.props.children.length - 1) {
-                childrenInterleaved.push(_.text({ style: { margin: "2px" }, key: "inter" + i }, this.props.label));
+                childrenInterleaved.push(_.span({ style: { margin: "2px" }, key: "inter" + i }, this.props.label));
             }
         });
         const growChipAdd = (this.props.containsFillInChip ? " growing-chip" : "");
