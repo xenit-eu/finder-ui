@@ -63,8 +63,9 @@ export class SearchQueryOperator {
     public AppendElement(toAdd: ISearchQueryElement, onto: SearchQuery) {
         const lastChild = last(onto.elements);
         const canAddOnExisting = lastChild !== undefined && this.CanAppendElementOnElement(lastChild);
+        const nonConflictingChildren = onto.elements.filter(elem => !toAdd.conflictsWith(elem));
         const newChildren = canAddOnExisting ? replaceLast(onto.elements, this.AppendElementOnElement(toAdd, lastChild as ComplexSearchQueryElement_t)) :
-            onto.elements.concat([toAdd]);
+            nonConflictingChildren.concat([toAdd]);
         return this.normalizer.visitSearchQuery(onto.CreateFromChildren(newChildren));
     }
     private CanAppendElementOnElement(onto: ISearchQueryElement): boolean {

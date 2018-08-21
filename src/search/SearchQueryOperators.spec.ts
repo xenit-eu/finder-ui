@@ -97,4 +97,21 @@ describe("Searchquery operator tests", () => {
         expect(combinations.length).toBe(0);
     });
 
+    it("Should replace conflicting elements", () => {
+        const query = factory.buildSearchQuery([
+            factory.buildStringValuePropertyQueryElement("cm:name", "ABC"),
+            factory.buildFolderQueryElement("workspace://SpacesStore/7749ecac-0926-4741-aa1e-dec04d515454"),
+        ]);
+
+        const toAppend = factory.buildFolderQueryElement("workspace://SpacesStore/19f4d6cd-98fc-45ca-8cd2-e505c6b9c07f");
+
+        const newQuery = operator.AppendElement(toAppend, query);
+
+        expect(newQuery.elements.length).toBe(2);
+
+        expect(newQuery.elements[0].equals(factory.buildStringValuePropertyQueryElement("cm:name", "ABC"))).toBe(true);
+        expect(newQuery.elements[1].equals(factory.buildFolderQueryElement("workspace://SpacesStore/19f4d6cd-98fc-45ca-8cd2-e505c6b9c07f"))).toBe(true);
+
+    });
+
 });
