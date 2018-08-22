@@ -51,13 +51,13 @@ const Label: PropertyRenderer_t<string | string[]> = (config: PropertyRenderConf
         }
 
         public render() {
-            let values = this._getViewValue();
             const classNamed = { className: this.props.className || "metadata-value metadata-field-label" };
             if (!this.state.currentValuesLoaded) {
                 return _.span(classNamed, "Loading...");
             }
-            values = this.state.currentValues.map(item => item.value);
-            return _.span(classNamed, values.join(", "));
+            const values = this.state.currentValues.map(item => item.value);
+            const value = values.join(", ");
+            return _.span({ ...classNamed, title: value }, value);
         }
 
     }
