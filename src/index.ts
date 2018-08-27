@@ -20,3 +20,4 @@ export * from "./testUtils";
 export * from "./upload";
 export * from "./versionhistoryPanel";
 export * from "./WordTranslator";
+export * from "./configuration-dialog";
