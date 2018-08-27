@@ -32,7 +32,7 @@ module.exports = {
             { test: /\.css$/, loader: "style!css" },
             { test: /\.less$/, loader: "style!css!less" },
             { test: /\.json$/, loader: "json" },
-            { test: /\.tsx?$/, loader: 'awesome-typescript-loader' }
+            { test: /\.tsx?$/, loader: 'awesome-typescript-loader' },
         ]
     },
     node: {

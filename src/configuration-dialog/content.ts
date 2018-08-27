@@ -1,12 +1,24 @@
 import {ChangeEvent, Component, ComponentType, createElement as __, Fragment} from "react";
-import {ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, FormControl, InputLabel, MenuItem, Select, StyledComponentProps, Typography, withStyles} from "@material-ui/core";
+import * as _ from "react-dom-factories";
+import {
+    Button,
+    FormControl, IconButton, Input,
+    InputLabel,
+    MenuItem,
+    Select,
+    TextField,
+    WithStyles,
+    withStyles,
+} from "@material-ui/core";
 import {Configuration_t} from "./index";
+import ConfigurationExpansionPanel from "./configuration-expansion-panel";
+import AddCircle from "@material-ui/icons/AddCircle";
 
 type ConfigurationDialog_Props_t = {
     configuration: Configuration_t,
     onChange: (configuration: Configuration_t) => void,
     languages: { [k: string]: string },
-} & StyledComponentProps<"expansionPanelDetails" | "formControl">;
+} & WithStyles<"flex" | "formControl">;
 
 class ConfigurationDialogContent extends Component<ConfigurationDialog_Props_t> {
     constructor(props: ConfigurationDialog_Props_t) {
@@ -15,11 +27,8 @@ class ConfigurationDialogContent extends Component<ConfigurationDialog_Props_t> 
 
     public render() {
         return __(Fragment, {},
-            __(ExpansionPanel, {defaultExpanded: true},
-                __(ExpansionPanelSummary, {},
-                    __(Typography, {}, "General Settings"),
-                ),
-                __(ExpansionPanelDetails, {className: this.props.classes.expansionPanelDetails},
+            __(ConfigurationExpansionPanel, {title: "General Settings"},
+                _.div({className: this.props.classes.flex},
                     __(FormControl, {className: this.props.classes.formControl},
                         __(InputLabel, {key: "language-title", htmlFor: "lang"}, "Choose your language"),
                         __(Select,
@@ -35,12 +44,26 @@ class ConfigurationDialogContent extends Component<ConfigurationDialog_Props_t> 
                                 }),
 
                             },
-                            Object.keys(this.props.languages).map( (langCode) => __(MenuItem, { key: langCode, value: langCode }, this.props.languages[langCode])),
+                            Object.keys(this.props.languages).map((langCode) => __(MenuItem, {key: langCode, value: langCode}, this.props.languages[langCode])),
                         ),
                     ),
                 ),
             ),
-            __(Typography, {key: "layouts-title", variant: "title"}, "Manage layouts"),
+            __(ConfigurationExpansionPanel, {title: "Manage Layouts"},
+                _.div({className: this.props.classes.flex},
+                    __(FormControl, {className: this.props.classes.formControl},
+                        __(InputLabel, {htmlFor: "save-layout-input"}, "Save current layout"),
+                        __(Input, {
+                                inputProps: {
+                                    name: "save-layout-input",
+                                    id: "save-layout-input",
+                                },
+                            },
+                        ),
+                    ),
+                    __(IconButton, {}, __(AddCircle, {})),
+                ),
+            ),
         );
     }
 };
@@ -48,10 +71,12 @@ class ConfigurationDialogContent extends Component<ConfigurationDialog_Props_t> 
 const comp: ComponentType<ConfigurationDialog_Props_t> = ConfigurationDialogContent;
 
 export default withStyles(theme => ({
-    expansionPanelDetails: {
-        display: "flex",
-    },
     formControl: {
+        flexGrow: 1,
+        flexBase: "0%",
+    },
+    flex: {
+        display: "flex",
         width: "100%",
     },
 }))(comp);

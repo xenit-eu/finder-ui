@@ -1,6 +1,5 @@
 import {Component, createElement as __} from "react";
-import {Button, Dialog, DialogActions, DialogTitle} from "@material-ui/core";
-import DialogContent from "@material-ui/core/es/DialogContent/DialogContent";
+import {Button, Dialog, DialogActions, DialogContent, DialogTitle} from "@material-ui/core";
 import ConfigurationDialogContent from "./content";
 
 export type ConfigurationDialog_t = {
@@ -53,11 +52,13 @@ export class ConfigurationDialog extends Component<ConfigurationDialog_t, State_
             __(DialogActions, {className: "actions-container"},
                 __(Button, {
                     onClick: this.props.onClose,
+                    className: "configuration-dialog-cancel-button",
                 }, "Cancel"),
                 __(Button, {
                     variant: "contained",
                     color: "primary",
                     onClick: () => this.props.onSave(this.state.configuration),
+                    className: "configuration-dialog-done-button",
                 }, "Done"),
             ),
         );
