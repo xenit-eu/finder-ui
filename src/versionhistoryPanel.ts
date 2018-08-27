@@ -15,6 +15,8 @@ import * as _ from "react-dom-factories";
 
 import "./versionhistoryPanel.less";
 
+export const DOCUMENT_NO_VERSION_HISTORY = "Document has no version history.";
+
 export type Version_t = {
     title: string
     editor: string,
@@ -27,9 +29,8 @@ export type Version_t = {
 export type VersionsHistoryPanel_t = {
     show: boolean,
     versions: Version_t[],
+    translate?: (s: string) => string,
 };
-
-const iconsize = 30;
 
 const avatarStyle: CSSProperties = {
     color: "rgb(255, 255, 255)",
@@ -53,7 +54,6 @@ const avatarSvgStyle: CSSProperties = {
     fontSize: "18px",
     margin: "6px",
 };
-
 const avatar = _.div({ style: avatarStyle }, [
     _.svg({ key: "svg", viewBox: "0 0 24 24", style: avatarSvgStyle }, [
         _.path({ key: "path", d: "M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" }),
@@ -62,10 +62,10 @@ const avatar = _.div({ style: avatarStyle }, [
 function isNumeric(num: string | number) {
     return !isNaN(+num);
 }
-export function VersionsHistoryPanel({ show, versions }: VersionsHistoryPanel_t): ReactElement<any> {
+export function VersionsHistoryPanel({ show, versions, translate }: VersionsHistoryPanel_t): ReactElement<any> {
     if (show) {
         if (versions.length === 0) {
-            return _.div({ className: "docversions" }, "Document has no version history.");
+            return _.div({ className: "docversions" }, translate ? translate(DOCUMENT_NO_VERSION_HISTORY) : DOCUMENT_NO_VERSION_HISTORY);
         }
 
         const versionItem = (v: Version_t) => {

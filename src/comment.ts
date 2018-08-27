@@ -7,7 +7,7 @@ import { Component, createElement as __ } from "react";
 import * as _ from "react-dom-factories";
 
 import "./comment.less";
-
+export const ADD_A_COMMENT = "Add a comment...";
 export type Comment_t = {
     nodeRef: string,
     parentNodeRef: string,
@@ -39,6 +39,7 @@ const iconStyle = {
 
 export type NewCommentCard_t = {
     onSaveNewComment: (newComment: string) => void,
+    translate?: (s: string) => string,
 };
 
 export type State_t = {
@@ -53,12 +54,14 @@ export class NewCommentCard extends Component<NewCommentCard_t, State_t> {
     }
 
     public render() {
+        const propsTranslate = this.props.translate;
+        const translated = (propsTranslate ? propsTranslate : (s: string) => s)(ADD_A_COMMENT);
         const cardContent = _.div({ className: "comment-card-body" },
             __(CardTitle, {},
                 __(TextField, {
                     className: "comment-card-textfield",
-                    floatingLabelText: "Add a comment...",
-                    hintText: "Add a comment...",
+                    floatingLabelText: translated,
+                    hintText: translated,
                     onChange: (evt: any) => this.setState({ newComment: evt.target.value }),
                     value: this.state.newComment,
                 }),
@@ -86,6 +89,7 @@ export function CommentCards(
     onStartEditing: (commentToEdit: Comment_t) => void,
     onSaveEditing: (updatedComment: Comment_t) => void,
     onCancelEditing: (canceledComment: Comment_t) => void,
+    translate?: (s: string) => string,
 ) {
     return comments.map((comment: Comment_t, i: number) => {
         let cardText: any;

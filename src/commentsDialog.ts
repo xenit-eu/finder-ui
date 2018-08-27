@@ -30,6 +30,7 @@ export type CommentsDialog_t = {
     onStartEditing: (commentToEdit: Comment_t) => void,
     onSaveEditing: (updatedComment: Comment_t) => void,
     onCancelEditing: (canceledComment: Comment_t) => void,
+    translate?: (s: string) => string,
 };
 
 export function CommentsDialog({ language, opened, comments, onClose, onSaveNewComment,

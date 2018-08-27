@@ -2,6 +2,8 @@ import {
     DATE_BETWEEN, DATE_FROM, DATE_LASTMONTH, DATE_LASTWEEK, DATE_LASTYEAR, DATE_ON, DATE_RANGE_PICK, DATE_TODAY, DATE_UNTIL,
 } from "./DateRange";
 import { PLACEHOLDERTRANSLATION } from "./searchbox";
+import { ADD_A_COMMENT } from "../comment";
+import { DOCUMENT_NO_VERSION_HISTORY } from "../versionhistoryPanel";
 export const FOLDER = "Folder";
 export const TEXT = "text";
 export const ASPECT = "aspect";
@@ -171,6 +173,28 @@ export const translateSearchboxTranslations = {
     },
 
 };
+export const translateComments = {
+    [ENGLISH]: {
+        [ADD_A_COMMENT]: ADD_A_COMMENT,
+    },
+    [FRENCH]: {
+        [ADD_A_COMMENT]: "ajouter un commentaire...",
+    },
+    [DUTCH]: {
+        [ADD_A_COMMENT]: "Voeg commentaar toe...",
+    },
+};
+export const translateVersions = {
+    [ENGLISH]: {
+        [DOCUMENT_NO_VERSION_HISTORY]: DOCUMENT_NO_VERSION_HISTORY,
+    },
+    [FRENCH]: {
+        [DOCUMENT_NO_VERSION_HISTORY]: "Le document n'a pas d'historique de version.",
+    },
+    [DUTCH]: {
+        [DOCUMENT_NO_VERSION_HISTORY]: "Het document heeft geen versie geschiedenis.",
+    },
+};
 
 function isObject(item: any) {
     return (item && typeof item === "object" && !Array.isArray(item));
@@ -192,8 +216,19 @@ export function mergeDeep(target: any, ...sources: any[]): any {
 }
 export class CombinedWordTranslator extends WordTranslator {
     public constructor(languageSelection: () => string) {
-        const merged = mergeDeep({}, datewordTranslations, folderWordTranslations, textWordTranslations,
-            AllWordTranslations, logicWordTranslations, aspectTranslations, noderefTranslations, typeTranslations, translateSearchboxTranslations);
+        const merged = mergeDeep(
+            {},
+            AllWordTranslations,
+            aspectTranslations,
+            datewordTranslations,
+            folderWordTranslations,
+            logicWordTranslations,
+            noderefTranslations,
+            textWordTranslations,
+            translateSearchboxTranslations,
+            translateComments,
+            translateVersions,
+            typeTranslations);
         super(languageSelection, merged);
     }
 }

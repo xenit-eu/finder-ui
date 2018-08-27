@@ -13,6 +13,7 @@ export type CommentsPanel_t = {
     onStartEditing: (commentToEdit: Comment_t) => void,
     onSaveEditing: (updatedComment: Comment_t) => void,
     onCancelEditing: (canceledComment: Comment_t) => void,
+    translate?: (s: string) => string,
 };
 
 //@Component CommentsPanel
@@ -28,11 +29,11 @@ export type CommentsPanel_t = {
 //@Param onSaveEditing (updatedComment: Comment_t) => void "called when an existing comment has been modified"
 
 export function CommentsPanel({ show, language, comments,
-    onSaveNewComment, onDeleteComment, onStartEditing, onSaveEditing, onCancelEditing, canAdd }: CommentsPanel_t) {
+    onSaveNewComment, onDeleteComment, onStartEditing, onSaveEditing, onCancelEditing, canAdd, translate }: CommentsPanel_t) {
     return _.div({ className: "comments-panel" },
         _.div({ className: "comments-content" },
             show ? [
-                canAdd ? __(NewCommentCard, { key: "newCommentCard", onSaveNewComment }) : undefined,
+                canAdd ? __(NewCommentCard, { key: "newCommentCard", onSaveNewComment, translate }) : undefined,
                 ...CommentCards(language, comments, onDeleteComment, onStartEditing, onSaveEditing, onCancelEditing),
             ] : []),
     );
