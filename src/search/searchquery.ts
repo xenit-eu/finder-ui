@@ -256,8 +256,8 @@ export class AllSimpleSearchQueryElement implements ISimpleSearchQueryElement {
         return false;
     }
 
-    public equals(other: ISearchQueryElement) {
-        return other instanceof AllSimpleSearchQueryElement;
+    public equals(other: ISearchQueryElement): boolean {
+        return (other instanceof AllSimpleSearchQueryElement) && (other.value === this.value) && (other.isUnremovable === this.isUnremovable);
     }
 }
 export abstract class PropertySearchQueryElement implements ISimpleSearchQueryElement {
