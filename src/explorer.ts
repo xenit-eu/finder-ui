@@ -1,8 +1,9 @@
-import { Avatar, Collapse, ListItem as ListItemMUIV1, ListItemAvatar, ListItemText } from "@material-ui/core";
+import { Avatar, Collapse, ListItem as ListItemMUIV1, ListItemAvatar, ListItemText, WithStyles, withStyles } from "@material-ui/core";
 import FolderIcon from "@material-ui/icons/Folder";
 import { CircularProgress, IconButton, List, ListItem } from "material-ui";
 import { NavigationExpandLess, NavigationExpandMore } from "material-ui/svg-icons";
 import { Component, createElement as __, ReactElement } from "react";
+import classNames = require("classnames");
 
 export type Explorer_t<T extends ExplorerNode_t> = {
     onClick: (node: T) => void,
@@ -110,7 +111,7 @@ export function Explorer<T extends ExplorerNode_t>(props: Explorer_t<T>) {
 }
 export function ExplorerV2<T extends ExplorerNode_t>(props: Explorer_t<T>) {
     return __(List, <any>{ className: "explorer" }, [
-        __(ExplorerNodeV2, { key: "rootExplorerNode", ...props, nestedLevel: 0 }),
+        __(StyledExplorerNodeV2, { key: "rootExplorerNode", ...props, nestedLevel: 0 }),
     ]);
 }
 export type ExplorerNodev2_t = {
@@ -120,11 +121,11 @@ export type ExplorerNodev2_t = {
 
 type ExplorerNodeV2_Props_t<T extends ExplorerNodev2_t> = Explorer_t<T> & {
     nestedLevel: number,
-};
+} & WithStyles<"node" | "nodeSelected">;
 
 /*Material ui V1 component*/
 class ExplorerNodeV2<T extends ExplorerNode_t> extends Component<ExplorerNodeV2_Props_t<T>, Explorer_State_t> {
-    constructor(props: ExplorerNode_Props_t<T>) {
+    constructor(props: ExplorerNodeV2_Props_t<T>) {
         super(props);
         this.state = {
             children: [],
@@ -179,13 +180,31 @@ class ExplorerNodeV2<T extends ExplorerNode_t> extends Component<ExplorerNodeV2_
             onClick: () => this.props.onClick(this.props.node),
             onDrop: (event: any) => this.props.onDrop(this.props.node, event),
             onDragOver: (event: any) => event.preventDefault(),
-            className: isSelected ? "explorer-selected" : "",
-            style: { padding: "1px" },
+            //className: isSelected ? "explorer-selected" : "",
+            className: classNames(this.props.classes.node, {
+                [this.props.classes.nodeSelected]: isSelected,
+            }),
         },
-            __(ListItemAvatar, {}, __(Avatar, {}, __(FolderIcon))),
+            __(ListItemAvatar, {}, __(Avatar, {}, __(FolderIcon, { color: isSelected ? "primary" : "inherit" }))),
             __(ListItemText, { primary: this.props.node.primaryText }),
             this._getRightIconButton());
         const collapsible = __(Collapse, { in: this.isOpenAndLoaded(), style: { paddingLeft: "20px" } }, nestedItems);
-        return __(List, { style: { padding: "1px" } }, listItem, collapsible);
+        return __(List, { style: { padding: "0px" } }, listItem, collapsible);
     }
 }
+
+const StyledExplorerNodeV2 = withStyles(theme => ({
+    node: {
+        paddingTop: "2px",
+        paddingBottom: "2px",
+        paddingLeft: "6px",
+        paddingRight: 0,
+        borderTopLeftRadius: "30px",
+        borderBottomLeftRadius: "30px",
+    },
+    nodeSelected: {
+        backgroundColor: theme.palette.primary.light,
+        color: theme.palette.primary.contrastText,
+    },
+
+}), { name: "FinderUIExplorerNodeV2" })(ExplorerNodeV2);
