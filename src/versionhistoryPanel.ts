@@ -70,24 +70,24 @@ export function VersionsHistoryPanel({ show, versions, translate }: VersionsHist
 
         const versionItem = (v: Version_t) => {
             const dateRep = moment(new Date(isNumeric(v.editDate) ? Number.parseInt(v.editDate) : v.editDate)).fromNow();
-            return _.div({ className: "history-item" }, [
-                _.div({ key: "history-version-parent" }, [
+            return _.div({ className: "history-item",key:v.versionNumber},
+                _.div({ key: "history-version-parent" },
                     _.div({ key: "history-version", className: "history-version" }, [v.versionNumber]),
-                ]),
-                _.div({ key: "history-meta-data-parent", className: "history-meta-data" }, [
+                ),
+                _.div({ key: "history-meta-data-parent", className: "history-meta-data" },
                     v.title && v.title.length > 0 ? _.div({ className: "history-doc-name" }, [v.title]) : undefined,
-                    _.div({ key: "history-details", className: "history-details" }, [
-                        _.div({ key: "history-avatar", className: "history-avatar" }, [
+                    _.div({ key: "history-details", className: "history-details" },
+                        _.div({ key: "history-avatar", className: "history-avatar" },
                             avatar,
-                        ]),
-                        _.div({}, [
+                        ),
+                        _.div({},
                             _.span({ className: "history-user" }, v.editor),
                             _.span({ className: "history-edited" }, dateRep),
                             _.span({ className: "history-comment" }, v.editComment),
-                        ]),
-                    ]),
-                ]),
-            ]);
+                        ),
+                    ),
+                ),
+            );
         };
 
         return _.div({ className: "docversions" }, versions.map(v => versionItem(v)));
