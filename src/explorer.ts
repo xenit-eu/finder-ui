@@ -180,11 +180,12 @@ class ExplorerNodeV2<T extends ExplorerNode_t> extends Component<ExplorerNodeV2_
             onDrop: (event: any) => this.props.onDrop(this.props.node, event),
             onDragOver: (event: any) => event.preventDefault(),
             className: isSelected ? "explorer-selected" : "",
+            style: { padding: "1px" },
         },
             __(ListItemAvatar, {}, __(Avatar, {}, __(FolderIcon))),
             __(ListItemText, { primary: this.props.node.primaryText }),
             this._getRightIconButton());
-        const collapsible = __(Collapse, { in: this.isOpenAndLoaded(), style: { paddingLeft: "8px" } }, nestedItems);
-        return __(List, {}, listItem, collapsible);
+        const collapsible = __(Collapse, { in: this.isOpenAndLoaded(), style: { paddingLeft: "20px" } }, nestedItems);
+        return __(List, { style: { padding: "1px" } }, listItem, collapsible);
     }
 }
