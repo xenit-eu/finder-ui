@@ -70,12 +70,12 @@ export function VersionsHistoryPanel({ show, versions, translate }: VersionsHist
 
         const versionItem = (v: Version_t) => {
             const dateRep = moment(new Date(isNumeric(v.editDate) ? Number.parseInt(v.editDate) : v.editDate)).fromNow();
-            return _.div({ className: "history-item",key:v.versionNumber},
+            return _.div({ className: "history-item", key: v.versionNumber },
                 _.div({ key: "history-version-parent" },
-                    _.div({ key: "history-version", className: "history-version" }, [v.versionNumber]),
+                    _.div({ key: "history-version", className: "history-version" }, v.versionNumber),
                 ),
                 _.div({ key: "history-meta-data-parent", className: "history-meta-data" },
-                    v.title && v.title.length > 0 ? _.div({ className: "history-doc-name" }, [v.title]) : undefined,
+                    v.title && v.title.length > 0 ? _.div({ className: "history-doc-name" }, v.title) : undefined,
                     _.div({ key: "history-details", className: "history-details" },
                         _.div({ key: "history-avatar", className: "history-avatar" },
                             avatar,
@@ -90,7 +90,7 @@ export function VersionsHistoryPanel({ show, versions, translate }: VersionsHist
             );
         };
 
-        return _.div({ className: "docversions" }, versions.map(v => versionItem(v)));
+        return _.div({ className: "docversions", key: "docversions" }, versions.map(v => versionItem(v)));
     } else {
         return _.div({});
     }
