@@ -2,8 +2,8 @@ import { Chip } from "material-ui";
 import * as Colors from "material-ui/styles/colors";
 import { createElement as __, ReactElement } from "react";
 import * as _ from "react-dom-factories";
-import { IAutocompleteSuggestion, ISearchableQueryElement, ISimpleSearchQueryElement } from "..";
-import { ISearchQueryElement, isHierarchicSearchQueryElement, ToFillInSearchQueryElement } from "../searchquery";
+import { IAutocompleteSuggestion, ISearchableQueryElement, IExactValueMatch } from "../searchables";
+import { ISearchQueryElement, isHierarchicSearchQueryElement, ToFillInSearchQueryElement, ISimpleSearchQueryElement } from "../searchquery";
 import { HierarchicChip, HierarchicChipProps } from "./Chips/HierarchicChip";
 export function getKeyValue(s: string | undefined): { key: string, value: string } {
     if (!s) {
@@ -83,7 +83,8 @@ export class HierarchicChipVM {
 export type ChipVM_t = LeafChipVM | HierarchicChipVM;
 export type SearchBox_data_t = {
     searching: boolean,                             // flag indicating that search process is busy => activate spinner !
-    searchableQueryElements: ISearchableQueryElement[],            // suggestions to be proposed on the drop-down list.
+    matchKeyValueExact(key: string, value: string): Promise<IExactValueMatch>,
+    getAutocompleteSuggestions(key: string, value: string): Promise<IAutocompleteSuggestion[]>,
     searchedQueryElements: ISimpleSearchQueryElement[],
     customButtons?: Array<ReactElement<any>>,              // list of custom buttons to add besides search and save icons
     translate: any,

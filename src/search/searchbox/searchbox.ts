@@ -125,14 +125,9 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
     }
 
     public onApplyTextSuggestion({ key, value }: { key: string, value: string }) {
-        const toTest = this.props.searchableQueryElements;
-        return Promise.all(toTest.map(t => t.matchKeyValue(key, value)))
-            .then(matches => {
-                const result = matches.filter(p => p.hasResult())[0];
-                return result;
-            })
+        return this.props.matchKeyValueExact(key, value)
             .then(match => {
-                if (!match) {
+                if (!match || !match.hasResult()) {
                     return;
                 }
                 if (match instanceof SimpleSearchQueryElementValueMatch) {

@@ -29,8 +29,7 @@ export class AutocompleteSearchBox extends Component<AutocompleteSearchBox_t, Au
     }
     protected getAutocompleteList(text: string) {
         const currentKeyValue = getKeyValue(text);
-        const autocompletionsP = Promise.all(this.props.searchableQueryElements.map(p => p.getPartiallyMatchingAutocompleteListElements(currentKeyValue.key, currentKeyValue.value)));
-        return autocompletionsP.then(autocompletions => flatten<IAutocompleteSuggestion>(autocompletions));
+        return this.props.getAutocompleteSuggestions(currentKeyValue.key, currentKeyValue.value);
     }
 
     private _onInputChanged(text: string) {
