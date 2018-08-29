@@ -63,7 +63,7 @@ export interface INodeTableProps<T> {
         selectedPage: number, // The index of the selected page (1-based)
     }; // Pagination information
     translations?: Translations_t;
-
+    isLoading?:boolean,
     onPageChanged(pageIndex: number): void; // Called when a request is made to change pages in the result list (1-based)
     onRowSelected(node: Node_t, rowIndex: number): void; // Called when a row is selected
     onToggleAll?: (checked: boolean) => void;
@@ -156,6 +156,7 @@ export function NodeTable<T>(props: INodeTableProps<T>) {
             },
         } : {}),
         ...translations,
+        loading: this.props.isLoading,
     });
 
 }
