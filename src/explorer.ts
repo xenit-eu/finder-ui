@@ -165,31 +165,41 @@ class ExplorerNodeV2<T extends ExplorerNode_t> extends Component<ExplorerNodeV2_
         const onClick = (event: any) => {
             event.stopPropagation(); this._doToggle();
         };
-        if (this.state.loading && this.state.open) {
-            return __(IconButton, { onClick },
-                __(CircularProgress, { size: 24 }));
-        }
-        return __(IconButton, { onClick },
-            __(this.state.open ? NavigationExpandLess : NavigationExpandMore));
+
+        const icon = this.state.open ? (this.state.loading ? __(CircularProgress, { size: 24 }) : __(NavigationExpandLess)) : __(NavigationExpandMore);
+
+        return __(IconButton, {
+            onClick,
+            className: "explorer-node-expander",
+        }, icon);
     }
 
     public render(): ReactElement<any> {
         const isSelected = this.props.selectedNodes && this.props.selectedNodes.indexOf(this.props.node.id) >= 0;
         const nestedItems = this.state.children.map((child, i) => __(ExplorerNodeV2, <any>{ ...this.props, key: i, node: child, nestedLevel: this.props.nestedLevel! + 1 }));
         const listItem = __(ListItemMUIV1, {
+            component: "div",
             onClick: () => this.props.onClick(this.props.node),
             onDrop: (event: any) => this.props.onDrop(this.props.node, event),
             onDragOver: (event: any) => event.preventDefault(),
-            //className: isSelected ? "explorer-selected" : "",
             className: classNames(this.props.classes.node, {
                 [this.props.classes.nodeSelected]: isSelected,
             }),
         },
             __(ListItemAvatar, {}, __(Avatar, {}, __(FolderIcon, { color: isSelected ? "primary" : "inherit" }))),
-            __(ListItemText, { primary: this.props.node.primaryText }),
+            __(ListItemText, { className: "explorer-node-label", primary: this.props.node.primaryText }),
             this._getRightIconButton());
-        const collapsible = __(Collapse, { in: this.isOpenAndLoaded(), style: { paddingLeft: "20px" } }, nestedItems);
-        return __(List, { style: { padding: "0px" } }, listItem, collapsible);
+        const collapsible = __(Collapse, { in: this.isOpenAndLoaded(), style: { paddingLeft: "20px" }, className: "explorer-node-children" }, nestedItems);
+        return __(List, <any>{
+            style: {
+                padding: "0px",
+            },
+            className: classNames("explorer-node", {
+                "explorer-node-open": this.state.open,
+                "explorer-node-loading": this.state.loading,
+                "explorer-node-selected": isSelected,
+            }),
+        }, listItem, collapsible);
     }
 }
 
@@ -201,6 +211,7 @@ const StyledExplorerNodeV2 = withStyles(theme => ({
         paddingRight: 0,
         borderTopLeftRadius: "30px",
         borderBottomLeftRadius: "30px",
+        cursor: "pointer",
     },
     nodeSelected: {
         backgroundColor: theme.palette.primary.light,
