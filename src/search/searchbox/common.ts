@@ -84,7 +84,7 @@ export type ChipVM_t = LeafChipVM | HierarchicChipVM;
 export type SearchBox_data_t = {
     searching: boolean,                             // flag indicating that search process is busy => activate spinner !
     matchKeyValueExact(key: string, value: string): Promise<IExactValueMatch>,
-    getAutocompleteSuggestions(key: string, value: string): Promise<IAutocompleteSuggestion[]>,
+    getAutocompleteSuggestions(key: string, value: string): Promise<ReadonlyArray<IAutocompleteSuggestion>>,
     searchedQueryElements: ISimpleSearchQueryElement[],
     customButtons?: Array<ReactElement<any>>,              // list of custom buttons to add besides search and save icons
     translate: any,

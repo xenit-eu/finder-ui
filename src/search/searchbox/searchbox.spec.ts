@@ -5,7 +5,7 @@ import * as Adapter from "enzyme-adapter-react-16";
 import "es6-shim";
 import { createElement as __ } from "react";
 import { Fixture } from "../../testUtils";
-import { AllSearchable, ISearchableQueryElement, SimpleAutoCompleteListElement, TextSearchable } from "../searchables";
+import { AllSearchable, ISearchableQueryElement, SimpleAutoCompleteListElement, TextSearchable, NoResultValueMatch } from "../searchables";
 import { SearchBox } from "./searchbox";
 import { ISimpleSearchQueryElement, StringValuePropertySearchQueryElement } from "../searchquery";
 import { SearchBox_t } from "./common";
@@ -30,12 +30,13 @@ describe("SearchBox component tests", () => {
         jasmineEnzyme();
     });
 
-    function SearchboxViaSearchablesProps(searchables: ISearchableQueryElement[], queryElements: ISimpleSearchQueryElement[], autocompleteSuggestions: SimpleAutoCompleteListElement[] = []) {
+    function SearchboxViaSearchablesProps(searchable: ISearchableQueryElement | undefined, queryElements: ISimpleSearchQueryElement[], autocompleteSuggestions: SimpleAutoCompleteListElement[] = []) {
         const retProps: SearchBox_t = {
             autocompleteSuggestions,
             searching: false,
             searchedQueryElements: queryElements,
-            searchableQueryElements: searchables,
+            matchKeyValueExact: (k: string, v: string) => Promise.resolve(searchable ? searchable.matchKeyValue(k, v) : new NoResultValueMatch()),
+            getAutocompleteSuggestions: (k: string, v: string) => searchable ? searchable.getPartiallyMatchingAutocompleteListElements(k, v) : Promise.resolve([]),
             onRemoveQueryElement: (idx) => { },
             onRemoveLastQueryElement: () => { },
             onAddQueryElement: (idx) => { },
@@ -49,7 +50,7 @@ describe("SearchBox component tests", () => {
         return retProps;
     }
     it("should call onSearch callback when enter key pressed without input text", (done) => {
-        const props = SearchboxViaSearchablesProps([], []);
+        const props = SearchboxViaSearchablesProps(undefined, []);
         spyOn(props, "onSearch");
         const wrapper = Fixture(__(SearchBox, props));
         wrapper.find("input").simulate("keyUp", { keyCode: ENTER_KEY_CODE });
@@ -60,7 +61,7 @@ describe("SearchBox component tests", () => {
 
     it("should call onAddQueryElement with entered text when enter key pressed after entering text in input field", (done) => {
         const inlineExpect = expect;
-        const props = SearchboxViaSearchablesProps([new TextSearchable("name", (s) => s)], []);
+        const props = SearchboxViaSearchablesProps(new TextSearchable("name", (s) => s), []);
         props.onAddQueryElement = (idx) => {
             done();
         };
@@ -73,7 +74,7 @@ describe("SearchBox component tests", () => {
     });
 
     it("should make a chip of a query with only value when there is an allsearchable ", (done) => {
-        const props = SearchboxViaSearchablesProps([new AllSearchable((s) => s)], []);
+        const props = SearchboxViaSearchablesProps(new AllSearchable((s) => s), []);
         props.onAddQueryElement = (idx) => {
             done();
         };
@@ -87,7 +88,7 @@ describe("SearchBox component tests", () => {
     it("should display provided list of terms in chips components", (done) => {
         const qE: StringValuePropertySearchQueryElement[] =
             [fac.buildStringValuePropertyQueryElement("dummy1", "dummy2"), fac.buildStringValuePropertyQueryElement("dummy3", "dummy4")];
-        const props = SearchboxViaSearchablesProps([new AllSearchable((s) => s)], qE);
+        const props = SearchboxViaSearchablesProps(new AllSearchable((s) => s), qE);
         props.onChipsUpdated = () => {
             wrapper.update();
             expect(wrapper.find("Chip").length).toBe(qE.length);
@@ -102,7 +103,7 @@ describe("SearchBox component tests", () => {
     it("should call onRemoveTerm with index of removed item when deleting a specific term", (done) => {
         const qE: StringValuePropertySearchQueryElement[] =
             [fac.buildStringValuePropertyQueryElement("dummy1", "dummy2"), fac.buildStringValuePropertyQueryElement("dummy3", "dummy4")];
-        const props = SearchboxViaSearchablesProps([new AllSearchable((s) => s)], qE);
+        const props = SearchboxViaSearchablesProps(new AllSearchable((s) => s), qE);
         props.onChipsUpdated = () => {
             wrapper.update();
             expect(wrapper.find("Chip").length).toBe(qE.length);
@@ -126,7 +127,7 @@ describe("SearchBox component tests", () => {
     it("Should call onRemoveTerm with the index of the latest item when pressing backspace in an empty input field", (done) => {
         const qE: StringValuePropertySearchQueryElement[] =
             [fac.buildStringValuePropertyQueryElement("dummy1", "dummy2"), fac.buildStringValuePropertyQueryElement("dummy3", "dummy4")];
-        const props = SearchboxViaSearchablesProps([new AllSearchable((s) => s)], qE);
+        const props = SearchboxViaSearchablesProps(new AllSearchable((s) => s), qE);
         props.onChipsUpdated = () => {
             wrapper.update();
             wrapper.find("input").at(0).simulate("keydown", { keyCode: 8 });
@@ -139,7 +140,7 @@ describe("SearchBox component tests", () => {
 
     it("should display the suggestion list when something is typed", (done) => {
         const allSearchable = new AllSearchable((s) => s);
-        const props = SearchboxViaSearchablesProps([allSearchable], [], [new SimpleAutoCompleteListElement("All", "good", "All:good")]);
+        const props = SearchboxViaSearchablesProps(allSearchable, [], [new SimpleAutoCompleteListElement("All", "good", "All:good")]);
         props.onDidUpdate = () => {
             Promise.resolve().then(() => {
                 const menuItem = wrapper.find("MenuItem");
