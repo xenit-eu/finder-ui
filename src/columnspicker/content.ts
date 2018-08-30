@@ -20,45 +20,46 @@ type ColumnsPickerContent_State_t = {
     selectedSet: string | null, // selected ColumnSet id.
 };
 
+function getAllColumns(props: ColumnsPickerContent_Props_t): Column_t[] {
+    return props.columnGroups.reduce((a, b) => a.concat(...b.columns), [] as Column_t[]);
+}
+
+function getDisplayedColumns(props: ColumnsPickerContent_Props_t, columns: string[]): Column_t[] {
+    const allColumns = getAllColumns(props);
+    const fixedColumns = allColumns.filter(c => c.fixed).filter(c => columns.indexOf(c.name) === -1);
+    return fixedColumns.concat(columns.map(name => allColumns.find(col => col.name === name)!).filter(c => !!c));
+}
+
+function getSelectedAndSetsState(props: ColumnsPickerContent_Props_t) {
+    return {
+        selected: getDisplayedColumns(props, props.selectedColumns).map(col => col.name),
+        sets: props.sets.map(set => ({
+            ...set,
+            columns: getDisplayedColumns(props, set.columns).map(col => col.name),
+        })),
+    };
+
+}
+
 /* @internal */
 export class ColumnsPickerContent extends Component<ColumnsPickerContent_Props_t, ColumnsPickerContent_State_t> {
     constructor(props: ColumnsPickerContent_Props_t) {
         super(props);
         this.state = {
             selectedSet: null,
-            ...this._getSelectedAndSetsState(props),
+            ...getSelectedAndSetsState(props),
         };
     }
 
     public componentWillReceiveProps(props: ColumnsPickerContent_Props_t) {
-        this.setState(this._getSelectedAndSetsState(props));
+        if (props.selectedColumns !== this.props.selectedColumns || props.sets !== this.props.sets || props.columnGroups !== this.props.columnGroups) {
+            this.setState(getSelectedAndSetsState(props));
+        }
     }
-
-    private _getSelectedAndSetsState(props: ColumnsPicker_t) {
-        return {
-            selected: this._getDisplayedColumns(props.selectedColumns).map(col => col.name),
-            sets: props.sets.map(set => ({
-                ...set,
-                columns: this._getDisplayedColumns(set.columns).map(col => col.name),
-            })),
-        };
-
-    }
-
     private handleDone = () => {
-        this.props.onDone(this._getDisplayedColumns(this.state.selected).map(col => col.name));
+        this.props.onDone(getDisplayedColumns(this.props, this.state.selected).map(col => col.name));
         this.props.onSetsChange(this.state.sets);
         this.props.onDismiss();
-    }
-
-    private _getAllColumns(): Column_t[] {
-        return this.props.columnGroups.reduce((a, b) => a.concat(...b.columns), [] as Column_t[]);
-    }
-
-    private _getDisplayedColumns(columns: string[]): Column_t[] {
-        const allColumns = this._getAllColumns();
-        const fixedColumns = allColumns.filter(c => c.fixed).filter(c => columns.indexOf(c.name) === -1);
-        return fixedColumns.concat(columns.map(name => allColumns.find(col => col.name === name)!).filter(c => !!c));
     }
 
     private onSelectColumnSet = (set: ColumnSet_t | null) => {
@@ -117,9 +118,7 @@ export class ColumnsPickerContent extends Component<ColumnsPickerContent_Props_t
     }
 
     private onCancel = () => {
-        this.setState({
-            ...this._getSelectedAndSetsState(this.props),
-        });
+        this.setState(getSelectedAndSetsState(this.props));
         this.props.onDismiss();
     }
 
@@ -141,7 +140,7 @@ export class ColumnsPickerContent extends Component<ColumnsPickerContent_Props_t
                 }),
                 __(Typography, { variant: "subheading", className: this.props.classes!.subheading }, "Columns to display"),
                 __(SortableColumns, {
-                    columns: this._getDisplayedColumns(this.state.selected),
+                    columns: getDisplayedColumns(this.props, this.state.selected),
                     onDeleteColumn: this.onDeleteColumn,
                     onSortColumns: (columns: Column_t[]) => this.setState({ selected: columns.map(col => col.name) }),
                 }),
