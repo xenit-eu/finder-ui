@@ -1,28 +1,28 @@
 import {Component, createElement as __} from "react";
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle} from "@material-ui/core";
+import {GeneralSettings_t} from "./content";
 import ConfigurationDialogContent from "./content";
+import {ManageLayouts_t} from "./manage-layouts";
+import {addElement} from "finder-utils";
 
-export type ConfigurationDialog_t = {
+export type ConfigurationDialog_Props_t = {
     open: boolean,
     onClose: () => void;
-    onSave: (configuration: Configuration_t) => void;
-    configuration: Configuration_t,
+    onSave: (configuration: GeneralSettings_t) => void;
     languages: {[k: string]: string},
-};
-
-export type Configuration_t = {
-    language: string,
-};
+} & State_t;
 
 type State_t = {
-    configuration: Configuration_t,
+    generalSettings: GeneralSettings_t,
+    manageLayouts: ManageLayouts_t,
 };
 
-export class ConfigurationDialog extends Component<ConfigurationDialog_t, State_t> {
-    constructor(props: ConfigurationDialog_t) {
+export class ConfigurationDialog extends Component<ConfigurationDialog_Props_t, State_t> {
+    constructor(props: ConfigurationDialog_Props_t) {
         super(props);
         this.state = {
-            configuration: props.configuration,
+            generalSettings: props.generalSettings,
+            manageLayouts: props.manageLayouts,
         };
     }
 
@@ -30,34 +30,72 @@ export class ConfigurationDialog extends Component<ConfigurationDialog_t, State_
         return __(Dialog, {
                 key: "dialog",
                 open: this.props.open,
-                className: "configuration-dialog",
+                className: "generalSettings-dialog",
                 scroll: "paper",
                 fullWidth: true,
                 onClose: this.props.onClose,
             },
-            __(DialogTitle, {key: "title"}, "Configuration"),
-            __(DialogContent, {key: "content", className: "configuration-dialog-content"},
+            __(DialogTitle, {key: "title"}, "General Settings"),
+            __(DialogContent, {key: "content", className: "generalSettings-dialog-content"},
                 __(ConfigurationDialogContent,
                     {
-                        configuration: this.state.configuration,
-                        onChange: (conf: Configuration_t) => {
+                        generalSettings: this.state.generalSettings,
+                        onChange: (conf: GeneralSettings_t) => {
                             this.setState({
-                              configuration: conf,
+                              generalSettings: conf,
                             });
                         },
                         languages: this.props.languages,
+                        manageLayouts: {
+                            ...this.state.manageLayouts,
+                            onChange: (value: string) => {
+                                this.setState({
+                                    ...this.state,
+                                    manageLayouts: {
+                                        ...this.state.manageLayouts,
+                                        currentLayout: value,
+                                    },
+                                });
+                            },
+                            onDelete: (value: string) => {
+                                this.setState( {
+                                    ...this.state,
+                                    manageLayouts: {
+                                        ...this.state.manageLayouts,
+                                        layoutNames: this.state.manageLayouts.layoutNames.filter(value1 => value1 !== value),
+                                    },
+                                });
+                            },
+                            onSaveCurrentLayout: (value: string) => {
+                                let trimVal = value.trim();
+                                if (trimVal) {
+                                    if (this.state.manageLayouts.layoutNames.indexOf(trimVal) === -1) {
+                                        this.setState({
+                                            ...this.state,
+                                            manageLayouts: {
+                                                ...this.state.manageLayouts,
+                                                layoutNames: addElement(this.state.manageLayouts.layoutNames, trimVal),
+                                                inputText: "",
+                                            },
+                                        });
+                                    } else {
+                                        alert("A layout with name " + trimVal + " already exists. Remove the existing layout before saving again.");
+                                    }
+                                }
+                            },
+                        },
                     },
                 ),
             ),
             __(DialogActions, {className: "actions-container"},
                 __(Button, {
                     onClick: this.props.onClose,
-                    className: "configuration-dialog-cancel-button",
+                    className: "generalSettings-dialog-cancel-button",
                 }, "Cancel"),
                 __(Button, {
                     variant: "contained",
                     color: "primary",
-                    onClick: () => this.props.onSave(this.state.configuration),
+                    onClick: () => this.props.onSave(this.state.generalSettings),
                     className: "configuration-dialog-done-button",
                 }, "Done"),
             ),

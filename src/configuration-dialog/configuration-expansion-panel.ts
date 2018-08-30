@@ -1,6 +1,7 @@
 import {ComponentType, createElement as __, ReactNode} from "react";
 import {ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, Typography, WithStyles, withStyles} from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import {CSSProperties} from "@material-ui/core/styles/withStyles";
 
 type ConfigurationExpansionPanel_t = {
     title: string,
@@ -18,7 +19,8 @@ function ConfigurationExpansionPanel(props: ConfigurationExpansionPanel_t) {
 const comp: ComponentType<ConfigurationExpansionPanel_t> = ConfigurationExpansionPanel;
 
 export default withStyles(theme => ({
-    expansionPanelDetails: {
+    expansionPanelDetails: <CSSProperties> {
         // display: "flex",
+        flexDirection: "column",
     },
 }))(comp);

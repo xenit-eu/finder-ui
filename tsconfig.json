@@ -19,7 +19,8 @@
         "strictNullChecks": true,
         "baseUrl": "./",
         "paths": {},
-        "skipLibCheck":true
+        "skipLibCheck":true,
+        "noImplicitThis": true
     },
     "exclude": [
         "**/golden-layout/index.d.ts",

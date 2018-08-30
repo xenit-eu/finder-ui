@@ -1,24 +1,26 @@
 import {ChangeEvent, Component, ComponentType, createElement as __, Fragment} from "react";
-import * as _ from "react-dom-factories";
 import {
-    Button,
-    FormControl, IconButton, Input,
+    FormControl,
     InputLabel,
     MenuItem,
     Select,
-    TextField,
     WithStyles,
     withStyles,
 } from "@material-ui/core";
-import {Configuration_t} from "./index";
 import ConfigurationExpansionPanel from "./configuration-expansion-panel";
-import AddCircle from "@material-ui/icons/AddCircle";
+import FullWidthFlexContainer from "./full-width-flexcontainer";
+import ManageLayouts, {ManageLayouts_Callbacks_t, ManageLayouts_t} from "./manage-layouts";
+
+export type GeneralSettings_t = {
+    language: string,
+};
 
 type ConfigurationDialog_Props_t = {
-    configuration: Configuration_t,
-    onChange: (configuration: Configuration_t) => void,
+    generalSettings: GeneralSettings_t,
+    manageLayouts: ManageLayouts_t & ManageLayouts_Callbacks_t,
+    onChange: (generalSettings: GeneralSettings_t) => void,
     languages: { [k: string]: string },
-} & WithStyles<"flex" | "formControl">;
+} & WithStyles<"formControl">;
 
 class ConfigurationDialogContent extends Component<ConfigurationDialog_Props_t> {
     constructor(props: ConfigurationDialog_Props_t) {
@@ -28,18 +30,18 @@ class ConfigurationDialogContent extends Component<ConfigurationDialog_Props_t> 
     public render() {
         return __(Fragment, {},
             __(ConfigurationExpansionPanel, {title: "General Settings"},
-                _.div({className: this.props.classes.flex},
+                __(FullWidthFlexContainer, {},
                     __(FormControl, {className: this.props.classes.formControl},
                         __(InputLabel, {key: "language-title", htmlFor: "lang"}, "Choose your language"),
                         __(Select,
                             {
-                                value: this.props.configuration.language,
+                                value: this.props.generalSettings.language,
                                 inputProps: {
                                     name: "lang",
                                     id: "lang",
                                 },
                                 onChange: (event1: ChangeEvent<HTMLSelectElement>) => this.props.onChange({
-                                    ...this.props.configuration,
+                                    ...this.props.generalSettings,
                                     language: event1.target.value,
                                 }),
 
@@ -50,19 +52,7 @@ class ConfigurationDialogContent extends Component<ConfigurationDialog_Props_t> 
                 ),
             ),
             __(ConfigurationExpansionPanel, {title: "Manage Layouts"},
-                _.div({className: this.props.classes.flex},
-                    __(FormControl, {className: this.props.classes.formControl},
-                        __(InputLabel, {htmlFor: "save-layout-input"}, "Save current layout"),
-                        __(Input, {
-                                inputProps: {
-                                    name: "save-layout-input",
-                                    id: "save-layout-input",
-                                },
-                            },
-                        ),
-                    ),
-                    __(IconButton, {}, __(AddCircle, {})),
-                ),
+                __(ManageLayouts, {...this.props.manageLayouts}),
             ),
         );
     }
@@ -74,9 +64,5 @@ export default withStyles(theme => ({
     formControl: {
         flexGrow: 1,
         flexBase: "0%",
-    },
-    flex: {
-        display: "flex",
-        width: "100%",
     },
 }))(comp);
