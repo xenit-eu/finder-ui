@@ -1,6 +1,6 @@
 {
   "name": "finder-ui",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "Finder UI components using ReactJS (based on material-ui.com)",
   "main": "src/index.ts",
   "types": "src/index.ts",
