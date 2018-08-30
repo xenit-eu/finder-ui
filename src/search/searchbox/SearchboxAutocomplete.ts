@@ -66,6 +66,13 @@ export class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
                 if (e.currentTarget.selectionStart === e.currentTarget.selectionEnd && e.currentTarget.selectionStart === 0) {
                     this.handleBackspace();
                 }
+                break;
+            case 9://Tab
+                if (this.props.suggestions[0]) {
+                    this.props.onSuggestionClick(this.props.suggestions[0]);
+                }
+                e.preventDefault();
+                break;
             default:
         }
     }
@@ -153,6 +160,7 @@ class AutocompleteMenu extends Component<AutocompleteMenu_Props_t> {
             className: "searchbox-autocomplete",
             style: {
                 display: this.props.open && this.props.suggestions.length > 0 ? "block" : "none",
+                minWidth: "500px",
             },
         },
             __(Menu, {
@@ -178,9 +186,11 @@ class AutocompleteMenu extends Component<AutocompleteMenu_Props_t> {
                     this.props.onSuggestionClick(item);
                 },
             }, this.props.suggestions.filter(uniqueSuggestionsFilter).map((option) => __(MenuItem, {
+                style: { overflow: "hidden", textOverflow: "ellipsis" },
                 key: option.DisplayKey() + "-" + option.DisplayValue(),
                 value: option,
-                primaryText: option.DisplayKey() + ":" + option.DisplayValue(),
+                //primaryText: option.DisplayKey() + ":" + option.DisplayValue(),
+                children: _.span({ title: option.DisplayKey() + ":" + option.DisplayValue() }, option.DisplayKey() + ":" + option.DisplayValue()),
             })),
             ),
         );
