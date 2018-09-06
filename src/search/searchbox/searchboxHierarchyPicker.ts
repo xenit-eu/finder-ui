@@ -23,6 +23,10 @@ export class SearchboxHierarchyPicker extends Component<SearchboxHierarchyPicker
         super(props);
         this.state = { showPossibilities: [] };
     }
+    public componentDidMount() {
+        this.updateUIVM(this.props.getHierarchicQueryValueMatch());
+    }
+
     public componentWillReceiveProps(nextProps: SearchboxHierarchyPickerProps) {
         this.updateUIVM(nextProps.getHierarchicQueryValueMatch());
     }

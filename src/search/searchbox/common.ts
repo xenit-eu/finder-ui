@@ -43,7 +43,10 @@ export function ChipVMToChip(chipVM: ChipVM_t, getInputBox: () => any): ReactEle
             chipKey: chipVM.index.join(","),
             containsFillInChip: hasChipFillIn(chipVM),
         };
-        const hierarchic = __(HierarchicChip, props);
+        const hierarchic = __(HierarchicChip, {
+            ...props,
+            key: "H" + chipVM.index.join("_"),
+        });
         return hierarchic;
     }
     const nonHierarchicChipContext = chipVM.isFillIn ? getInputBox() : withTooltip(chipVM.searchbarText, chipVM.tooltipText);

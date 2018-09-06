@@ -264,6 +264,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                 this.handleCloseDialog();
             },
             translateSelectQuery: (s) => this.props.translate(s),
+            key: "hierarchy-picker",
         });
         const icons = _.div({ className: "searchbox-icon-wrapper", key: "icons" },
             [...(this.props.customButtons || []).map((item, i) => cloneElement(item, { key: i })), saveIcon, searchIcon]);
