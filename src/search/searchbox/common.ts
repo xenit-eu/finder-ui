@@ -87,12 +87,11 @@ export type ChipVM_t = LeafChipVM | HierarchicChipVM;
 export type SearchBox_data_t = {
     searching: boolean,                             // flag indicating that search process is busy => activate spinner !
     matchKeyValueExact(key: string, value: string): Promise<IExactValueMatch>,
-    getAutocompleteSuggestions(key: string, value: string): Promise<ReadonlyArray<IAutocompleteSuggestion>>,
-    searchedQueryElements: ISimpleSearchQueryElement[],
-    customButtons?: Array<ReactElement<any>>,              // list of custom buttons to add besides search and save icons
+    searchedQueryElements: ReadonlyArray<ISimpleSearchQueryElement>,
+    customButtons?: ReadonlyArray<ReactElement<any>>,              // list of custom buttons to add besides search and save icons
     translate: any,
     updateChipsOnConstruction?: boolean,
-    autocompleteSuggestions: IAutocompleteSuggestion[],
+    autocompleteSuggestions: ReadonlyArray<IAutocompleteSuggestion>,
 };
 
 export type SearchBox_actions_t = {
@@ -102,7 +101,7 @@ export type SearchBox_actions_t = {
     onAddHierarchyElement: (index: number[], type: "and" | "or") => void,
     onSearch: () => void,
     onInputChanged: (text: string) => void,         // called on any changes in the input box.
-    onSaveAsQuery: (name: string, query: ISimpleSearchQueryElement[]) => void,          // called on request to save the current query as a new saved query.
+    onSaveAsQuery: (name: string, query: ReadonlyArray<ISimpleSearchQueryElement>) => void,          // called on request to save the current query as a new saved query.
     onChipsUpdated?: () => void,
     onDidUpdate?: () => void,
 };
