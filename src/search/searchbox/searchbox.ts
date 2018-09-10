@@ -189,7 +189,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
         this.selectedHierarchy = selected;
     }
 
-    private updateChips(queryElements: ISearchQueryElement[]) {
+    private updateChips(queryElements: ReadonlyArray<ISearchQueryElement>) {
         return Promise.all(queryElements.map((sQE, i) => SearchQueryElementToChipVM(sQE, [i], (n) => this.props.onRemoveQueryElement(n))))
             .then(chipVMs => this.setState({ currentChipVMs: chipVMs }))
             .then(() => {
@@ -205,7 +205,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
     }
     private renderInputBox() {
         const me = this;
-        const filteredSuggestionsList: IAutocompleteSuggestion[] = this.props.autocompleteSuggestions || [];
+        const filteredSuggestionsList: ReadonlyArray<IAutocompleteSuggestion> = this.props.autocompleteSuggestions || [];
         return __(SearchboxAutocomplete, {
             key: "autocomplete",
             onChange: me.handleInputChange.bind(me),

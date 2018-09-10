@@ -8,6 +8,7 @@ import { Fixture } from "../../testUtils";
 import { AllSearchable, ISearchableQueryElement, SimpleAutoCompleteListElement, TextSearchable, NoResultValueMatch } from "../searchables";
 import { SearchBox } from "./searchbox";
 import { ISimpleSearchQueryElement, StringValuePropertySearchQueryElement } from "../searchquery";
+import { AutocompleteSearchBox_t } from "./AutocompleteSearchbox";
 import { SearchBox_t } from "./common";
 // tslint:disable-next-line:no-var-requires
 const jasmineEnzyme = require("jasmine-enzyme"); // no typings for jasmine-engine => require instead of import.
@@ -31,7 +32,7 @@ describe("SearchBox component tests", () => {
     });
 
     function SearchboxViaSearchablesProps(searchable: ISearchableQueryElement | undefined, queryElements: ISimpleSearchQueryElement[], autocompleteSuggestions: SimpleAutoCompleteListElement[] = []) {
-        const retProps: SearchBox_t = {
+        const retProps: SearchBox_t & AutocompleteSearchBox_t = {
             autocompleteSuggestions,
             searching: false,
             searchedQueryElements: queryElements,

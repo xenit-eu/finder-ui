@@ -1,14 +1,20 @@
 import { flatten } from "finder-utils";
 import { Component, createElement as __ } from "react";
 import { IAutocompleteSuggestion } from "../searchables";
-import { getKeyValue, SearchBox_t } from "./common";
+import { getKeyValue, SearchBox_t, SearchBox_data_t, SearchBox_actions_t } from "./common";
 import { SearchBox } from "./searchbox";
 type AutocompleteSearchBox_State_t = {
     autocompleteText?: string,
     currentSuggestions?: ReadonlyArray<IAutocompleteSuggestion>,
 };
 
-export type AutocompleteSearchBox_t = SearchBox_t;
+export type AutocompleteSearchBox_data_t = Pick<SearchBox_data_t, Exclude<keyof SearchBox_data_t, "autocompleteSuggestions">>;
+
+export type AutocompleteSearchBox_actions_t = SearchBox_actions_t & {
+    getAutocompleteSuggestions: (key: string, value: string) => Promise<SearchBox_data_t["autocompleteSuggestions"]>,
+};
+
+export type AutocompleteSearchBox_t = AutocompleteSearchBox_data_t & AutocompleteSearchBox_actions_t;
 
 export class AutocompleteSearchBox extends Component<AutocompleteSearchBox_t, AutocompleteSearchBox_State_t> {
     private onInputChanged: (text: string) => void;

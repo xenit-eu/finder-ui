@@ -10,7 +10,7 @@ type Autocomplete_t = {
     onFocus: () => void,
     open: boolean,
     focusAutocomplete: boolean,
-    suggestions: IAutocompleteSuggestion[],
+    suggestions: ReadonlyArray<IAutocompleteSuggestion>,
     onSuggestionClick: (suggestion: IAutocompleteSuggestion) => void,
     onDismiss: () => void,
     onBackspace: () => void,
@@ -126,7 +126,7 @@ type AutocompleteMenu_Props_t = {
     open: boolean,
     onFocusInput: () => void,
     focusAutocomplete: boolean,
-    suggestions: IAutocompleteSuggestion[],
+    suggestions: ReadonlyArray<IAutocompleteSuggestion>,
     onSuggestionClick: (suggestion: IAutocompleteSuggestion) => void,
     onDismiss: () => void,
     menuRef: any;
