@@ -28,6 +28,7 @@ export const DATEPICKERDEFAULT = {};
 type State_t = {
     textValue: string,
     suggestionsOpened: boolean,
+    suggestionsOpenManualTrigger?: boolean, // If the opening of suggestions happened automatically because text was typed, or if it was an explicit manual action by pressing arrow-down
     focusSuggestions: boolean,
     currentValueMatchWaitingForInput: DateFillinValueMatch | DateRangeFillinValueMatch | HierarchicQueryValueMatch | undefined,
     currentChipVMs: ChipVM_t[],
@@ -54,6 +55,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
             textValue: "",
             currentValueMatchWaitingForInput: undefined,
             suggestionsOpened: false,
+            suggestionsOpenManualTrigger: undefined,
             focusSuggestions: false,
             currentChipVMs: [],
         };
@@ -154,7 +156,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
     }
 
     private hideSuggestions() {
-        this.setState({ suggestionsOpened: false, focusSuggestions: false });
+        this.setState({ suggestionsOpened: false, suggestionsOpenManualTrigger: undefined, focusSuggestions: false });
     }
     public handleInputChange(evt: KeyboardEvent<HTMLInputElement>) {
         const target = evt.target as HTMLInputElement;
@@ -176,7 +178,11 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
     }
 
     public inputChanged(t: string) {
-        this.setState({ textValue: t, suggestionsOpened: t.length > 0 });
+        this.setState(state => ({
+            textValue: t,
+            suggestionsOpened: state.suggestionsOpenManualTrigger ? state.suggestionsOpened : t.length > 0,
+            suggestionsOpenManualTrigger: state.suggestionsOpenManualTrigger === undefined ? false : state.suggestionsOpenManualTrigger,
+        }));
         if (this.props.onInputChanged) {
             this.props.onInputChanged(t);
         }
@@ -219,7 +225,11 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
             onBackspace: () => {
                 me.props.onRemoveLastQueryElement();
             },
-            onRequestAutocomplete: () => me.setState({ suggestionsOpened: true, focusSuggestions: true }),
+            onRequestAutocomplete: () => me.setState(state => ({
+                suggestionsOpened: true,
+                suggestionsOpenManualTrigger: state.suggestionsOpenManualTrigger === undefined ? true : state.suggestionsOpenManualTrigger,
+                focusSuggestions: true,
+            })),
             translate: this.props.translate,
             value: me.state.textValue as string,
         });
