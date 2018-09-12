@@ -193,6 +193,7 @@ function createColumn(col: INodeTableColumn): Column {
         id: col.name,
         Header: col.label,
         accessor: (row: INodeTableRow<any>) => row.node,
+        sortable: col.sortable,
         Cell: (prop: any) => __(col.renderer, { node: prop.value, row: 0 }),
     };
 }
