@@ -176,7 +176,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
     }
 
     public inputChanged(t: string) {
-        this.setState({ textValue: t, suggestionsOpened: t.length > 0 });
+        this.setState({ textValue: t });
         if (this.props.onInputChanged) {
             this.props.onInputChanged(t);
         }
