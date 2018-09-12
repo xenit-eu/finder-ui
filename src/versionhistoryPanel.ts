@@ -1,16 +1,5 @@
-import Avatar from "material-ui/Avatar";
-import Divider from "material-ui/Divider";
-import { List, ListItem } from "material-ui/List";
-import Paper from "material-ui/Paper";
-import ActionAlarm from "material-ui/svg-icons/action/alarm";
-import ActionAssignment from "material-ui/svg-icons/action/assignment";
-import ChangeHistory from "material-ui/svg-icons/action/change-history";
-import Input from "material-ui/svg-icons/action/input";
-import Subtitles from "material-ui/svg-icons/av/subtitles";
-import SocialPerson from "material-ui/svg-icons/social/person";
-
 import * as moment from "moment";
-import { Component, createElement as __, CSSProperties, ReactElement } from "react";
+import { createElement as __, CSSProperties, ReactElement } from "react";
 import * as _ from "react-dom-factories";
 
 import "./versionhistoryPanel.less";
