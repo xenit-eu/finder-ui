@@ -12,10 +12,12 @@ const NColumn: (ncolumns: number) => FieldsetRenderer_t = (ncolumns: number) => 
         const component = (props: FieldsetSkeleton_Props_t) => {
             return _.div({ className: "metadata-fieldset metadata-fieldset-columns metadata-fieldset-" + ncolumns + "-column" },
                 config.label ? _.div({ className: "metadata-fieldset-title" }, config.label) : undefined,
-                props.fields.map(field => _.div({ className: "metadata-fieldset-field" }, [
-                    field.label ? _.span({ className: "metadata-fieldset-label" }, field.label) : undefined,
-                    _.span({ className: "metadata-fieldset-value" }, field.value),
-                ])),
+                _.div({ className: "metadata-fieldset-body" },
+                    props.fields.map(field => _.div({ className: "metadata-fieldset-field" }, [
+                        field.label ? _.span({ className: "metadata-fieldset-label" }, field.label) : undefined,
+                        _.span({ className: "metadata-fieldset-value" }, field.value),
+                    ])),
+                ),
             );
         };
         (<any>component).displayName = "Fieldset.NColumn(" + ncolumns + ")(" + JSON.stringify(config) + ")";

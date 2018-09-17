@@ -15,9 +15,15 @@ const GroupedFieldset: FieldsetRenderer_t = (config: FieldsetRenderConfig_t) => 
             initiallyExpanded: !config.parameters["start-collapsed"],
             className: "metadata-fieldset metadata-fieldset-group metadata-fieldset-group-" + (expandable ? "expandable" : "fixed"),
         },
-            __(CardHeader, { title: config.label, actAsExpander: expandable, showExpandableButton: expandable }),
+            __(CardHeader, {
+                title: config.label,
+                actAsExpander: expandable,
+                showExpandableButton: expandable,
+                className: "metadata-fieldset-title",
+            }),
             __(CardText, {
                 expandable,
+                className: "metadata-fieldset-body",
             }, __(wrappedrenderer, props)),
         );
     };
