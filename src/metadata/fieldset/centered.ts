@@ -9,9 +9,9 @@ import "./centered.less";
 
 const CenteredFieldset: FieldsetRenderer_t = (config: FieldsetRenderConfig_t) => {
     const component = (props: FieldsetSkeleton_Props_t) => {
-        return _.div({},
-            config.label ? _.div({ className: "metadata-fieldset-centered-title" }, config.label) : undefined,
-            _.table({ className: "metadata-fieldset metadata-fieldset-centered" },
+        return _.div({ className: "metadata-fieldset" },
+            config.label ? _.div({ className: "metadata-fieldset-title metadata-fieldset-centered-title" }, config.label) : undefined,
+            _.table({ className: "metadata-fieldset-body metadata-fieldset-centered" },
                 _.tbody({},
                     props.fields.map((field, i) => _.tr({ key: i, className: "metadata-fieldset-field" },
                         field.label ? _.td({ className: "metadata-fieldset-label" }, [field.label]) : undefined,
