@@ -53,8 +53,10 @@ export class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
     private handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
         e.stopPropagation();
         switch (e.keyCode) {
+            case 9://Tab
             case 40: // ARROWKEY_DOWN
-                if (this.menu) {
+            e.preventDefault();
+            if (this.menu) {
                     this.props.onRequestAutocomplete();
                     (this.menu as any).setFocusIndex(e, 0, true);
                 }
@@ -66,12 +68,6 @@ export class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
                 if (e.currentTarget.selectionStart === e.currentTarget.selectionEnd && e.currentTarget.selectionStart === 0) {
                     this.handleBackspace();
                 }
-                break;
-            case 9://Tab
-                if (this.props.suggestions[0]) {
-                    this.props.onSuggestionClick(this.props.suggestions[0]);
-                }
-                e.preventDefault();
                 break;
             default:
         }
