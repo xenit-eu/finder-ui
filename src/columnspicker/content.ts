@@ -102,8 +102,18 @@ export class ColumnsPickerContent extends Component<ColumnsPickerContent_Props_t
             selected: s.selected.filter(col => col !== column.name),
         }));
     }
-
+    private onClickColumnCoolDown = { date: Date.now(), col: "none" };
+    private canClickColum(columnName: string) {
+        return columnName !== this.onClickColumnCoolDown.col || Date.now() > this.onClickColumnCoolDown.date + 1500;
+    }
+    private updateCoolDownClickColumn(columnName: string) {
+        this.onClickColumnCoolDown = { date: Date.now(), col: columnName };
+    }
     private onClickColumn = (col: Column_t) => {
+        if (!this.canClickColum(col.name)) {
+            return;
+        }
+        this.updateCoolDownClickColumn(col.name);
         this.setState(state => {
             if (state.selected.find(sC => sC === col.name)) {
                 return {
