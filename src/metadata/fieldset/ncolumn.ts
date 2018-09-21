@@ -13,10 +13,10 @@ const NColumn: (ncolumns: number) => FieldsetRenderer_t = (ncolumns: number) => 
             return _.div({ className: "metadata-fieldset metadata-fieldset-columns metadata-fieldset-" + ncolumns + "-column" },
                 config.label ? _.div({ className: "metadata-fieldset-title" }, config.label) : undefined,
                 _.div({ className: "metadata-fieldset-body" },
-                    props.fields.map(field => _.div({ className: "metadata-fieldset-field" }, [
+                    props.fields.map((field, i) => _.div({ key: i, className: "metadata-fieldset-field" },
                         field.label ? _.span({ className: "metadata-fieldset-label" }, field.label) : undefined,
                         _.span({ className: "metadata-fieldset-value" }, field.value),
-                    ])),
+                    )),
                 ),
             );
         };
