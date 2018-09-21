@@ -4,6 +4,7 @@ import { Column_t, ColumnGroup_t, ColumnSet_t, ColumnsPicker_t } from "..";
 import AvailableColumns from "./availablecolumns";
 import ColumnSetManager from "./columnset";
 import SortableColumns from "./sortablecolumns";
+import { arrayEquals,deepEqual } from 'finder-utils';
 
 type ColumnsPickerContent_Props_t = {
     selectedColumns: string[], // list of names
@@ -52,7 +53,9 @@ export class ColumnsPickerContent extends Component<ColumnsPickerContent_Props_t
     }
 
     public componentWillReceiveProps(props: ColumnsPickerContent_Props_t) {
-        if (props.selectedColumns !== this.props.selectedColumns || props.sets !== this.props.sets || props.columnGroups !== this.props.columnGroups) {
+        if (!deepEqual(props.selectedColumns, this.props.selectedColumns) ||
+            !deepEqual(props.sets, this.props.sets) ||
+            !deepEqual(props.columnGroups, this.props.columnGroups)) {
             this.setState(getSelectedAndSetsState(props));
         }
     }

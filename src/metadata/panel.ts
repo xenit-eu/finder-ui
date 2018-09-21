@@ -2,18 +2,8 @@ import { CircularProgress, Dialog, FlatButton } from "material-ui";
 import { Component, ComponentType, createElement as __, ReactElement } from "react";
 import * as _ from "react-dom-factories";
 import { RenderMode } from ".";
+import { arrayEquals } from 'finder-utils/src/arrays';
 
-export function arrayEquals<T>(a: T[], b: T[], cmp: (a: T, b: T) => boolean = (x: T, y: T) => x === y): boolean {
-    if (a.length !== b.length) {
-        return false;
-    }
-    for (let i = a.length - 1; i >= 0; i--) {
-        if (!cmp(a[i], b[i])) {
-            return false;
-        }
-    }
-    return true;
-}
 
 type MetadataPanel_Item_t<T> = ComponentType<{ node: T[], onChange: (node: T[]) => void, renderMode: RenderMode }>;
 
