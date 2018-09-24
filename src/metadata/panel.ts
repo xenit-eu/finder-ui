@@ -2,18 +2,7 @@ import { CircularProgress, Dialog, FlatButton } from "material-ui";
 import { Component, ComponentType, createElement as __, ReactElement } from "react";
 import * as _ from "react-dom-factories";
 import { RenderMode } from ".";
-
-export function arrayEquals<T>(a: T[], b: T[], cmp: (a: T, b: T) => boolean = (x: T, y: T) => x === y): boolean {
-    if (a.length !== b.length) {
-        return false;
-    }
-    for (let i = a.length - 1; i >= 0; i--) {
-        if (!cmp(a[i], b[i])) {
-            return false;
-        }
-    }
-    return true;
-}
+import { arrayEquals } from "finder-utils";
 
 type MetadataPanel_Item_t<T> = ComponentType<{ node: T[], onChange: (node: T[]) => void, renderMode: RenderMode }>;
 
@@ -59,13 +48,13 @@ export type MetadataPanel_Props_t<T> = {
     onSave: (node: T, originalNode: T) => Promise<boolean>,
     onSaveAll?: never,
 } | {
-        /**
-         * Called when the save button is pressed in edit mode
-         * Called once for all nodes that have to be saved
-         */
-        onSaveAll: (node: T[], originalNode: T[]) => Promise<boolean>,
-        onSave?: never,
-    });
+    /**
+     * Called when the save button is pressed in edit mode
+     * Called once for all nodes that have to be saved
+     */
+    onSaveAll: (node: T[], originalNode: T[]) => Promise<boolean>,
+    onSave?: never,
+});
 
 type MetadataPanel_State_t<T> = {
     nodes: T[],

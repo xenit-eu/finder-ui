@@ -24,7 +24,7 @@ function ColumnSetManager(props: ColumnSetManager_Props_t) {
     }
 
     const noneItem = __(MenuItem, { value: "", key: "None", disabled: true }, "(None)");
-    const columnSetItems = props.columnSets.map((set, i) => __(MenuItem, { key: i, value: set.id }, set.label));
+    const columnSetItems = props.columnSets.map((set, i) => __(MenuItem, { key: set.id, value: set.id }, set.label));
     let modifiedSetItem = [] as ReactElement<any>[];
 
     if (selectedSet && isModified) {

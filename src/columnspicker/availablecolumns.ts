@@ -27,7 +27,9 @@ function AvailableColumns(props: AvailableColumns_Props_t) {
                 ...columns.map((column) => __(ColumnChip, {
                     key: column.name,
                     column,
-                    onClick: () => props.onClickColumn(column),
+                    onClick: () => {
+                        return props.onClickColumn(column);
+                    },
                     selectedColumns: props.selectedColumns,
                 })),
             ]),
