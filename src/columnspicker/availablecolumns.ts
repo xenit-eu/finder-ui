@@ -28,8 +28,7 @@ function AvailableColumns(props: AvailableColumns_Props_t) {
                     key: column.name,
                     column,
                     onClick: () => {
-                        console.log("Clicked on column");
-                        return props.onClickColumn(column)
+                        return props.onClickColumn(column);
                     },
                     selectedColumns: props.selectedColumns,
                 })),

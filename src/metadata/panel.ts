@@ -2,8 +2,7 @@ import { CircularProgress, Dialog, FlatButton } from "material-ui";
 import { Component, ComponentType, createElement as __, ReactElement } from "react";
 import * as _ from "react-dom-factories";
 import { RenderMode } from ".";
-import { arrayEquals } from 'finder-utils/src/arrays';
-
+import { arrayEquals } from "finder-utils";
 
 type MetadataPanel_Item_t<T> = ComponentType<{ node: T[], onChange: (node: T[]) => void, renderMode: RenderMode }>;
 
@@ -49,13 +48,13 @@ export type MetadataPanel_Props_t<T> = {
     onSave: (node: T, originalNode: T) => Promise<boolean>,
     onSaveAll?: never,
 } | {
-        /**
-         * Called when the save button is pressed in edit mode
-         * Called once for all nodes that have to be saved
-         */
-        onSaveAll: (node: T[], originalNode: T[]) => Promise<boolean>,
-        onSave?: never,
-    });
+    /**
+     * Called when the save button is pressed in edit mode
+     * Called once for all nodes that have to be saved
+     */
+    onSaveAll: (node: T[], originalNode: T[]) => Promise<boolean>,
+    onSave?: never,
+});
 
 type MetadataPanel_State_t<T> = {
     nodes: T[],
