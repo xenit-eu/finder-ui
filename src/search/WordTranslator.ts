@@ -13,7 +13,7 @@ export const OR = "Or";
 export const SELECTINTENDEDQUERY = "Select the intended query.";
 export const SUBQUERY = "Subquery";
 export const NODEREF = "Noderef";
-export const TYPE = "Type";
+export const TYPE = "Document type";
 const FRENCH = "fr-be";
 const ENGLISH = "en-us";
 const DUTCH = "nl-be";
@@ -151,10 +151,10 @@ export const typeTranslations = {
         [TYPE]: TYPE,
     },
     [FRENCH]: {
-        [TYPE]: TYPE,
+        [TYPE]: "Type de document",
     },
     [DUTCH]: {
-        [TYPE]: TYPE,
+        [TYPE]: "Documenttype",
     },
 };
 export const translateSearchboxTranslations = {
