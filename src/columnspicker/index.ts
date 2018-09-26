@@ -19,6 +19,7 @@ export type ColumnGroup_t = {
 };
 
 export type ColumnsPicker_t = {
+    language: string,
     selectedColumns: string[], // list of names
     sets: ColumnSet_t[],
     onSetsChange: (sets: ColumnSet_t[]) => void,
@@ -64,7 +65,7 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
         this.state = {
             opened: false,
         };
-        if(props.allColumns && process.env.NODE_ENV !== "production") {
+        if (props.allColumns && process.env.NODE_ENV !== "production") {
             console.warn("finder-ui: ColumnsPicker: prop allColumns is deprecated. Use columnGroups instead");
         }
     }
@@ -86,6 +87,7 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
                 label: "All",
                 columns: [this.props.allColumns!],
             }],
+            language: this.props.language,
             onDismiss: () => this.setState({ opened: false }),
         }));
 

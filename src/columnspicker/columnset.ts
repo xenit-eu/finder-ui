@@ -3,6 +3,8 @@ import classNames from "classnames";
 import { ChangeEvent, createElement as __, ReactElement } from "react";
 import * as _ from "react-dom-factories";
 import { ColumnSet_t } from "..";
+import { WordTranslator } from './../search/WordTranslator';
+import { ENGLISH, FRENCH, DUTCH } from 'finder-ui';
 
 type ColumnSetManager_Props_t = {
     columnSets: ColumnSet_t[],
@@ -11,9 +13,32 @@ type ColumnSetManager_Props_t = {
     onSelect: (set: ColumnSet_t | null) => void,
     onCreate: (set: ColumnSet_t) => void,
     onDelete: (set: ColumnSet_t) => void,
-} & WithStyles<"root" | "select" | "actions" | "button">;
+    language: string,
 
+} & WithStyles<"root" | "select" | "actions" | "button">;
+const SAVE = "Save";
+const SAVE_AS_NEW = "Save as new...";
+const DELETE = "Delete";
+const translations = {
+    [ENGLISH]: {
+        [SAVE]: SAVE,
+        [SAVE_AS_NEW]: SAVE_AS_NEW,
+        [DELETE]: DELETE,
+    },
+    [FRENCH]: {
+        [SAVE]: "Sauvegarder",
+        [SAVE_AS_NEW]: "Sauvegarder comme nouveau",
+        [DELETE]: "Supprimer",
+    },
+    [DUTCH]: {
+        [SAVE]: "Opslaan",
+        [SAVE_AS_NEW]: "Opslaan als nieuw",
+        [DELETE]: "Verwijderen",
+    },
+
+};
 function ColumnSetManager(props: ColumnSetManager_Props_t) {
+    const translator = new WordTranslator(() => props.language, translations);
     const selectedSet = props.columnSets.find(set => set.id === props.currentSet);
 
     let selectedValue = "";
@@ -63,7 +88,7 @@ function ColumnSetManager(props: ColumnSetManager_Props_t) {
                     props.onCreate(newSet);
                 },
                 disabled: !selectedSet || selectedSet.readonly,
-            }, "Save"),
+            }, translator.translateWord(SAVE)),
             __(Button, {
                 className: classNames(props.classes.button),
                 variant: "outlined",
@@ -81,7 +106,7 @@ function ColumnSetManager(props: ColumnSetManager_Props_t) {
                     };
                     props.onCreate(newSet);
                 },
-            }, "Save as new..."),
+            }, translator.translateWord(SAVE_AS_NEW)),
             __(Button, {
                 className: classNames(props.classes.button),
                 variant: "outlined",
@@ -90,7 +115,7 @@ function ColumnSetManager(props: ColumnSetManager_Props_t) {
                     props.onDelete(selectedSet!);
                 },
                 disabled: !selectedSet || selectedSet.readonly,
-            }, "Delete"),
+            }, translator.translateWord(DELETE)),
         ));
 }
 
