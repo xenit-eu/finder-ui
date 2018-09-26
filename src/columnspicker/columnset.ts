@@ -3,8 +3,7 @@ import classNames from "classnames";
 import { ChangeEvent, createElement as __, ReactElement } from "react";
 import * as _ from "react-dom-factories";
 import { ColumnSet_t } from "..";
-import { WordTranslator } from './../search/WordTranslator';
-import { ENGLISH, FRENCH, DUTCH } from 'finder-ui';
+import { ENGLISH, FRENCH, DUTCH, WordTranslator } from "./../search/WordTranslator";
 
 type ColumnSetManager_Props_t = {
     columnSets: ColumnSet_t[],

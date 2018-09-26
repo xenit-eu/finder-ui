@@ -5,7 +5,7 @@ import AvailableColumns from "./availablecolumns";
 import ColumnSetManager from "./columnset";
 import SortableColumns from "./sortablecolumns";
 import { arrayEquals, deepEqual } from "finder-utils";
-import { ENGLISH, FRENCH, DUTCH, WordTranslator } from '../search/WordTranslator';
+import { ENGLISH, FRENCH, DUTCH, WordTranslator } from "../search/WordTranslator";
 import { ISynchronousTranslationService } from "../search";
 
 type ColumnsPickerContent_Props_t = {
@@ -29,6 +29,7 @@ const OTHER_AVAILABLE_COLUMNS = "Other available columns";
 const DRAG_AND_DROP = "Drag and drop the name on the above section to display it.";
 const CANCEL = "Cancel";
 const SAVE = "Save";
+const DONE = "Done";
 const translations = {
     [ENGLISH]: {
         [COLUMNS_TO_DISPLAY]: COLUMNS_TO_DISPLAY,
@@ -37,6 +38,7 @@ const translations = {
         [DRAG_AND_DROP]: DRAG_AND_DROP,
         [CANCEL]: CANCEL,
         [SAVE]: SAVE,
+        [DONE]: DONE,
     },
     [FRENCH]: {
         [COLUMNS_TO_DISPLAY]: "Colonnes à afficher",
@@ -45,6 +47,7 @@ const translations = {
         [DRAG_AND_DROP]: "Faites glisser et déposez le nom dans la section ci-dessus pour l'afficher.",
         [CANCEL]: "Annuler",
         [SAVE]: "Sauvegarder",
+        [DONE]: "OK",
     },
     [DUTCH]: {
         [COLUMNS_TO_DISPLAY]: "Te tonen kolommen",
@@ -53,8 +56,9 @@ const translations = {
         [DRAG_AND_DROP]: "Sleep de naam van de kolom op bovenstaande sectie om de kolom te tonen.",
         [CANCEL]: "Annuleer",
         [SAVE]: "Sla op",
+        [DONE]: "OK",
     },
-}
+};
 function getAllColumns(props: ColumnsPickerContent_Props_t): Column_t[] {
     return props.columnGroups.reduce((a, b) => a.concat(...b.columns), [] as Column_t[]);
 }
@@ -175,7 +179,7 @@ export class ColumnsPickerContent extends Component<ColumnsPickerContent_Props_t
                     onSelect: this.onSelectColumnSet,
                     onCreate: this.onCreateColumnSet,
                     onDelete: this.onDeleteColumnSet,
-                    language:this.props.language,
+                    language: this.props.language,
                 }),
                 __(Typography, { variant: "subheading", className: this.props.classes!.subheading }, this.translate.translateWord(COLUMNS_TO_DISPLAY)),
                 __(SortableColumns, {
@@ -194,12 +198,12 @@ export class ColumnsPickerContent extends Component<ColumnsPickerContent_Props_t
                 __(DialogActions, { className: "actions-container" },
                     __(Button, {
                         onClick: this.onCancel,
-                    }, "Cancel"),
+                    }, this.translate.translateWord(CANCEL)),
                     __(Button, {
                         variant: "contained",
                         color: "primary",
                         onClick: this.handleDone,
-                    }, "Done"),
+                    }, this.translate.translateWord(DONE)),
                 ),
             );
     }
