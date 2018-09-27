@@ -52,7 +52,7 @@ function isNumeric(num: string | number) {
     return !isNaN(+num);
 }
 function VersionItem({ version: v }: { version: Version_t }) {
-    const dateRep = moment(new Date(isNumeric(v.editDate) ? Number.parseInt(v.editDate) : v.editDate)).fromNow();
+    const time = moment(new Date(isNumeric(v.editDate) ? Number.parseInt(v.editDate) : v.editDate));
     return _.div({ className: "history-item" },
         _.div({ key: "history-version-parent" },
             _.div({ key: "history-version", className: "history-version" }, v.versionNumber),
@@ -65,7 +65,10 @@ function VersionItem({ version: v }: { version: Version_t }) {
                 ),
                 _.div({},
                     _.span({ className: "history-user" }, v.editor),
-                    _.span({ className: "history-edited" }, dateRep),
+                    _.span({ className: "history-edited" },
+                        _.span({ className: "history-edit-time" }, time.format("L LT")),
+                        _.span({ className: "history-edit-reltime" }, time.fromNow()),
+                    ),
                     _.span({ className: "history-comment" }, v.editComment),
                 ),
             ),
