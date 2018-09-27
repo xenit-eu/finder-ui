@@ -1,5 +1,25 @@
 import {Component, createElement as __} from "react";
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, Theme, Typography, withStyles, WithStyles} from "@material-ui/core";
+import { ENGLISH, FRENCH, DUTCH, WordTranslator } from "./WordTranslator";
+import { ISynchronousTranslationService } from "./search";
+
+const CANCEL = "Cancel";
+const DONE = "Done";
+
+const translations = {
+    [ENGLISH]: {
+        [CANCEL]: CANCEL,
+        [DONE]: DONE,
+    },
+    [FRENCH]: {
+        [CANCEL]: "Annuler",
+        [DONE]: "OK",
+    },
+    [DUTCH]: {
+        [CANCEL]: "Annuleren",
+        [DONE]: "OK",
+    },
+};
 
 type DialogProps_t = {
     open: boolean,
@@ -8,10 +28,17 @@ type DialogProps_t = {
     onClose: () => void,
     onCancel: () => void,
     handleDone: () => void,
+    language: string,
 } & WithStyles<"dialogTitle" | "dialogTitleText" | "subheading">;
 
 /* @internal */
 export class FinderDialog extends Component<DialogProps_t> {
+    private translate: WordTranslator;
+
+    constructor(props: DialogProps_t) {
+        super(props);
+        this.translate = new WordTranslator(() => this.props.language, translations);
+    }
 
     public render() {
         return __(Dialog, {
@@ -31,13 +58,13 @@ export class FinderDialog extends Component<DialogProps_t> {
                 __(Button, {
                     onClick: this.props.onCancel,
                     className: this.props.baseClassName + "-cancel-button",
-                }, "Cancel"),
+                }, this.translate.translateWord(CANCEL)),
                 __(Button, {
                     variant: "contained",
                     color: "primary",
                     className: this.props.baseClassName + "-done-button",
                     onClick: this.props.handleDone,
-                }, "Done"),
+                }, this.translate.translateWord(DONE)),
             ),
         );
     }

@@ -10,6 +10,7 @@ export type ConfigurationDialog_Props_t = {
     onClose: () => void;
     onSave: (generalSettings: GeneralSettings_t, layouts: Array<{ name: string, value: any }>, selectedLayout?: string) => void;
     languages: { [k: string]: string },
+    language: string,
 } & State_t;
 
 type State_t = {
@@ -33,6 +34,7 @@ export class ConfigurationDialog extends Component<ConfigurationDialog_Props_t, 
                 dialogTitle: "Settings",
                 onClose: this.props.onClose,
                 onCancel: this.props.onClose,
+                language: this.props.language,
                 handleDone: () => this.props.onSave(this.state.generalSettings, this.state.manageLayouts.layouts, this.state.manageLayouts.selectedLayout),
             },
             __(ConfigurationDialogContent,

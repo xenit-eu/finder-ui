@@ -33,6 +33,7 @@ describe("Basic generalSettings dialog test", () => {
             layouts: [{name: "hello", value: "mama"}],
             currentLayout: "currentLayout",
         },
+        language: "English",
     };
 
     it("dropdown contains preconfigured language", () => {

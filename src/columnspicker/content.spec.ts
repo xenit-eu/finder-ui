@@ -93,12 +93,14 @@ describe("ColumnsPicker: ColumnsPickerContent", () => {
         subheading: "",
     };
     const testProps = {
+        opened: true,
         sets: columnSets,
         selectedColumns: ["abc.1.1", "abc.2.3"],
         columnGroups,
         onSetsChange: () => { },
         onDone: () => { },
         onDismiss: () => { },
+        onClose: () => { },
         classes,
         language: ENGLISH,
     };
@@ -234,6 +236,7 @@ describe("ColumnsPicker: ColumnsPickerContent", () => {
 
     it("Adding/removing columns in a columnset", () => {
         const props = testProps;
+
         const onSetsChangeSpy = spyOn(props, "onSetsChange");
         const onDoneSpy = spyOn(props, "onDone");
 
