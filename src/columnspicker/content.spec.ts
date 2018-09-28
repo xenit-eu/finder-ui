@@ -6,6 +6,7 @@ import AvailableColumns from "./availablecolumns";
 import ColumnSetManager from "./columnset";
 import { ColumnsPickerContent } from "./content";
 import SortableColumns from "./sortablecolumns";
+import { ENGLISH } from "../WordTranslator";
 
 configure({ adapter: new Adapter() });
 
@@ -91,17 +92,18 @@ describe("ColumnsPicker: ColumnsPickerContent", () => {
         hintText: "",
         subheading: "",
     };
-
+    const testProps = {
+        sets: columnSets,
+        selectedColumns: ["abc.1.1", "abc.2.3"],
+        columnGroups,
+        onSetsChange: () => { },
+        onDone: () => { },
+        onDismiss: () => { },
+        classes,
+        language: ENGLISH,
+    };
     it("Selecting/deselecting sets", () => {
-        const props = {
-            sets: columnSets,
-            selectedColumns: ["abc.1.1", "abc.2.3"],
-            columnGroups,
-            onSetsChange: () => { },
-            onDone: () => { },
-            onDismiss: () => { },
-            classes,
-        };
+        const props = testProps;
 
         const component = mount(__(ColumnsPickerContent, props));
 
@@ -157,15 +159,7 @@ describe("ColumnsPicker: ColumnsPickerContent", () => {
     });
 
     it("Reordering columns in a columnset", () => {
-        const props = {
-            sets: columnSets,
-            selectedColumns: ["abc.1.1", "abc.2.3"],
-            columnGroups,
-            onSetsChange: () => { },
-            onDone: () => { },
-            onDismiss: () => { },
-            classes,
-        };
+        const props = testProps;
         const onSetsChangeSpy = spyOn(props, "onSetsChange");
         const onDoneSpy = spyOn(props, "onDone");
 
@@ -239,15 +233,7 @@ describe("ColumnsPicker: ColumnsPickerContent", () => {
     });
 
     it("Adding/removing columns in a columnset", () => {
-        const props = {
-            sets: columnSets,
-            selectedColumns: ["abc.1.1", "abc.2.3"],
-            columnGroups,
-            onSetsChange: () => { },
-            onDone: () => { },
-            onDismiss: () => { },
-            classes,
-        };
+        const props = testProps;
         const onSetsChangeSpy = spyOn(props, "onSetsChange");
         const onDoneSpy = spyOn(props, "onDone");
 

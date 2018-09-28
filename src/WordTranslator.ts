@@ -1,9 +1,9 @@
 import {
     DATE_BETWEEN, DATE_FROM, DATE_LASTMONTH, DATE_LASTWEEK, DATE_LASTYEAR, DATE_ON, DATE_RANGE_PICK, DATE_TODAY, DATE_UNTIL,
-} from "./DateRange";
-import { PLACEHOLDERTRANSLATION } from "./searchbox";
-import { ADD_A_COMMENT } from "../comment";
-import { DOCUMENT_NO_VERSION_HISTORY } from "../versionhistoryPanel";
+} from "./search/DateRange";
+import { PLACEHOLDERTRANSLATION } from "./search/searchbox";
+import { ADD_A_COMMENT } from "./comment";
+import { DOCUMENT_NO_VERSION_HISTORY } from "./versionhistoryPanel";
 export const FOLDER = "Folder";
 export const TEXT = "text";
 export const ASPECT = "aspect";
@@ -14,11 +14,13 @@ export const SELECTINTENDEDQUERY = "Select the intended query.";
 export const SUBQUERY = "Subquery";
 export const NODEREF = "Noderef";
 export const TYPE = "Document type";
-const FRENCH = "fr-be";
-const ENGLISH = "en-us";
-const DUTCH = "nl-be";
+export const FRENCH = "fr-be";
+export const ENGLISH = "en-us";
+export const DUTCH = "nl-be";
+export type GetLanguage = () => string;
+export type Translations = { [lang: string]: { [word: string]: string } };
 export class WordTranslator {
-    public constructor(private languageSelection: () => string, private translations: { [lang: string]: { [word: string]: string } } = {}) {
+    public constructor(private languageSelection: GetLanguage, private translations: Translations = {}) {
     }
     public translateWord(word: string) {
         const lang = this.languageSelection();
@@ -26,6 +28,7 @@ export class WordTranslator {
         return translated ? translated : word;
     }
 }
+
 const datewordTranslations = {
     [ENGLISH]: {
         [DATE_ON]: DATE_ON,

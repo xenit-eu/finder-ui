@@ -3,6 +3,7 @@ import { configure, mount } from "enzyme";
 import * as Adapter from "enzyme-adapter-react-16";
 import { createElement as __ } from "react";
 import ColumnSet from "./columnset";
+import { ENGLISH } from "../WordTranslator";
 
 configure({ adapter: new Adapter() });
 
@@ -13,31 +14,6 @@ describe("ColumnsPicker: ColumnSet", () => {
     beforeEach(() => {
         jasmineEnzyme();
     });
-
-    it("Works when no column sets are availble", () => {
-        const props = {
-            columnSets: [],
-            currentSet: null,
-            currentColumns: [],
-            onSelect: () => { },
-            onCreate: () => { },
-            onDelete: () => { },
-        };
-
-        const component = mount(__(ColumnSet, props));
-
-        const selectField = component.find(Select);
-
-        expect(selectField).toHaveProp("value", "");
-        expect(selectField).toHaveText("(None)");
-
-        const buttons = component.find(Button);
-
-        expect(buttons.at(0)).toBeDisabled(); // Save
-        expect(buttons.at(1)).not.toBeDisabled(); // Save as
-        expect(buttons.at(2)).toBeDisabled(); // Delete
-    });
-
     const columnSets = [
         {
             id: "abc",
@@ -56,16 +32,34 @@ describe("ColumnsPicker: ColumnSet", () => {
             readonly: true,
         },
     ];
+    const testProps = {
+        columnSets,
+        currentSet: "cde",
+        currentColumns: ["c", "d", "e"],
+        onSelect: () => { },
+        onCreate: () => { },
+        onDelete: () => { },
+        language: ENGLISH,
+    };
+    it("Works when no column sets are availble", () => {
+        const props = { ...testProps, columnSets: [], currentSet: null };
+
+        const component = mount(__(ColumnSet, props));
+
+        const selectField = component.find(Select);
+
+        expect(selectField).toHaveProp("value", "");
+        expect(selectField).toHaveText("(None)");
+
+        const buttons = component.find(Button);
+
+        expect(buttons.at(0)).toBeDisabled(); // Save
+        expect(buttons.at(1)).not.toBeDisabled(); // Save as
+        expect(buttons.at(2)).toBeDisabled(); // Delete
+    });
 
     it("Shows available column sets", () => {
-        const props = {
-            columnSets,
-            currentSet: "cde",
-            currentColumns: ["c", "d", "e"],
-            onSelect: () => { },
-            onCreate: () => { },
-            onDelete: () => { },
-        };
+        const props = { ...testProps };
 
         const component = mount(__(ColumnSet, props));
 
@@ -126,14 +120,7 @@ describe("ColumnsPicker: ColumnSet", () => {
     });
 
     it("Calls onSelect when columnset selection is changed", () => {
-        const props = {
-            columnSets,
-            currentSet: "cde",
-            currentColumns: ["c", "d", "e"],
-            onSelect: () => { },
-            onCreate: () => { },
-            onDelete: () => { },
-        };
+        const props = { ...testProps };
 
         const onSelectSpy = spyOn(props, "onSelect");
 
@@ -149,14 +136,7 @@ describe("ColumnsPicker: ColumnSet", () => {
     it("Calls onCreate when a column set is created"); // Can't be tested yet due to window.prompt()
 
     it("Calls onCreate when a column set is updated", () => {
-        const props = {
-            columnSets,
-            currentSet: "cde",
-            currentColumns: ["c", "d", "e", "f"],
-            onSelect: () => { },
-            onCreate: () => { },
-            onDelete: () => { },
-        };
+        const props = { ...testProps, currentColumns: ["c", "d", "e", "f"] };
 
         const onCreateSpy = spyOn(props, "onCreate");
 
@@ -172,14 +152,7 @@ describe("ColumnsPicker: ColumnSet", () => {
     });
 
     it("Calls onDelete when a column set is deleted", () => {
-        const props = {
-            columnSets,
-            currentSet: "cde",
-            currentColumns: ["c", "d", "e"],
-            onSelect: () => { },
-            onCreate: () => { },
-            onDelete: () => { },
-        };
+        const props = { ...testProps };
 
         const onDeleteSpy = spyOn(props, "onDelete");
 

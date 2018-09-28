@@ -3,7 +3,7 @@ import { IDateRange, IDateRangeTranslator } from "./DateRange";
 import { ISynchronousTranslationService } from "./searchquery";
 import { SearchQueryElementReadableStringVisitor } from "./SearchQueryElementReadableStringVisitor";
 import { SearchQueryFactory } from "./SearchQueryFactory";
-import { ALL, ASPECT, NODEREF, TEXT, TYPE } from "./WordTranslator";
+import { ALL, ASPECT, NODEREF, TEXT, TYPE } from "../WordTranslator";
 const d = debug("finder-ui:finderquery");
 
 // This is a fake type. The document type is mapped to this QName to be able to put all document information in a hashmap.

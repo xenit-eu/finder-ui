@@ -5,6 +5,8 @@ import AvailableColumns from "./availablecolumns";
 import ColumnSetManager from "./columnset";
 import SortableColumns from "./sortablecolumns";
 import { arrayEquals, deepEqual } from "finder-utils";
+import { ENGLISH, FRENCH, DUTCH, WordTranslator } from "../WordTranslator";
+import { ISynchronousTranslationService } from "../search";
 
 type ColumnsPickerContent_Props_t = {
     selectedColumns: string[], // list of names
@@ -13,6 +15,7 @@ type ColumnsPickerContent_Props_t = {
     onDone: (selectedColumns: string[]) => void,
     columnGroups: ColumnGroup_t[],
     onDismiss: () => void,
+    language: string,
 } & WithStyles<"dialogTitle" | "dialogTitleText" | "subheading" | "hintText">;
 
 type ColumnsPickerContent_State_t = {
@@ -20,7 +23,42 @@ type ColumnsPickerContent_State_t = {
     sets: ColumnSet_t[],
     selectedSet: string | null, // selected ColumnSet id.
 };
-
+const COLUMNS_TO_DISPLAY = "Columns to display";
+const SAVED_COLUMN_SETS = "Saved column sets";
+const OTHER_AVAILABLE_COLUMNS = "Other available columns";
+const DRAG_AND_DROP = "Click a column title to show the column.";
+const CANCEL = "Cancel";
+const SAVE = "Save";
+const DONE = "Done";
+const translations = {
+    [ENGLISH]: {
+        [COLUMNS_TO_DISPLAY]: COLUMNS_TO_DISPLAY,
+        [SAVED_COLUMN_SETS]: SAVED_COLUMN_SETS,
+        [OTHER_AVAILABLE_COLUMNS]: OTHER_AVAILABLE_COLUMNS,
+        [DRAG_AND_DROP]: DRAG_AND_DROP,
+        [CANCEL]: CANCEL,
+        [SAVE]: SAVE,
+        [DONE]: DONE,
+    },
+    [FRENCH]: {
+        [COLUMNS_TO_DISPLAY]: "Colonnes à afficher",
+        [SAVED_COLUMN_SETS]: "Jeux de colonnes enregistrés",
+        [OTHER_AVAILABLE_COLUMNS]: "Autres colonnes disponibles",
+        [DRAG_AND_DROP]: "Cliquez sur un titre de colonne pour afficher la colonne.",
+        [CANCEL]: "Annuler",
+        [SAVE]: "Sauvegarder",
+        [DONE]: "OK",
+    },
+    [DUTCH]: {
+        [COLUMNS_TO_DISPLAY]: "Te tonen kolommen",
+        [SAVED_COLUMN_SETS]: "Opgegeslagen kolom sets",
+        [OTHER_AVAILABLE_COLUMNS]: "Andere beschikbare kolommen",
+        [DRAG_AND_DROP]: "Klik op een kolomtitel om de kolom te tonen.",
+        [CANCEL]: "Annuleren",
+        [SAVE]: "Opslaan",
+        [DONE]: "OK",
+    },
+};
 function getAllColumns(props: ColumnsPickerContent_Props_t): Column_t[] {
     return props.columnGroups.reduce((a, b) => a.concat(...b.columns), [] as Column_t[]);
 }
@@ -44,12 +82,14 @@ function getSelectedAndSetsState(props: ColumnsPickerContent_Props_t) {
 
 /* @internal */
 export class ColumnsPickerContent extends Component<ColumnsPickerContent_Props_t, ColumnsPickerContent_State_t> {
+    private translate: WordTranslator;
     constructor(props: ColumnsPickerContent_Props_t) {
         super(props);
         this.state = {
             selectedSet: null,
             ...getSelectedAndSetsState(props),
         };
+        this.translate = new WordTranslator(() => this.props.language, translations);
     }
 
     public componentWillReceiveProps(props: ColumnsPickerContent_Props_t) {
@@ -129,9 +169,9 @@ export class ColumnsPickerContent extends Component<ColumnsPickerContent_Props_t
             __(DialogTitle, {
                 className: this.props.classes!.dialogTitle,
                 disableTypography: true,
-            }, __(Typography, { className: this.props.classes!.dialogTitleText, variant: "title" }, "Columns to display")),
+            }, __(Typography, { className: this.props.classes!.dialogTitleText, variant: "title" }, this.translate.translateWord(COLUMNS_TO_DISPLAY)))),
             __(DialogContent, { className: "columns-picker-content" },
-                __(Typography, { variant: "subheading", className: this.props.classes!.subheading }, "Saved column sets"),
+                __(Typography, { variant: "subheading", className: this.props.classes!.subheading }, this.translate.translateWord(SAVED_COLUMN_SETS)),
                 __(ColumnSetManager, {
                     columnSets: this.state.sets,
                     currentSet: this.state.selectedSet,
@@ -139,32 +179,33 @@ export class ColumnsPickerContent extends Component<ColumnsPickerContent_Props_t
                     onSelect: this.onSelectColumnSet,
                     onCreate: this.onCreateColumnSet,
                     onDelete: this.onDeleteColumnSet,
+                    language: this.props.language,
                 }),
-                __(Typography, { variant: "subheading", className: this.props.classes!.subheading }, "Columns to display"),
+                __(Typography, { variant: "subheading", className: this.props.classes!.subheading }, this.translate.translateWord(COLUMNS_TO_DISPLAY)),
                 __(SortableColumns, {
                     columns: getDisplayedColumns(this.props, this.state.selected),
                     onDeleteColumn: this.onDeleteColumn,
                     onSortColumns: (columns: Column_t[]) => this.setState({ selected: columns.map(col => col.name) }),
                 }),
-                __(Typography, { variant: "subheading", className: this.props.classes!.subheading }, "Other available columns"),
+                __(Typography, { variant: "subheading", className: this.props.classes!.subheading }, this.translate.translateWord(OTHER_AVAILABLE_COLUMNS)),
                 __(AvailableColumns, {
                     availableColumns: this.props.columnGroups,
                     selectedColumns: this.state.selected,
                     onClickColumn: this.onClickColumn,
                 }),
-                __(Typography, { className: this.props.classes!.hintText }, "Drag and drop the name on the above section to display it."),
-            ),
-            __(DialogActions, { className: "actions-container" },
-                __(Button, {
-                    onClick: this.onCancel,
-                }, "Cancel"),
-                __(Button, {
-                    variant: "contained",
-                    color: "primary",
-                    onClick: this.handleDone,
-                }, "Done"),
-            ),
-        );
+                __(Typography, { className: this.props.classes!.hintText }, this.translate.translateWord(DRAG_AND_DROP),
+                ),
+                __(DialogActions, { className: "actions-container" },
+                    __(Button, {
+                        onClick: this.onCancel,
+                    }, this.translate.translateWord(CANCEL)),
+                    __(Button, {
+                        variant: "contained",
+                        color: "primary",
+                        onClick: this.handleDone,
+                    }, this.translate.translateWord(DONE)),
+                ),
+            );
     }
 }
 
