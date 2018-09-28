@@ -42,7 +42,6 @@ export class FinderDialog extends Component<DialogProps_t> {
 
     public render() {
         return __(Dialog, {
-            key: "dialog",
             open: this.props.open,
             className: this.props.baseClassName,
             scroll: "paper",

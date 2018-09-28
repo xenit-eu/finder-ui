@@ -41,8 +41,16 @@ module.exports = function (config) {
         browsers: [
             //'Edge',
             // "Chrome",
-            'PhantomJS'
+            "MyHeadlessChrome"
+            // 'PhantomJS'
         ],
+
+        customLaunchers: {
+          MyHeadlessChrome: {
+            base: 'ChromeHeadless',
+            flags: ['--no-sandbox']
+          }
+        },
         // fix typescript serving video/mp2t mime type
         mime: {
             'text/x-typescript': ['ts', 'tsx']
