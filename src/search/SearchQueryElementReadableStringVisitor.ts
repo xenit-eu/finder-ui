@@ -8,7 +8,7 @@ import {
 
 } from "./searchquery";
 import { SearchQueryNormalizeVisitor } from "./SearchQueryNormalizeVisitor";
-import { AND, OR } from "./WordTranslator";
+import { AND, OR } from "../WordTranslator";
 export class SearchQueryElementReadableStringVisitor implements ISearchQueryElementVisitor<Promise<string>> {
     private normalizer = new SearchQueryNormalizeVisitor();
     constructor(private translate: (s: string) => string) {

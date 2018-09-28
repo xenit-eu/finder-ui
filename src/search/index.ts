@@ -4,7 +4,6 @@ export * from "./searchables";
 export * from "./searchbox";
 export * from "./searchHistoryList";
 export * from "./searchquery";
-export * from "./WordTranslator";
 export * from "./SearchQueryElementReadableStringVisitor";
 export * from "./SearchQueryFactory";
 export * from "./SearchQueryFilter";

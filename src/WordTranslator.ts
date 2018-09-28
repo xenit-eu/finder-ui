@@ -1,9 +1,9 @@
 import {
     DATE_BETWEEN, DATE_FROM, DATE_LASTMONTH, DATE_LASTWEEK, DATE_LASTYEAR, DATE_ON, DATE_RANGE_PICK, DATE_TODAY, DATE_UNTIL,
-} from "./DateRange";
-import { PLACEHOLDERTRANSLATION } from "./searchbox";
-import { ADD_A_COMMENT } from "../comment";
-import { DOCUMENT_NO_VERSION_HISTORY } from "../versionhistoryPanel";
+} from "./search/DateRange";
+import { PLACEHOLDERTRANSLATION } from "./search/searchbox";
+import { ADD_A_COMMENT } from "./comment";
+import { DOCUMENT_NO_VERSION_HISTORY } from "./versionhistoryPanel";
 export const FOLDER = "Folder";
 export const TEXT = "text";
 export const ASPECT = "aspect";

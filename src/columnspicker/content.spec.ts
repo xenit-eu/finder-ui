@@ -6,7 +6,7 @@ import AvailableColumns from "./availablecolumns";
 import ColumnSetManager from "./columnset";
 import { ColumnsPickerContent } from "./content";
 import SortableColumns from "./sortablecolumns";
-import { ENGLISH } from "../search/WordTranslator";
+import { ENGLISH } from "../WordTranslator";
 
 configure({ adapter: new Adapter() });
 

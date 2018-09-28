@@ -3,7 +3,7 @@ import { configure, mount } from "enzyme";
 import * as Adapter from "enzyme-adapter-react-16";
 import { createElement as __ } from "react";
 import ColumnSet from "./columnset";
-import { ENGLISH } from "../search";
+import { ENGLISH } from "../WordTranslator";
 
 configure({ adapter: new Adapter() });
 

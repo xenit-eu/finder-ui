@@ -8,7 +8,7 @@ import {
     SearchQuery, StringValuePropertySearchQueryElement, TextSearchQueryElement,
 } from "./searchquery";
 import { IFolderSearchQueryElementFactory } from "./SearchQueryFactory";
-import { ALL, FOLDER, TEXT } from "./WordTranslator";
+import { ALL, FOLDER, TEXT } from "../WordTranslator";
 export interface ISearchableQueryElement {
     matchKeyValue(key: string, value: string): Promise<IExactValueMatch>;
     getPartiallyMatchingAutocompleteListElements(key: string, value: string): Promise<ReadonlyArray<IAutocompleteSuggestion>>;

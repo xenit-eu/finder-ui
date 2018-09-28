@@ -5,7 +5,7 @@ import AvailableColumns from "./availablecolumns";
 import ColumnSetManager from "./columnset";
 import SortableColumns from "./sortablecolumns";
 import { arrayEquals, deepEqual } from "finder-utils";
-import { ENGLISH, FRENCH, DUTCH, WordTranslator } from "../search/WordTranslator";
+import { ENGLISH, FRENCH, DUTCH, WordTranslator } from "../WordTranslator";
 import { ISynchronousTranslationService } from "../search";
 
 type ColumnsPickerContent_Props_t = {

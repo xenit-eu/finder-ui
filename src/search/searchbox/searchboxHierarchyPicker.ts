@@ -4,7 +4,7 @@ import { HierarchicQueryValueMatch } from "../searchables";
 import { ChipVM_t, SearchQueryElementToChipVM, ChipVMToChip } from "./common";
 import * as _ from "react-dom-factories";
 import { SearchQuery, ISynchronousTranslationService } from "../searchquery";
-import { SELECTINTENDEDQUERY } from "../WordTranslator";
+import { SELECTINTENDEDQUERY } from "../../WordTranslator";
 export type SearchboxHierarchyPickerProps = {
     open: boolean,
     pickedChip: (id: number[]) => void,
