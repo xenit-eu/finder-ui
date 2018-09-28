@@ -19,3 +19,4 @@ export * from "./tabspanel";
 export * from "./testUtils";
 export * from "./upload";
 export * from "./versionhistoryPanel";
+export * from "./WordTranslator";
