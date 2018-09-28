@@ -26,12 +26,12 @@ const translations = {
     },
     [FRENCH]: {
         [SAVE]: "Sauvegarder",
-        [SAVE_AS_NEW]: "Sauvegarder comme nouveau",
+        [SAVE_AS_NEW]: "Sauvegarder comme nouveau...",
         [DELETE]: "Supprimer",
     },
     [DUTCH]: {
         [SAVE]: "Opslaan",
-        [SAVE_AS_NEW]: "Opslaan als nieuw",
+        [SAVE_AS_NEW]: "Opslaan als nieuw...",
         [DELETE]: "Verwijderen",
     },
 

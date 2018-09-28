@@ -26,7 +26,7 @@ type ColumnsPickerContent_State_t = {
 const COLUMNS_TO_DISPLAY = "Columns to display";
 const SAVED_COLUMN_SETS = "Saved column sets";
 const OTHER_AVAILABLE_COLUMNS = "Other available columns";
-const DRAG_AND_DROP = "Drag and drop the name on the above section to display it.";
+const DRAG_AND_DROP = "Click a column title to show the column.";
 const CANCEL = "Cancel";
 const SAVE = "Save";
 const DONE = "Done";
@@ -44,7 +44,7 @@ const translations = {
         [COLUMNS_TO_DISPLAY]: "Colonnes à afficher",
         [SAVED_COLUMN_SETS]: "Jeux de colonnes enregistrés",
         [OTHER_AVAILABLE_COLUMNS]: "Autres colonnes disponibles",
-        [DRAG_AND_DROP]: "Faites glisser et déposez le nom dans la section ci-dessus pour l'afficher.",
+        [DRAG_AND_DROP]: "Cliquez sur un titre de colonne pour afficher la colonne.",
         [CANCEL]: "Annuler",
         [SAVE]: "Sauvegarder",
         [DONE]: "OK",
@@ -53,9 +53,9 @@ const translations = {
         [COLUMNS_TO_DISPLAY]: "Te tonen kolommen",
         [SAVED_COLUMN_SETS]: "Opgegeslagen kolom sets",
         [OTHER_AVAILABLE_COLUMNS]: "Andere beschikbare kolommen",
-        [DRAG_AND_DROP]: "Sleep de naam van de kolom op bovenstaande sectie om de kolom te tonen.",
-        [CANCEL]: "Annuleer",
-        [SAVE]: "Sla op",
+        [DRAG_AND_DROP]: "Klik op een kolomtitel om de kolom te tonen.",
+        [CANCEL]: "Annuleren",
+        [SAVE]: "Opslaan",
         [DONE]: "OK",
     },
 };
