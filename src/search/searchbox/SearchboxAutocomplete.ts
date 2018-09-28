@@ -159,8 +159,9 @@ class AutocompleteMenu extends Component<AutocompleteMenu_Props_t> {
                 minWidth: "500px",
             },
         },
-            __(Menu, {
+            __(Menu, <any>{
                 ref: this.props.menuRef,
+                maxHeight: "80vh",
                 width: "100%",
                 autoWidth: false,
                 disableAutoFocus: !this.props.focusAutocomplete,
