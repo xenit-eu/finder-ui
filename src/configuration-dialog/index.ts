@@ -1,9 +1,9 @@
-import {Component, createElement as __} from "react";
-import {GeneralSettings_t} from "./content";
+import { Component, createElement as __ } from "react";
+import { GeneralSettings_t } from "./content";
 import Dialog from "../dialog";
 import ConfigurationDialogContent from "./content";
-import {ManageLayouts_t} from "./manage-layouts";
-import {addElement} from "finder-utils";
+import { ManageLayouts_t } from "./manage-layouts";
+import { addElement } from "finder-utils";
 
 export type ConfigurationDialog_Props_t = {
     open: boolean,
@@ -29,56 +29,58 @@ export class ConfigurationDialog extends Component<ConfigurationDialog_Props_t, 
 
     public render() {
         return __(Dialog, {
-                open: this.props.open,
-                baseClassName: "configuration-dialog",
-                dialogTitle: "Settings",
-                onClose: this.props.onClose,
-                onCancel: this.props.onClose,
-                language: this.props.language,
-                handleDone: () => this.props.onSave(this.state.generalSettings, this.state.manageLayouts.layouts, this.state.manageLayouts.selectedLayout),
-            },
+            open: this.props.open,
+            baseClassName: "configuration-dialog",
+            dialogTitle: "Settings",
+            onClose: this.props.onClose,
+            onCancel: this.props.onClose,
+            language: this.props.language,
+            handleDone: () => this.props.onSave(this.state.generalSettings, this.state.manageLayouts.layouts, this.state.manageLayouts.selectedLayout),
+        },
             __(ConfigurationDialogContent,
                 {
                     generalSettings: this.state.generalSettings,
-                    onChange: (conf: GeneralSettings_t) => {
-                        this.setState({
-                            generalSettings: conf,
-                        });
+                    onChange: (language: string) => {
+                        this.setState((state) => (
+                            {
+                                generalSettings: {
+                                    ...state.generalSettings,
+                                    language,
+                                },
+                            }
+                        ));
                     },
                     languages: this.props.languages,
                     manageLayouts: {
                         ...this.state.manageLayouts,
                         onChange: (value: string) => {
-                            this.setState({
-                                ...this.state,
+                            this.setState( (state) => ({
                                 manageLayouts: {
-                                    ...this.state.manageLayouts,
+                                    ...state.manageLayouts,
                                     selectedLayout: value,
                                 },
-                            });
+                            }));
                         },
                         onDelete: (value: string) => {
-                            this.setState({
-                                ...this.state,
+                            this.setState((state) => ({
                                 manageLayouts: {
-                                    ...this.state.manageLayouts,
-                                    layouts: this.state.manageLayouts.layouts.filter(value1 => value1.name !== value),
+                                    ...state.manageLayouts,
+                                    layouts: state.manageLayouts.layouts.filter(value1 => value1.name !== value),
                                 },
-                            });
+                            }));
                         },
                         onSaveCurrentLayout: (value: string) => {
                             let trimVal = value.trim();
                             if (trimVal) {
                                 if (this.state.manageLayouts.layouts.findIndex(layout => layout.name === value) === -1) {
-                                    this.setState({
-                                        ...this.state,
+                                    this.setState((state) => ({
                                         manageLayouts: {
-                                            ...this.state.manageLayouts,
-                                            layouts: addElement(this.state.manageLayouts.layouts, {name: trimVal, value: this.state.manageLayouts.currentLayout}),
+                                            ...state.manageLayouts,
+                                            layouts: addElement(state.manageLayouts.layouts, { name: trimVal, value: state.manageLayouts.currentLayout }),
                                             inputText: "",
                                             selectedLayout: trimVal,
                                         },
-                                    });
+                                    }));
                                 } else {
                                     alert("A layout with name " + trimVal + " already exists. Remove the existing layout before saving again.");
                                 }
