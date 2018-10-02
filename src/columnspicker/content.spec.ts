@@ -158,6 +158,8 @@ describe("ColumnsPicker: ColumnsPickerContent", () => {
             },
         ]);
 
+        component.unmount();
+
     });
 
     it("Reordering columns in a columnset", () => {
@@ -232,6 +234,8 @@ describe("ColumnsPicker: ColumnsPickerContent", () => {
         ]);
 
         expect(onDoneSpy).toHaveBeenCalledWith(["abc.1.1", "abc.1.3", "abc.2.2", "abc.1.2"]);
+        component.unmount();
+
     });
 
     it("Adding/removing columns in a columnset", () => {
@@ -317,6 +321,7 @@ describe("ColumnsPicker: ColumnsPickerContent", () => {
         ]);
 
         expect(onDoneSpy).toHaveBeenCalledWith(["abc.1.1", "abc.1.2", "abc.2.2", "abc.2.3"]);
+        component.unmount();
     });
 
 });

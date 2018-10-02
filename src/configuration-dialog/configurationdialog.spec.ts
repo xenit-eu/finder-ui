@@ -41,6 +41,7 @@ describe("Basic generalSettings dialog test", () => {
 
         const component = mount(__(ConfigurationDialog, props));
         expect(component.find(Select)).toHaveProp("value", "nl");
+        component.unmount();
     });
 
     it("onSave gets called", () => {
@@ -53,6 +54,7 @@ describe("Basic generalSettings dialog test", () => {
 
         component.find(Button).filter(".configuration-dialog-done-button").simulate("click");
         expect(spySave).toHaveBeenCalledWith({language: "nl"}, [{name: "hello", value: "mama"}], undefined);
+        component.unmount();
     });
 
     it("saving and switching layouts", () => {
@@ -71,6 +73,7 @@ describe("Basic generalSettings dialog test", () => {
         component.find(ListItem).filter(".layout-item-hello").find(Radio).simulate("click");
         component.find(Button).filter(".configuration-dialog-done-button").simulate("click");
         expect(spySave).toHaveBeenCalledWith({language: "nl"}, [{name: "hello", value: "mama"}, {name: "newlayout", value: "currentLayout"}], "hello");
+        component.unmount();
     });
 
 });

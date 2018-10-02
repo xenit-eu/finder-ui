@@ -20,7 +20,7 @@
         "baseUrl": "./",
         "paths": {},
         "skipLibCheck":true,
-        "noImplicitThis": true
+        "noImplicitThis": true,
     },
     "exclude": [
         "**/golden-layout/index.d.ts",
