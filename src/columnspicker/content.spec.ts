@@ -93,19 +93,21 @@ describe("ColumnsPicker: ColumnsPickerContent", () => {
         subheading: "",
     };
     const testProps = {
+        opened: true,
         sets: columnSets,
         selectedColumns: ["abc.1.1", "abc.2.3"],
         columnGroups,
         onSetsChange: () => { },
         onDone: () => { },
         onDismiss: () => { },
+        onClose: () => { },
         classes,
         language: ENGLISH,
     };
     it("Selecting/deselecting sets", () => {
         const props = testProps;
 
-        const component = mount(__(ColumnsPickerContent, props));
+        const component = mount(__(ColumnsPickerContent, props )as any);
 
         expect(component.find(ColumnSetManager)).toHaveProp("currentSet", null);
 
@@ -156,6 +158,8 @@ describe("ColumnsPicker: ColumnsPickerContent", () => {
             },
         ]);
 
+        component.unmount();
+
     });
 
     it("Reordering columns in a columnset", () => {
@@ -163,7 +167,7 @@ describe("ColumnsPicker: ColumnsPickerContent", () => {
         const onSetsChangeSpy = spyOn(props, "onSetsChange");
         const onDoneSpy = spyOn(props, "onDone");
 
-        const component = mount(__(ColumnsPickerContent, props));
+        const component = mount(__(ColumnsPickerContent, props)as any);
         component.find(ColumnSetManager).prop("onSelect")(columnSets[1]);
         component.update();
         expect(component.find(SortableColumns)).toHaveProp("columns", [
@@ -230,14 +234,17 @@ describe("ColumnsPicker: ColumnsPickerContent", () => {
         ]);
 
         expect(onDoneSpy).toHaveBeenCalledWith(["abc.1.1", "abc.1.3", "abc.2.2", "abc.1.2"]);
+        component.unmount();
+
     });
 
     it("Adding/removing columns in a columnset", () => {
         const props = testProps;
+
         const onSetsChangeSpy = spyOn(props, "onSetsChange");
         const onDoneSpy = spyOn(props, "onDone");
 
-        const component = mount(__(ColumnsPickerContent, props));
+        const component = mount(__(ColumnsPickerContent, props)as any);
         component.find(ColumnSetManager).prop("onSelect")(component.state("sets")[1]);
         component.update();
         expect(component.find(SortableColumns)).toHaveProp("columns", [
@@ -314,6 +321,7 @@ describe("ColumnsPicker: ColumnsPickerContent", () => {
         ]);
 
         expect(onDoneSpy).toHaveBeenCalledWith(["abc.1.1", "abc.1.2", "abc.2.2", "abc.2.3"]);
+        component.unmount();
     });
 
 });

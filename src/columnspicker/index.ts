@@ -70,18 +70,13 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
         }
     }
     public render() {
-        const dialog = __(Dialog, {
-            key: "dialog",
-            open: this.state.opened,
-            className: "columns-picker-dialog",
-            scroll: "paper",
-            fullWidth: true,
-            onClose: () => this.setState({ opened: false }),
-        }, __(ColumnsPickerContent, {
+        const dialog = __(ColumnsPickerContent, {
+            opened: this.state.opened,
             selectedColumns: this.props.selectedColumns,
             sets: this.props.sets,
             onSetsChange: this.props.onSetsChange,
             onDone: this.props.onDone,
+            onClose: () => this.setState({ opened: false }),
             columnGroups: this.props.columnGroups || [{
                 name: "all",
                 label: "All",
@@ -89,7 +84,7 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
             }],
             language: this.props.language,
             onDismiss: () => this.setState({ opened: false }),
-        }));
+        });
 
         return _.div({ className: "columns-picker" }, [
             __(IconButton, {

@@ -161,6 +161,7 @@ class AutocompleteMenu extends Component<AutocompleteMenu_Props_t> {
         },
             __(Menu, <any>{
                 ref: this.props.menuRef,
+                //Types of maxheight are correct, runtime checks are not. See in browser, this does work.
                 maxHeight: "80vh",
                 width: "100%",
                 autoWidth: false,

@@ -17,7 +17,7 @@ module.exports = {
     },
     resolve: {
         root: path.resolve('./src'),
-        extensions: ['', '.ts', '.js']
+        extensions: ['.ts', '.js']
     },
     plugins: [
         new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en-gb|fr|nl/), // avoid that moment loads all locals (only needed languages)
@@ -32,7 +32,7 @@ module.exports = {
             { test: /\.css$/, loader: "style!css" },
             { test: /\.less$/, loader: "style!css!less" },
             { test: /\.json$/, loader: "json" },
-            { test: /\.tsx?$/, loader: 'awesome-typescript-loader' }
+            { test: /\.tsx?$/, loader: 'awesome-typescript-loader' },
         ]
     },
     node: {
