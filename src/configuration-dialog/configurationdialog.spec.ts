@@ -56,7 +56,7 @@ describe("Basic generalSettings dialog test", () => {
     });
 
     it("saving and switching layouts", () => {
-        const props: ConfigurationDialog_Props_t = defaultProps
+        const props: ConfigurationDialog_Props_t = defaultProps;
 
         const spySave = spyOn(props, "onSave");
         const component = mount(__(ConfigurationDialog, props)as any);
