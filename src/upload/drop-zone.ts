@@ -75,7 +75,7 @@ export class DropZone extends Component<DropZone_t, State_t> {
         if (this.props.disabled) {
             return true;
         }
-        this.process(evt.dataTransfer.files);
+        this.process(evt!.dataTransfer!.files!);
     }
 
     public onEnter(evt: DragEvent) {

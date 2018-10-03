@@ -3,7 +3,7 @@ import * as Adapter from "enzyme-adapter-react-16";
 import {createElement as __} from "react";
 import {ConfigurationDialog, ConfigurationDialog_Props_t} from "./index";
 import {Button, IconButton, Input, ListItem, Radio, Select} from "@material-ui/core";
-import AddCircle from "@material-ui/core/SvgIcon/SvgIcon";
+import AddCircle from "@material-ui/icons/AddCircle";
 
 configure({adapter: new Adapter()});
 
@@ -37,20 +37,18 @@ describe("Basic generalSettings dialog test", () => {
     };
 
     it("dropdown contains preconfigured language", () => {
-        const props: ConfigurationDialog_Props_t = {...defaultProps};
+        const props: ConfigurationDialog_Props_t = defaultProps;
 
-        const component = mount(__(ConfigurationDialog, props));
+        const component = mount(__(ConfigurationDialog, props)as any);
         expect(component.find(Select)).toHaveProp("value", "nl");
         component.unmount();
     });
 
     it("onSave gets called", () => {
-        const props: ConfigurationDialog_Props_t = {
-            ...defaultProps,
-        };
+        const props: ConfigurationDialog_Props_t = defaultProps;
 
         const spySave = spyOn(props, "onSave");
-        const component = mount(__(ConfigurationDialog, props));
+        const component = mount(__(ConfigurationDialog, props)as any);
 
         component.find(Button).filter(".configuration-dialog-done-button").simulate("click");
         expect(spySave).toHaveBeenCalledWith({language: "nl"}, [{name: "hello", value: "mama"}], undefined);
@@ -58,12 +56,10 @@ describe("Basic generalSettings dialog test", () => {
     });
 
     it("saving and switching layouts", () => {
-        const props: ConfigurationDialog_Props_t = {
-           ...defaultProps,
-        };
+        const props: ConfigurationDialog_Props_t = defaultProps
 
         const spySave = spyOn(props, "onSave");
-        const component = mount(__(ConfigurationDialog, props));
+        const component = mount(__(ConfigurationDialog, props)as any);
         component.find(Input).filter(".manage-layouts-input").prop("onChange")({target: {value: "newlayout"}});
         component.find(AddCircle).filter(".save-current-layout").simulate("click");
         component.find(Button).filter(".configuration-dialog-done-button").simulate("click");
