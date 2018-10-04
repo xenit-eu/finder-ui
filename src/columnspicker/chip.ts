@@ -11,7 +11,7 @@ type ColumnChip_Props_t = {
 
 function ColumnChip(props: ColumnChip_Props_t) {
     return __(Chip, {
-        className: props.classes.root,
+        className: props.classes.root + " column-chip-test-handle",
         label: props.column.label,
         onClick: props.column.fixed ? undefined : props.onClick,
         onDelete: props.column.fixed ? undefined : props.onDelete,
