@@ -95,7 +95,7 @@ const TreeSelectBox: PropertyRenderer_t<string[] | string> = (config: PropertyRe
             } else {
                 let values = this._getViewValue();
                 values = this.state.currentValuesLoaded ? this.state.currentValues.map(item => item.value) : ["Loading..."];
-                return _.span({ className: "metadata-value metadata-field-treeselectbox" }, values.join(", "));
+                return _.span({ className: "metadata-value metadata-field-treeselectbox" }, values.sort().join(", "));
             }
         }
     }
