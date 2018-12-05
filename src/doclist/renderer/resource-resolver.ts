@@ -14,7 +14,7 @@ type Location_State_t = {
     loadError: string | null,
 };
 
-const ResourceResolverRenderer: ColumnRenderer_Factory_t<string> = (config: ColumnRenderer_Config_t<string>): ColumnRenderer_t => {
+const ResourceResolverRenderer: ColumnRenderer_Factory_t<string | string[]> = (config: ColumnRenderer_Config_t<string | string[]>): ColumnRenderer_t => {
     // tslint:disable-next-line:only-arrow-functions
     class ResourceResolver extends Component<ColumnRenderer_Props_t, Location_State_t> {
         constructor(props: ColumnRenderer_Props_t) {
