@@ -14,7 +14,7 @@ node {
         sh "./gradlew  npm_test --stacktrace --debug --continue -i"
         stage 'Linter'
         sh "./gradlew npm_run_lint  --stacktrace --debug --continue -i"
-        
+
     } catch (err) {
         currentBuild.result = "FAILED"
         echo err
