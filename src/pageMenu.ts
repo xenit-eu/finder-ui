@@ -1,6 +1,7 @@
 import { Fade, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, withStyles } from "@material-ui/core";
 import { IconButtonProps } from "@material-ui/core/IconButton";
-import { ArrowRight, MoreVert } from "@material-ui/icons";
+import MoreVert  from "@material-ui/icons/MoreVert";
+import ArrowRight from "@material-ui/icons/ArrowRight"; 
 import FontIcon from "material-ui/FontIcon";
 import { Component, createElement as __, Fragment, MouseEvent, ReactElement } from "react";
 

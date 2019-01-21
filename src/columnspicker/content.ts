@@ -179,7 +179,7 @@ export class ColumnsPickerContent extends Component<ColumnsPickerContent_Props_t
                 onCreate: this.onCreateColumnSet,
                 onDelete: this.onDeleteColumnSet,
                 language: this.props.language,
-            }),
+                classes:"" as any}) ,
             __("div", { className: "columns-to-display-test-handle" },
                 __(Typography, { variant: "subheading", className: this.props.classes!.subheading }, this.translate.translateWord(COLUMNS_TO_DISPLAY)),
                 __(SortableColumns, {
