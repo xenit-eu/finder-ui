@@ -39,7 +39,7 @@ export class TestWrapper extends Component<any, any> {
         const { children, ...rest } = this.props;
         const child = Children.only(children);
 
-        return cloneElement(child, rest);
+        return cloneElement(<any> child, rest);
     }
 }
 
