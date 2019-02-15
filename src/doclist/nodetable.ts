@@ -92,7 +92,7 @@ export function NodeTable<T>(props: INodeTableProps<T>) {
     ];
 
     if (props.onRowToggled !== undefined) {
-        const onToggleAllFallback = (checked: boolean) => props.rows.forEach((row, i) => props.onRowToggled!(row.node, checked, i));
+        const onToggleAllFallback = (checked: boolean) => props.rows.forEach((row, i) => props.onRowToggled!(row.node, checked, Math.floor(i / 2)));
         const onToggleAll = props.onToggleAll || onToggleAllFallback;
         const allRowsToggled = props.rows.every(row => row.toggled || false);
         const noRowsToggled = props.rows.every(row => !row.toggled);
@@ -113,7 +113,7 @@ export function NodeTable<T>(props: INodeTableProps<T>) {
             width: 32,
             Cell: (prop: { value: INodeTableRow<T>, index: number }) => __(Checkbox, {
                 checked: prop.value.toggled || false,
-                onCheck: (event: any, checked: boolean) => props.onRowToggled!(prop.value.node, checked, prop.index),
+                onCheck: (event: any, checked: boolean) => props.onRowToggled!(prop.value.node, checked, Math.floor(prop.index / 2)),
             }),
         });
     }
@@ -130,9 +130,13 @@ export function NodeTable<T>(props: INodeTableProps<T>) {
         ofText: props.translations[NodeTableTranslations.OF],
         rowsText: props.translations[NodeTableTranslations.ROWS],
     } : {};
+
+    let fakerows: INodeTableRow<T>[] = [];
+    props.rows.forEach(r => { fakerows.push(r); fakerows.push(r);});
+
     return __(ReactTable, {
         manual: true,
-        data: props.rows,
+        data: fakerows,
         columns: firstColumns.concat(columns),
 
         showPageSizeOptions: false,
@@ -153,7 +157,7 @@ export function NodeTable<T>(props: INodeTableProps<T>) {
         } : {}),
         getTdProps: (state: TableProps, rowInfo?: RowInfo, column?: Column) => (rowInfo && column ? {
             onClick: column.id!.startsWith("--norowselect-") ? undefined : (event: MouseEvent<any>) => {
-                props.onRowSelected(rowInfo.original.node, rowInfo.index);
+                props.onRowSelected(rowInfo.original.node, Math.floor(rowInfo.index / 2));
             },
         } : {}),
         loading: props.isLoading,
