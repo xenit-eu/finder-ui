@@ -1,7 +1,9 @@
 import { Avatar, Collapse, ListItem as ListItemMUIV1, ListItemAvatar, ListItemText, WithStyles, withStyles } from "@material-ui/core";
 import FolderIcon from "@material-ui/icons/Folder";
 import { CircularProgress, IconButton, List, ListItem } from "material-ui";
-import { NavigationExpandLess, NavigationExpandMore } from "material-ui/svg-icons";
+import { NavigationExpandLess } from "material-ui/svg-icons/navigation/expand-less";
+import { NavigationExpandMore } from "material-ui/svg-icons/navigation/expand-more";
+
 import { Component, createElement as __, ReactElement } from "react";
 import classNames = require("classnames");
 
