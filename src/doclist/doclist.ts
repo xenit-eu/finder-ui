@@ -10,7 +10,7 @@ import ToggleIndeterminateCheckBox from "material-ui/svg-icons/toggle/indetermin
 import { createElement as __, ReactElement, ReactNode } from "react";
 import * as _ from "react-dom-factories";
 
-import { SearchHit_t, Node_t, Highlights_t } from "../metadata/fields";
+import { Node_t } from "../metadata/fields";
 import { Pager, Pager_t } from "../pager";
 import "./doclist.less";
 import { ColumnRenderer_Props_t, ColumnRenderer_t } from "./renderer/interface";

@@ -6,7 +6,7 @@ type Property_t = string[];
 
 export type SearchHit_t = {
     node: Node_t;
-    highlights: Highlights_t[];
+    highlights: FieldHighlights_t[];
 };
 
 export type Node_t = {
@@ -15,10 +15,15 @@ export type Node_t = {
     properties: {[k: string]: Property_t};
 };
 
-export type Highlights_t = {
-    field: string;
-    snippets: string[];
+export type FieldHighlights_t = {
+    field?: string;
+    highlightInfos: HighlightedTextPart_t[];
 };
+
+export type HighlightedTextPart_t = Array<{
+    text: string;
+    highlighted: boolean;
+}>;
 
 export enum RenderMode {
     VIEW,

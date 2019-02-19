@@ -4,7 +4,7 @@ import ToggleIndeterminateCheckBox from "material-ui/svg-icons/toggle/indetermin
 import { createElement as __, CSSProperties, MouseEvent } from "react";
 import ReactTable, { Column, RowInfo, SortingRule, TableProps } from "react-table";
 import "react-table/react-table.css";
-import { Node_t, Highlights_t } from "../metadata";
+import { Node_t, FieldHighlights_t } from "../metadata";
 import { ColumnRenderer_t } from "./renderer/interface";
 
 type MenuItem_t<T> = {
@@ -52,7 +52,7 @@ export interface INodeTableRow<T> {
     rowMenu: Array<MenuItem_t<T>>; // The menu items to show for this node
     toggled?: boolean; // Whether the node has its checkbox enabled or not (only effective when togglable is true)
     rowStyle: CSSProperties; // Additional CSS properties to apply to the row
-    highlights?: Highlights_t[];
+    highlights?: FieldHighlights_t[];
 };
 
 export interface INodeTableProps<T> {
@@ -92,7 +92,7 @@ export function NodeTable<T>(props: INodeTableProps<T>) {
     ];
 
     if (props.onRowToggled !== undefined) {
-        const onToggleAllFallback = (checked: boolean) => props.rows.forEach((row, i) => props.onRowToggled!(row.node, checked, Math.floor(i / 2)));
+        const onToggleAllFallback = (checked: boolean) => props.rows.forEach((row, i) => props.onRowToggled!(row.node, checked, i));
         const onToggleAll = props.onToggleAll || onToggleAllFallback;
         const allRowsToggled = props.rows.every(row => row.toggled || false);
         const noRowsToggled = props.rows.every(row => !row.toggled);
@@ -113,7 +113,7 @@ export function NodeTable<T>(props: INodeTableProps<T>) {
             width: 32,
             Cell: (prop: { value: INodeTableRow<T>, index: number }) => __(Checkbox, {
                 checked: prop.value.toggled || false,
-                onCheck: (event: any, checked: boolean) => props.onRowToggled!(prop.value.node, checked, Math.floor(prop.index / 2)),
+                onCheck: (event: any, checked: boolean) => props.onRowToggled!(prop.value.node, checked, prop.index),
             }),
         });
     }
@@ -130,13 +130,9 @@ export function NodeTable<T>(props: INodeTableProps<T>) {
         ofText: props.translations[NodeTableTranslations.OF],
         rowsText: props.translations[NodeTableTranslations.ROWS],
     } : {};
-
-    let fakerows: INodeTableRow<T>[] = [];
-    props.rows.forEach(r => { fakerows.push(r); fakerows.push(r);});
-
     return __(ReactTable, {
         manual: true,
-        data: fakerows,
+        data: props.rows,
         columns: firstColumns.concat(columns),
 
         showPageSizeOptions: false,
@@ -157,7 +153,7 @@ export function NodeTable<T>(props: INodeTableProps<T>) {
         } : {}),
         getTdProps: (state: TableProps, rowInfo?: RowInfo, column?: Column) => (rowInfo && column ? {
             onClick: column.id!.startsWith("--norowselect-") ? undefined : (event: MouseEvent<any>) => {
-                props.onRowSelected(rowInfo.original.node, Math.floor(rowInfo.index / 2));
+                props.onRowSelected(rowInfo.original.node, rowInfo.index);
             },
         } : {}),
         loading: props.isLoading,
