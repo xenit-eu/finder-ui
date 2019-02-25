@@ -3,7 +3,7 @@ import getMuiTheme from "material-ui/styles/getMuiTheme";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import { Component, createElement as __, ReactElement } from "react";
 import * as _ from "react-dom-factories";
-import { Explorer, Explorer_t, ExplorerNode_t } from "./explorer";
+import { Explorer, Explorer_t, ExplorerNode_t, ExplorerNode, ExplorerNode_Props_t } from "./explorer";
 import { Fixture, simulateEvent, TestWrapper } from "./testUtils";
 
 import { configure } from "enzyme";
@@ -46,19 +46,46 @@ function getChild(wrapper: ReactWrapper, ...idxs: number[]) {
     }
     return child;
 }
+const simpleExplorerNodeProps: ExplorerNode_Props_t<ExplorerNode_t> = {
+    onClick: () => { },
+    onRequestChildren: () => Promise.resolve([]),
+    onDrop: () => { },
+    selectedNodes: [],
+    node: {
+        id: "string",
+        primaryText: "string",
+    },
+    nestedLevel: 0,
+};
 
 describe("Explorer", () => {
+    it("Should render the right icon of an explorer node",async () => {
+        const explorerNodeIcon  = new ExplorerNode(simpleExplorerNodeProps);
+        const rightIcon = explorerNodeIcon.TEST_getRightIconButtonLoading();
+        if(!rightIcon){
+            throw "Right icon should exist";
+        }
+        Fixture(rightIcon);
+
+    });
+
+    it("Should render a single explorer node", async () => {
+        Fixture(__(ExplorerNode,simpleExplorerNodeProps));
+
+    });
     it("Should display the root node", async () => {
         let childrenResolver = null;
-
-        const wrapper = Fixture(__(Explorer, {
+        const wrappedProps: Explorer_t<ExplorerNode_t> = {
             node: root,
             onRequestChildren: (node: TestExplorerNode_t) => {
-                return childrenResolver = Promise.resolve(node.children);
+                childrenResolver = Promise.resolve(node.children);
+                return childrenResolver;
             },
             onClick: () => null,
             onDrop: () => null,
-        }));
+            selectedNodes: [],
+        };
+        const wrapper = Fixture(Explorer(wrappedProps));
 
         let rootItem = getRoot(wrapper);
         expect(rootItem.prop("primaryText")).toBe("Parent");
@@ -87,5 +114,6 @@ describe("Explorer", () => {
         const bot = getChild(wrapper, 1).children().find("ListItem");
         expect(bot.length).toBe(0);
         expect(getChild(wrapper, 1).find("IconButton").exists()).toBe(false);
+        /**/
     });
 });

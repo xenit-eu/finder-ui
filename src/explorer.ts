@@ -1,8 +1,9 @@
 import { Avatar, Collapse, ListItem as ListItemMUIV1, ListItemAvatar, ListItemText, WithStyles, withStyles } from "@material-ui/core";
 import FolderIcon from "@material-ui/icons/Folder";
-import { CircularProgress, IconButton, List, ListItem } from "material-ui";
-import { NavigationExpandLess } from "material-ui/svg-icons/navigation/expand-less";
-import { NavigationExpandMore } from "material-ui/svg-icons/navigation/expand-more";
+import { CircularProgress, IconButton, List, ListItem, ListItemProps } from "material-ui";
+//DONT POINT TO SPECIFIC ICONS This will break compilation. It seems that the definition of the path does not match the exact path. This is a deprecated component from the old material UI. So put some time in using the new material ui instead. 
+import { NavigationExpandLess } from "material-ui/svg-icons";
+import { NavigationExpandMore } from "material-ui/svg-icons";
 
 import { Component, createElement as __, ReactElement } from "react";
 import classNames = require("classnames");
@@ -21,7 +22,7 @@ export type ExplorerNode_t = {
     icon?: ReactElement<any>,
 };
 
-type ExplorerNode_Props_t<T extends ExplorerNode_t> = Explorer_t<T> & {
+export type ExplorerNode_Props_t<T extends ExplorerNode_t> = Explorer_t<T> & {
     nestedLevel: number,
 };
 
@@ -35,7 +36,7 @@ type Explorer_State_t = {
 /**
  * @deprecated Use V2
  */
-class ExplorerNode<T extends ExplorerNode_t> extends Component<ExplorerNode_Props_t<T>, Explorer_State_t> {
+export class ExplorerNode<T extends ExplorerNode_t> extends Component<ExplorerNode_Props_t<T>, Explorer_State_t> {
     constructor(props: ExplorerNode_Props_t<T>) {
         super(props);
         this.state = {
@@ -69,24 +70,41 @@ class ExplorerNode<T extends ExplorerNode_t> extends Component<ExplorerNode_Prop
             }).catch(e => this.setState({ loading: false, open: false }));
         });
     }
-
+    public TEST_getRightIconButton(){
+        return this._getRightIconButton();
+    }
+    public TEST_getRightIconButtonLoading(){
+        return this._getRightIconButtonLoading();
+    }
+        private _getRightIconButtonLoading(){
+        return __(IconButton, {
+            onClick: () => this._doToggle(),
+        }, __(CircularProgress, { size: 24 }));
+    
+    }
+    public TEST_getRightIconButtonNotLoading(){
+        return this._getRightIconButtonNotLoading();
+    }
+        private _getRightIconButtonNotLoading(){
+        return __(IconButton, {
+            onClick: () => this._doToggle(),
+        }, __(this.state.open ? NavigationExpandLess : NavigationExpandMore));
+    
+    }
     private _getRightIconButton() {
         if (this.state.loading && this.state.open) {
-            return __(IconButton, {
-                onClick: () => this._doToggle(),
-            }, __(CircularProgress, { size: 24 }));
+            return this._getRightIconButtonLoading();
         }
         if (this.state.children.length === 0 && this.state.loaded) {
             return undefined;
         }
-        return __(IconButton, {
-            onClick: () => this._doToggle(),
-        }, __(this.state.open ? NavigationExpandLess : NavigationExpandMore));
+        return this._getRightIconButtonNotLoading();
     }
 
     public render(): ReactElement<any> {
         const isSelected = this.props.selectedNodes && this.props.selectedNodes.indexOf(this.props.node.id) >= 0;
-        return __(ListItem, {
+        //return __("div",{});
+        const props:ListItemProps = {
             onClick: () => this.props.onClick(this.props.node),
             onDrop: (event: any) => this.props.onDrop(this.props.node, event),
             onDragOver: (event: any) => event.preventDefault(),
@@ -96,10 +114,11 @@ class ExplorerNode<T extends ExplorerNode_t> extends Component<ExplorerNode_Prop
             primaryText: this.props.node.primaryText,
             primaryTogglesNestedList: false,
             leftAvatar: this.props.node.icon,
-            className: isSelected ? "explorer-selected" : "",
+            className: isSelected ? "explorer-selected" : "  ",
             nestedItems: this.state.children.map((child, i) => __(ExplorerNode, <any>{ ...this.props, key: i, node: child, nestedLevel: this.props.nestedLevel! + 1 })),
             rightIconButton: this._getRightIconButton(),
-        });
+        }; 
+        return __(ListItem,props );
     }
 }
 /**
