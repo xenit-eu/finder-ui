@@ -1,9 +1,10 @@
 import { ComponentType } from "react";
-import { Node_t } from "../../metadata";
+import { Node_t, FieldHighlights_t } from "../../metadata";
 
 export type ColumnRenderer_Props_t = {
     node: Node_t,
     row: number,
+    highlights: FieldHighlights_t[],
 };
 
 export type DoclistModelToViewMapper_t<T> = (node: Node_t) => T;

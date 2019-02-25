@@ -265,6 +265,7 @@ function buildSingleTD(col: Doclist_Column_t, node: Node_t, onRowSelected: (i: n
         }, __(col.renderer || "span", {
             node,
             row: i,
+            highlights:[],
         }));
 }
 

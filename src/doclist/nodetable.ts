@@ -4,7 +4,7 @@ import ToggleIndeterminateCheckBox from "material-ui/svg-icons/toggle/indetermin
 import { createElement as __, CSSProperties, MouseEvent } from "react";
 import ReactTable, { Column, RowInfo, SortingRule, TableProps } from "react-table";
 import "react-table/react-table.css";
-import { Node_t } from "../metadata";
+import { Node_t, FieldHighlights_t } from "../metadata";
 import { ColumnRenderer_t } from "./renderer/interface";
 
 type MenuItem_t<T> = {
@@ -52,6 +52,7 @@ export interface INodeTableRow<T> {
     rowMenu: Array<MenuItem_t<T>>; // The menu items to show for this node
     toggled?: boolean; // Whether the node has its checkbox enabled or not (only effective when togglable is true)
     rowStyle: CSSProperties; // Additional CSS properties to apply to the row
+    highlights?: FieldHighlights_t[];
 };
 
 export interface INodeTableProps<T> {
@@ -192,9 +193,13 @@ function createColumn(col: INodeTableColumn): Column {
     return {
         id: col.name,
         Header: col.label,
-        accessor: (row: INodeTableRow<any>) => row.node,
+        accessor: (row: INodeTableRow<any>) => row,
         sortable: col.sortable,
-        Cell: (prop: any) => __(col.renderer, { node: prop.value, row: 0 }),
+        Cell: (prop: {value: INodeTableRow<any>}) => __(col.renderer, {
+            node: prop.value.node,
+            row: 0,
+            highlights: prop.value.highlights || [],
+        }),
     };
 }
 
