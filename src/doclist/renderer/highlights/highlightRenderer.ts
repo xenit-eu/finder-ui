@@ -3,9 +3,7 @@ import { ColumnRenderer_Config_t, ColumnRenderer_Factory_t, ColumnRenderer_Props
 import { FieldHighlights_t, HighlightedTextPart_t } from "../../../metadata/fields";
 
 function generateHtml(highlightInfo: HighlightedTextPart_t): any/*Whatever React function*/{
-    return highlightInfo.map((pair) => 
-        (pair.highlighted ? _.strong( {}, pair.text) : _.span( {}, pair.text))
-        );
+    return highlightInfo.map((pair) => (pair.highlighted ? _.strong( {}, pair.text) : _.span( {}, pair.text)));
 }
 
 export const HighlightRenderer: ColumnRenderer_Factory_t<FieldHighlights_t[]> =
