@@ -16,7 +16,7 @@ export type Node_t = {
 };
 
 export type FieldHighlights_t = {
-    field?: string;
+    field: string;
     highlightInfos: HighlightedTextPart_t[];
 };
 
