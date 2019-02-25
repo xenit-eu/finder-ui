@@ -1,7 +1,8 @@
 import { Avatar, Collapse, ListItem as ListItemMUIV1, ListItemAvatar, ListItemText, WithStyles, withStyles } from "@material-ui/core";
 import FolderIcon from "@material-ui/icons/Folder";
 import { CircularProgress, IconButton, List, ListItem, ListItemProps } from "material-ui";
-//DONT POINT TO SPECIFIC ICONS This will break compilation. It seems that the definition of the path does not match the exact path. This is a deprecated component from the old material UI. So put some time in using the new material ui instead. 
+//DONT POINT TO SPECIFIC ICONS This will break compilation. It seems that the definition of the path does not match the exact path.
+//This is a deprecated component from the old material UI. So put some time in using the new material ui instead.
 import { NavigationExpandLess } from "material-ui/svg-icons";
 import { NavigationExpandMore } from "material-ui/svg-icons";
 
@@ -70,27 +71,33 @@ export class ExplorerNode<T extends ExplorerNode_t> extends Component<ExplorerNo
             }).catch(e => this.setState({ loading: false, open: false }));
         });
     }
-    public TEST_getRightIconButton(){
+
+    public TEST_getRightIconButton() {
         return this._getRightIconButton();
     }
-    public TEST_getRightIconButtonLoading(){
+
+    public TEST_getRightIconButtonLoading() {
         return this._getRightIconButtonLoading();
     }
-        private _getRightIconButtonLoading(){
+
+    private _getRightIconButtonLoading() {
         return __(IconButton, {
             onClick: () => this._doToggle(),
         }, __(CircularProgress, { size: 24 }));
-    
+
     }
-    public TEST_getRightIconButtonNotLoading(){
+
+    public TEST_getRightIconButtonNotLoading() {
         return this._getRightIconButtonNotLoading();
     }
-        private _getRightIconButtonNotLoading(){
+
+    private _getRightIconButtonNotLoading() {
         return __(IconButton, {
             onClick: () => this._doToggle(),
         }, __(this.state.open ? NavigationExpandLess : NavigationExpandMore));
-    
+
     }
+
     private _getRightIconButton() {
         if (this.state.loading && this.state.open) {
             return this._getRightIconButtonLoading();
@@ -104,7 +111,7 @@ export class ExplorerNode<T extends ExplorerNode_t> extends Component<ExplorerNo
     public render(): ReactElement<any> {
         const isSelected = this.props.selectedNodes && this.props.selectedNodes.indexOf(this.props.node.id) >= 0;
         //return __("div",{});
-        const props:ListItemProps = {
+        const props: ListItemProps = {
             onClick: () => this.props.onClick(this.props.node),
             onDrop: (event: any) => this.props.onDrop(this.props.node, event),
             onDragOver: (event: any) => event.preventDefault(),
@@ -117,10 +124,11 @@ export class ExplorerNode<T extends ExplorerNode_t> extends Component<ExplorerNo
             className: isSelected ? "explorer-selected" : "  ",
             nestedItems: this.state.children.map((child, i) => __(ExplorerNode, <any>{ ...this.props, key: i, node: child, nestedLevel: this.props.nestedLevel! + 1 })),
             rightIconButton: this._getRightIconButton(),
-        }; 
-        return __(ListItem,props );
+        };
+        return __(ListItem, props);
     }
 }
+
 /**
  * @deprecated Use V2
  */

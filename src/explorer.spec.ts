@@ -59,10 +59,10 @@ const simpleExplorerNodeProps: ExplorerNode_Props_t<ExplorerNode_t> = {
 };
 
 describe("Explorer", () => {
-    it("Should render the right icon of an explorer node",async () => {
-        const explorerNodeIcon  = new ExplorerNode(simpleExplorerNodeProps);
+    it("Should render the right icon of an explorer node", async () => {
+        const explorerNodeIcon = new ExplorerNode(simpleExplorerNodeProps);
         const rightIcon = explorerNodeIcon.TEST_getRightIconButtonLoading();
-        if(!rightIcon){
+        if (!rightIcon) {
             throw "Right icon should exist";
         }
         Fixture(rightIcon);
@@ -70,7 +70,7 @@ describe("Explorer", () => {
     });
 
     it("Should render a single explorer node", async () => {
-        Fixture(__(ExplorerNode,simpleExplorerNodeProps));
+        Fixture(__(ExplorerNode, simpleExplorerNodeProps));
 
     });
     it("Should display the root node", async () => {
@@ -114,6 +114,5 @@ describe("Explorer", () => {
         const bot = getChild(wrapper, 1).children().find("ListItem");
         expect(bot.length).toBe(0);
         expect(getChild(wrapper, 1).find("IconButton").exists()).toBe(false);
-        /**/
     });
 });
