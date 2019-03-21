@@ -9,9 +9,7 @@
     "postversion": "git push && git push --tags",
     "test": "node --max_old_space_size=4096 node_modules/.bin/karma start ./karma.conf.js --single-run",
     "test:watch": "node --max_old_space_size=4096 node_modules/.bin/karma start ./karma.conf.js",
-    "lint": "tslint -c ./tslint.json 'src/**/*.ts'",
-    "build": "webpack",
-    "format": "tsfmt"
+    "lint": "tslint -c ./tslint.json 'src/**/*.ts'"
   },
   "repository": {
     "type": "git"
