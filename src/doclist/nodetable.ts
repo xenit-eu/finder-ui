@@ -184,7 +184,8 @@ function createSortingRule(col: INodeTableBasicColumn): SortingRule | null {
 
     return {
         id: col.name,
-        desc: col.sortDirection === NodeTableSortDirection.DESC,
+        desc: col.sortDirection === NodeTableSortDirection.DESC || undefined,
+        asc: col.sortDirection === NodeTableSortDirection.ASC || undefined,
     };
 }
 
@@ -194,7 +195,7 @@ function createColumn(col: INodeTableColumn): Column {
         Header: col.label,
         accessor: (row: INodeTableRow<any>) => row,
         sortable: col.sortable,
-        Cell: (prop: {value: INodeTableRow<any>}) => __(col.renderer, {
+        Cell: (prop: { value: INodeTableRow<any> }) => __(col.renderer, {
             node: prop.value.node,
             row: 0,
             highlights: prop.value.highlights || [],
