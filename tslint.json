@@ -1,0 +1,41 @@
+{
+    "extends": "tslint:recommended",
+    "rulesDirectory": [
+        "./node_modules/tslint-custom/src/"
+    ],
+    "rules": {
+        "object-literal-sort-keys": false,
+        "max-line-length": [
+            true,
+            200
+        ],
+        "arrow-parens": false,
+        "no-empty": false,
+        "no-var-requires": false,
+        "type-name": false,
+        "comment-format": [
+            false
+        ],
+        "max-classes-per-file": false,
+        "member-ordering": [
+            false
+        ],
+        "ordered-imports": false,
+        "interface-name": false,
+        "interface-over-type-literal": false,
+        "array-type": false,
+        "whitespace": {
+            "options": [
+                "check-branch",
+                "check-decl",
+                "check-operator",
+                "check-module",
+                "check-separator",
+                "check-rest-spread",
+                "check-type",
+                "check-type-operator",
+                "check-preblock"
+            ]
+        }
+    }
+}

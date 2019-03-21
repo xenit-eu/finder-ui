@@ -1,0 +1,10 @@
+node_modules/
+typings/
+.vscode/
+test-results/
+.gradle/
+build/
+.settings
+npm-debug.log*
+.idea
+tmp

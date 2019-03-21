@@ -1,0 +1,37 @@
+.metadata-fieldset-columns {
+    display: flex;
+    flex-wrap: wrap;
+    .metadata-fieldset-label {
+        padding-right: 1em;
+    }
+    .metadata-fieldset-title {
+        display: none;
+    }
+    .metadata-fieldset-field {
+        display: flex;
+        .metadata-fieldset-label,
+        .metadata-fieldset-value {
+            display: flex;
+            align-items: center;
+        }
+        .metadata-fieldset-value {
+            flex: 1;
+            margin-right: 2px;
+            .metadata-field {
+                flex: 1;
+            }
+        }
+    }
+}
+
+.metadata-fieldset-1-column .metadata-fieldset-field {
+    width: 100%;
+}
+
+.metadata-fieldset-2-column .metadata-fieldset-field {
+    width: 50%;
+}
+
+.metadata-fieldset-3-column .metadata-fieldset-field {
+    width: 33.333%;
+}

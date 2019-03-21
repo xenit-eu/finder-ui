@@ -1,0 +1,9 @@
+plugins {
+    id "com.moowork.node" version "1.2.0"
+}
+
+node {
+    download = true
+    version = "10.1.0"
+    npmVersion = "6.4.1"
+}

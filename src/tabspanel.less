@@ -1,0 +1,16 @@
+.tabspanel {
+    height: 100%;
+    display: flex;	
+    align-items: stretch;	
+    align-content: stretch;	
+    flex-direction: column;	            
+    & > div:nth-child(3) {  /* wrapper for tabs content */
+        flex-grow: 1;
+        flex-shrink: 1;
+        position: relative;
+        & > div {
+            position: absolute!important;
+            top: 0; bottom: 0;
+        }
+    }
+}
