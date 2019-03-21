@@ -2,7 +2,7 @@ import { CircularProgress, Dialog, FlatButton } from "material-ui";
 import { Component, ComponentType, createElement as __, ReactElement } from "react";
 import * as _ from "react-dom-factories";
 import { RenderMode } from "./fields";
-import { arrayEquals } from "finder-utils";
+import { arrayEquals } from "@xenit/finder-utils";
 
 type MetadataPanel_Item_t<T> = ComponentType<{ node: T[], onChange: (node: T[]) => void, renderMode: RenderMode }>;
 

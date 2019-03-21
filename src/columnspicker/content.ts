@@ -4,7 +4,7 @@ import { Column_t, ColumnGroup_t, ColumnSet_t, ColumnsPicker_t } from "..";
 import AvailableColumns from "./availablecolumns";
 import ColumnSetManager from "./columnset";
 import SortableColumns from "./sortablecolumns";
-import { arrayEquals, deepEqual } from "finder-utils";
+import { arrayEquals, deepEqual } from "@xenit/finder-utils";
 import { ENGLISH, FRENCH, DUTCH, WordTranslator } from "../WordTranslator";
 import Dialog from "../dialog";
 

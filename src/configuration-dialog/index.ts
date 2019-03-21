@@ -3,7 +3,7 @@ import { GeneralSettings_t } from "./content";
 import Dialog from "../dialog";
 import ConfigurationDialogContent from "./content";
 import { ManageLayouts_t } from "./manage-layouts";
-import { addElement } from "finder-utils";
+import { addElement } from "@xenit/finder-utils";
 
 export type ConfigurationDialog_Props_t = {
     open: boolean,

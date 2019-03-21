@@ -1,4 +1,4 @@
-import { allButFirst, last, lastMust, replaceLast, replaceOrRemoveAt } from "finder-utils";
+import { allButFirst, last, lastMust, replaceLast, replaceOrRemoveAt } from "@xenit/finder-utils";
 import {
     AndSearchQueryElement, ISearchQueryElement, isHierarchicSearchQueryElement, OrSearchQueryElement, SearchQuery,
     ToFillInSearchQueryElement, containsToFillInSearchQueryElement,
