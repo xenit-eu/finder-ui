@@ -2,7 +2,6 @@ var path = require('path');
 
 module.exports = function (config) {
     config.set({
-
         frameworks: ["jasmine", "es6-shim"],
 
         files: [{
@@ -23,7 +22,6 @@ module.exports = function (config) {
         preprocessors: {
             // add webpack as preprocessor
             'src/**/*.spec.ts': ['webpack', 'sourcemap']
-
         },
 
         reporters: ["progress", "junit"],
@@ -81,7 +79,7 @@ module.exports = function (config) {
                 'react/lib/ExecutionEnvironment': true,
                 'react/lib/ReactContext': true
             },
-         
+          
             plugins: [
                 // ...
                 function () {
@@ -96,6 +94,11 @@ module.exports = function (config) {
                 // ...
             ]
         },
+        webpackMiddleware: {
+            // webpack-dev-middleware configuration
+            // i. e.
+            stats: 'errors-only'
+          }
 
     });
 };
