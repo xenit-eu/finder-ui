@@ -1,5 +1,5 @@
 import {
-    DATE_BETWEEN, DATE_FROM, DATE_LASTMONTH, DATE_LASTWEEK, DATE_LASTYEAR, DATE_ON, DATE_RANGE_PICK, DATE_TODAY, DATE_UNTIL,
+    DATE_BETWEEN, DATE_FROM, DATE_LASTMONTH, DATE_LASTWEEK, DATE_LASTYEAR, DATE_ON, DATE_RANGE_PICK, DATE_TODAY, DATE_UNTIL, DATE_LAST6MONTH,
 } from "./search/DateRange";
 import { PLACEHOLDERTRANSLATION } from "./search/searchbox";
 import { ADD_A_COMMENT } from "./comment";
@@ -37,8 +37,10 @@ const datewordTranslations = {
         [DATE_TODAY]: DATE_TODAY,
         [DATE_LASTWEEK]: DATE_LASTWEEK,
         [DATE_LASTMONTH]: DATE_LASTMONTH,
+        [DATE_LAST6MONTH]:DATE_LAST6MONTH,
         [DATE_LASTYEAR]: DATE_LASTYEAR,
         [DATE_RANGE_PICK]: DATE_RANGE_PICK,
+
     },
     [FRENCH]: {
         [DATE_ON]: "à...",
@@ -47,6 +49,7 @@ const datewordTranslations = {
         [DATE_TODAY]: "Aujourd'hui",
         [DATE_LASTWEEK]: "cette semaine",
         [DATE_LASTMONTH]: "cette mois",
+        [DATE_LAST6MONTH]:"cette 6 mois",
         [DATE_LASTYEAR]: "cette annee",
         [DATE_RANGE_PICK]: "choisissez une plage de dates...",
         [DATE_BETWEEN]: "Entre...",
@@ -58,10 +61,10 @@ const datewordTranslations = {
         [DATE_TODAY]: "vandaag",
         [DATE_LASTWEEK]: "deze week",
         [DATE_LASTMONTH]: "deze maand",
+        [DATE_LAST6MONTH]:"deze 6 maanden",
         [DATE_LASTYEAR]: "dit jaar",
         [DATE_RANGE_PICK]: "kies een datum bereik...",
         [DATE_BETWEEN]: "Tussen...",
-
     },
 };
 

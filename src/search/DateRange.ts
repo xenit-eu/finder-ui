@@ -8,6 +8,7 @@ export const DATE_BETWEEN = "between...";
 export const DATE_TODAY = "today";
 export const DATE_LASTWEEK = "last week";
 export const DATE_LASTMONTH = "last month";
+export const DATE_LAST6MONTH = "last 6 months";
 export const DATE_LASTYEAR = "last year";
 export const DATE_RANGE_PICK = "pick a date range...";
 export interface IDateRangeTranslator {
@@ -31,6 +32,23 @@ export interface IDateRange {
     equals(other: IDateRange): boolean;
     visit<T>(visitor: IDateRangeVisitor<T>): T;
 }
+export function GetBeginOfDay(toBegin: Date) {
+    const ret = new Date(toBegin.getTime());
+    ret.setSeconds(0);
+    ret.setMinutes(0);
+    ret.setHours(0);
+    ret.setMilliseconds(0);
+    return ret;
+}
+
+export function GetEndOfDay(toEnd: Date) {
+    const ret = new Date(toEnd.getTime());
+    ret.setSeconds(59);
+    ret.setMinutes(59);
+    ret.setHours(23);
+    ret.setMilliseconds(999);
+    return ret;
+}
 
 export interface IDateRangeVisitor<T> {
     visitSimpleDateRange(simpleDateRange: SimpleDateRange): T;
@@ -40,6 +58,9 @@ export interface IDateRangeVisitor<T> {
 }
 
 export class SimpleDateRange implements IDateRange {
+    private from: Date;
+    private to: Date;
+
     public static readonly TYPE = "SimpleDateRange";
     public TYPE = SimpleDateRange.TYPE;
     public ToJSON() {
@@ -48,7 +69,9 @@ export class SimpleDateRange implements IDateRange {
     public static ParseFromJSON(json: any) {
         return new SimpleDateRange(new Date(json.from), new Date(json.to));
     }
-    public constructor(private from: Date, private to: Date) {
+    public constructor(from: Date, to: Date) {
+        this.from = GetBeginOfDay(from);
+        this.to = GetEndOfDay(to);
     }
     public ToHumanReadableString(translator: IDateRangeTranslator) {
         const fromS = translator.translateDate(this.from);
@@ -84,6 +107,8 @@ export function addDays(d: Date, days: number): Date {
 }
 
 export class UntilDateRange implements IDateRange {
+    public to: Date;
+
     public static readonly TYPE = "UntilDateRange";
     public TYPE = UntilDateRange.TYPE;
     public ToJSON() {
@@ -92,7 +117,8 @@ export class UntilDateRange implements IDateRange {
     public static ParseFromJSON(json: any) {
         return new UntilDateRange(new Date(json.to));
     }
-    constructor(public to: Date) {
+    constructor(to: Date) {
+        this.to = GetEndOfDay(to);
     }
     public From(): "MIN" {
         return "MIN";
@@ -112,6 +138,7 @@ export class UntilDateRange implements IDateRange {
     }
 }
 export class FromDateRange implements IDateRange {
+    public from: Date;
     public static readonly TYPE = "FromDateRange";
     public TYPE = FromDateRange.TYPE;
     public ToJSON() {
@@ -121,8 +148,8 @@ export class FromDateRange implements IDateRange {
         return new UntilDateRange(new Date(json.from));
     }
 
-    constructor(public from: Date) {
-
+    constructor(from: Date) {
+        this.from = GetBeginOfDay(from);
     }
     public From() {
         return this.from;
@@ -154,10 +181,10 @@ export class LabeledDateRange implements IDateRange {
     constructor(public label: string, public fromCalculation: DateCalculation_t, public toCalculation: DateCalculation_t) {
     }
     public From() {
-        return this.fromCalculation(new Date());
+        return this.fromCalculation(GetBeginOfDay(new Date()));
     }
     public To() {
-        return this.toCalculation(new Date());
+        return this.toCalculation(GetEndOfDay(new Date()));
     }
     public ToHumanReadableString(translator: IDateRangeTranslator): string {
         return translator.translateWord(this.label);
@@ -170,9 +197,10 @@ export class LabeledDateRange implements IDateRange {
     }
 }
 
-export const TODAY_RANGE = new LabeledDateRange(DATE_TODAY, (d) => d, (d) => d);
+export const TODAY_RANGE = new LabeledDateRange(DATE_TODAY, (d) => addDays(d, -1), (d) => d);
 export const LAST_WEEK_RANGE = new LabeledDateRange(DATE_LASTWEEK, (d) => addDays(d, -7), (d) => d);
 export const LAST_MONTH_RANGE = new LabeledDateRange(DATE_LASTMONTH, (d) => addMonths(d, -1), (d) => d);
+export const LAST_6_MONTHS_RANGE = new LabeledDateRange(DATE_LAST6MONTH, (d) => addMonths(d, -6), (d) => d);
 export const LAST_YEAR_RANGE = new LabeledDateRange(DATE_LASTYEAR, (d) => addMonths(d, -12), (d) => d);
 export const DateRangeSearchables = [TODAY_RANGE, LAST_WEEK_RANGE, LAST_MONTH_RANGE, LAST_YEAR_RANGE];
 function toParsable(TYPE: string, ParseFromJSON: (json: any) => IDateRange) {

@@ -6,8 +6,13 @@ import { createElement as __, ReactElement } from "react";
 import * as _ from "react-dom-factories";
 
 import "./facets.less";
+import { IDateRange } from "./search";
 
-export type OnFacetSelected_t = (name: string, label: string, value: string, valueLabel: string) => void;
+export type Facet_Value_t = string | IDateRange;
+export type OnFacetSelected_t = (name: string, label: string, value: Facet_Value_t, valueLabel: string) => void;
+function facetValueToKeyString(value: Facet_Value_t) {
+    return value.toString();
+}
 
 export type Facet_t = {
     name: string,
@@ -16,7 +21,7 @@ export type Facet_t = {
     values: Array<{
         count: number,
         label: string,
-        value: string,
+        value: Facet_Value_t,
     }>,
 };
 
@@ -34,7 +39,7 @@ function FacetSub({ facet, onFacetSelected }: FacetSub_t): ReactElement<any> {
         primaryTogglesNestedList: true,
         nestedItems: facet.values.map(c =>
             __(ListItem, {
-                key: c.value,
+                key: facetValueToKeyString(c.value),
                 onClick: () => onFacetSelected(facet.name, facet.label, c.value, c.label),
                 primaryText: c.label,
                 rightIcon: __(Badge, { className: "badge", badgeContent: c.count }),
