@@ -103,9 +103,10 @@ export function addMonths(d: Date, months: number): Date {
 }
 
 export function addDays(d: Date, days: number): Date {
-    return new Date(d.getTime() + (days * DAYINMS));
+    const ret = new Date(d.getTime());
+    ret.setDate(d.getDate()+days);
+    return ret;
 }
-
 export class UntilDateRange implements IDateRange {
     public to: Date;
 
