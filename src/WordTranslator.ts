@@ -17,6 +17,16 @@ export const TYPE = "Document type";
 export const FRENCH = "fr-be";
 export const ENGLISH = "en-us";
 export const DUTCH = "nl-be";
+export const SPANISH = "es-es";
+type Translation = { [word: string]: string };
+
+//In case adding new language, change this interface to get typed checked assurance that you translate everything.
+export interface TranslationsChecked {
+    [FRENCH]: Translation;
+    [ENGLISH]: Translation;
+    [DUTCH]: Translation;
+    [SPANISH]: Translation;
+};
 export type GetLanguage = () => string;
 export type Translations = { [lang: string]: { [word: string]: string } };
 export class WordTranslator {
@@ -29,7 +39,7 @@ export class WordTranslator {
     }
 }
 
-const datewordTranslations = {
+const datewordTranslations:TranslationsChecked = {
     [ENGLISH]: {
         [DATE_ON]: DATE_ON,
         [DATE_FROM]: DATE_FROM,
@@ -37,7 +47,7 @@ const datewordTranslations = {
         [DATE_TODAY]: DATE_TODAY,
         [DATE_LASTWEEK]: DATE_LASTWEEK,
         [DATE_LASTMONTH]: DATE_LASTMONTH,
-        [DATE_LAST6MONTH]:DATE_LAST6MONTH,
+        [DATE_LAST6MONTH]: DATE_LAST6MONTH,
         [DATE_LASTYEAR]: DATE_LASTYEAR,
         [DATE_RANGE_PICK]: DATE_RANGE_PICK,
 
@@ -49,7 +59,7 @@ const datewordTranslations = {
         [DATE_TODAY]: "Aujourd'hui",
         [DATE_LASTWEEK]: "cette semaine",
         [DATE_LASTMONTH]: "cette mois",
-        [DATE_LAST6MONTH]:"cette 6 mois",
+        [DATE_LAST6MONTH]: "cette 6 mois",
         [DATE_LASTYEAR]: "cette annee",
         [DATE_RANGE_PICK]: "choisissez une plage de dates...",
         [DATE_BETWEEN]: "Entre...",
@@ -61,11 +71,23 @@ const datewordTranslations = {
         [DATE_TODAY]: "vandaag",
         [DATE_LASTWEEK]: "deze week",
         [DATE_LASTMONTH]: "deze maand",
-        [DATE_LAST6MONTH]:"deze 6 maanden",
+        [DATE_LAST6MONTH]: "deze 6 maanden",
         [DATE_LASTYEAR]: "dit jaar",
         [DATE_RANGE_PICK]: "kies een datum bereik...",
         [DATE_BETWEEN]: "Tussen...",
     },
+    [SPANISH]:{
+        [DATE_ON]: "en...",
+        [DATE_FROM]: "Desde...",
+        [DATE_UNTIL]: "Hasta...",
+        [DATE_TODAY]: "Hoy",
+        [DATE_LASTWEEK]: "La semana pasada",
+        [DATE_LASTMONTH]: "El mes pasado",
+        [DATE_LAST6MONTH]: "Ultimos 6 meses",
+        [DATE_LASTYEAR]: "El año pasado",
+        [DATE_RANGE_PICK]: "Elige un rango de fechas...",
+        [DATE_BETWEEN]: "Entre...",
+    }
 };
 
 const folderWordTranslations = {
