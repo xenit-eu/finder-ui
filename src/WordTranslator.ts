@@ -214,7 +214,7 @@ export const typeTranslations: TranslationsChecked = {
     },
     [SPANISH]: {
         [TYPE]: "Tipo de documento",
-    }
+    },
 };
 export const translateSearchboxTranslations: TranslationsChecked = {
     [ENGLISH]: {
