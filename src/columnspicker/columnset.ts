@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { ChangeEvent, createElement as __, ReactElement } from "react";
 import * as _ from "react-dom-factories";
 import { ColumnSet_t } from "..";
-import { ENGLISH, FRENCH, DUTCH, WordTranslator } from "../WordTranslator";
+import { ENGLISH, FRENCH, DUTCH, WordTranslator, TranslationsChecked, SPANISH } from '../WordTranslator';
 
 type ColumnSetManager_Props_t = {
     columnSets: ColumnSet_t[],
@@ -18,7 +18,7 @@ type ColumnSetManager_Props_t = {
 const SAVE = "Save";
 const SAVE_AS_NEW = "Save as new...";
 const DELETE = "Delete";
-const translations = {
+const translations: TranslationsChecked = {
     [ENGLISH]: {
         [SAVE]: SAVE,
         [SAVE_AS_NEW]: SAVE_AS_NEW,
@@ -34,6 +34,11 @@ const translations = {
         [SAVE_AS_NEW]: "Opslaan als nieuw...",
         [DELETE]: "Verwijderen",
     },
+    [SPANISH]:{
+        [SAVE]: "Guardar",
+        [SAVE_AS_NEW]: "Guardar como nuevo...",
+        [DELETE]: "Borrar",
+    }
 
 };
 function ColumnSetManager(props: ColumnSetManager_Props_t) {

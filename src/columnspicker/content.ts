@@ -5,7 +5,7 @@ import AvailableColumns from "./availablecolumns";
 import ColumnSetManager from "./columnset";
 import SortableColumns from "./sortablecolumns";
 import { arrayEquals, deepEqual } from "@xenit/finder-utils";
-import { ENGLISH, FRENCH, DUTCH, WordTranslator } from "../WordTranslator";
+import { ENGLISH, FRENCH, DUTCH, WordTranslator, TranslationsChecked, SPANISH } from '../WordTranslator';
 import Dialog from "../dialog";
 
 type ColumnsPickerContent_Props_t = {
@@ -30,7 +30,7 @@ const SAVED_COLUMN_SETS = "Saved column sets";
 const OTHER_AVAILABLE_COLUMNS = "Other available columns";
 const DRAG_AND_DROP = "Click a column title to show the column.";
 const SAVE = "Save";
-const translations = {
+const translations: TranslationsChecked = {
     [ENGLISH]: {
         [COLUMNS_TO_DISPLAY]: COLUMNS_TO_DISPLAY,
         [SAVED_COLUMN_SETS]: SAVED_COLUMN_SETS,
@@ -52,6 +52,14 @@ const translations = {
         [DRAG_AND_DROP]: "Klik op een kolomtitel om de kolom te tonen.",
         [SAVE]: "Opslaan",
     },
+    [SPANISH]:{
+        [COLUMNS_TO_DISPLAY]: "Columnas para mostrar",
+        [SAVED_COLUMN_SETS]: "Conjuntos de columnas guardadas",
+        [OTHER_AVAILABLE_COLUMNS]: "Otras columnas disponibles",
+        [DRAG_AND_DROP]: "Haga clic en el título de una columna para mostrar la columna.",
+        [SAVE]: "Guardar",
+    }
+    
 };
 function getAllColumns(props: ColumnsPickerContent_Props_t): Column_t[] {
     return props.columnGroups.reduce((a, b) => a.concat(...b.columns), [] as Column_t[]);

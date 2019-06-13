@@ -1,12 +1,12 @@
 import {Component, createElement as __} from "react";
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, Theme, Typography, withStyles, WithStyles} from "@material-ui/core";
-import { ENGLISH, FRENCH, DUTCH, WordTranslator } from "./WordTranslator";
+import { ENGLISH, FRENCH, DUTCH, WordTranslator, TranslationsChecked, SPANISH } from './WordTranslator';
 import { ISynchronousTranslationService } from "./search";
 
 const CANCEL = "Cancel";
 const DONE = "Done";
 
-const translations = {
+const translations:TranslationsChecked = {
     [ENGLISH]: {
         [CANCEL]: CANCEL,
         [DONE]: DONE,
@@ -18,6 +18,10 @@ const translations = {
     [DUTCH]: {
         [CANCEL]: "Annuleren",
         [DONE]: "OK",
+    },
+    [SPANISH]: {
+        [CANCEL]: "Cancelar",
+        [DONE]: "Hecho",
     },
 };
 

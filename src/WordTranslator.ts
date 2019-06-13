@@ -27,10 +27,16 @@ export interface TranslationsChecked {
     [DUTCH]: Translation;
     [SPANISH]: Translation;
 };
+export const EmptyTranslations: TranslationsChecked = {
+    [FRENCH]: {},
+    [ENGLISH]: {},
+    [DUTCH]: {},
+    [SPANISH]: {},
+};
 export type GetLanguage = () => string;
 export type Translations = { [lang: string]: { [word: string]: string } };
 export class WordTranslator {
-    public constructor(private languageSelection: GetLanguage, private translations: Translations = {}) {
+    public constructor(private languageSelection: GetLanguage, private translations: TranslationsChecked = EmptyTranslations) {
     }
     public translateWord(word: string) {
         const lang = this.languageSelection();
@@ -39,7 +45,7 @@ export class WordTranslator {
     }
 }
 
-const datewordTranslations:TranslationsChecked = {
+const datewordTranslations: TranslationsChecked = {
     [ENGLISH]: {
         [DATE_ON]: DATE_ON,
         [DATE_FROM]: DATE_FROM,
@@ -76,7 +82,7 @@ const datewordTranslations:TranslationsChecked = {
         [DATE_RANGE_PICK]: "kies een datum bereik...",
         [DATE_BETWEEN]: "Tussen...",
     },
-    [SPANISH]:{
+    [SPANISH]: {
         [DATE_ON]: "en...",
         [DATE_FROM]: "Desde...",
         [DATE_UNTIL]: "Hasta...",
@@ -87,10 +93,10 @@ const datewordTranslations:TranslationsChecked = {
         [DATE_LASTYEAR]: "El año pasado",
         [DATE_RANGE_PICK]: "Elige un rango de fechas...",
         [DATE_BETWEEN]: "Entre...",
-    }
+    },
 };
 
-const folderWordTranslations = {
+const folderWordTranslations: TranslationsChecked = {
     [ENGLISH]: {
         [FOLDER]: FOLDER,
     },
@@ -100,9 +106,12 @@ const folderWordTranslations = {
     [DUTCH]: {
         [FOLDER]: "Map",
     },
+    [SPANISH]: {
+        [FOLDER]: "Carpeta",
+    },
 };
 
-const textWordTranslations = {
+const textWordTranslations: TranslationsChecked = {
     [ENGLISH]: {
         [TEXT]: TEXT,
     },
@@ -112,9 +121,12 @@ const textWordTranslations = {
     [DUTCH]: {
         [TEXT]: "Tekst",
     },
+    [SPANISH]: {
+        [TEXT]: "Texto",
+    },
 };
 
-const AllWordTranslations = {
+const AllWordTranslations: TranslationsChecked = {
     [ENGLISH]: {
         [ALL]: ALL,
     },
@@ -124,9 +136,12 @@ const AllWordTranslations = {
     [DUTCH]: {
         [ALL]: "Alles",
     },
+    [SPANISH]: {
+        [ALL]: "Todo",
+    },
 };
 
-export const logicWordTranslations = {
+export const logicWordTranslations: TranslationsChecked = {
     [ENGLISH]: {
         [AND]: AND,
         [OR]: OR,
@@ -139,9 +154,13 @@ export const logicWordTranslations = {
         [AND]: "En",
         [OR]: "Of",
     },
+    [SPANISH]: {
+        [AND]: "Y",
+        [OR]: "O",
+    },
 };
 
-export const subqueryTranslations = {
+export const subqueryTranslations: TranslationsChecked = {
     [ENGLISH]: {
         [SUBQUERY]: SUBQUERY,
     },
@@ -151,8 +170,11 @@ export const subqueryTranslations = {
     [DUTCH]: {
         [SUBQUERY]: "Deelzoekopdracht",
     },
+    [SPANISH]: {
+        [SUBQUERY]: "Subconsulta",
+    },
 };
-export const aspectTranslations = {
+export const aspectTranslations: TranslationsChecked = {
     [ENGLISH]: {
         [ASPECT]: ASPECT,
     },
@@ -162,8 +184,11 @@ export const aspectTranslations = {
     [DUTCH]: {
         [ASPECT]: "aspect",
     },
+    [SPANISH]: {
+        [ASPECT]: "aspecto",
+    },
 };
-export const noderefTranslations = {
+export const noderefTranslations: TranslationsChecked = {
     [ENGLISH]: {
         [NODEREF]: NODEREF,
     },
@@ -173,8 +198,11 @@ export const noderefTranslations = {
     [DUTCH]: {
         [NODEREF]: NODEREF,
     },
+    [SPANISH]: {
+        [NODEREF]: NODEREF,
+    },
 };
-export const typeTranslations = {
+export const typeTranslations: TranslationsChecked = {
     [ENGLISH]: {
         [TYPE]: TYPE,
     },
@@ -184,8 +212,11 @@ export const typeTranslations = {
     [DUTCH]: {
         [TYPE]: "Documenttype",
     },
+    [SPANISH]: {
+        [TYPE]: "Tipo de documento",
+    }
 };
-export const translateSearchboxTranslations = {
+export const translateSearchboxTranslations: TranslationsChecked = {
     [ENGLISH]: {
         [PLACEHOLDERTRANSLATION]: "Type search term/query or 'Enter' to start searching",
         [SELECTINTENDEDQUERY]: SELECTINTENDEDQUERY,
@@ -197,11 +228,14 @@ export const translateSearchboxTranslations = {
     [DUTCH]: {
         [SELECTINTENDEDQUERY]: "Selecteer de bedoelde zoekopdracht.",
         [PLACEHOLDERTRANSLATION]: "Vul een zoekterm in of type 'Enter' om te zoeken",
-
+    },
+    [SPANISH]: {
+        [SELECTINTENDEDQUERY]: "Seleccione la consulta deseada.",
+        [PLACEHOLDERTRANSLATION]: "Escriba el palabra de búsqueda/Consulta o 'Enter' para iniciar la búsqueda",
     },
 
 };
-export const translateComments = {
+export const translateComments: TranslationsChecked = {
     [ENGLISH]: {
         [ADD_A_COMMENT]: ADD_A_COMMENT,
     },
@@ -211,8 +245,11 @@ export const translateComments = {
     [DUTCH]: {
         [ADD_A_COMMENT]: "Voeg commentaar toe...",
     },
+    [SPANISH]: {
+        [ADD_A_COMMENT]: "Añadir un comentario...",
+    },
 };
-export const translateVersions = {
+export const translateVersions: TranslationsChecked = {
     [ENGLISH]: {
         [DOCUMENT_NO_VERSION_HISTORY]: DOCUMENT_NO_VERSION_HISTORY,
     },
@@ -221,6 +258,9 @@ export const translateVersions = {
     },
     [DUTCH]: {
         [DOCUMENT_NO_VERSION_HISTORY]: "Het document heeft geen versie geschiedenis.",
+    },
+    [SPANISH]: {
+        [DOCUMENT_NO_VERSION_HISTORY]: "El documento no tiene historial de versiones.",
     },
 };
 
