@@ -1,12 +1,12 @@
-import {Component, createElement as __} from "react";
-import {Button, Dialog, DialogActions, DialogContent, DialogTitle, Theme, Typography, withStyles, WithStyles} from "@material-ui/core";
-import { ENGLISH, FRENCH, DUTCH, WordTranslator } from "./WordTranslator";
+import { Component, createElement as __ } from "react";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Theme, Typography, withStyles, WithStyles } from "@material-ui/core";
+import { ENGLISH, FRENCH, DUTCH, WordTranslator, TranslationsChecked, SPANISH } from "./WordTranslator";
 import { ISynchronousTranslationService } from "./search";
 
 const CANCEL = "Cancel";
 const DONE = "Done";
 
-const translations = {
+const translations: TranslationsChecked = {
     [ENGLISH]: {
         [CANCEL]: CANCEL,
         [DONE]: DONE,
@@ -18,6 +18,10 @@ const translations = {
     [DUTCH]: {
         [CANCEL]: "Annuleren",
         [DONE]: "OK",
+    },
+    [SPANISH]: {
+        [CANCEL]: "Cancelar",
+        [DONE]: "Hecho",
     },
 };
 
@@ -48,10 +52,10 @@ export class FinderDialog extends Component<DialogProps_t> {
             fullWidth: true,
             onClose: this.props.onClose,
         }, __(DialogTitle, {
-                className: this.props.classes!.dialogTitle,
-                disableTypography: true,
-            }, __(Typography, { className: this.props.classes!.dialogTitleText, variant: "title" }, this.props.dialogTitle)),
-            __(DialogContent, { className: this.props.baseClassName + "-content", children: this.props.children},
+            className: this.props.classes!.dialogTitle,
+            disableTypography: true,
+        }, __(Typography, { className: this.props.classes!.dialogTitleText, variant: "title" }, this.props.dialogTitle)),
+            __(DialogContent, { className: this.props.baseClassName + "-content", children: this.props.children },
             ),
             __(DialogActions, { className: "actions-container" },
                 __(Button, {

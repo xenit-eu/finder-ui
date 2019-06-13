@@ -21,6 +21,7 @@ describe("Basic generalSettings dialog test", () => {
             nl: "Nederlands",
             fr: "Français",
             en: "English",
+            sp: "Espanol",
         },
         onSave: () => {
         },
