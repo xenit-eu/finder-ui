@@ -17,7 +17,7 @@ export const HighlightRenderer: ColumnRenderer_Factory_t<FieldHighlights_t[]> =
                     htmlGeneration.push(_.span({}, " [...] "));
                 });
             });
-            return _.span({ style: { "white-space": "normal", "fontSize": "x-small" } }, htmlGeneration);
+            return _.span({ style: { "white-space": "normal", "fontSize": "x-small" } as any }, htmlGeneration);
         };
     };
 
