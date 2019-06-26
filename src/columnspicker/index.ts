@@ -71,6 +71,7 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
     }
     public render() {
         const dialog = __(ColumnsPickerContent, {
+            key:"dialog",
             opened: this.state.opened,
             selectedColumns: this.props.selectedColumns,
             sets: this.props.sets,
@@ -86,7 +87,7 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
             onDismiss: () => this.setState({ opened: false }),
         });
 
-        return _.div({ className: "columns-picker" }, [
+        return _.div({ className: "columns-picker",key:"columns-picker" }, [
             __(IconButton, {
                 key: "button",
                 keyboardFocused: false,

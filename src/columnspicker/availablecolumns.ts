@@ -12,6 +12,7 @@ type AvailableColumns_Props_t = {
 
 function AvailableColumns(props: AvailableColumns_Props_t) {
     return _.div({
+        key:"AvailableColumns",
         className: props.classes.root + " available-columns-test-handle",
     }, props.availableColumns.map((grouping, i) => __(Fragment, { key: i },
         __(ListSubheader, {

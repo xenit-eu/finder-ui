@@ -104,7 +104,7 @@ export function addMonths(d: Date, months: number): Date {
 
 export function addDays(d: Date, days: number): Date {
     const ret = new Date(d.getTime());
-    ret.setDate(d.getDate()+days);
+    ret.setDate(d.getDate() + days);
     return ret;
 }
 export class UntilDateRange implements IDateRange {
@@ -177,7 +177,13 @@ export class LabeledDateRange implements IDateRange {
         return this;
     }
     public static ParseFromJSON(json: any): IDateRange {
-        return DateRangeSearchables.filter(e => e.label === json.label)[0];
+        const dateRanges = DateRangeSearchables;
+        const ret = dateRanges.filter(e => e.label === json.label)[0];
+        if (!ret) {
+            console.error("ret is null");
+            console.error(json);
+        }
+        return ret;
     }
     constructor(public label: string, public fromCalculation: DateCalculation_t, public toCalculation: DateCalculation_t) {
     }
@@ -203,7 +209,7 @@ export const LAST_WEEK_RANGE = new LabeledDateRange(DATE_LASTWEEK, (d) => addDay
 export const LAST_MONTH_RANGE = new LabeledDateRange(DATE_LASTMONTH, (d) => addMonths(d, -1), (d) => d);
 export const LAST_6_MONTHS_RANGE = new LabeledDateRange(DATE_LAST6MONTH, (d) => addMonths(d, -6), (d) => d);
 export const LAST_YEAR_RANGE = new LabeledDateRange(DATE_LASTYEAR, (d) => addMonths(d, -12), (d) => d);
-export const DateRangeSearchables = [TODAY_RANGE, LAST_WEEK_RANGE, LAST_MONTH_RANGE, LAST_YEAR_RANGE];
+export const DateRangeSearchables = [TODAY_RANGE, LAST_WEEK_RANGE, LAST_MONTH_RANGE, LAST_6_MONTHS_RANGE, LAST_YEAR_RANGE];
 function toParsable(TYPE: string, ParseFromJSON: (json: any) => IDateRange) {
     return { TYPE, ParseFromJSON };
 }
