@@ -40,7 +40,7 @@ export type MetaDataPanelGroupInfo_t = {
 export function MetaDataPanel({ allowEdition, editionMode, fields, onEdit, onSave, groups }: MetaDataPanel_t, style?: MetaDataPanelStyle_t) {
     return fields.length > 0 ? _.div({ className: "metadata" },
         // header with "Save" button
-        allowEdition ? _.div({ key: "metadata-header", className: "metadata-header" },
+        allowEdition ? _.div({  className: "metadata-header" },
              __(FlatButton,
                 {
                     key: editionMode ? "Save" : "Edit",

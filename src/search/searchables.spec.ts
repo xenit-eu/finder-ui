@@ -152,7 +152,7 @@ describe("DateSearchable", () => {
     it("should propose all dateword translations that start with last", (done) => {
         const testdummyPropertyService = dummyPropertyService();
         DateSearchableDummy().getPartiallyMatchingAutocompleteListElements("TRANSLATEKEYqname", "RANSLATEDlast").then(s => {
-            expect(s.length).toBe(3);
+            expect(s.length).toBe(4);
             done();
         });
     });

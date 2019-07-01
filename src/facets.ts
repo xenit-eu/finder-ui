@@ -31,20 +31,23 @@ type FacetSub_t = {
 };
 
 function FacetSub({ facet, onFacetSelected }: FacetSub_t): ReactElement<any> {
+    const nestedItems = facet.values.map(c => {
+        const key = facetValueToKeyString(c.value)+c.label;
+        return __(ListItem, {
+            key,
+            onClick: () => onFacetSelected(facet.name, facet.label, c.value, c.label),
+            primaryText: c.label,
+            rightIcon: __(Badge, { className: "badge", badgeContent: c.count }),
+        });
+    },
+    );
     return __(ListItem, {
         key: facet.name,
         primaryText: facet.label,
         secondaryText: facet.secondaryLabel,
         initiallyOpen: false,
         primaryTogglesNestedList: true,
-        nestedItems: facet.values.map(c =>
-            __(ListItem, {
-                key: facetValueToKeyString(c.value),
-                onClick: () => onFacetSelected(facet.name, facet.label, c.value, c.label),
-                primaryText: c.label,
-                rightIcon: __(Badge, { className: "badge", badgeContent: c.count }),
-            }),
-        ),
+        nestedItems,
     });
 }
 
