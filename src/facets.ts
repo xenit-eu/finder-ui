@@ -7,8 +7,10 @@ import * as _ from "react-dom-factories";
 
 import "./facets.less";
 import { IDateRange } from "./search";
+import { DocumentSizeRange_t } from "./documentSize";
 
-export type Facet_Value_t = string | IDateRange;
+//In case later on other ranges are used, we can generalize the type. For now, document size range should be fine.
+export type Facet_Value_t = string | IDateRange | DocumentSizeRange_t;
 export type OnFacetSelected_t = (name: string, label: string, value: Facet_Value_t, valueLabel: string) => void;
 function facetValueToKeyString(value: Facet_Value_t) {
     return value.toString();
@@ -32,7 +34,7 @@ type FacetSub_t = {
 
 function FacetSub({ facet, onFacetSelected }: FacetSub_t): ReactElement<any> {
     const nestedItems = facet.values.map(c => {
-        const key = facetValueToKeyString(c.value)+c.label;
+        const key = facetValueToKeyString(c.value) + c.label;
         return __(ListItem, {
             key,
             onClick: () => onFacetSelected(facet.name, facet.label, c.value, c.label),
@@ -76,3 +78,4 @@ export function Facets({ facets, onFacetSelected }: Facets_t): ReactElement<any>
         __(List, { key: "first" }, facets.filter((k) => k.values.length > 0).map((facet) => FacetSub({ facet, onFacetSelected }))),
     );
 }
+

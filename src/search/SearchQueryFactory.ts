@@ -5,8 +5,9 @@ import {
     IRetrievePathOfFolder, ISearchQueryElement, ISynchronousTranslationService,
     NodeRefSearchQueryElement, OrSearchQueryElement, PropertyNameService_t,
     ReferenceSimpleSearchQueryElement, SearchQuery,
-    StringValuePropertySearchQueryElement, TextSearchQueryElement, ToFillInSearchQueryElement, TypeSearchQueryElement,
+    StringValuePropertySearchQueryElement, TextSearchQueryElement, ToFillInSearchQueryElement, TypeSearchQueryElement, SizeQueryElement,
 } from "./searchquery";
+import { DocumentSizeRange_t } from "./../documentSize";
 
 export interface IFolderSearchQueryElementFactory {
     buildFolderQueryElement(noderef: string): FolderSearchQueryElement;
@@ -74,4 +75,7 @@ export class SearchQueryFactory implements IFolderSearchQueryElementFactory {
     public buildToFillInQueryElement() {
         return new ToFillInSearchQueryElement();
     }
-}
+
+    public buildSizeQueryElement(range: DocumentSizeRange_t){
+        return new SizeQueryElement(range,this.wordTranslator);
+    }}

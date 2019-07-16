@@ -5,11 +5,15 @@ import {
     TextSearchQueryElement,
     ToFillInSearchQueryElement,
     TypeSearchQueryElement,
+    SizeQueryElement,
 } from "./searchquery";
 function flatten<T>(arr: T[][]) {
     return ([] as T[]).concat(...arr);
 }
 export class SearchQueryFilter implements ISearchQueryElementVisitor<ISearchQueryElement[]> {
+    visitSizeQueryElement(queryElement: SizeQueryElement): ISearchQueryElement[] {
+        return this.includeIfConditionTrue(queryElement);
+    }
     public matching: ISearchQueryElement[] = [];
     constructor(private filterCondition: (el: ISearchQueryElement) => boolean) {
     }
