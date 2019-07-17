@@ -4,7 +4,6 @@ import { ISynchronousTranslationService } from "./searchquery";
 import { SearchQueryElementReadableStringVisitor } from "./SearchQueryElementReadableStringVisitor";
 import { SearchQueryFactory } from "./SearchQueryFactory";
 import { ALL, ASPECT, NODEREF, TEXT, TYPE } from "../WordTranslator";
-import { Facet_Value_t } from '../facets';
 import { GetSizeTranslation, DocumentSizeRange_t } from "./../documentSize";
 const d = debug("finder-ui:finderquery");
 

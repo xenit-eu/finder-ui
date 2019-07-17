@@ -6,11 +6,11 @@ import {
     ToFillInSearchQueryElement,
     TypeSearchQueryElement,
     SearchQuery,
-
+    SizeQueryElement,
 } from "./searchquery";
 
 export class SearchQueryNormalizeVisitor implements ISearchQueryElementVisitor<ISearchQueryElement> {
-    visitSizeQueryElement(query: import("./searchquery").SizeQueryElement): ISearchQueryElement {
+    public visitSizeQueryElement(query: SizeQueryElement): ISearchQueryElement {
         return query;
     }
     public visitStringValuePropertySearchQueryElement(query: StringValuePropertySearchQueryElement): ISearchQueryElement {

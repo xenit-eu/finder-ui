@@ -78,4 +78,3 @@ export function Facets({ facets, onFacetSelected }: Facets_t): ReactElement<any>
         __(List, { key: "first" }, facets.filter((k) => k.values.length > 0).map((facet) => FacetSub({ facet, onFacetSelected }))),
     );
 }
-

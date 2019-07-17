@@ -76,6 +76,6 @@ export class SearchQueryFactory implements IFolderSearchQueryElementFactory {
         return new ToFillInSearchQueryElement();
     }
 
-    public buildSizeQueryElement(range: DocumentSizeRange_t){
+    public buildSizeQueryElement(range: DocumentSizeRange_t) {
         return new SizeQueryElement(range,this.wordTranslator);
     }}
