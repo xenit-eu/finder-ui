@@ -4,6 +4,7 @@ import { ISynchronousTranslationService } from "./searchquery";
 import { SearchQueryElementReadableStringVisitor } from "./SearchQueryElementReadableStringVisitor";
 import { SearchQueryFactory } from "./SearchQueryFactory";
 import { ALL, ASPECT, NODEREF, TEXT, TYPE } from "../WordTranslator";
+import { GetSizeTranslation, DocumentSizeRange_t } from "./../documentSize";
 const d = debug("finder-ui:finderquery");
 
 // This is a fake type. The document type is mapped to this QName to be able to put all document information in a hashmap.
@@ -120,7 +121,35 @@ export class TextSearchQueryElement implements ISimpleSearchQueryElement {
     }
 
 }
+export class SizeQueryElement implements ISimpleSearchQueryElement {
+    public static readonly TYPE = "SizeQueryElement";
+    public readonly TYPE = SizeQueryElement.TYPE;
+    public static ParseFromJSON(json: any, context: ISearchQueryElementFromJSONContext) {
+        const typecheckSafety: SizeQueryElement = json;
+        return context.searchQueryFactory().buildSizeQueryElement(typecheckSafety.range);
+    }
+    public constructor(public range: DocumentSizeRange_t, private readonly translate: ISynchronousTranslationService) {
+    }
+    public isReferential() { return false; }
+    public isRemovable() { return true; }
+    public getSimpleSearchbarText() {
+        const ret = this.translate("Size") + ": " + GetSizeTranslation((s) => this.translate(s),this.range);
+        return Promise.resolve(ret);
+    }
+    public getTooltipText() {
+        return this.getSimpleSearchbarText();
+    }
+    public visit<T>(visitor: ISearchQueryElementVisitor<T>): T {
+        return visitor.visitSizeQueryElement(this);
+    }
+    public conflictsWith(other: ISearchQueryElement): boolean {
+        return (other instanceof SizeQueryElement);
+    }
 
+    public equals(other: ISearchQueryElement): boolean {
+        return other instanceof SizeQueryElement && other.range.end === this.range.end && other.range.start === this.range.start;
+    }
+}
 export class AspectSearchQueryElement implements ISimpleSearchQueryElement {
     public static readonly TYPE = "AspectSearchQueryElement";
     public readonly TYPE = AspectSearchQueryElement.TYPE;
@@ -552,4 +581,5 @@ export interface ISearchQueryElementVisitor<T> {
     visitNodeRefSearchQueryElement(query: NodeRefSearchQueryElement): T;
     visitTypeSearchQueryElement(query: TypeSearchQueryElement): T;
     visitToFillInSearchQueryElement(query: ToFillInSearchQueryElement): T;
+    visitSizeQueryElement(query: SizeQueryElement): T;
 }

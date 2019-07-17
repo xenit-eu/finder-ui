@@ -5,11 +5,15 @@ import {
     TextSearchQueryElement,
     ToFillInSearchQueryElement,
     TypeSearchQueryElement,
+    SizeQueryElement,
 
 } from "./searchquery";
 import { SearchQueryNormalizeVisitor } from "./SearchQueryNormalizeVisitor";
 import { AND, OR } from "../WordTranslator";
 export class SearchQueryElementReadableStringVisitor implements ISearchQueryElementVisitor<Promise<string>> {
+    public visitSizeQueryElement(query: SizeQueryElement): Promise<string> {
+        return query.getSimpleSearchbarText();
+    }
     private normalizer = new SearchQueryNormalizeVisitor();
     constructor(private translate: (s: string) => string) {
     }
@@ -59,5 +63,4 @@ export class SearchQueryElementReadableStringVisitor implements ISearchQueryElem
     public visitToFillInSearchQueryElement(query: ToFillInSearchQueryElement): Promise<string> {
         return query.getSimpleSearchbarText();
     }
-
 }
