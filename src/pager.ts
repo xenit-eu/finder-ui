@@ -113,7 +113,7 @@ export function Pager({ totalItems, pageSize, selected, pageSelected }: Pager_t)
         _.span({ key: "pages" }, pageElements),
         pages.slice(-1)[0] < totalPages ? "..." : "",
         __(NextPageLink, { /*key: "next",*/ isActive: selected < totalPages, onClick: () => pageSelected(selected + 1) }),
-        __(ItemsOnThisPage, { totalItems, pageSize, selected }),
+        __(ItemsOnThisPage, { totalItems, pageSize, selected, pageSelected }),
     );
 }
 
