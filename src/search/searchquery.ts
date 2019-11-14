@@ -1,6 +1,5 @@
 import * as debug from "debug";
 import { IDateRange, IDateRangeTranslator } from "./DateRange";
-import { ISynchronousTranslationService } from "./searchquery";
 import { SearchQueryElementReadableStringVisitor } from "./SearchQueryElementReadableStringVisitor";
 import { SearchQueryFactory } from "./SearchQueryFactory";
 import { ALL, ASPECT, NODEREF, TEXT, TYPE } from "../WordTranslator";
