@@ -33,6 +33,10 @@ export class SearchQuery {
         return new SearchQuery(children, this.translate);
     }
 
+    public isEmpty() {
+        return this.elements && this.elements.length === 0;
+    }
+
     public equals(q: SearchQuery) {
         return this.GetRootSearchQueryElement().equals(q.GetRootSearchQueryElement());
     }
