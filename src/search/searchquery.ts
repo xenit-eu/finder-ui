@@ -35,7 +35,7 @@ export class SearchQuery {
     }
 
     public isEmpty() {
-        return this.elements && this.elements.length < 1;
+        return this.elements && this.elements.length === 0;
     }
 
     public equals(q: SearchQuery) {
