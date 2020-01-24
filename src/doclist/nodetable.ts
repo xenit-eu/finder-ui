@@ -69,6 +69,7 @@ export interface INodeTableProps<T> {
     onRowSelected(node: Node_t, rowIndex: number): void; // Called when a row is selected
     onToggleAll?: (checked: boolean) => void;
     onRowToggled?: (node: Node_t, checked: boolean, rowIndex: number) => void;
+    onRowMenuOpened?: (node: Node_t) => void;
     onRowMenuItemClicked: OnMenuSelected_t<T>; // Called when a row menu item is selected
     onSortChanged: OnColumnSort_t; // Called when a column has to be sorted
 };
@@ -84,6 +85,9 @@ export function NodeTable<T>(props: INodeTableProps<T>) {
             width: 60,
             Cell: (prop: { value: INodeTableRow<T>, index: number }) => __(RowMenu, {
                 menuItems: prop.value.rowMenu,
+                onMenuOpened: () => {
+                    props.onRowMenuOpened && props.onRowMenuOpened(prop.value.node);
+                }
                 onMenuItemSelected: (menuKey: T, menuIndex: number) => {
                     props.onRowMenuItemClicked(prop.value.node, menuKey, prop.index, menuIndex);
                 },
@@ -204,16 +208,22 @@ function createColumn(col: INodeTableColumn): Column {
 }
 
 type RowMenu_Props_t<T> = {
-    menuItems: Array<MenuItem_t<T>>
+    menuItems: Array<MenuItem_t<T>>,
+    onMenuOpened: () => void,
     onMenuItemSelected: (menuKey: T, menuIndex: number) => void,
 };
 
-function RowMenu<T>({ menuItems, onMenuItemSelected }: RowMenu_Props_t<T>) {
+function RowMenu<T>({ menuItems, onMenuItemSelected, onMenuOpened }: RowMenu_Props_t<T>) {
     return __(IconMenu, {
         iconButtonElement: __(IconButton, { style: { padding: "0", height: "initial" }, disableTouchRipple: true },
             __(MoreHorizIcon, { color: "grey" })),
         targetOrigin: { horizontal: "right", vertical: "top" },
         anchorOrigin: { horizontal: "right", vertical: "top" },
+        onRequestChange: (open: boolean) => {
+            if (open) {
+                onMenuOpened();
+            }
+        }
     },
         menuItems.map((mi, i) =>
             __(MenuItem, {
