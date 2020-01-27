@@ -59,9 +59,13 @@ export default class DynamicRowMenu<T> extends Component<DynamicRowMenu_Props_t<
             return;
         }
         this.props.onMenuLoadRequested((newMenuIdx, newMenuItem) => {
-            this.setState((state) => ({
-                menuItems: state.menuItems.map((menuItem, menuIdx) => menuIdx === newMenuIdx ? newMenuItem : menuItem),
-            }));
+            this.setState((state) => {
+                const newMenuItems = state.menuItems.slice();
+                newMenuItems[newMenuIdx] = newMenuItem;
+                return {
+                    menuItems: newMenuItems,
+                };
+            });
         });
 
     }
@@ -71,7 +75,9 @@ export default class DynamicRowMenu<T> extends Component<DynamicRowMenu_Props_t<
             open: this.state.open,
             onRequestChange: (open: boolean) => {
                 this.setState({ open });
-                this._triggerMenuLoad();
+                if (open) {
+                    this._triggerMenuLoad();
+                }
             },
             menuItems: this.props.menuItems
                 .map((menuItem, menuIdx) => this.state.menuItems[menuIdx] || menuItem),

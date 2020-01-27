@@ -6,7 +6,7 @@ import "react-table/react-table.css";
 import { Node_t, FieldHighlights_t } from "../metadata";
 import { ColumnRenderer_t } from "./renderer/interface";
 import RowMenu, { MenuItem_t } from "./RowMenu";
-
+export { MenuItem_t as NodeTableRowMenuItem_t } from "./RowMenu";
 
 export interface INodeTableBasicColumn {
     name: string;
