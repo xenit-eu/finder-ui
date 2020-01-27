@@ -1,5 +1,5 @@
 import { Button, DialogActions, Select } from "@material-ui/core";
-import { configure, mount } from "enzyme";
+import { configure, mount, ReactWrapper } from "enzyme";
 import * as Adapter from "enzyme-adapter-react-16";
 import { createElement as __ } from "react";
 import AvailableColumns from "./availablecolumns";
@@ -107,7 +107,7 @@ describe("ColumnsPicker: ColumnsPickerContent", () => {
     it("Selecting/deselecting sets", () => {
         const props = testProps;
 
-        const component = mount(__(ColumnsPickerContent, props )as any);
+        const component = mount(__(ColumnsPickerContent, props) as any);
 
         expect(component.find(ColumnSetManager)).toHaveProp("currentSet", null);
 
@@ -167,7 +167,7 @@ describe("ColumnsPicker: ColumnsPickerContent", () => {
         const onSetsChangeSpy = spyOn(props, "onSetsChange");
         const onDoneSpy = spyOn(props, "onDone");
 
-        const component = mount(__(ColumnsPickerContent, props)as any);
+        const component = mount(__(ColumnsPickerContent, props) as any);
         component.find(ColumnSetManager).prop("onSelect")(columnSets[1]);
         component.update();
         expect(component.find(SortableColumns)).toHaveProp("columns", [
@@ -244,7 +244,7 @@ describe("ColumnsPicker: ColumnsPickerContent", () => {
         const onSetsChangeSpy = spyOn(props, "onSetsChange");
         const onDoneSpy = spyOn(props, "onDone");
 
-        const component = mount(__(ColumnsPickerContent, props)as any);
+        const component: ReactWrapper<ColumnsPickerContent["props"], ColumnsPickerContent["state"], ColumnsPickerContent> = mount(__(ColumnsPickerContent, props));
         component.find(ColumnSetManager).prop("onSelect")(component.state("sets")[1]);
         component.update();
         expect(component.find(SortableColumns)).toHaveProp("columns", [
