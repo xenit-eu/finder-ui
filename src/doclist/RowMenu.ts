@@ -36,7 +36,7 @@ export function RowMenu<T>({ menuItems, onMenuItemSelected, ...props }: RowMenu_
 type LoadMenuItem_Callback_t<T> = (index: number, menuItem: MenuItem_t<T>) => void;
 
 type DynamicRowMenu_Props_t<T> = RowMenu_SharedProps_t<T> & {
-    onMenuLoadRequested?: (callback: LoadMenuItem_Callback_t<T>) => void,
+    onMenuLoadRequested?: (callback: LoadMenuItem_Callback_t<T>) => Promise<void>,
 };
 
 type DynamicRowMenu_State_t<T> = {
@@ -54,11 +54,11 @@ export default class DynamicRowMenu<T> extends Component<DynamicRowMenu_Props_t<
         };
     }
 
-    private _triggerMenuLoad() {
+    private _triggerMenuLoad(): Promise<void> {
         if (!this.props.onMenuLoadRequested) {
-            return;
+            return Promise.resolve();
         }
-        this.props.onMenuLoadRequested((newMenuIdx, newMenuItem) => {
+        return this.props.onMenuLoadRequested((newMenuIdx, newMenuItem) => {
             this.setState((state) => {
                 const newMenuItems = state.menuItems.slice();
                 newMenuItems[newMenuIdx] = newMenuItem;
@@ -74,9 +74,13 @@ export default class DynamicRowMenu<T> extends Component<DynamicRowMenu_Props_t<
         return __(RowMenu, {
             open: this.state.open,
             onRequestChange: (open: boolean) => {
-                this.setState({ open });
                 if (open) {
-                    this._triggerMenuLoad();
+                    Promise.race([
+                        this._triggerMenuLoad(),
+                        waitFor(100),
+                    ]).then(() => this.setState({ open: true }), () => this.setState({ open: true }));
+                } else {
+                    this.setState({ open: false });
                 }
             },
             menuItems: this.props.menuItems
@@ -86,4 +90,10 @@ export default class DynamicRowMenu<T> extends Component<DynamicRowMenu_Props_t<
 
     }
 
+}
+
+function waitFor(ms: number): Promise<void> {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
 }

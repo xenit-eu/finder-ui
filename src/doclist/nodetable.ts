@@ -65,7 +65,7 @@ export interface INodeTableProps<T> {
     onRowSelected(node: Node_t, rowIndex: number): void; // Called when a row is selected
     onToggleAll?: (checked: boolean) => void;
     onRowToggled?: (node: Node_t, checked: boolean, rowIndex: number) => void;
-    onRowMenuLoadRequested?: (node: Node_t, rowIndex: number, callback: NodeTableMenuLoad_Callback_t<T>) => void;
+    onRowMenuLoadRequested?: (node: Node_t, rowIndex: number, callback: NodeTableMenuLoad_Callback_t<T>) => Promise<void>;
     onRowMenuItemClicked: OnMenuSelected_t<T>; // Called when a row menu item is selected
     onSortChanged: OnColumnSort_t; // Called when a column has to be sorted
 };
@@ -83,8 +83,9 @@ export function NodeTable<T>(props: INodeTableProps<T>) {
                 menuItems: prop.value.rowMenu,
                 onMenuLoadRequested: (callback) => {
                     if (props.onRowMenuLoadRequested) {
-                        props.onRowMenuLoadRequested(prop.value.node, prop.index, callback);
+                        return props.onRowMenuLoadRequested(prop.value.node, prop.index, callback);
                     }
+                    return Promise.resolve();
                 },
                 onMenuItemSelected: (menuKey: T, menuIndex: number) => {
                     props.onRowMenuItemClicked(prop.value.node, menuKey, prop.index, menuIndex);
