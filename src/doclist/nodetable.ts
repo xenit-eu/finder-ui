@@ -1,17 +1,12 @@
-import { Checkbox, IconButton, IconMenu, MenuItem } from "material-ui";
-import MoreHorizIcon from "material-ui/svg-icons/navigation/more-horiz";
+import { Checkbox } from "material-ui";
 import ToggleIndeterminateCheckBox from "material-ui/svg-icons/toggle/indeterminate-check-box";
 import { createElement as __, CSSProperties, MouseEvent } from "react";
 import ReactTable, { Column, RowInfo, SortingRule, TableProps } from "react-table";
 import "react-table/react-table.css";
 import { Node_t, FieldHighlights_t } from "../metadata";
 import { ColumnRenderer_t } from "./renderer/interface";
-
-type MenuItem_t<T> = {
-    key: T,
-    label: string,
-    disabled: boolean,
-};
+import RowMenu, { MenuItem_t } from "./RowMenu";
+export { MenuItem_t as NodeTableRowMenuItem_t } from "./RowMenu";
 
 export interface INodeTableBasicColumn {
     name: string;
@@ -55,6 +50,7 @@ export interface INodeTableRow<T> {
     highlights?: FieldHighlights_t[];
 };
 
+type NodeTableMenuLoad_Callback_t<T> = (menuItemIndex: number, menuItem: MenuItem_t<T>) => void;
 export interface INodeTableProps<T> {
     rows: INodeTableRow<T>[]; // List of rows to show in the table
     columns: INodeTableColumn[]; // Columns to show in the table
@@ -69,6 +65,7 @@ export interface INodeTableProps<T> {
     onRowSelected(node: Node_t, rowIndex: number): void; // Called when a row is selected
     onToggleAll?: (checked: boolean) => void;
     onRowToggled?: (node: Node_t, checked: boolean, rowIndex: number) => void;
+    onRowMenuLoadRequested?: (node: Node_t, rowIndex: number, callback: NodeTableMenuLoad_Callback_t<T>) => Promise<void>;
     onRowMenuItemClicked: OnMenuSelected_t<T>; // Called when a row menu item is selected
     onSortChanged: OnColumnSort_t; // Called when a column has to be sorted
 };
@@ -84,6 +81,12 @@ export function NodeTable<T>(props: INodeTableProps<T>) {
             width: 60,
             Cell: (prop: { value: INodeTableRow<T>, index: number }) => __(RowMenu, {
                 menuItems: prop.value.rowMenu,
+                onMenuLoadRequested: (callback) => {
+                    if (props.onRowMenuLoadRequested) {
+                        return props.onRowMenuLoadRequested(prop.value.node, prop.index, callback);
+                    }
+                    return Promise.resolve();
+                },
                 onMenuItemSelected: (menuKey: T, menuIndex: number) => {
                     props.onRowMenuItemClicked(prop.value.node, menuKey, prop.index, menuIndex);
                 },
@@ -201,31 +204,4 @@ function createColumn(col: INodeTableColumn): Column {
             highlights: prop.value.highlights || [],
         }),
     };
-}
-
-type RowMenu_Props_t<T> = {
-    menuItems: Array<MenuItem_t<T>>
-    onMenuItemSelected: (menuKey: T, menuIndex: number) => void,
-};
-
-function RowMenu<T>({ menuItems, onMenuItemSelected }: RowMenu_Props_t<T>) {
-    return __(IconMenu, {
-        iconButtonElement: __(IconButton, { style: { padding: "0", height: "initial" }, disableTouchRipple: true },
-            __(MoreHorizIcon, { color: "grey" })),
-        targetOrigin: { horizontal: "right", vertical: "top" },
-        anchorOrigin: { horizontal: "right", vertical: "top" },
-    },
-        menuItems.map((mi, i) =>
-            __(MenuItem, {
-                key: i,
-                primaryText: mi.label,
-                disabled: mi.disabled,
-                onClick: (event: MouseEvent<any>) => {
-                    onMenuItemSelected(mi.key, i);
-                    event.stopPropagation();
-                    event.preventDefault();
-                },
-            }),
-        ),
-    );
 }
