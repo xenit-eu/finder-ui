@@ -1,6 +1,5 @@
 {
     "compilerOptions": {
-        "esModuleInterop": true,
         "outDir": "./tmp",
         "target": "es5",
         "module": "commonjs",

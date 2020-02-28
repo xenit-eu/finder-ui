@@ -1,5 +1,6 @@
 var path = require("path");
 module.exports = {
+    mode: 'none',
     resolve: {
         extensions: [".js", ".jsx", ".ts", ".tsx"],
     },

@@ -80,6 +80,7 @@
     "@types/react": "16.4.2",
     "@types/react-dom": "^16.0.0",
     "@xenit/tslint-custom": "https://github.com/xenit-eu/tslint-custom.git#v1.0.1",
+    "babel-loader": "^8.0.6",
     "core-js": "^2.5.1",
     "css-loader": "^3.4.2",
     "enzyme": "^3.3.0",
