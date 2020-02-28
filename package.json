@@ -25,9 +25,7 @@
   "license": "ISC",
   "peerDependencies": {
     "react-dom": "*",
-    "react": "*",
-    "@types/react-dom": "*",
-    "@types/react": "*"
+    "react": ">=16.8.0"
   },
   "dependencies": {
     "@material-ui/core": "1.5.0",
@@ -45,7 +43,6 @@
     "@types/react-table": "6.7.12",
     "@xenit/finder-utils": "https://github.com/xenit-eu/finder-utils.git#v1.0.0",
     "classnames": "^2.2.6",
-    "codemirror": "^5.31.0",
     "debug": "^3.1.0",
     "es6-shim": "^0.35.3",
     "filesize": "^3.5.11",
@@ -56,10 +53,8 @@
     "material-ui-chip-input": "^0.18.3",
     "moment": "^2.17.1",
     "react-checkbox-tree": "^1.0.2",
-    "react-codemirror": "^1.0.0",
     "react-dom-factories": "1.0.2",
     "react-flatpickr": "^3.4.0",
-    "react-resizer": "^0.1.2",
     "react-sortable-hoc": "^0.8.3",
     "react-table": "6.8.6",
     "sortablejs": "^1.6.0"
@@ -77,7 +72,7 @@
     "@types/jasmine": "^2.8.8",
     "@types/jasmine-enzyme": "^3.6.3",
     "@types/prop-types": "^15.5.3",
-    "@types/react": "16.4.2",
+    "@types/react": "^16.9.23",
     "@types/react-dom": "^16.0.0",
     "@xenit/tslint-custom": "https://github.com/xenit-eu/tslint-custom.git#v1.0.1",
     "babel-loader": "^8.0.6",
@@ -102,7 +97,7 @@
     "karma-webpack": "^4.0.2",
     "less": "^3.11.1",
     "less-loader": "^5.0.0",
-    "react": "^16.0.0",
+    "react": "^16.13.0",
     "react-docgen-typescript-loader": "^3.6.0",
     "react-dom": "^16.0.0",
     "react-test-renderer": "16.5.2",
