@@ -51,6 +51,7 @@ type UploadedFile_Props_t = {
     progress: number,
     onCancel?: () => void,
     onClick?: () => void,
+    actions?: React.ReactNode,
 } & WithStyles<typeof styles>;
 
 function UploadedFileInternal(props: UploadedFile_Props_t) {
@@ -73,7 +74,7 @@ function UploadedFileInternal(props: UploadedFile_Props_t) {
             }}>
                 <Cancel />
             </IconButton>
-        </Grid> : null}
+        </Grid> : props.actions}
     </Grid>;
 }
 
