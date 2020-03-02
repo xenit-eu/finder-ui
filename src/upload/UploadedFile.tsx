@@ -1,0 +1,69 @@
+import * as React from "react";
+import { Grid, CircularProgress, IconButton } from "@material-ui/core";
+import CheckCircleOutlined from "@material-ui/icons/CheckCircleOutlined";
+import Cancel from "@material-ui/icons/Cancel";
+import { Theme, WithStyles, withStyles } from "@material-ui/core/styles";
+import * as classNames from "classnames";
+import { CSSProperties } from "@material-ui/core/styles/withStyles";
+
+const styles = (theme: Theme) => ({
+    root: {
+        height: 48 + 2 * theme.spacing.unit,
+        alignItems: "center",
+    },
+    uploading: {
+
+    },
+    uploaded: {
+
+    },
+    cancelable: {
+
+    },
+
+    uploadProgress: {
+        "display": "flex",
+        "alignContent": "center",
+        "width": 48,
+        "& > *": {
+            margin: "auto",
+        },
+    },
+
+    uploadTitle: {
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        whiteSpace: "nowrap",
+    } as CSSProperties,
+    uploadCancel: {
+
+    },
+});
+
+type UploadedFile_Props_t = {
+    name: string,
+    progress: number,
+    onCancel?: () => void,
+} & WithStyles<typeof styles>;
+
+function UploadedFileInternal(props: UploadedFile_Props_t) {
+    const progress = Math.min(1, Math.max(0, props.progress));
+    const isCompleted = progress >= 1;
+    return <Grid className={classNames(props.classes.root, {
+        [props.classes.uploading]: !isCompleted,
+        [props.classes.uploaded]: isCompleted,
+        [props.classes.cancelable]: !!props.onCancel && !isCompleted,
+    })} container>
+        <Grid item className={props.classes.uploadProgress}>
+            {isCompleted ? <CheckCircleOutlined /> : <CircularProgress size={24} variant="static" value={progress * 100} />}
+        </Grid>
+        <Grid item xs className={props.classes.uploadTitle}>{props.name}</Grid>
+        {props.onCancel && !isCompleted ? <Grid item className={props.classes.uploadCancel}>
+            <IconButton onClick={() => props.onCancel!()}>
+                <Cancel />
+            </IconButton>
+        </Grid> : null}
+    </Grid>;
+}
+
+export default withStyles(styles, { name: "FinderUploadedFile" })(UploadedFileInternal);
