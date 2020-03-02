@@ -33,3 +33,16 @@ export const withCancelButton = () => <Paper>
         </Grid>
     </Grid>
 </Paper>;
+
+export const clickable = () => <Paper>
+    <Grid container >
+        <Grid item xs>
+            <UploadedFile
+                progress={number("progress", 0.5, { range: true, min: 0, max: 1, step: 0.01 })}
+                name={text("name", "Some_filename.txt")}
+                onCancel={action("cancel")}
+                onClick={action("click")}
+            />
+        </Grid>
+    </Grid>
+</Paper>;

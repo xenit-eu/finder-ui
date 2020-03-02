@@ -20,6 +20,12 @@ const styles = (theme: Theme) => ({
     cancelable: {
 
     },
+    clickable: {
+        "cursor": "pointer",
+        "&:hover": {
+            backgroundColor: theme.palette.action.hover,
+        },
+    },
 
     uploadProgress: {
         "display": "flex",
@@ -44,6 +50,7 @@ type UploadedFile_Props_t = {
     name: string,
     progress: number,
     onCancel?: () => void,
+    onClick?: () => void,
 } & WithStyles<typeof styles>;
 
 function UploadedFileInternal(props: UploadedFile_Props_t) {
@@ -53,13 +60,17 @@ function UploadedFileInternal(props: UploadedFile_Props_t) {
         [props.classes.uploading]: !isCompleted,
         [props.classes.uploaded]: isCompleted,
         [props.classes.cancelable]: !!props.onCancel && !isCompleted,
-    })} container>
+        [props.classes.clickable]: !!props.onClick,
+    })} container onClick={() => props.onClick && props.onClick()}>
         <Grid item className={props.classes.uploadProgress}>
             {isCompleted ? <CheckCircleOutlined /> : <CircularProgress size={24} variant="static" value={progress * 100} />}
         </Grid>
         <Grid item xs className={props.classes.uploadTitle}>{props.name}</Grid>
         {props.onCancel && !isCompleted ? <Grid item className={props.classes.uploadCancel}>
-            <IconButton onClick={() => props.onCancel!()}>
+            <IconButton onClick={(e) => {
+                e.stopPropagation();
+                props.onCancel!();
+            }}>
                 <Cancel />
             </IconButton>
         </Grid> : null}
