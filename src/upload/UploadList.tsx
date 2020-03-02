@@ -2,9 +2,8 @@ import * as React from "react";
 import FileDropZone from "./FileDropZone";
 import { List, ListItem } from "@material-ui/core";
 import UploadedFile from "./UploadedFile";
-import { Theme, WithStyles, withStyles } from "@material-ui/core/styles";
-import { CSSProperties } from "@material-ui/core/styles/withStyles";
-import classnames from "classnames";
+import Overlay from "../overlay";
+import { WithStyles, withStyles } from "@material-ui/core/styles";
 
 export interface IUploadedFile {
     readonly file: File;
@@ -18,8 +17,6 @@ export type UploadList_Props_t<T extends IUploadedFile = IUploadedFile> = {
     onUploadCancel: (file: T) => void,
     placeholder?: React.ReactElement,
     overlay?: React.ReactElement,
-    // @internal
-    _forceOverlay?: boolean,
 };
 
 const uploadListStyles = {
@@ -44,44 +41,14 @@ function UploadListInternal<T extends IUploadedFile>(props: UploadList_Props_t<T
 
 const UploadList = withStyles(uploadListStyles)(UploadListInternal);
 
-function UploadListOverlay({ overlay, ...props }: Pick<UploadList_Props_t, "overlay"> & React.HTMLAttributes<HTMLDivElement>) {
-    if (!overlay) {
-        return null;
-    }
-
-    return <div {...props}>{overlay}</div>;
-}
-
-const uploadListWithDropZoneStyles = (theme: Theme) => ({
-    overlayWrap: {
-        position: "relative",
-    } as CSSProperties,
-    overlayComponent: {
-        position: "absolute",
-        width: "100%",
-        height: "100%",
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
-        zIndex: theme.zIndex.tooltip,
-    } as CSSProperties,
-    overlayComponentHidden: {
-        display: "none",
-    } as CSSProperties,
-});
-
-function UploadListWithDropZone<T extends IUploadedFile = IUploadedFile>(props: UploadList_Props_t<T> & WithStyles<typeof uploadListWithDropZoneStyles>) {
+export default function UploadListWithDropZone<T extends IUploadedFile = IUploadedFile>(props: UploadList_Props_t<T>) {
     return <FileDropZone onFilesDropped={props.onFilesDropped}>{(isDragging: boolean) => {
-        return <div className={props.classes.overlayWrap}>
-            <UploadListOverlay
-                overlay={props.overlay}
-                className={classnames(
-                    props.classes.overlayComponent,
-                    {
-                        [props.classes.overlayComponentHidden]: !props._forceOverlay && !isDragging,
-                    },
-                )} />
+        return <Overlay
+            open={isDragging}
+            overlay={props.overlay}
+        >
             <UploadList {...props} />
-        </div>;
+        </Overlay>;
+
     }}</FileDropZone>;
 }
-
-export default withStyles(uploadListWithDropZoneStyles)(UploadListWithDropZone);

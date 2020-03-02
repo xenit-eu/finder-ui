@@ -33,8 +33,6 @@ export default function FileDropZone(props: FileDropZone_Props_t) {
 
     function onDragLeave(event: React.DragEvent) {
         setDragging(false);
-        event.preventDefault();
-        event.stopPropagation();
     }
 
     return <div

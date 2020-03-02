@@ -4,6 +4,7 @@ import { Paper } from "@material-ui/core";
 import CloudUpload from "@material-ui/icons/CloudUpload";
 import { action } from "@storybook/addon-actions";
 import { withKnobs, number } from "@storybook/addon-knobs";
+import { OverlayCentered } from "../overlay";
 
 export default {
     title: "upload/UploadList",
@@ -37,18 +38,9 @@ function UploadListWithWrapper({ uploadSpeed, ...props }: UploadListWithWrapper_
         onUploadClick={action("uploadClick")}
         files={files}
         placeholder={<div style={{ height: 100 }}>Drop your files here to upload</div>}
-        overlay={<div style={{
-            fontSize: 80,
-            margin: "auto",
-            display: "flex",
-            alignItems: "center",
-            height: "100%",
-        }}>
-            <CloudUpload nativeColor="white" fontSize="inherit" style={{
-                alignSelf: "center",
-                flex: "auto",
-            }} />
-        </div>}
+        overlay={<OverlayCentered style={{ fontSize: 80 }}>
+            <CloudUpload nativeColor="white" fontSize="inherit" />
+        </OverlayCentered>}
         {...props}
     />;
 }
@@ -56,12 +48,5 @@ function UploadListWithWrapper({ uploadSpeed, ...props }: UploadListWithWrapper_
 export const normal = () => <Paper>
     <UploadListWithWrapper
         uploadSpeed={number("uploadSpeed", 0.02, { range: true, min: 0, max: 1, step: 0.01 })}
-    />
-</Paper>;
-
-export const withOverlay = () => <Paper>
-    <UploadListWithWrapper
-        uploadSpeed={number("uploadSpeed", 0.02, { range: true, min: 0, max: 1, step: 0.01 })}
-        _forceOverlay
     />
 </Paper>;
