@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Grid, CircularProgress, IconButton } from "@material-ui/core";
-import CheckCircleOutlined from "@material-ui/icons/CheckCircleOutlined";
+import CheckCircle from "@material-ui/icons/CheckCircle";
 import Cancel from "@material-ui/icons/Cancel";
 import { Theme, WithStyles, withStyles } from "@material-ui/core/styles";
 import * as classNames from "classnames";
@@ -25,6 +25,10 @@ const styles = (theme: Theme) => ({
         "&:hover": {
             backgroundColor: theme.palette.action.hover,
         },
+    },
+
+    uploadedIcon: {
+
     },
 
     uploadProgress: {
@@ -64,7 +68,7 @@ function UploadedFileInternal(props: UploadedFile_Props_t) {
         [props.classes.clickable]: !!props.onClick,
     })} container onClick={() => props.onClick && props.onClick()}>
         <Grid item className={props.classes.uploadProgress}>
-            {isCompleted ? <CheckCircleOutlined /> : <CircularProgress size={24} variant="static" value={progress * 100} />}
+            {isCompleted ? <CheckCircle className={props.classes.uploadedIcon} /> : <CircularProgress size={24} variant="static" value={progress * 100} />}
         </Grid>
         <Grid item xs className={props.classes.uploadTitle}>{props.name}</Grid>
         {props.onCancel && !isCompleted ? <Grid item className={props.classes.uploadCancel}>
