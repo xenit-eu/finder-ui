@@ -11,7 +11,17 @@ export default {
 };
 
 export const normal = () => <Paper>
-    <Overlay open={boolean("open", true)} overlay={<div style={{ margin: "auto" }}>Overlayed content</div>}>
+    <Overlay open={boolean("open", true)} overlay={<div>Overlayed content</div>}>
+        <div style={{
+            height: 200,
+        }}>
+            Inline content...
+        </div>
+    </Overlay>
+</Paper>;
+
+export const centered = () => <Paper>
+    <Overlay open={boolean("open", true)} overlay={<div>Overlayed content</div>} centered>
         <div style={{
             height: 200,
         }}>
