@@ -1,7 +1,8 @@
 import * as React from "react";
 import UploadList, { IUploadedFile, UploadList_Props_t } from "./UploadList";
-import { Paper } from "@material-ui/core";
+import { Paper, IconButton } from "@material-ui/core";
 import CloudUpload from "@material-ui/icons/CloudUpload";
+import Visibility from "@material-ui/icons/Visibility";
 import { action } from "@storybook/addon-actions";
 import { number } from "@storybook/addon-knobs";
 import { OverlayCentered } from "../overlay";
@@ -15,7 +16,13 @@ type UploadListWithWrapper_Props_t = {
     uploadSpeed: number,
 } & Partial<UploadList_Props_t>;
 function UploadListWithWrapper({ uploadSpeed, ...props }: UploadListWithWrapper_Props_t) {
-    const [files, setFiles] = React.useState([] as IUploadedFile[]);
+    const [files, setFiles] = React.useState([{
+        fileName: "Filename.txt",
+        progress: 1,
+    }, {
+        fileName: "File2.doc",
+        progress: 0.5,
+    }] as IUploadedFile[]);
 
     React.useEffect(() => {
         const timer = setInterval(() => {
@@ -26,7 +33,7 @@ function UploadListWithWrapper({ uploadSpeed, ...props }: UploadListWithWrapper_
 
     return <UploadList
         onFilesDropped={(uploadedFiles: readonly File[]) => {
-            const uploadedFileObjects = uploadedFiles.map(file => ({ file, progress: 0 }));
+            const uploadedFileObjects = uploadedFiles.map(file => ({ fileName: file.name, progress: 0 }));
             setFiles(existingFiles => existingFiles.concat(uploadedFileObjects));
             action("filesDropped")([uploadedFiles]);
         }}
@@ -49,3 +56,10 @@ export const normal = () => <Paper>
         uploadSpeed={number("uploadSpeed", 0.02, { range: true, min: 0, max: 1, step: 0.01 })}
     />
 </Paper>;
+
+export const withActions = () => <Paper>
+    <UploadListWithWrapper
+        uploadSpeed={number("uploadSpeed", 0.02, { range: true, min: 0, max: 1, step: 0.01 })}
+        uploadActions={(file: IUploadedFile) => <IconButton><Visibility /></IconButton>}
+    />
+</Paper>

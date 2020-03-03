@@ -50,7 +50,7 @@ export const actions = () => <Paper>
     <Grid container >
         <Grid item xs>
             <UploadedFile
-                progress={number("progress", 0.5, { range: true, min: 0, max: 1, step: 0.01 })}
+                progress={number("progress", 1, { range: true, min: 0, max: 1, step: 0.01 })}
                 name={text("name", "Some_filename.txt")}
                 onCancel={action("cancel")}
                 actions={<IconButton>

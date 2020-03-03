@@ -56,7 +56,7 @@ type UploadedFile_Props_t = {
     progress: number,
     onCancel?: () => void,
     onClick?: () => void,
-    actions?: React.ReactElement,
+    actions?: React.ReactNode,
 } & WithStyles<typeof styles>;
 
 function UploadedFileInternal(props: UploadedFile_Props_t) {
