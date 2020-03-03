@@ -5,6 +5,7 @@ import Cancel from "@material-ui/icons/Cancel";
 import { Theme, WithStyles, withStyles } from "@material-ui/core/styles";
 import * as classNames from "classnames";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
+import { useTranslation } from "react-i18next";
 
 const styles = (theme: Theme) => ({
     root: {
@@ -61,6 +62,7 @@ type UploadedFile_Props_t = {
 function UploadedFileInternal(props: UploadedFile_Props_t) {
     const progress = Math.min(1, Math.max(0, props.progress));
     const isCompleted = progress >= 1;
+    const { t } = useTranslation("finder-ui");
     return <Grid className={classNames(props.classes.root, {
         [props.classes.uploading]: !isCompleted,
         [props.classes.uploaded]: isCompleted,
@@ -68,14 +70,14 @@ function UploadedFileInternal(props: UploadedFile_Props_t) {
         [props.classes.clickable]: !!props.onClick,
     })} container onClick={() => props.onClick && props.onClick()}>
         <Grid item className={props.classes.uploadProgress}>
-            {isCompleted ? <CheckCircle className={props.classes.uploadedIcon} /> : <CircularProgress size={24} variant="static" value={progress * 100} />}
+            {isCompleted ? <CheckCircle className={props.classes.uploadedIcon} aria-label={t("upload/UploadedFile/done")} /> : <CircularProgress size={24} variant="static" value={progress * 100} />}
         </Grid>
         <Grid item xs className={props.classes.uploadTitle}>{props.name}</Grid>
         {props.onCancel && !isCompleted ? <Grid item className={props.classes.uploadCancel}>
             <IconButton onClick={(e) => {
                 e.stopPropagation();
                 props.onCancel!();
-            }}>
+            }} role="button" title={t("upload/UploadedFile/cancel")}>
                 <Cancel />
             </IconButton>
         </Grid> : props.actions}
