@@ -3,11 +3,10 @@ import UploadedFile from "./UploadedFile";
 import { Paper, Grid, IconButton } from "@material-ui/core";
 import Visibility from "@material-ui/icons/Visibility";
 import { action } from "@storybook/addon-actions";
-import { withKnobs, text, number, boolean } from "@storybook/addon-knobs";
+import { text, number, boolean } from "@storybook/addon-knobs";
 
 export default {
     title: "upload/UploadedFile",
-    decorators: [withKnobs],
     component: UploadedFile,
 };
 

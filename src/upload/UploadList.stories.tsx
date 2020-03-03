@@ -3,12 +3,11 @@ import UploadList, { IUploadedFile, UploadList_Props_t } from "./UploadList";
 import { Paper } from "@material-ui/core";
 import CloudUpload from "@material-ui/icons/CloudUpload";
 import { action } from "@storybook/addon-actions";
-import { withKnobs, number } from "@storybook/addon-knobs";
+import { number } from "@storybook/addon-knobs";
 import { OverlayCentered } from "../overlay";
 
 export default {
     title: "upload/UploadList",
-    decorators: [withKnobs],
     component: UploadList,
 };
 
