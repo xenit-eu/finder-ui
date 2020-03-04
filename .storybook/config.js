@@ -32,7 +32,7 @@ addDecorator(makeDecorator({
     wrapper: (getStory, context) => {
         const story = getStory(context);
         return createElement(Suspense, {
-            fallback: createElement("span", {}, "Loading..."),
+            fallback: createElement("span", {}, "Loading translations..."),
         }, story);
     }
 }))

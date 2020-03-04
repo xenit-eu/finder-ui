@@ -1,8 +1,6 @@
 import * as React from "react";
-import FileDropZone from "./FileDropZone";
 import { List, ListItem } from "@material-ui/core";
 import UploadedFile from "./UploadedFile";
-import Overlay from "../overlay";
 import { WithStyles, withStyles } from "@material-ui/core/styles";
 
 export interface IUploadedFile {
@@ -11,13 +9,11 @@ export interface IUploadedFile {
 };
 
 export type UploadList_Props_t<T extends IUploadedFile = IUploadedFile> = {
-    onFilesDropped: (files: readonly File[]) => void,
     files: readonly T[];
     onUploadClick: (file: T) => void,
     onUploadCancel: (file: T) => void,
     uploadActions?: (file: T) => React.ReactNode,
     placeholder?: React.ReactElement,
-    overlay?: React.ReactElement,
 };
 
 const uploadListStyles = {
@@ -28,7 +24,7 @@ const uploadListStyles = {
 };
 
 function DivComponent(props: any) {
-    return <div {...props} role="list" />;
+    return <div {...props} />;
 }
 
 function UploadListInternal<T extends IUploadedFile>(props: UploadList_Props_t<T> & WithStyles<typeof uploadListStyles>) {
@@ -49,16 +45,4 @@ function UploadListInternal<T extends IUploadedFile>(props: UploadList_Props_t<T
     </List>;
 }
 
-const UploadList = withStyles(uploadListStyles)(UploadListInternal);
-
-export default function UploadListWithDropZone<T extends IUploadedFile = IUploadedFile>(props: UploadList_Props_t<T>) {
-    return <FileDropZone onFilesDropped={props.onFilesDropped}>{(isDragging: boolean) => {
-        return <Overlay
-            open={isDragging}
-            overlay={props.overlay}
-        >
-            <UploadList {...props} />
-        </Overlay>;
-
-    }}</FileDropZone>;
-}
+export default withStyles(uploadListStyles)(UploadListInternal);
