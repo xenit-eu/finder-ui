@@ -45,7 +45,7 @@ function Overlay(props: Overlay_Props_t & WithStyles<typeof overlayStyle>) {
         })}>
             {overlay}
         </div> : null}
-        {...React.Children.toArray(props.children)}
+        {props.children}
     </div>;
 }
 
