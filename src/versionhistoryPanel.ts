@@ -1,4 +1,4 @@
-import * as moment from "moment";
+import moment from "moment";
 import { createElement as __, CSSProperties, ReactElement } from "react";
 import * as _ from "react-dom-factories";
 

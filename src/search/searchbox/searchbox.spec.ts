@@ -1,7 +1,5 @@
 import { SearchQueryFactory } from "../SearchQueryFactory";
 import "core-js";
-import { configure } from "enzyme";
-import * as Adapter from "enzyme-adapter-react-16";
 import "es6-shim";
 import { createElement as __ } from "react";
 import { Fixture } from "../../testUtils";
@@ -10,10 +8,6 @@ import { SearchBox } from "./searchbox";
 import { ISimpleSearchQueryElement, StringValuePropertySearchQueryElement } from "../searchquery";
 import { AutocompleteSearchBox_t } from "./AutocompleteSearchbox";
 import { SearchBox_t } from "./common";
-// tslint:disable-next-line:no-var-requires
-const jasmineEnzyme = require("jasmine-enzyme"); // no typings for jasmine-engine => require instead of import.
-
-configure({ adapter: new Adapter() });
 
 const ENTER_KEY_CODE: number = 13;
 export function dummyPropertyService() {
@@ -27,9 +21,6 @@ export function dummyPropertyService() {
 
 describe("SearchBox component tests", () => {
     const fac: SearchQueryFactory = SearchQueryFactory.GetDummySearchQueryFactory();
-    beforeEach(() => {
-        jasmineEnzyme();
-    });
 
     function SearchboxViaSearchablesProps(searchable: ISearchableQueryElement | undefined, queryElements: ISimpleSearchQueryElement[], autocompleteSuggestions: SimpleAutoCompleteListElement[] = []) {
         const retProps: SearchBox_t & AutocompleteSearchBox_t = {
@@ -52,7 +43,7 @@ describe("SearchBox component tests", () => {
     }
     it("should call onSearch callback when enter key pressed without input text", (done) => {
         const props = SearchboxViaSearchablesProps(undefined, []);
-        spyOn(props, "onSearch");
+        jest.spyOn(props, "onSearch").mockImplementation(() => { });
         const wrapper = Fixture(__(SearchBox, props));
         wrapper.find("input").simulate("keyUp", { keyCode: ENTER_KEY_CODE });
         expect(props.onSearch).toHaveBeenCalled();

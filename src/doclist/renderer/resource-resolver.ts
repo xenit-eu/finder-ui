@@ -1,4 +1,4 @@
-import * as ld from "lodash";
+import ld from "lodash";
 import { Component } from "react";
 import * as _ from "react-dom-factories";
 import { ColumnRenderer_Config_t, ColumnRenderer_Factory_t, ColumnRenderer_Props_t, ColumnRenderer_t } from "./interface";

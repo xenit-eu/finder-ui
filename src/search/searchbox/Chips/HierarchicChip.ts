@@ -1,5 +1,5 @@
 
-import * as keycode from "keycode";
+import keycode from "keycode";
 import CancelIcon from "material-ui/svg-icons/navigation/cancel";
 import { Component, createElement as __, ReactElement } from "react";
 import * as _ from "react-dom-factories";

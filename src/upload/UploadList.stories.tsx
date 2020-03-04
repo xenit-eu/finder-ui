@@ -22,7 +22,7 @@ function UploadListWithWrapper(props: Partial<UploadList_Props_t>) {
 
     return <UploadList
         onUploadCancel={(file: IUploadedFile) => {
-            setFiles(existingFiles => existingFiles.filter(f => f !== file))
+            setFiles(existingFiles => existingFiles.filter(f => f !== file));
             action("onUploadCancel")([file]);
         }}
         onUploadClick={action("uploadClick")}

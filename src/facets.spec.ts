@@ -7,10 +7,7 @@ import * as _ from "react-dom-factories";
 import { Facets, Facets_t } from "./facets";
 import { simulateEvent, TestWrapper } from "./testUtils";
 
-import { configure } from "enzyme";
-import * as Adapter from "enzyme-adapter-react-16";
-
-configure({ adapter: new Adapter() });
+;
 
 const muiTheme = getMuiTheme();
 
@@ -56,7 +53,7 @@ describe("Facets test", () => {
 
     it("should call callback function when facet value clicked", () => {
 
-        spyOn(case1, "onFacetSelected");
+        jest.spyOn(case1, "onFacetSelected").mockImplementation(() => { });
 
         const wrapper = shallow(__(Facets, case1));
         const topListItem = wrapper.find("ListItem");

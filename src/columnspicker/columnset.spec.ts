@@ -1,19 +1,11 @@
 import { Button, Select } from "@material-ui/core";
 import { configure, mount } from "enzyme";
-import * as Adapter from "enzyme-adapter-react-16";
 import { createElement as __ } from "react";
 import ColumnSet from "./columnset";
 import { ENGLISH } from "../WordTranslator";
 
-configure({ adapter: new Adapter() });
-
-// tslint:disable-next-line:no-var-requires
-const jasmineEnzyme = require("jasmine-enzyme"); // no typings for jasmine-engine => require instead of import.
-
 describe("ColumnsPicker: ColumnSet", () => {
-    beforeEach(() => {
-        jasmineEnzyme();
-    });
+
     const columnSets = [
         {
             id: "abc",
@@ -122,7 +114,7 @@ describe("ColumnsPicker: ColumnSet", () => {
     it("Calls onSelect when columnset selection is changed", () => {
         const props = { ...testProps };
 
-        const onSelectSpy = spyOn(props, "onSelect");
+        const onSelectSpy = jest.spyOn(props, "onSelect");
 
         const component = mount(__(ColumnSet, props));
 
@@ -133,12 +125,12 @@ describe("ColumnsPicker: ColumnSet", () => {
         expect(onSelectSpy).toHaveBeenCalledWith(columnSets[0]);
     });
 
-    it("Calls onCreate when a column set is created"); // Can't be tested yet due to window.prompt()
+    test.todo("Calls onCreate when a column set is created"); // Can't be tested yet due to window.prompt()
 
     it("Calls onCreate when a column set is updated", () => {
         const props = { ...testProps, currentColumns: ["c", "d", "e", "f"] };
 
-        const onCreateSpy = spyOn(props, "onCreate");
+        const onCreateSpy = jest.spyOn(props, "onCreate");
 
         const component = mount(__(ColumnSet, props));
 
@@ -154,7 +146,7 @@ describe("ColumnsPicker: ColumnSet", () => {
     it("Calls onDelete when a column set is deleted", () => {
         const props = { ...testProps };
 
-        const onDeleteSpy = spyOn(props, "onDelete");
+        const onDeleteSpy = jest.spyOn(props, "onDelete");
 
         const component = mount(__(ColumnSet, props));
 

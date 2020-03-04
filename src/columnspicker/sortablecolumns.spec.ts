@@ -1,18 +1,9 @@
 import { Chip, SvgIcon } from "@material-ui/core";
 import { configure, mount } from "enzyme";
-import * as Adapter from "enzyme-adapter-react-16";
 import { createElement as __ } from "react";
 import SortableColumns from "./sortablecolumns";
 
-configure({ adapter: new Adapter() });
-
-// tslint:disable-next-line:no-var-requires
-const jasmineEnzyme = require("jasmine-enzyme"); // no typings for jasmine-engine => require instead of import.
-
 describe("ColumnsPicker: SortableColumns", () => {
-    beforeEach(() => {
-        jasmineEnzyme();
-    });
 
     const columns = [
         {
@@ -50,7 +41,7 @@ describe("ColumnsPicker: SortableColumns", () => {
             onDeleteColumn: () => { },
         };
 
-        const onDeleteColumnSpy = spyOn(props, "onDeleteColumn");
+        const onDeleteColumnSpy = jest.spyOn(props, "onDeleteColumn");
 
         const component = mount(__(SortableColumns, props));
         const chips = component.find(Chip);

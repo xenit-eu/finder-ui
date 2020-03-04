@@ -1,7 +1,7 @@
 import { Component, createElement as __, FormEvent, ReactElement } from "react";
 import * as _ from "react-dom-factories";
 
-import * as filesize from "filesize";
+import filesize from "filesize";
 import { FieldSkeleton_Props_t, Node_t } from "../fields";
 import { PropertyRenderConfig_t, PropertyRenderer_t } from "./interface";
 import Label from "./label";

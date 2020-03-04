@@ -6,10 +6,7 @@ import * as _ from "react-dom-factories";
 import { Explorer, Explorer_t, ExplorerNode_t, ExplorerNode, ExplorerNode_Props_t } from "./explorer";
 import { Fixture, simulateEvent, TestWrapper } from "./testUtils";
 
-import { configure } from "enzyme";
-import * as Adapter from "enzyme-adapter-react-16";
-
-configure({ adapter: new Adapter() });
+;
 
 const muiTheme = getMuiTheme();
 

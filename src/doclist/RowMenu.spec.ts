@@ -1,13 +1,9 @@
 import { configure, mount, shallow } from "enzyme";
-import * as Adapter from "enzyme-adapter-react-16";
-import * as jasmineEnzyme from "jasmine-enzyme";
 import { createElement } from "react";
 import { Fixture } from "../testUtils";
 import DynamicRowMenu, { RowMenu } from "./RowMenu";
-configure({ adapter: new Adapter() });
 
 describe("Doclist DynamicRowMenu", () => {
-    beforeEach(() => (<any>jasmineEnzyme)());
 
     it("Renders row menu with passed parameters", () => {
         const menuItems = [

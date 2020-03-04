@@ -1,4 +1,4 @@
-import * as moment from "moment";
+import moment from "moment";
 import * as _ from "react-dom-factories";
 import { ColumnRenderer_Config_t, ColumnRenderer_Factory_t, ColumnRenderer_Props_t, ColumnRenderer_t } from "./interface";
 import ResourceResolverRenderer from "./resource-resolver";

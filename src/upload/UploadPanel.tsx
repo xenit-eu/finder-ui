@@ -111,10 +111,10 @@ const uploadPanelGlobalActionsStyle = {
     root: {
         display: "flex",
         alignItems: "center",
-        justifyContent: "flex-end"
+        justifyContent: "flex-end",
     },
     buttonContainer: {
-    }
+    },
 };
 
 type UploadPanelGlobalActions_Props_t = {

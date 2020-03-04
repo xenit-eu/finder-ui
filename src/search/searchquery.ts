@@ -1,4 +1,4 @@
-import * as debug from "debug";
+import debug from "debug";
 import { IDateRange, IDateRangeTranslator } from "./DateRange";
 import { SearchQueryElementReadableStringVisitor } from "./SearchQueryElementReadableStringVisitor";
 import { SearchQueryFactory } from "./SearchQueryFactory";

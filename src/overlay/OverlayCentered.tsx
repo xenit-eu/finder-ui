@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Theme, WithStyles, withStyles } from "@material-ui/core/styles";
-import * as classnames from "classnames";
+import classnames from "classnames";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 
 const overlayCenteredStyle = {

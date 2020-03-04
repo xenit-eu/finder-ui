@@ -1,19 +1,10 @@
 import { Chip, Divider, ListSubheader } from "@material-ui/core";
 import { configure, mount } from "enzyme";
-import * as Adapter from "enzyme-adapter-react-16";
 import { createElement as __ } from "react";
 import AvailableColumns from "./availablecolumns";
 import ColumnChip from "./chip";
 
-configure({ adapter: new Adapter() });
-
-// tslint:disable-next-line:no-var-requires
-const jasmineEnzyme = require("jasmine-enzyme"); // no typings for jasmine-engine => require instead of import.
-
 describe("ColumnsPicker: AvailableColumns", () => {
-    beforeEach(() => {
-        jasmineEnzyme();
-    });
 
     const availableColumns = [
         {
@@ -126,7 +117,7 @@ describe("ColumnsPicker: AvailableColumns", () => {
             onClickColumn: () => { },
         };
 
-        const onClickColumnSpy = spyOn(props, "onClickColumn");
+        const onClickColumnSpy = jest.spyOn(props, "onClickColumn");
 
         const component = mount(__(AvailableColumns, props));
         const children = component.children().children().children();
@@ -138,7 +129,7 @@ describe("ColumnsPicker: AvailableColumns", () => {
             label: "ABC11",
         });
 
-        onClickColumnSpy.calls.reset();
+        onClickColumnSpy.mockReset();
 
         children.at(1).children().at(1).find(Chip).simulate("click");
 

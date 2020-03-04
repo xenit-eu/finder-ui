@@ -1,4 +1,4 @@
-import * as ld from "lodash";
+import ld from "lodash";
 import { Component, createElement as __, FormEvent, ReactElement } from "react";
 import * as _ from "react-dom-factories";
 

@@ -1,6 +1,4 @@
 import { configure, mount } from "enzyme";
-import * as Adapter from "enzyme-adapter-react-16";
-import * as jasmineEnzyme from "jasmine-enzyme";
 
 import { createElement } from "react";
 import { Node_t } from "../metadata";
@@ -11,9 +9,8 @@ function isRunningPhantom() {
     return navigator.userAgent.toLocaleLowerCase().indexOf("phantom") >= 0;
 }
 const phantomDescribe = isRunningPhantom() ? xdescribe : describe;
-configure({ adapter: new Adapter() });
+
 phantomDescribe("NodeList", () => {
-    beforeEach(() => (<any>jasmineEnzyme)());
 
     it("Renders an empty table when no data is passed", () => {
         const element = Fixture(createElement(NodeTable, {
@@ -108,7 +105,7 @@ phantomDescribe("NodeList", () => {
     });
 
     it("calls onRowSelected when a row is selected", () => {
-        const onRowSelected = jasmine.createSpy("onRowSelected");
+        const onRowSelected = jest.fn();
         const node1 = {
             type: "cm:content",
             aspects: ["cm:auditable"],
@@ -167,7 +164,7 @@ phantomDescribe("NodeList", () => {
     });
 
     it("calls onPageChanged when changing page", () => {
-        const onPageChanged = jasmine.createSpy("onPageChanged");
+        const onPageChanged = jest.fn();
         const node1 = {
             type: "cm:content",
             aspects: ["cm:auditable"],
@@ -243,7 +240,7 @@ phantomDescribe("NodeList", () => {
     });
 
     it("calls onRowMenuItemClicked when an item menu is clicked", () => {
-        const onRowMenuItemClicked = jasmine.createSpy("onRowMenuClicked");
+        const onRowMenuItemClicked = jest.fn();
 
         const node1 = {
             type: "cm:content",
@@ -328,7 +325,7 @@ phantomDescribe("NodeList", () => {
     });
 
     it("calls onSortChanged when column sorting is changed", () => {
-        const onSortChanged = jasmine.createSpy("onSortChanged");
+        const onSortChanged = jest.fn();
         const column1 = {
             name: "cm:name",
             label: "Name",

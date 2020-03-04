@@ -8,19 +8,7 @@ import { Fixture, simulateEvent } from "./testUtils";
 import { Pager_t } from "./pager";
 import Pager from "./pager";
 
-import { configure } from "enzyme";
-import * as Adapter from "enzyme-adapter-react-16";
-
-configure({ adapter: new Adapter() });
-
-// tslint:disable-next-line:no-var-requires
-const jasmineEnzyme = require("jasmine-enzyme"); // no typings for jasmine-engine => require instead of import.
-
 describe("Pager component tests", () => {
-
-    beforeEach(() => {
-        jasmineEnzyme();
-    });
 
     it("should display no page to display when totalItems = 0", () => {
         const props: Pager_t = {
@@ -96,7 +84,7 @@ describe("Pager component tests", () => {
             pageSelected: (page: number) => { },
         };
 
-        spyOn(props, "pageSelected");
+        jest.spyOn(props, "pageSelected").mockImplementation(() => { });
 
         const wrapper = Fixture(Pager(props));
         const pages = wrapper.find("Page");
@@ -126,7 +114,7 @@ describe("Pager component tests", () => {
             pageSelected: (page: number) => { },
         };
 
-        spyOn(props, "pageSelected");
+        jest.spyOn(props, "pageSelected").mockImplementation(() => { });
 
         const wrapper = Fixture(Pager(props));
         const pages = wrapper.find("Page");
@@ -182,7 +170,7 @@ describe("Pager component tests", () => {
             pageSelected: (page: number) => { },
         };
 
-        spyOn(props, "pageSelected");
+        jest.spyOn(props, "pageSelected").mockImplementation(() => { });
 
         const wrapper = Fixture(Pager(props));
         const pages = wrapper.find("Page");
@@ -210,7 +198,7 @@ describe("Pager component tests", () => {
             pageSelected: (page: number) => { },
         };
 
-        spyOn(props, "pageSelected");
+        jest.spyOn(props, "pageSelected").mockImplementation(() => { });
 
         const wrapper = Fixture(Pager(props));
         const pages = wrapper.find("Page");

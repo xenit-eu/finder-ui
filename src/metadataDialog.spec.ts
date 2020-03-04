@@ -6,20 +6,9 @@ import { Fixture, simulateEvent } from "./testUtils";
 import { MetadataType_t } from "./metadata";
 import { MetaDataDialog, MetaDataDialog_t } from "./metadataDialog";
 
-import { configure } from "enzyme";
-import * as Adapter from "enzyme-adapter-react-16";
-
-configure({ adapter: new Adapter() });
-
-// tslint:disable-next-line:no-var-requires
-const jasmineEnzyme = require("jasmine-enzyme"); // no typings for jasmine-engine => require instead of import.
 const debug: any = require("debug");
 
 describe("Metadata component", () => {
-
-    beforeEach(() => {
-        jasmineEnzyme();
-    });
 
     it("should not open dialog when opened prop is false", () => {
 
@@ -112,7 +101,7 @@ describe("Metadata component", () => {
             onSave: (fields) => { },
         };
 
-        spyOn(props, "onSave");
+        jest.spyOn(props, "onSave").mockImplementation(() => { });
 
         const wrapper = Fixture(MetaDataDialog(props));
         const layerWrapper = Fixture((<any>wrapper).find("RenderToLayer").prop("render")()); // render the popup menu layer content !

@@ -7,7 +7,7 @@ import { NavigationExpandLess } from "material-ui/svg-icons";
 import { NavigationExpandMore } from "material-ui/svg-icons";
 
 import { Component, createElement as __, ReactElement } from "react";
-import classNames = require("classnames");
+import classNames from "classnames";
 
 export type Explorer_t<T extends ExplorerNode_t> = {
     onClick: (node: T) => void,

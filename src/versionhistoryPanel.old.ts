@@ -9,7 +9,7 @@ import Input from "material-ui/svg-icons/action/input";
 import Subtitles from "material-ui/svg-icons/av/subtitles";
 import SocialPerson from "material-ui/svg-icons/social/person";
 
-import * as moment from "moment";
+import moment from "moment";
 import { Component, createElement as __, CSSProperties, ReactElement } from "react";
 import * as _ from "react-dom-factories";
 export type Version_t = {
