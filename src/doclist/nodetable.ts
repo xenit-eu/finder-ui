@@ -187,8 +187,7 @@ function createSortingRule(col: INodeTableBasicColumn): SortingRule | null {
 
     return {
         id: col.name,
-        desc: col.sortDirection === NodeTableSortDirection.DESC || undefined,
-        asc: col.sortDirection === NodeTableSortDirection.ASC || undefined,
+        desc: col.sortDirection === NodeTableSortDirection.DESC,
     };
 }
 

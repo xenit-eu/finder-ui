@@ -1,5 +1,5 @@
-import { Chip, WithStyles, withStyles } from "@material-ui/core";
-import { createElement as __ } from "react";
+import { Chip, WithStyles, withStyles, Theme } from "@material-ui/core";
+import { createElement as __, ReactElement } from "react";
 import { Column_t } from "..";
 
 type ColumnChip_Props_t = {
@@ -7,9 +7,9 @@ type ColumnChip_Props_t = {
     selectedColumns: string[],
     onClick?: () => void,
     onDelete?: () => void,
-} & WithStyles<"root">;
+} & WithStyles<typeof columnChipStyles>;
 
-function ColumnChip(props: ColumnChip_Props_t) {
+function ColumnChip(props: ColumnChip_Props_t): ReactElement {
     return __(Chip, {
         className: props.classes.root + " column-chip-test-handle",
         label: props.column.label,
@@ -19,8 +19,10 @@ function ColumnChip(props: ColumnChip_Props_t) {
     });
 }
 
-export default withStyles(theme => ({
+const columnChipStyles = (theme: Theme) => ({
     root: {
         margin: theme.spacing.unit / 2,
     },
-}))(ColumnChip);
+});
+
+export default withStyles(columnChipStyles)(ColumnChip);

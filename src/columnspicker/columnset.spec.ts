@@ -1,6 +1,7 @@
 import { Button, Select } from "@material-ui/core";
 import { configure, mount } from "enzyme";
 import { createElement as __ } from "react";
+import * as React from "react";
 import ColumnSet from "./columnset";
 import { ENGLISH } from "../WordTranslator";
 
@@ -120,7 +121,7 @@ describe("ColumnsPicker: ColumnSet", () => {
 
         // simulate onchange event of the selectbox
         // .simulate() can not be used here, because the select is not a DOM element
-        component.find(Select).prop("onChange")({ target: { value: "abc" } });
+        component.find(Select).prop("onChange")!({ target: { value: "abc" } } as React.ChangeEvent<HTMLSelectElement>, null as any);
 
         expect(onSelectSpy).toHaveBeenCalledWith(columnSets[0]);
     });

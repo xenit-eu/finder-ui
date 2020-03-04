@@ -1,5 +1,5 @@
 import { Divider, ListSubheader, WithStyles, withStyles } from "@material-ui/core";
-import { createElement as __, Fragment } from "react";
+import { createElement as __, Fragment, ReactElement } from "react";
 import * as _ from "react-dom-factories";
 import { Column_t, ColumnGroup_t } from "..";
 import ColumnChip from "./chip";
@@ -8,9 +8,9 @@ type AvailableColumns_Props_t = {
     availableColumns: ColumnGroup_t[],
     selectedColumns: string[],
     onClickColumn: (col: Column_t) => void,
-} & WithStyles<"root" | "header" | "content" | "divider">;
+} & WithStyles<typeof availableColumnsStyle>;
 
-function AvailableColumns(props: AvailableColumns_Props_t) {
+function AvailableColumns(props: AvailableColumns_Props_t): ReactElement {
     return _.div({
         key:"AvailableColumns",
         className: props.classes.root + " available-columns-test-handle",
@@ -39,13 +39,15 @@ function AvailableColumns(props: AvailableColumns_Props_t) {
     )));
 }
 
-export default withStyles({
+const availableColumnsStyle = {
     root: {},
     header: {},
     content: {
-        flexShrink: "unset",
+        flexShrink: "unset" as "unset",
     },
     divider: {
         margin: 0,
     },
-})(AvailableColumns);
+};
+
+export default withStyles(availableColumnsStyle)(AvailableColumns);

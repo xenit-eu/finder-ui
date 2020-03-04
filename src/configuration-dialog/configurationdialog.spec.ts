@@ -1,5 +1,6 @@
 import { configure, mount } from "enzyme";
 import { createElement as __ } from "react";
+import * as React from "react";
 import { ConfigurationDialog, ConfigurationDialog_Props_t } from "./index";
 import { Button, IconButton, Input, ListItem, Radio, Select } from "@material-ui/core";
 import AddCircle from "@material-ui/icons/AddCircle";
@@ -52,7 +53,7 @@ describe("Basic generalSettings dialog test", () => {
 
         const spySave = jest.spyOn(props, "onSave");
         const component = mount(__(ConfigurationDialog, props) as any);
-        component.find(Input).filter(".manage-layouts-input").prop("onChange")({ target: { value: "newlayout" } });
+        component.find(Input).filter(".manage-layouts-input").prop("onChange")!({ target: { value: "newlayout" } } as React.ChangeEvent<HTMLInputElement>);
         component.find(AddCircle).filter(".save-current-layout").simulate("click");
         component.find(Button).filter(".configuration-dialog-done-button").simulate("click");
         expect(spySave).toHaveBeenCalledWith({ language: "nl" }, [{ name: "hello", value: "mama" }, { name: "newlayout", value: "currentLayout" }], "newlayout");

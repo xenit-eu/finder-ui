@@ -1,6 +1,5 @@
 import { Fade, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, withStyles } from "@material-ui/core";
-import { IconButtonProps } from "@material-ui/core/IconButton";
-import MoreVert  from "@material-ui/icons/MoreVert";
+import MoreVert from "@material-ui/icons/MoreVert";
 import ArrowRight from "@material-ui/icons/ArrowRight";
 import FontIcon from "material-ui/FontIcon";
 import { Component, createElement as __, Fragment, MouseEvent, ReactElement } from "react";
@@ -32,11 +31,13 @@ type SubMenuItem_State_t = {
     anchorEl: HTMLElement | null,
 };
 
-const WhiteIconButton = withStyles({
+const whiteIconButtonStyle = {
     root: {
         color: "white",
     },
-})((props: IconButtonProps) => __(IconButton, props));
+};
+
+const WhiteIconButton = withStyles(whiteIconButtonStyle)(IconButton);
 
 class SubMenuItem extends Component<MenuItemWrapper_t, SubMenuItem_State_t> {
     public state: SubMenuItem_State_t = {
