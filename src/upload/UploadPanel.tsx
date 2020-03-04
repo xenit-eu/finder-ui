@@ -11,7 +11,7 @@ import { Typography, Button, IconButton } from "@material-ui/core";
 import { useTranslation } from "react-i18next";
 import UploadButton from "./UploadButton";
 
-type UploadPanel_Props_t<T extends IUploadedFile = IUploadedFile> = {
+export type UploadPanel_Props_t<T extends IUploadedFile = IUploadedFile> = {
     onUploadAdded: (file: File) => void,
     onUploadCancel: (file: T) => void,
     onUploadEditMetadata: (files: T[]) => void,
