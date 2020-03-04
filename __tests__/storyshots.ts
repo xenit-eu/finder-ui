@@ -1,4 +1,12 @@
 import initStoryshots from "@storybook/addon-storyshots";
-import { puppeteerTest } from "@storybook/addon-storyshots-puppeteer";
+import { puppeteerTest, imageSnapshot } from "@storybook/addon-storyshots-puppeteer";
 
-initStoryshots({ test: puppeteerTest() });
+initStoryshots({
+    test: puppeteerTest(),
+});
+
+initStoryshots({
+
+    suite: "Image storyshots",
+    test: imageSnapshot(),
+});
