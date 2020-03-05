@@ -372,6 +372,7 @@ export class NodeRefSearchQueryElement implements ISimpleSearchQueryElement {
         return other instanceof NodeRefSearchQueryElement && other.noderef === this.noderef;
     }
 }
+// tslint:disable-next-line:interface-name
 export interface HierarchicSearchQueryElement<T> {
     getChildren(): ReadonlyArray<ISearchQueryElement>;
     withChildren(children: ReadonlyArray<ISearchQueryElement>): T;

@@ -21,6 +21,7 @@ export const SPANISH = "es-es";
 type Translation = { [word: string]: string };
 
 //In case adding new language, change this interface to get typed checked assurance that you translate everything.
+// tslint:disable-next-line:interface-name
 export interface TranslationsChecked {
     [FRENCH]: Translation;
     [ENGLISH]: Translation;

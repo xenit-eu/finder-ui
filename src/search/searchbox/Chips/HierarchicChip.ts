@@ -5,6 +5,7 @@ import { Component, createElement as __, ReactElement } from "react";
 import * as _ from "react-dom-factories";
 import "./HierarchicChip.less";
 
+// tslint:disable-next-line:interface-name
 export interface HierarchicChipProps {
     label: string;
     children: Array<ReactElement<any>>;
