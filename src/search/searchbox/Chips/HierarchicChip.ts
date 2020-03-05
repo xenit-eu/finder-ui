@@ -7,7 +7,7 @@ import "./HierarchicChip.less";
 
 export interface HierarchicChipProps {
     label: string;
-    children: ReactElement<any>[];
+    children: Array<ReactElement<any>>;
     onDelete?: (event: any) => void;
     onClick?: (event: any) => void;
     onKeyDown?: (event: any) => void;
@@ -47,7 +47,7 @@ export class HierarchicChip extends Component<HierarchicChipProps, {}> {
     }
 
     public render() {
-        const childrenInterleaved: Array<any> = [];
+        const childrenInterleaved: any[] = [];
         this.props.children.forEach((c, i) => {
             childrenInterleaved.push(c);
             if (i < this.props.children.length - 1) {

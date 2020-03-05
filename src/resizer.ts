@@ -13,7 +13,7 @@ type Resizable_t = {
     minWidth?: number,
     maxWidth?: number,
     ReactResizer: any,
-    children?: ReactElement<any>[],
+    children?: Array<ReactElement<any>>,
 
     onResize?: (width: number) => boolean,
 };

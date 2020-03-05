@@ -21,7 +21,7 @@ export const HighlightRenderer: ColumnRenderer_Factory_t<FieldHighlights_t[]> =
         };
     };
 
-export type highlightInfo = { text: string, highlighted: boolean }[];
+export type highlightInfo = Array<{ text: string, highlighted: boolean }>;
 
 export function splitHighlightSnippet(highlightString: string, prefix: string, postfix: string): string[] {
     let delimiterExpression: RegExp = new RegExp(prefix + "|" + postfix);

@@ -52,7 +52,7 @@ export interface INodeTableRow<T> {
 
 type NodeTableMenuLoad_Callback_t<T> = (menuItemIndex: number, menuItem: MenuItem_t<T>) => void;
 export interface INodeTableProps<T> {
-    rows: INodeTableRow<T>[]; // List of rows to show in the table
+    rows: Array<INodeTableRow<T>>; // List of rows to show in the table
     columns: INodeTableColumn[]; // Columns to show in the table
     pager: {
         totalItems: number, // Total number of available items

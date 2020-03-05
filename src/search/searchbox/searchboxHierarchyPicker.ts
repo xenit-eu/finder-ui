@@ -14,7 +14,7 @@ export type SearchboxHierarchyPickerProps = {
 };
 
 export type SearchboxHierarchyPickerState = {
-    showPossibilities: { id: number[], chips: ChipVM_t[] }[];
+    showPossibilities: Array<{ id: number[], chips: ChipVM_t[] }>;
 };
 
 export class SearchboxHierarchyPicker extends Component<SearchboxHierarchyPickerProps, SearchboxHierarchyPickerState> {

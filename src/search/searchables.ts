@@ -14,7 +14,7 @@ export interface ISearchableQueryElement {
     getPartiallyMatchingAutocompleteListElements(key: string, value: string): Promise<ReadonlyArray<IAutocompleteSuggestion>>;
 }
 
-function ExistsFilter<T>(elements: (T | undefined | null | void)[]) {
+function ExistsFilter<T>(elements: Array<T | undefined | null | void>) {
     return elements.filter(element => element) as T[];
 }
 function trimLowercase(s: string) {

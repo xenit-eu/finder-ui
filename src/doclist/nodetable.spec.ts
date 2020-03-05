@@ -174,7 +174,7 @@ phantomDescribe("NodeList", () => {
             },
         };
 
-        const rows: INodeTableRow<any>[] = [];
+        const rows: Array<INodeTableRow<any>> = [];
         for (let i = 0; i < 50; i++) {
             rows.push({
                 node: node1,

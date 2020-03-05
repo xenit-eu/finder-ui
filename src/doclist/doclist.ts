@@ -235,7 +235,7 @@ export function DocList({ className, columns, data, nodes, onDownloadButtonClick
             __(IconButton, { key: "iconButton", disabled: toggledRows === 0, tooltip: toggledRows + " selected", onClick: onDownloadButtonClick }, [__(FileDownload, { key: "FileDownload" })]),
         );
     }
-    const headerelements = (<ReactElement<any>[]>[_.th({ key: "Menu" }, "")])
+    const headerelements = (<Array<ReactElement<any>>>[_.th({ key: "Menu" }, "")])
         .concat(togglable ? [_.th({ key: "toggle", style: { textAlign: "center", width: "1px" } }, downloadComponents)] : [])
         .concat(columns.map(c => SortableTh(c, onSortColumnSelected, translations)));
 
