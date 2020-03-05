@@ -19,5 +19,12 @@ initStoryshots({
         getMatchOptions: () => ({
             blur: 2,
         }),
+        beforeScreenshot: (page) => {
+            return new Promise((resolve) => {
+                page.once("load", resolve);
+                page.evaluate("document.readyState === 'complete'")
+                    .then((pageComplete: boolean) => pageComplete && resolve());
+            });
+        },
     }),
 });
