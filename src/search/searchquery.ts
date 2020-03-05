@@ -1,9 +1,9 @@
 import debug from "debug";
+import { ALL, ASPECT, NODEREF, TEXT, TYPE } from "../WordTranslator";
+import { DocumentSizeRange_t, GetSizeTranslation } from "./../documentSize";
 import { IDateRange, IDateRangeTranslator } from "./DateRange";
 import { SearchQueryElementReadableStringVisitor } from "./SearchQueryElementReadableStringVisitor";
 import { SearchQueryFactory } from "./SearchQueryFactory";
-import { ALL, ASPECT, NODEREF, TEXT, TYPE } from "../WordTranslator";
-import { GetSizeTranslation, DocumentSizeRange_t } from "./../documentSize";
 const d = debug("finder-ui:finderquery");
 
 // This is a fake type. The document type is mapped to this QName to be able to put all document information in a hashmap.

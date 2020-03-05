@@ -1,6 +1,6 @@
 import * as React from "react";
-import { DropZone } from "./drop-zone";
 import { TestWrapper } from "../testUtils";
+import { DropZone } from "./drop-zone";
 import "./drop-zone.stories.less";
 
 export default {

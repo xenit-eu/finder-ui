@@ -2,8 +2,8 @@ import { Button, Select } from "@material-ui/core";
 import { configure, mount } from "enzyme";
 import { createElement as __ } from "react";
 import * as React from "react";
-import ColumnSet from "./columnset";
 import { ENGLISH } from "../WordTranslator";
+import ColumnSet from "./columnset";
 
 describe("ColumnsPicker: ColumnSet", () => {
 

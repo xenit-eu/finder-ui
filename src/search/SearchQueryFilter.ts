@@ -1,11 +1,11 @@
 import {
     AllSimpleSearchQueryElement, AndSearchQueryElement, AspectSearchQueryElement, DatePropertySearchQueryElement,
     FolderSearchQueryElement, ISearchQueryElement, ISearchQueryElementVisitor,
-    NodeRefSearchQueryElement, OrSearchQueryElement, ReferenceSimpleSearchQueryElement, StringValuePropertySearchQueryElement,
+    NodeRefSearchQueryElement, OrSearchQueryElement, ReferenceSimpleSearchQueryElement, SizeQueryElement,
+    StringValuePropertySearchQueryElement,
     TextSearchQueryElement,
     ToFillInSearchQueryElement,
     TypeSearchQueryElement,
-    SizeQueryElement,
 } from "./searchquery";
 function flatten<T>(arr: T[][]) {
     return ([] as T[]).concat(...arr);

@@ -1,6 +1,6 @@
-import * as React from "react";
 import { withStyles, WithStyles } from "@material-ui/core/styles";
 import classnames from "classnames";
+import * as React from "react";
 
 export type UploadButton_Props_t = {
     onFilesSelected: (files: readonly File[]) => void,

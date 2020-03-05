@@ -1,15 +1,15 @@
+import { AND, OR } from "../WordTranslator";
 import {
     AllSimpleSearchQueryElement, AndSearchQueryElement, AspectSearchQueryElement,
     DatePropertySearchQueryElement, FolderSearchQueryElement, ISearchQueryElementVisitor,
-    NodeRefSearchQueryElement, OrSearchQueryElement, ReferenceSimpleSearchQueryElement, StringValuePropertySearchQueryElement,
+    NodeRefSearchQueryElement, OrSearchQueryElement, ReferenceSimpleSearchQueryElement, SizeQueryElement,
+    StringValuePropertySearchQueryElement,
     TextSearchQueryElement,
     ToFillInSearchQueryElement,
     TypeSearchQueryElement,
-    SizeQueryElement,
 
 } from "./searchquery";
 import { SearchQueryNormalizeVisitor } from "./SearchQueryNormalizeVisitor";
-import { AND, OR } from "../WordTranslator";
 export class SearchQueryElementReadableStringVisitor implements ISearchQueryElementVisitor<Promise<string>> {
     public visitSizeQueryElement(query: SizeQueryElement): Promise<string> {
         return query.getSimpleSearchbarText();

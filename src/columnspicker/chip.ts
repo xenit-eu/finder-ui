@@ -1,4 +1,4 @@
-import { Chip, WithStyles, withStyles, Theme } from "@material-ui/core";
+import { Chip, Theme, WithStyles, withStyles } from "@material-ui/core";
 import { createElement as __, ReactElement } from "react";
 import { Column_t } from "..";
 

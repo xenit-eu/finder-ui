@@ -10,7 +10,7 @@ import "react-flatpickr/node_modules/flatpickr/dist/themes/material_blue.css";
 import { SimpleDateRange } from "../DateRange";
 import { DateFillinValueMatch, DateRangeFillinValueMatch, HierarchicQueryValueMatch, IAutocompleteSuggestion, InputHandleRequired, SimpleSearchQueryElementValueMatch } from "../searchables";
 import { ISearchQueryElement, ISimpleSearchQueryElement } from "../searchquery";
-import { ChipVMToChip, ChipVM_t, getKeyValue, SearchBox_t, SearchQueryElementToChipVM, HaveChipsFillIn } from "./common";
+import { ChipVM_t, ChipVMToChip, getKeyValue, HaveChipsFillIn, SearchBox_t, SearchQueryElementToChipVM } from "./common";
 import "./searchbox.less";
 import { SearchboxAutocomplete } from "./SearchboxAutocomplete";
 import { SearchboxHierarchyPicker, SearchboxHierarchyPickerProps } from "./searchboxHierarchyPicker";

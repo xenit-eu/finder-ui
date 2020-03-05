@@ -1,5 +1,6 @@
+import { ALL, FOLDER, TEXT } from "../WordTranslator";
 import {
-    DATE_BETWEEN, DateRangeSearchables, DATE_FROM, DATE_ON, DATE_UNTIL, FromDateRange, IDateRange,
+    DATE_BETWEEN, DATE_FROM, DATE_ON, DATE_UNTIL, DateRangeSearchables, FromDateRange, IDateRange,
     IDateRangeTranslator, SimpleDateRange, UntilDateRange,
 } from "./DateRange";
 import {
@@ -8,7 +9,6 @@ import {
     SearchQuery, StringValuePropertySearchQueryElement, TextSearchQueryElement,
 } from "./searchquery";
 import { IFolderSearchQueryElementFactory } from "./SearchQueryFactory";
-import { ALL, FOLDER, TEXT } from "../WordTranslator";
 export interface ISearchableQueryElement {
     matchKeyValue(key: string, value: string): Promise<IExactValueMatch>;
     getPartiallyMatchingAutocompleteListElements(key: string, value: string): Promise<ReadonlyArray<IAutocompleteSuggestion>>;

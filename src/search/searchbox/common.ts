@@ -2,8 +2,8 @@ import { Chip } from "material-ui";
 import * as Colors from "material-ui/styles/colors";
 import { createElement as __, ReactElement } from "react";
 import * as _ from "react-dom-factories";
-import { IAutocompleteSuggestion, ISearchableQueryElement, IExactValueMatch } from "../searchables";
-import { ISearchQueryElement, isHierarchicSearchQueryElement, ToFillInSearchQueryElement, ISimpleSearchQueryElement } from "../searchquery";
+import { IAutocompleteSuggestion, IExactValueMatch, ISearchableQueryElement } from "../searchables";
+import { ISearchQueryElement, isHierarchicSearchQueryElement, ISimpleSearchQueryElement, ToFillInSearchQueryElement } from "../searchquery";
 import { HierarchicChip, HierarchicChipProps } from "./Chips/HierarchicChip";
 export function getKeyValue(s: string | undefined): { key: string, value: string } {
     if (!s) {

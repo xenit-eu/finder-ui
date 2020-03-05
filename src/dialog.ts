@@ -1,7 +1,7 @@
-import { Component, createElement as __ } from "react";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Theme, Typography, withStyles, WithStyles } from "@material-ui/core";
-import { ENGLISH, FRENCH, DUTCH, WordTranslator, TranslationsChecked, SPANISH } from "./WordTranslator";
+import { Component, createElement as __ } from "react";
 import { ISynchronousTranslationService } from "./search";
+import { DUTCH, ENGLISH, FRENCH, SPANISH, TranslationsChecked, WordTranslator } from "./WordTranslator";
 
 const CANCEL = "Cancel";
 const DONE = "Done";

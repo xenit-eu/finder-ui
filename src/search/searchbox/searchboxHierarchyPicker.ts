@@ -1,10 +1,10 @@
-import { List, ListItem, Dialog, DialogTitle } from "@material-ui/core";
+import { Dialog, DialogTitle, List, ListItem } from "@material-ui/core";
 import { Component, createElement as __ } from "react";
-import { HierarchicQueryValueMatch } from "../searchables";
-import { ChipVM_t, SearchQueryElementToChipVM, ChipVMToChip } from "./common";
 import * as _ from "react-dom-factories";
-import { SearchQuery, ISynchronousTranslationService } from "../searchquery";
 import { SELECTINTENDEDQUERY } from "../../WordTranslator";
+import { HierarchicQueryValueMatch } from "../searchables";
+import { ISynchronousTranslationService, SearchQuery } from "../searchquery";
+import { ChipVM_t, ChipVMToChip, SearchQueryElementToChipVM } from "./common";
 export type SearchboxHierarchyPickerProps = {
     open: boolean,
     pickedChip: (id: number[]) => void,

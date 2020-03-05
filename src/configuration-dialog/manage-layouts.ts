@@ -1,9 +1,9 @@
 import {Button, FormControl, IconButton, Input, InputLabel, List, ListItem, ListItemSecondaryAction, ListItemText, Radio, WithStyles} from "@material-ui/core";
-import {KeyboardEvent, ChangeEvent, Component, ComponentType, createElement as __, Fragment} from "react";
-import FullWidthFlexContainer from "./full-width-flexcontainer";
+import {withStyles} from "@material-ui/core";
 import AddCircle from "@material-ui/icons/AddCircle";
 import Delete from "@material-ui/icons/Delete";
-import {withStyles} from "@material-ui/core";
+import {ChangeEvent, Component, ComponentType, createElement as __, Fragment, KeyboardEvent} from "react";
+import FullWidthFlexContainer from "./full-width-flexcontainer";
 
 export type ManageLayouts_t = {
     selectedLayout?: string,

@@ -1,7 +1,7 @@
-import * as React from "react";
-import UploadPanel from "./UploadPanel";
 import { action } from "@storybook/addon-actions";
+import * as React from "react";
 import { IUploadedFile } from "./UploadList";
+import UploadPanel from "./UploadPanel";
 
 export default {
     title: "upload/UploadPanel",

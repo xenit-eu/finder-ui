@@ -1,12 +1,12 @@
 import {
     AllSimpleSearchQueryElement, AndSearchQueryElement, AspectSearchQueryElement,
     DatePropertySearchQueryElement, FolderSearchQueryElement, ISearchQueryElement, ISearchQueryElementVisitor,
-    NodeRefSearchQueryElement, OrSearchQueryElement, ReferenceSimpleSearchQueryElement, StringValuePropertySearchQueryElement,
+    NodeRefSearchQueryElement, OrSearchQueryElement, ReferenceSimpleSearchQueryElement, SearchQuery,
+    SizeQueryElement,
+    StringValuePropertySearchQueryElement,
     TextSearchQueryElement,
     ToFillInSearchQueryElement,
     TypeSearchQueryElement,
-    SearchQuery,
-    SizeQueryElement,
 } from "./searchquery";
 
 export class SearchQueryNormalizeVisitor implements ISearchQueryElementVisitor<ISearchQueryElement> {

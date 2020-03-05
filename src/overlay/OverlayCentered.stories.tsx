@@ -1,7 +1,7 @@
-import * as React from "react";
-import { Paper, Grid, IconButton } from "@material-ui/core";
+import { Grid, IconButton, Paper } from "@material-ui/core";
 import InsertPhoto from "@material-ui/icons/InsertPhoto";
 import { action } from "@storybook/addon-actions";
+import * as React from "react";
 import OverlayCentered from "./OverlayCentered";
 
 export default {

@@ -6,8 +6,8 @@ import { CircularProgress, IconButton, List, ListItem, ListItemProps } from "mat
 import { NavigationExpandLess } from "material-ui/svg-icons";
 import { NavigationExpandMore } from "material-ui/svg-icons";
 
-import { Component, createElement as __, ReactElement } from "react";
 import classNames from "classnames";
+import { Component, createElement as __, ReactElement } from "react";
 
 export type Explorer_t<T extends ExplorerNode_t> = {
     onClick: (node: T) => void,

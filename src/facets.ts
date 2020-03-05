@@ -5,9 +5,9 @@ import ActionInfo from "material-ui/svg-icons/action/info";
 import { createElement as __, ReactElement } from "react";
 import * as _ from "react-dom-factories";
 
+import { DocumentSizeRange_t } from "./documentSize";
 import "./facets.less";
 import { IDateRange } from "./search";
-import { DocumentSizeRange_t } from "./documentSize";
 
 //In case later on other ranges are used, we can generalize the type. For now, document size range should be fine.
 export type Facet_Value_t = string | IDateRange | DocumentSizeRange_t;

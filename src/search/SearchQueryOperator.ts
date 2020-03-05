@@ -1,7 +1,7 @@
 import { allButFirst, last, lastMust, replaceLast, replaceOrRemoveAt } from "@xenit/finder-utils";
 import {
-    AndSearchQueryElement, ISearchQueryElement, isHierarchicSearchQueryElement, OrSearchQueryElement, SearchQuery,
-    ToFillInSearchQueryElement, containsToFillInSearchQueryElement,
+    AndSearchQueryElement, containsToFillInSearchQueryElement, ISearchQueryElement, isHierarchicSearchQueryElement, OrSearchQueryElement,
+    SearchQuery, ToFillInSearchQueryElement,
 } from "./searchquery";
 import { SearchQueryNormalizeVisitor } from "./SearchQueryNormalizeVisitor";
 type ComplexSearchQueryElement_t = AndSearchQueryElement | OrSearchQueryElement;

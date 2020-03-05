@@ -1,5 +1,5 @@
 import { ComponentType } from "react";
-import { Node_t, FieldHighlights_t } from "../../metadata";
+import { FieldHighlights_t, Node_t } from "../../metadata";
 
 export type ColumnRenderer_Props_t = {
     node: Node_t,

@@ -3,7 +3,7 @@ import ToggleIndeterminateCheckBox from "material-ui/svg-icons/toggle/indetermin
 import { createElement as __, CSSProperties, MouseEvent } from "react";
 import ReactTable, { Column, RowInfo, SortingRule, TableProps } from "react-table";
 import "react-table/react-table.css";
-import { Node_t, FieldHighlights_t } from "../metadata";
+import { FieldHighlights_t, Node_t } from "../metadata";
 import { ColumnRenderer_t } from "./renderer/interface";
 import RowMenu, { MenuItem_t } from "./RowMenu";
 export { MenuItem_t as NodeTableRowMenuItem_t } from "./RowMenu";

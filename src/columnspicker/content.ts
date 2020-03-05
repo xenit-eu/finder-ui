@@ -1,12 +1,12 @@
 import { Button, DialogActions, DialogContent, DialogTitle, Theme, Typography, WithStyles, withStyles } from "@material-ui/core";
+import { arrayEquals, deepEqual } from "@xenit/finder-utils";
 import { Component, createElement as __, Fragment } from "react";
 import { Column_t, ColumnGroup_t, ColumnSet_t, ColumnsPicker_t } from "..";
+import Dialog from "../dialog";
+import { DUTCH, ENGLISH, FRENCH, SPANISH, TranslationsChecked, WordTranslator } from "../WordTranslator";
 import AvailableColumns from "./availablecolumns";
 import ColumnSetManager from "./columnset";
 import SortableColumns from "./sortablecolumns";
-import { arrayEquals, deepEqual } from "@xenit/finder-utils";
-import { ENGLISH, FRENCH, DUTCH, WordTranslator, TranslationsChecked, SPANISH } from "../WordTranslator";
-import Dialog from "../dialog";
 
 type ColumnsPickerContent_Props_t = {
     opened: boolean,

@@ -1,6 +1,6 @@
 import * as _ from "react-dom-factories";
-import { ColumnRenderer_Config_t, ColumnRenderer_Factory_t, ColumnRenderer_Props_t, ColumnRenderer_t } from "../interface";
 import { FieldHighlights_t, HighlightedTextPart_t } from "../../../metadata/fields";
+import { ColumnRenderer_Config_t, ColumnRenderer_Factory_t, ColumnRenderer_Props_t, ColumnRenderer_t } from "../interface";
 
 function generateHtml(highlightInfo: HighlightedTextPart_t): any/*Whatever React function*/ {
     return highlightInfo.map((pair) => (pair.highlighted ? _.strong({}, pair.text) : _.span({}, pair.text)));

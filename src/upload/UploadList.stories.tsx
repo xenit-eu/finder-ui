@@ -1,10 +1,10 @@
-import * as React from "react";
-import UploadList, { IUploadedFile, UploadList_Props_t } from "./UploadList";
-import { Paper, IconButton } from "@material-ui/core";
+import { IconButton, Paper } from "@material-ui/core";
 import CloudUpload from "@material-ui/icons/CloudUpload";
 import Visibility from "@material-ui/icons/Visibility";
 import { action } from "@storybook/addon-actions";
 import { number } from "@storybook/addon-knobs";
+import * as React from "react";
+import UploadList, { IUploadedFile, UploadList_Props_t } from "./UploadList";
 
 export default {
     title: "upload/UploadList",

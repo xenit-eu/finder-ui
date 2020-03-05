@@ -1,10 +1,10 @@
-import * as React from "react";
-import { Grid, CircularProgress, IconButton } from "@material-ui/core";
-import CheckCircle from "@material-ui/icons/CheckCircle";
-import Cancel from "@material-ui/icons/Cancel";
+import { CircularProgress, Grid, IconButton } from "@material-ui/core";
 import { Theme, WithStyles, withStyles } from "@material-ui/core/styles";
-import classNames from "classnames";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
+import Cancel from "@material-ui/icons/Cancel";
+import CheckCircle from "@material-ui/icons/CheckCircle";
+import classNames from "classnames";
+import * as React from "react";
 import { useTranslation } from "react-i18next";
 
 const styles = (theme: Theme) => ({

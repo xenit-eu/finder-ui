@@ -1,7 +1,7 @@
-import * as React from "react";
 import { Theme, WithStyles, withStyles } from "@material-ui/core/styles";
-import classnames from "classnames";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
+import classnames from "classnames";
+import * as React from "react";
 import OverlayCentered from "./OverlayCentered";
 
 type Overlay_Props_t = {

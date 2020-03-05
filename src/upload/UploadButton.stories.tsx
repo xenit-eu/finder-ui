@@ -1,6 +1,6 @@
+import { action } from "@storybook/addon-actions";
 import * as React from "react";
 import UploadButton from "./UploadButton";
-import { action } from "@storybook/addon-actions";
 
 export default {
     title: "upload/UploadButton",
