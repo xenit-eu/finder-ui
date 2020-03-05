@@ -1,12 +1,19 @@
 import initStoryshots from "@storybook/addon-storyshots";
-import { puppeteerTest, imageSnapshot } from "@storybook/addon-storyshots-puppeteer";
+import { imageSnapshot, puppeteerTest } from "@storybook/addon-storyshots-puppeteer";
+import { resolve } from "path";
+
+const storybookUrl = "file://" + resolve(__dirname, "../storybook-static");
 
 initStoryshots({
-    test: puppeteerTest(),
+    test: puppeteerTest({
+        storybookUrl,
+    }),
 });
 
 initStoryshots({
 
     suite: "Image storyshots",
-    test: imageSnapshot(),
+    test: imageSnapshot({
+        storybookUrl,
+    }),
 });
