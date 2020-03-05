@@ -72,7 +72,7 @@ describe("Metadata component", () => {
         };
 
         const wrapper = Fixture(MetaDataDialog(props));
-        const layerWrapper = Fixture((<any>wrapper).find("RenderToLayer").prop("render")()); // render the popup menu layer content !
+        const layerWrapper = Fixture((<any> wrapper).find("RenderToLayer").prop("render")()); // render the popup menu layer content !
 
         expect(layerWrapper.find("TextField").length).toBe(props.fields.length);
 
@@ -102,7 +102,7 @@ describe("Metadata component", () => {
         jest.spyOn(props, "onSave").mockImplementation(() => { });
 
         const wrapper = Fixture(MetaDataDialog(props));
-        const layerWrapper = Fixture((<any>wrapper).find("RenderToLayer").prop("render")()); // render the popup menu layer content !
+        const layerWrapper = Fixture((<any> wrapper).find("RenderToLayer").prop("render")()); // render the popup menu layer content !
 
         const inputIdx = 1;
         const inputText = "ABC";
@@ -112,7 +112,7 @@ describe("Metadata component", () => {
         const input: any = textField.find("input");
         input.value = inputText;
         // textField.simulate('change');
-        (<any>textField).prop("onChange")({ target: { value: inputText } });
+        (<any> textField).prop("onChange")({ target: { value: inputText } });
 
         // simulate a click on save button.
         const saveButton = layerWrapper.find("FlatButton").at(1); // second button is save button

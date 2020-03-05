@@ -52,7 +52,7 @@ const translations: TranslationsChecked = {
         [DRAG_AND_DROP]: "Klik op een kolomtitel om de kolom te tonen.",
         [SAVE]: "Opslaan",
     },
-    [SPANISH]:{
+    [SPANISH]: {
         [COLUMNS_TO_DISPLAY]: "Columnas para mostrar",
         [SAVED_COLUMN_SETS]: "Conjuntos de columnas guardadas",
         [OTHER_AVAILABLE_COLUMNS]: "Otras columnas disponibles",
@@ -169,7 +169,7 @@ export class ColumnsPickerContent extends Component<ColumnsPickerContent_Props_t
 
     public render() {
         return __(Dialog, {
-            key:"Dialog",
+            key: "Dialog",
             open: this.props.opened,
             baseClassName: "columns-picker-dialog",
             dialogTitle: "Columns to display",
@@ -178,9 +178,9 @@ export class ColumnsPickerContent extends Component<ColumnsPickerContent_Props_t
             handleDone: this.handleDone,
             language: this.props.language,
         },
-            __(Typography, { key:"Typography0", variant: "subheading", className: this.props.classes!.subheading }, this.translate.translateWord(SAVED_COLUMN_SETS)),
+            __(Typography, { key: "Typography0", variant: "subheading", className: this.props.classes!.subheading }, this.translate.translateWord(SAVED_COLUMN_SETS)),
             __(ColumnSetManager, {
-                key:"columnSetManager",
+                key: "columnSetManager",
                 columnSets: this.state.sets,
                 currentSet: this.state.selectedSet,
                 currentColumns: this.state.selected,
@@ -188,21 +188,21 @@ export class ColumnsPickerContent extends Component<ColumnsPickerContent_Props_t
                 onCreate: this.onCreateColumnSet,
                 onDelete: this.onDeleteColumnSet,
                 language: this.props.language,
-                classes:"" as any}) ,
-            __("div", { className: "columns-to-display-test-handle",key:"columns-to-display-test-handle" },
+                classes: "" as any}) ,
+            __("div", { className: "columns-to-display-test-handle", key: "columns-to-display-test-handle" },
                 __(Typography, { variant: "subheading", className: this.props.classes!.subheading }, this.translate.translateWord(COLUMNS_TO_DISPLAY)),
                 __(SortableColumns, {
                     columns: getDisplayedColumns(this.props, this.state.selected),
                     onDeleteColumn: this.onDeleteColumn,
                     onSortColumns: (columns: Column_t[]) => this.setState({ selected: columns.map(col => col.name) }),
                 })),
-            __(Typography, { key:"Typography1",variant: "subheading", className: this.props.classes!.subheading }, this.translate.translateWord(OTHER_AVAILABLE_COLUMNS)),
+            __(Typography, { key: "Typography1", variant: "subheading", className: this.props.classes!.subheading }, this.translate.translateWord(OTHER_AVAILABLE_COLUMNS)),
             __(AvailableColumns, {
                 availableColumns: this.props.columnGroups,
                 selectedColumns: this.state.selected,
                 onClickColumn: this.onClickColumn,
             }),
-            __(Typography, { key:"Typography2",className: this.props.classes!.hintText }, this.translate.translateWord(DRAG_AND_DROP)),
+            __(Typography, { key: "Typography2", className: this.props.classes!.hintText }, this.translate.translateWord(DRAG_AND_DROP)),
         );
     }
 }

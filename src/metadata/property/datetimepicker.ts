@@ -39,7 +39,7 @@ const DateTimePicker: PropertyRenderer_t<Date | Date[]> = (config: PropertyRende
                         props.onChange(config.mapToModel(props.node, v));
                     },
                     defaultDate: defaultValue,
-                    value: <Date>value,
+                    value: <Date> value,
                     formatDate: (date: Date) => moment(date).format(config.parameters["date-format"] || "Y/M/D"),
                 }));
             } else {

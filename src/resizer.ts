@@ -74,6 +74,6 @@ export class Resizer extends Component<Resizable_t, State_t> {
             onResize: this.onResize,
             onResizeStart: this.onResizeStart,
             onResizeEnd: this.onResizeEnd,
-        }, _.div({ className: "resizable", style: resizableStyle }, <any>children));
+        }, _.div({ className: "resizable", style: resizableStyle }, <any> children));
     }
 }

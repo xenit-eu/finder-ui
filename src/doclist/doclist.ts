@@ -224,18 +224,18 @@ export function DocList({ className, columns, data, nodes, onDownloadButtonClick
                     style,
                     checked: true,
                     checkedIcon: __(ToggleIndeterminateCheckBox),
-                    onCheck: () => (<Node_t[]>nodes).forEach((node, i) => onRowToggled(true, i, nodeToRow(node))),
+                    onCheck: () => (<Node_t[]> nodes).forEach((node, i) => onRowToggled(true, i, nodeToRow(node))),
                 }) :
                 __(Checkbox, {
                     key: "notAllRowsToggled",
                     style,
                     checked: allRowsToggled && !noRowsToggled,
-                    onCheck: (ev: any, checked: boolean) => (<Node_t[]>nodes).forEach((node, i) => onRowToggled(checked, i, nodeToRow(node))),
+                    onCheck: (ev: any, checked: boolean) => (<Node_t[]> nodes).forEach((node, i) => onRowToggled(checked, i, nodeToRow(node))),
                 }),
             __(IconButton, { key: "iconButton", disabled: toggledRows === 0, tooltip: toggledRows + " selected", onClick: onDownloadButtonClick }, [__(FileDownload, { key: "FileDownload" })]),
         );
     }
-    const headerelements = (<Array<ReactElement<any>>>[_.th({ key: "Menu" }, "")])
+    const headerelements = (<Array<ReactElement<any>>> [_.th({ key: "Menu" }, "")])
         .concat(togglable ? [_.th({ key: "toggle", style: { textAlign: "center", width: "1px" } }, downloadComponents)] : [])
         .concat(columns.map(c => SortableTh(c, onSortColumnSelected, translations)));
 
@@ -265,7 +265,7 @@ function buildSingleTD(col: Doclist_Column_t, node: Node_t, onRowSelected: (i: n
         }, __(col.renderer || "span", {
             node,
             row: i,
-            highlights:[],
+            highlights: [],
         }));
 }
 
@@ -278,7 +278,7 @@ function upgradeDataToNodes(data?: Row_t[], nodes?: Node_t[]): Node_t[] {
         return data.map((row: Row_t) => {
             let node = {
                 type: "",
-                aspects: <any[]>[],
+                aspects: <any[]> [],
                 properties: {},
             };
 

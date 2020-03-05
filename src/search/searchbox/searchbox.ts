@@ -141,7 +141,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                     return;
                 }
                 if (match.isHierarchic()) {
-                    const hierarchicMatch = <HierarchicQueryValueMatch>match;
+                    const hierarchicMatch = <HierarchicQueryValueMatch> match;
                     if (hierarchicMatch.hierarchyInfo.requiresUserChoice) {
                         this.setState({ currentValueMatchWaitingForInput: hierarchicMatch });
                         return;
@@ -261,7 +261,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                 color: iconColor,
                 onClick: () => this.props.onSaveAsQuery(prompt("Save query as") || "query", this.props.searchedQueryElements),
             }));
-        const hierarchyPicker = this.isHierarchyPickerOpen() && __(SearchboxHierarchyPicker, <SearchboxHierarchyPickerProps>{
+        const hierarchyPicker = this.isHierarchyPickerOpen() && __(SearchboxHierarchyPicker, <SearchboxHierarchyPickerProps> {
             open: this.isHierarchyPickerOpen() || false,
             handleClose: () => {
                 this.selectedHierarchy = this.getHierarchicQueryValueMatch().hierarchyInfo.possibilities[0].index;

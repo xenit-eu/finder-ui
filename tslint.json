@@ -17,19 +17,6 @@
             false
         ],
         "interface-name": false,
-        "interface-over-type-literal": false,
-        "whitespace": {
-            "options": [
-                "check-branch",
-                "check-decl",
-                "check-operator",
-                "check-module",
-                "check-separator",
-                "check-rest-spread",
-                "check-type",
-                "check-type-operator",
-                "check-preblock"
-            ]
-        }
+        "interface-over-type-literal": false
     }
 }

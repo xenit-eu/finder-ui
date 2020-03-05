@@ -23,8 +23,8 @@ function MultiValueTextBox(props: MultiValueTextBox_Props_t) {
         fullWidth: props.fullWidth,
         hintText: props.hintText,
         allowDuplicates: true,
-        onRequestAdd: (chip: string) => props.onChange(<FormEvent<{}>>{}, props.value.concat([chip])),
-        onRequestDelete: (chip: string, index: number) => props.onChange(<FormEvent<{}>>{}, props.value.filter((v, i) => i !== index)),
+        onRequestAdd: (chip: string) => props.onChange(<FormEvent<{}>> {}, props.value.concat([chip])),
+        onRequestDelete: (chip: string, index: number) => props.onChange(<FormEvent<{}>> {}, props.value.filter((v, i) => i !== index)),
         value: props.value,
     });
 }
@@ -35,7 +35,7 @@ const TextBox: PropertyRenderer_t<string | string[]> = (config: PropertyRenderCo
     return function TextBox(props: FieldSkeleton_Props_t) {
         const value = config.mapToView(props.node);
         if (props.renderMode !== RenderMode.VIEW) {
-            return _.span({ className: "metadata-field metadata-field-textbox" }, __(<any>(Array.isArray(value) ? MultiValueTextBox : ChangeOnBlurTextField), {
+            return _.span({ className: "metadata-field metadata-field-textbox" }, __(<any> (Array.isArray(value) ? MultiValueTextBox : ChangeOnBlurTextField), {
                 fullWidth: true,
                 hintText: "Type value...",
                 onChange: (evt: FormEvent<{}>, v: string | string[]) => {
@@ -44,7 +44,7 @@ const TextBox: PropertyRenderer_t<string | string[]> = (config: PropertyRenderCo
                 value,
             }));
         } else {
-            return __(label, <any>{ ...props, className: "metadata-value metadata-field-textbox" });
+            return __(label, <any> { ...props, className: "metadata-value metadata-field-textbox" });
         }
     };
 };

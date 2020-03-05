@@ -29,7 +29,7 @@ export function SearchQueryElementToChipVM(sQE: ISearchQueryElement, index: numb
         new LeafChipVM(texts[0], texts[1], index, sQE.isReferential() ? Colors.blue100 : Colors.grey200, sQE.isRemovable(), () => onRemoveAtIndex(index), sQE instanceof ToFillInSearchQueryElement));
 }
 
-export const hasChipFillIn = (chipVM: ChipVM_t): boolean => (chipVM.leaf) ? chipVM.isFillIn : (<any>chipVM).children.some(hasChipFillIn);
+export const hasChipFillIn = (chipVM: ChipVM_t): boolean => (chipVM.leaf) ? chipVM.isFillIn : (<any> chipVM).children.some(hasChipFillIn);
 export const HaveChipsFillIn = (chips: ChipVM_t[]): boolean => chips.some(hasChipFillIn);
 export function ChipVMToChip(chipVM: ChipVM_t, getInputBox: () => any): ReactElement<any> {
     const deleteAction = chipVM.deletable ? () => chipVM.onDelete && chipVM.onDelete() : undefined;

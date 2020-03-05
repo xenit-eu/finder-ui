@@ -136,7 +136,7 @@ export class SizeQueryElement implements ISimpleSearchQueryElement {
     public isReferential() { return false; }
     public isRemovable() { return true; }
     public getSimpleSearchbarText() {
-        const ret = this.translate("Size") + ": " + GetSizeTranslation((s) => this.translate(s),this.range);
+        const ret = this.translate("Size") + ": " + GetSizeTranslation((s) => this.translate(s), this.range);
         return Promise.resolve(ret);
     }
     public getTooltipText() {

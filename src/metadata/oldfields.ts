@@ -114,7 +114,7 @@ function fieldsInGroups(fields: Metadata_t[], groupInfo: MetaDataPanelGroupInfo_
 export function metadataFields(fields: Metadata_t[], editable: boolean = true, groupInfo: MetaDataPanelGroupInfo_t | undefined = undefined): Array<ReactElement<any>> {
     const filteredFields = fields.filter(metadataFilter);
     if (!groupInfo) {
-        return filteredFields.map((f, i) => metadataField(f, editable, ""+i));
+        return filteredFields.map((f, i) => metadataField(f, editable, "" + i));
     } else {
         let groupsWithChildrenList = fieldsInGroups(fields, groupInfo);
         return groupsWithChildrenList.map((g, i) => {

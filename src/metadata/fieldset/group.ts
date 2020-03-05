@@ -27,7 +27,7 @@ const GroupedFieldset: FieldsetRenderer_t = (config: FieldsetRenderConfig_t) => 
             }, __(wrappedrenderer, props)),
         );
     };
-    (<any>component).displayName = "Fieldset.Group(" + JSON.stringify(config) + ")";
+    (<any> component).displayName = "Fieldset.Group(" + JSON.stringify(config) + ")";
     return component;
 };
 export default GroupedFieldset;

@@ -25,14 +25,14 @@ const TextArea: PropertyRenderer_t<string | string[]> = (config: PropertyRenderC
                     multiLine: true,
                     rows: 2,
                     rowsMax: 4,
-                    value: <string>value,
+                    value: <string> value,
                 }));
             } else {
                 // TODO: Implement handling of multivalue fields
                 return null;
             }
         } else {
-            return __(label, <any>{ ...props, className: "metadata-value metadata-field-textarea" });
+            return __(label, <any> { ...props, className: "metadata-value metadata-field-textarea" });
         }
     };
 };

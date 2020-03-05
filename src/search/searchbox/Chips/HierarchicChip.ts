@@ -61,7 +61,7 @@ export class HierarchicChip extends Component<HierarchicChipProps, {}> {
         }, childrenInterleaved, __(CancelIcon, {
             color: "#000A",
             className: "cancel-icon",
-            key:"CANCELINCON",
+            key: "CANCELINCON",
             onClick: (event: any) => this.handleDeleteIconClick(event),
 
         }));

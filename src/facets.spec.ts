@@ -40,7 +40,7 @@ describe("Facets test", () => {
 
         expect(topListItem.prop("primaryText")).toBe(case1.facets[0].label);
 
-        const subListItems = (<any>topListItem).prop("nestedItems").map((c: ReactElement<any>) => mount(c, { context: { muiTheme } }));
+        const subListItems = (<any> topListItem).prop("nestedItems").map((c: ReactElement<any>) => mount(c, { context: { muiTheme } }));
         expect(subListItems.length).toBe(case1.facets[0].values.length);
 
         // check value of sub-items labels.
@@ -57,7 +57,7 @@ describe("Facets test", () => {
 
         const wrapper = shallow(__(Facets, case1));
         const topListItem = wrapper.find("ListItem");
-        const subListItems = (<any>topListItem).prop("nestedItems").map((c: ReactElement<any>) => mount(c, { context: { muiTheme } }));
+        const subListItems = (<any> topListItem).prop("nestedItems").map((c: ReactElement<any>) => mount(c, { context: { muiTheme } }));
 
         simulateEvent(subListItems[1].find("EnhancedButton"), "click");
 

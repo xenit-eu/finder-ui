@@ -163,7 +163,7 @@ export class DropZone extends Component<DropZone_t, State_t> {
         const show = this.state.show ? "flex" : "none";
         const selection: boolean = this.state.files.filter(a => a.selected).length > 0;
 
-        return _.div(<any>{
+        return _.div(<any> {
             className: "drop-zone", style: containerStyle,
             onDragEnter: this.onEnter.bind(this),
             onDragLeave: this.onLeave.bind(this),
@@ -172,7 +172,7 @@ export class DropZone extends Component<DropZone_t, State_t> {
             onClick: this.onDropZoneClick.bind(this),
         }, [
 
-                _.input(<any>{ type: "file", style: { display: "none" }, multiple: "multiple", ref: (input: HTMLInputElement) => this.fileInput = input }),
+                _.input(<any> { type: "file", style: { display: "none" }, multiple: "multiple", ref: (input: HTMLInputElement) => this.fileInput = input }),
 
                 _.div({ className: "overlay", style: { display: show } },
                     _.ul({ className: "files-list" },

@@ -16,7 +16,7 @@ const CheckBox: PropertyRenderer_t<boolean | boolean[]> = (config: PropertyRende
         const isMultiValue = Array.isArray(value);
         if (!isMultiValue) {
             return _.span({ className: "metadata-field metadata-field-checkbox" }, DrawBooleanPropertyValue({
-                checked: <boolean>value,
+                checked: <boolean> value,
                 onCheck: (evt: FormEvent<{}>, v: boolean) => {
                     props.onChange(config.mapToModel(props.node, v));
                 },

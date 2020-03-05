@@ -34,7 +34,7 @@ const translations: TranslationsChecked = {
         [SAVE_AS_NEW]: "Opslaan als nieuw...",
         [DELETE]: "Verwijderen",
     },
-    [SPANISH]:{
+    [SPANISH]: {
         [SAVE]: "Guardar",
         [SAVE_AS_NEW]: "Guardar como nuevo...",
         [DELETE]: "Borrar",

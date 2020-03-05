@@ -82,7 +82,7 @@ const TreeSelectBox: PropertyRenderer_t<string[] | string> = (config: PropertyRe
                 });
                 let values = this._getViewValue();
                 values = this.state.currentValuesLoaded ? this.state.currentValues.map(item => item.value) : ["Loading..."];
-                return _.span({ className: "metadata-field metadata-field-treeselectbox" }, __(SelectField, <any>{
+                return _.span({ className: "metadata-field metadata-field-treeselectbox" }, __(SelectField, <any> {
                     openImmediately: this.state.updateTrigger,
                     dropDownMenuProps: {
                         autoWidth: true,
@@ -131,7 +131,7 @@ class TreeSelectBoxImpl extends Component<TreeSelectBoxImpl_Props_t, TreeSelectB
     constructor(props: TreeSelectBoxImpl_Props_t) {
         super(props);
         this.state = {
-            expanded: this._getParentsFor(<string[]>(props.multiple ? props.value : [props.value])),
+            expanded: this._getParentsFor(<string[]> (props.multiple ? props.value : [props.value])),
             searchFilter: "",
         };
     }
@@ -150,13 +150,13 @@ class TreeSelectBoxImpl extends Component<TreeSelectBoxImpl_Props_t, TreeSelectB
     private _getParentsFor(values: string[]): string[] {
         const selectedNodes = this.props.treeDescription
             .filter(node => values.indexOf(node.key) >= 0);
-        return (<string[]>[]).concat(...selectedNodes.map(node => this._getParents(node.parent)));
+        return (<string[]> []).concat(...selectedNodes.map(node => this._getParents(node.parent)));
     }
 
     private _getFilteredValues(filter: string) {
         const matchingNodes = this.props.treeDescription
             .filter(node => node.value.toLowerCase().indexOf(filter.toLowerCase()) >= 0);
-        return (<string[]>[]).concat(...matchingNodes.map(node => this._getParents(node.key).concat([node.key])));
+        return (<string[]> []).concat(...matchingNodes.map(node => this._getParents(node.key).concat([node.key])));
     }
 
     private _getFilteredTreeDescription() {

@@ -19,7 +19,7 @@ const CenteredFieldset: FieldsetRenderer_t = (config: FieldsetRenderConfig_t) =>
                     ))),
             ));
     };
-    (<any>component).displayName = "Fieldset.Centered(" + JSON.stringify(config) + ")";
+    (<any> component).displayName = "Fieldset.Centered(" + JSON.stringify(config) + ")";
     return component;
 };
 export default CenteredFieldset;
