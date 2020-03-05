@@ -18,27 +18,7 @@
         "suppressImplicitAnyIndexErrors": true,
         "strictNullChecks": true,
         "baseUrl": "./",
-        "paths": {},
-        "skipLibCheck":true,
+        "skipLibCheck": true,
         "noImplicitThis": true,
-    },
-    "exclude": [
-        "**/golden-layout/index.d.ts",
-        "proxy"
-    ],
-    "compileOnSave": true,
-    "buildOnSave": false,
-    "atom": {
-        "rewriteTsconfig": false
     }
-}            // options: {
-            //     sourceMap: true,
-            //     transpileOnly: true,
-            //     isolatedModules: true,
-            //     silent: true,
-            //     files: ["just-a-hack"],
-            //     entryFileIsJs: true,
-
-            //     compilerOptions: {
-            //     }
-            // }
+}

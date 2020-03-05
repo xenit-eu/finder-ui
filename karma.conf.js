@@ -44,61 +44,15 @@ module.exports = function (config) {
         ],
 
         customLaunchers: {
-          MyHeadlessChrome: {
-            base: 'ChromeHeadless',
-            flags: ['--no-sandbox']
-          }
+            MyHeadlessChrome: {
+                base: 'ChromeHeadless',
+                flags: ['--no-sandbox']
+            }
         },
         // fix typescript serving video/mp2t mime type
         mime: {
             'text/x-typescript': ['ts', 'tsx']
         },
-        webpack: { // packaging of the app before testing... 
-            /*output: {
-                filename: "[name].js" // cfr https://github.com/webpack/karma-webpack/issues/109
-            },*/
-            resolve: {
-                root: path.resolve('./src'),
-                extensions: ['', '.ts', '.js']
-            },
-            devtool: 'inline-source-map', //just do inline source maps instead of the default
-            module: {
-                loaders: [{
-                    test: /\.tsx?$/,
-                    loader: 'awesome-typescript-loader'
-                },
-                {
-                    test: /\.(less|scss|css)$/,
-                    loader: 'ignore'
-                }, // ignore inclusion of style files.
-                ]
-            },
-            externals: { /// !!!! important !!!!
-                'cheerio': 'window',
-                'react/addons': true,
-                'react/lib/ExecutionEnvironment': true,
-                'react/lib/ReactContext': true
-            },
-          
-            plugins: [
-                // ...
-                function () {
-                    this.plugin("done", function (stats) {
-                        if (stats.compilation.errors && stats.compilation.errors.length) {
-                            console.log(stats.compilation.errors);
-                            process.exit(1);
-                        }
-                        // ...
-                    });
-                }
-                // ...
-            ]
-        },
-        webpackMiddleware: {
-            // webpack-dev-middleware configuration
-            // i. e.
-            stats: 'errors-only'
-          }
-
+        webpack: require('./webpack.config.js'),
     });
 };
