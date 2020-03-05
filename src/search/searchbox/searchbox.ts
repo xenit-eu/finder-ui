@@ -128,7 +128,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
 
     public onApplyTextSuggestion({ key, value }: { key: string, value: string }) {
         return this.props.matchKeyValueExact(key, value)
-            .then(match => {
+            .then((match) => {
                 if (!match || !match.hasResult()) {
                     return;
                 }
@@ -178,7 +178,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
     }
 
     public inputChanged(t: string) {
-        this.setState(state => ({
+        this.setState((state) => ({
             textValue: t,
             suggestionsOpened: state.suggestionsOpenManualTrigger ? state.suggestionsOpened : t.length > 0,
             suggestionsOpenManualTrigger: state.suggestionsOpenManualTrigger === undefined ? false : state.suggestionsOpenManualTrigger,
@@ -197,7 +197,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
 
     private updateChips(queryElements: ReadonlyArray<ISearchQueryElement>) {
         return Promise.all(queryElements.map((sQE, i) => SearchQueryElementToChipVM(sQE, [i], (n) => this.props.onRemoveQueryElement(n))))
-            .then(chipVMs => this.setState({ currentChipVMs: chipVMs }))
+            .then((chipVMs) => this.setState({ currentChipVMs: chipVMs }))
             .then(() => {
                 if (this.props.onChipsUpdated) {
                     this.props.onChipsUpdated();
@@ -225,7 +225,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
             onBackspace: () => {
                 me.props.onRemoveLastQueryElement();
             },
-            onRequestAutocomplete: () => me.setState(state => ({
+            onRequestAutocomplete: () => me.setState((state) => ({
                 suggestionsOpened: true,
                 suggestionsOpenManualTrigger: state.suggestionsOpenManualTrigger === undefined ? true : state.suggestionsOpenManualTrigger,
                 focusSuggestions: true,

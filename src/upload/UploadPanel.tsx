@@ -23,7 +23,7 @@ export type UploadPanel_Props_t<T extends IUploadedFile = IUploadedFile> = {
 export default function UploadPanel<T extends IUploadedFile = IUploadedFile>(props: UploadPanel_Props_t<T>) {
     const { t } = useTranslation("finder-ui");
     function uploadFiles(files: readonly File[]) {
-        files.forEach(file => props.onUploadAdded(file));
+        files.forEach((file) => props.onUploadAdded(file));
     }
     return <FileDropZone onFilesDropped={uploadFiles}>
         {(isDragging: boolean) => {

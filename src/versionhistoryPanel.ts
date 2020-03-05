@@ -80,7 +80,7 @@ export function VersionsHistoryPanel({ show, versions, translate }: VersionsHist
         if (versions.length === 0) {
             return _.div({ className: "docversions" }, translate ? translate(DOCUMENT_NO_VERSION_HISTORY) : DOCUMENT_NO_VERSION_HISTORY);
         }
-        return _.div({ className: "docversions", key: "docversions" }, versions.map(v => __(VersionItem, { version: v, key: v.versionNumber })));
+        return _.div({ className: "docversions", key: "docversions" }, versions.map((v) => __(VersionItem, { version: v, key: v.versionNumber })));
     } else {
         return _.div({});
     }

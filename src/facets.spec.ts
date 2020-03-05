@@ -44,10 +44,10 @@ describe("Facets test", () => {
         expect(subListItems.length).toBe(case1.facets[0].values.length);
 
         // check value of sub-items labels.
-        expect(subListItems.map((a: ShallowWrapper<any, any>) => a.prop("primaryText"))).toEqual(case1.facets[0].values.map(a => a.label));
+        expect(subListItems.map((a: ShallowWrapper<any, any>) => a.prop("primaryText"))).toEqual(case1.facets[0].values.map((a) => a.label));
 
         // check value of badges (counts)
-        expect(subListItems.map((a: ShallowWrapper<any, any>) => a.find("Badge").text())).toEqual(case1.facets[0].values.map(a => a.count.toString()));
+        expect(subListItems.map((a: ShallowWrapper<any, any>) => a.find("Badge").text())).toEqual(case1.facets[0].values.map((a) => a.count.toString()));
 
     });
 

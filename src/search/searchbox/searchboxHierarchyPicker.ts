@@ -34,8 +34,8 @@ export class SearchboxHierarchyPicker extends Component<SearchboxHierarchyPicker
         const possibilities = info.hierarchyInfo.possibilities;
         Promise.all(possibilities.map((p) =>
             Promise.all(p.structure.elements.map((rootElement, i) => SearchQueryElementToChipVM(rootElement, p.index.concat([i]), () => { })))
-                .then(vm => ({ id: p.index, chips: vm }))))
-            .then(renderedPossibilities => { this.setState({ showPossibilities: renderedPossibilities }); });
+                .then((vm) => ({ id: p.index, chips: vm }))))
+            .then((renderedPossibilities) => { this.setState({ showPossibilities: renderedPossibilities }); });
     }
     public render() {
         return __(Dialog, { // Dialog to display the date (range) selector.
@@ -52,7 +52,7 @@ export class SearchboxHierarchyPicker extends Component<SearchboxHierarchyPicker
                     key: i,
                     button: true,
                     onClick: () => this.props.pickedChip(p.id),
-                }, _.span({}, p.chips.map(chip => ChipVMToChip(chip, () => "..."))),
+                }, _.span({}, p.chips.map((chip) => ChipVMToChip(chip, () => "..."))),
                 )),
             ),
         );

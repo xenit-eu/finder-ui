@@ -10,7 +10,7 @@ function FullWidthFlexContainer(props: FullWidthFlexcontainer_t) {
 
 const comp: ComponentType<FullWidthFlexcontainer_t> = FullWidthFlexContainer;
 
-export default withStyles(theme => ({
+export default withStyles((theme) => ({
     flex: {
         display: "flex",
         width: "100%",

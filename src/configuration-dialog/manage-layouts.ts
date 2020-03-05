@@ -91,7 +91,7 @@ class ManageLayouts extends Component<ManageLayouts_Props_t, { input: string }> 
 
 const comp: ComponentType<ManageLayouts_Props_t> = ManageLayouts;
 
-export default withStyles(theme => ({
+export default withStyles((theme) => ({
     rightIcon: {
         marginLeft: theme.spacing.unit,
     },

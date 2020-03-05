@@ -32,10 +32,10 @@ const Label: PropertyRenderer_t<string | string[]> = (config: PropertyRenderConf
         private lookupCurrentValues() {
             this.setState({ currentValuesLoaded: false }, () => {
                 if (config.parameters.resolver) {
-                    config.parameters.resolver.lookup(this._getViewValue().map(v => v.toString()))
+                    config.parameters.resolver.lookup(this._getViewValue().map((v) => v.toString()))
                         .then((items: KV_t[]) => this.setState({ currentValues: items, currentValuesLoaded: true }));
                 } else {
-                    this.setState({ currentValues: this._getViewValue().map(v => ({ key: v, value: v })), currentValuesLoaded: true });
+                    this.setState({ currentValues: this._getViewValue().map((v) => ({ key: v, value: v })), currentValuesLoaded: true });
                 }
             });
         }
@@ -55,7 +55,7 @@ const Label: PropertyRenderer_t<string | string[]> = (config: PropertyRenderConf
             if (!this.state.currentValuesLoaded) {
                 return _.span(classNamed, "Loading...");
             }
-            const values = this.state.currentValues.map(item => item.value);
+            const values = this.state.currentValues.map((item) => item.value);
             const value = values.join(", ");
             return _.span({ ...classNamed, title: value }, value);
         }

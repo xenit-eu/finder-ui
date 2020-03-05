@@ -56,7 +56,7 @@ class ConfigurationDialogContent extends Component<ConfigurationDialog_Props_t> 
 
 const comp: ComponentType<ConfigurationDialog_Props_t> = ConfigurationDialogContent;
 
-export default withStyles(theme => ({
+export default withStyles((theme) => ({
     formControl: {
         flexGrow: 1,
         flexBase: "0%",

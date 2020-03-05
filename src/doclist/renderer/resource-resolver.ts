@@ -56,7 +56,7 @@ const ResourceResolverRenderer: ColumnRenderer_Factory_t<string | string[]> = (c
             if (!this.state.itemsLoaded) {
                 return _.span({ className: "doclist-renderer-loading" }, "Loading...");
             } else {
-                const value = this.state.items.map(kv => kv.value).join(", ");
+                const value = this.state.items.map((kv) => kv.value).join(", ");
                 return _.span({ title: value }, value);
             }
         }

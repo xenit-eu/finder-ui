@@ -66,16 +66,16 @@ function getAllColumns(props: ColumnsPickerContent_Props_t): Column_t[] {
 
 function getDisplayedColumns(props: ColumnsPickerContent_Props_t, columns: string[]): Column_t[] {
     const allColumns = getAllColumns(props);
-    const fixedColumns = allColumns.filter(c => c.fixed).filter(c => columns.indexOf(c.name) === -1);
-    return fixedColumns.concat(columns.map(name => allColumns.find(col => col.name === name)!).filter(c => !!c));
+    const fixedColumns = allColumns.filter((c) => c.fixed).filter((c) => columns.indexOf(c.name) === -1);
+    return fixedColumns.concat(columns.map((name) => allColumns.find((col) => col.name === name)!).filter((c) => !!c));
 }
 
 function getSelectedAndSetsState(props: ColumnsPickerContent_Props_t) {
     return {
-        selected: getDisplayedColumns(props, props.selectedColumns).map(col => col.name),
-        sets: props.sets.map(set => ({
+        selected: getDisplayedColumns(props, props.selectedColumns).map((col) => col.name),
+        sets: props.sets.map((set) => ({
             ...set,
-            columns: getDisplayedColumns(props, set.columns).map(col => col.name),
+            columns: getDisplayedColumns(props, set.columns).map((col) => col.name),
         })),
     };
 
@@ -102,7 +102,7 @@ export class ColumnsPickerContent extends Component<ColumnsPickerContent_Props_t
     }
 
     private handleDone = () => {
-        this.props.onDone(getDisplayedColumns(this.props, this.state.selected).map(col => col.name));
+        this.props.onDone(getDisplayedColumns(this.props, this.state.selected).map((col) => col.name));
         this.props.onSetsChange(this.state.sets);
         this.props.onDismiss();
     }
@@ -119,8 +119,8 @@ export class ColumnsPickerContent extends Component<ColumnsPickerContent_Props_t
     }
 
     private onCreateColumnSet = (set: ColumnSet_t) => {
-        this.setState(state => {
-            const existingSet = state.sets.findIndex(s => s.id === set.id);
+        this.setState((state) => {
+            const existingSet = state.sets.findIndex((s) => s.id === set.id);
             if (existingSet === -1) {
                 return {
                     selectedSet: set.id,
@@ -136,23 +136,23 @@ export class ColumnsPickerContent extends Component<ColumnsPickerContent_Props_t
     }
 
     private onDeleteColumnSet = (set: ColumnSet_t) => {
-        this.setState(state => ({
-            sets: state.sets.filter(s => s.id !== set.id),
+        this.setState((state) => ({
+            sets: state.sets.filter((s) => s.id !== set.id),
             selectedSet: null,
         }));
     }
 
     private onDeleteColumn = (column: Column_t) => {
-        this.setState(s => ({
-            selected: s.selected.filter(col => col !== column.name),
+        this.setState((s) => ({
+            selected: s.selected.filter((col) => col !== column.name),
         }));
     }
 
     private onClickColumn = (col: Column_t) => {
-        this.setState(state => {
-            if (state.selected.find(sC => sC === col.name)) {
+        this.setState((state) => {
+            if (state.selected.find((sC) => sC === col.name)) {
                 return {
-                    selected: state.selected.filter(sC => sC !== col.name),
+                    selected: state.selected.filter((sC) => sC !== col.name),
                 };
             } else {
                 return {
@@ -194,7 +194,7 @@ export class ColumnsPickerContent extends Component<ColumnsPickerContent_Props_t
                 __(SortableColumns, {
                     columns: getDisplayedColumns(this.props, this.state.selected),
                     onDeleteColumn: this.onDeleteColumn,
-                    onSortColumns: (columns: Column_t[]) => this.setState({ selected: columns.map(col => col.name) }),
+                    onSortColumns: (columns: Column_t[]) => this.setState({ selected: columns.map((col) => col.name) }),
                 })),
             __(Typography, { key: "Typography1", variant: "subheading", className: this.props.classes!.subheading }, this.translate.translateWord(OTHER_AVAILABLE_COLUMNS)),
             __(AvailableColumns, {

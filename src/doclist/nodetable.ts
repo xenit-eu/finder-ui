@@ -97,8 +97,8 @@ export function NodeTable<T>(props: INodeTableProps<T>) {
     if (props.onRowToggled !== undefined) {
         const onToggleAllFallback = (checked: boolean) => props.rows.forEach((row, i) => props.onRowToggled!(row.node, checked, i));
         const onToggleAll = props.onToggleAll || onToggleAllFallback;
-        const allRowsToggled = props.rows.every(row => row.toggled || false);
-        const noRowsToggled = props.rows.every(row => !row.toggled);
+        const allRowsToggled = props.rows.every((row) => row.toggled || false);
+        const noRowsToggled = props.rows.every((row) => !row.toggled);
         const indeterminate = !allRowsToggled && !noRowsToggled;
         firstColumns.push({
             id: "--norowselect-toggle",
@@ -122,7 +122,7 @@ export function NodeTable<T>(props: INodeTableProps<T>) {
     }
     const columns: Column[] = props.columns.map(createColumn);
 
-    const sorted: SortingRule[] = props.columns.map(createSortingRule).filter(c => !!c) as SortingRule[];
+    const sorted: SortingRule[] = props.columns.map(createSortingRule).filter((c) => !!c) as SortingRule[];
 
     const translations = props.translations ? {
         previousText: props.translations[NodeTableTranslations.PREVIOUS],
@@ -148,7 +148,7 @@ export function NodeTable<T>(props: INodeTableProps<T>) {
         multiSort: false,
         sorted,
         onSortedChange: (newSorted: SortingRule[], column: Column, additive: boolean) => {
-            const sorts: INodeTableBasicColumn[] = props.columns.map(col => sortingRuleToBasicColumn(col, newSorted));
+            const sorts: INodeTableBasicColumn[] = props.columns.map((col) => sortingRuleToBasicColumn(col, newSorted));
             props.onSortChanged(sorts);
         },
         getTrProps: (state: TableProps, rowInfo?: RowInfo) => (rowInfo ? {
@@ -166,7 +166,7 @@ export function NodeTable<T>(props: INodeTableProps<T>) {
 }
 
 function sortingRuleToBasicColumn(col: INodeTableBasicColumn, rules: SortingRule[]): INodeTableBasicColumn {
-    const sortingRule = rules.find(sort => sort.id === col.name);
+    const sortingRule = rules.find((sort) => sort.id === col.name);
     if (!sortingRule) {
         return {
             name: col.name,

@@ -6,7 +6,6 @@
             true,
             200
         ],
-        "arrow-parens": false,
         "no-empty": false,
         "type-name": false,
         "comment-format": [

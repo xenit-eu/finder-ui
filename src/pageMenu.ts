@@ -52,7 +52,7 @@ class SubMenuItem extends Component<MenuItemWrapper_t, SubMenuItem_State_t> {
     }
 
     private menuItemsNeedInset() {
-        return this.props.menuItem.children!.find(menuItem => !!menuItem.iconName) !== undefined;
+        return this.props.menuItem.children!.find((menuItem) => !!menuItem.iconName) !== undefined;
     }
 
     public render() {

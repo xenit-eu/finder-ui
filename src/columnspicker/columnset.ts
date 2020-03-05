@@ -42,7 +42,7 @@ const translations: TranslationsChecked = {
 };
 function ColumnSetManager(props: ColumnSetManager_Props_t): ReactElement {
     const translator = new WordTranslator(() => props.language, translations);
-    const selectedSet = props.columnSets.find(set => set.id === props.currentSet);
+    const selectedSet = props.columnSets.find((set) => set.id === props.currentSet);
 
     let selectedValue = "";
     let isModified = false;
@@ -74,7 +74,7 @@ function ColumnSetManager(props: ColumnSetManager_Props_t): ReactElement {
                 if (value === "") {
                     props.onSelect(null);
                 } else {
-                    props.onSelect(props.columnSets.find(set => set.id === value)!);
+                    props.onSelect(props.columnSets.find((set) => set.id === value)!);
                 }
             },
         }, setsList),
@@ -122,7 +122,7 @@ function ColumnSetManager(props: ColumnSetManager_Props_t): ReactElement {
         ));
 }
 
-export default withStyles(theme => ({
+export default withStyles((theme) => ({
     root: {
         display: "flex",
         alignItems: "center",

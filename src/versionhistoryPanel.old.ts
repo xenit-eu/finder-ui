@@ -58,7 +58,7 @@ export function VersionsHistoryPanel({ show, versions }: VersionsHistoryPanel_t)
             //return __(ListItem, { nestedItems: childsToDisplay }, v.versionNumber);
             return childsToDisplay;
         };
-        const elements = versions.map(a => __(Paper, { style: { margin: "3px", padding: "3px" }, zDepth: 1, children: singleVersion(a) }));
+        const elements = versions.map((a) => __(Paper, { style: { margin: "3px", padding: "3px" }, zDepth: 1, children: singleVersion(a) }));
         return _.div({ className: "docversions" }, __(List, {}, elements));
     } else {
         return _.div({});

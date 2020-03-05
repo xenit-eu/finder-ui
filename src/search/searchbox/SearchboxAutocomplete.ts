@@ -102,7 +102,7 @@ export class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
                     onKeyDown: this.handleKeyDown.bind(this),
                     onKeyUp: this.props.onKeyUp,
                     onFocus: this.props.onFocus,
-                    ref: input => { this.inputElem = input as HTMLInputElement; },
+                    ref: (input) => { this.inputElem = input as HTMLInputElement; },
                 }),
                 __(AutocompleteMenu, {
                     key: "autocomplete-menu",
@@ -196,6 +196,6 @@ class AutocompleteMenu extends Component<AutocompleteMenu_Props_t> {
 }
 
 function uniqueSuggestionsFilter(suggestion: IAutocompleteSuggestion, i: number, suggestions: IAutocompleteSuggestion[]): boolean {
-    const firstIndex = suggestions.findIndex(sug => sug.DisplayKey() === suggestion.DisplayKey() && sug.DisplayValue() === suggestion.DisplayValue());
+    const firstIndex = suggestions.findIndex((sug) => sug.DisplayKey() === suggestion.DisplayKey() && sug.DisplayValue() === suggestion.DisplayValue());
     return i === firstIndex;
 }

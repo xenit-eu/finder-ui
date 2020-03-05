@@ -18,7 +18,7 @@ function ConfigurationExpansionPanel(props: ConfigurationExpansionPanel_t) {
 
 const comp: ComponentType<ConfigurationExpansionPanel_t> = ConfigurationExpansionPanel;
 
-export default withStyles(theme => ({
+export default withStyles((theme) => ({
     expansionPanelDetails: <CSSProperties> {
         // display: "flex",
         flexDirection: "column",

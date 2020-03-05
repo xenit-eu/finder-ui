@@ -33,7 +33,7 @@ type FacetSub_t = {
 };
 
 function FacetSub({ facet, onFacetSelected }: FacetSub_t): ReactElement<any> {
-    const nestedItems = facet.values.map(c => {
+    const nestedItems = facet.values.map((c) => {
         const key = facetValueToKeyString(c.value) + c.label;
         return __(ListItem, {
             key,

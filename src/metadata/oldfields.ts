@@ -102,12 +102,12 @@ const defaultGroup = {
 
 function fieldsInGroups(fields: Metadata_t[], groupInfo: MetaDataPanelGroupInfo_t) {
     let groupsWithChildren: { [id: string]: { group: MetaDataPanelGroup_t, items: Metadata_t[] } } = { default: { group: defaultGroup, items: [] } };
-    groupInfo.groups.forEach(g => groupsWithChildren[g.id] = ({ group: g, items: [] }));
-    fields.forEach(f => groupsWithChildren[groupInfo.itemToGroup[f.name] ? groupInfo.itemToGroup[f.name] : "default"].items.push(f));
+    groupInfo.groups.forEach((g) => groupsWithChildren[g.id] = ({ group: g, items: [] }));
+    fields.forEach((f) => groupsWithChildren[groupInfo.itemToGroup[f.name] ? groupInfo.itemToGroup[f.name] : "default"].items.push(f));
     if (groupsWithChildren["default"].items.length === 0) {
         delete groupsWithChildren["default"];
     }
-    let groupsWithChildrenList = Object.keys(groupsWithChildren).map(id => groupsWithChildren[id]);
+    let groupsWithChildrenList = Object.keys(groupsWithChildren).map((id) => groupsWithChildren[id]);
     groupsWithChildrenList.sort((a, b) => a.group.order - b.group.order);
     return groupsWithChildrenList;
 }

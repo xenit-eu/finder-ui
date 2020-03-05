@@ -52,7 +52,7 @@ const DateTimePicker: PropertyRenderer_t<Date | Date[]> = (config: PropertyRende
             }
             return _.span(
                 { className: "metadata-value metadata-field-datetimepicker" },
-                (Array.isArray(value) ? value : [value]).map(v => moment(v).format(config.parameters["date-format"] || "Y/M/D")).join(", "),
+                (Array.isArray(value) ? value : [value]).map((v) => moment(v).format(config.parameters["date-format"] || "Y/M/D")).join(", "),
             );
         }
     };

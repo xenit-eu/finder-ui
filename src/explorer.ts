@@ -62,13 +62,13 @@ export class ExplorerNode<T extends ExplorerNode_t> extends Component<ExplorerNo
         this.setState({
             loading: true,
         }, () => {
-            this.props.onRequestChildren(this.props.node).then(children => {
+            this.props.onRequestChildren(this.props.node).then((children) => {
                 this.setState({
                     children,
                     loading: false,
                     loaded: true,
                 });
-            }).catch(e => this.setState({ loading: false, open: false }));
+            }).catch((e) => this.setState({ loading: false, open: false }));
         });
     }
 
@@ -178,13 +178,13 @@ class ExplorerNodeV2<T extends ExplorerNode_t> extends Component<ExplorerNodeV2_
         this.setState({
             loading: true,
         }, () => {
-            this.props.onRequestChildren(this.props.node).then(children => {
+            this.props.onRequestChildren(this.props.node).then((children) => {
                 this.setState({
                     children,
                     loading: false,
                     loaded: true,
                 });
-            }).catch(e => this.setState({ loading: false, open: false }));
+            }).catch((e) => this.setState({ loading: false, open: false }));
         });
     }
     private isOpenAndLoaded() {
@@ -232,7 +232,7 @@ class ExplorerNodeV2<T extends ExplorerNode_t> extends Component<ExplorerNodeV2_
     }
 }
 
-const StyledExplorerNodeV2 = withStyles(theme => ({
+const StyledExplorerNodeV2 = withStyles((theme) => ({
     node: {
         paddingTop: "2px",
         paddingBottom: "2px",

@@ -54,7 +54,7 @@ export class DropZone extends Component<DropZone_t, State_t> {
             if (this.state.files.length === 0) {
                 return;
             }
-            this.props.process(this.state.files.map(f => f.file), (fileIdx, uploaded) => {
+            this.props.process(this.state.files.map((f) => f.file), (fileIdx, uploaded) => {
                 // update progress
                 const total = this.state.files[fileIdx].file.size;
                 const uploadedPct = Math.floor(uploaded * 100 / total);
@@ -120,8 +120,8 @@ export class DropZone extends Component<DropZone_t, State_t> {
      * Post process selected items and if all ok, remove them from the list.
      */
     public onSaveButtonClicked() {
-        const selectedIdxs = this.state.files.map((f, i) => f.selected ? i : -1).filter(i => i >= 0);
-        this.props.postProcessSelected(this.state.files.filter(f => f.selected).map(f => f.id)).then((ok) => {
+        const selectedIdxs = this.state.files.map((f, i) => f.selected ? i : -1).filter((i) => i >= 0);
+        this.props.postProcessSelected(this.state.files.filter((f) => f.selected).map((f) => f.id)).then((ok) => {
             if (ok) {
                 const remainingFiles = this.state.files.filter((f, i) => selectedIdxs.indexOf(i) === -1);
                 this.setState({
@@ -161,7 +161,7 @@ export class DropZone extends Component<DropZone_t, State_t> {
     public render() {
 
         const show = this.state.show ? "flex" : "none";
-        const selection: boolean = this.state.files.filter(a => a.selected).length > 0;
+        const selection: boolean = this.state.files.filter((a) => a.selected).length > 0;
 
         return _.div(<any> {
             className: "drop-zone", style: containerStyle,

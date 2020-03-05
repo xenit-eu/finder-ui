@@ -13,7 +13,7 @@ function UploadPanelWrapper() {
 
     React.useEffect(() => {
         const interval = setInterval(() => {
-            setFiles(existingFiles => existingFiles.length === 0 ? existingFiles : existingFiles.map(f => f.progress >= 1 ? f : ({ ...f, progress: f.progress + (0.1 * Math.random()) })));
+            setFiles((existingFiles) => existingFiles.length === 0 ? existingFiles : existingFiles.map((f) => f.progress >= 1 ? f : ({ ...f, progress: f.progress + (0.1 * Math.random()) })));
 
         }, 100);
         return () => clearInterval(interval);
@@ -21,20 +21,20 @@ function UploadPanelWrapper() {
 
     return <UploadPanel
         onUploadAdded={(file: File) => {
-            setFiles(existingFiles => existingFiles.concat([{ fileName: file.name, progress: 0 }]));
+            setFiles((existingFiles) => existingFiles.concat([{ fileName: file.name, progress: 0 }]));
             action("onUploadAdded")([file]);
         }}
         onUploadCancel={(file: IUploadedFile) => {
-            setFiles(existingFiles => existingFiles.filter(f => f !== file));
+            setFiles((existingFiles) => existingFiles.filter((f) => f !== file));
             action("onUploadCancel")([file]);
         }}
         onUploadEditMetadata={action("uploadEditMetadata")}
         onUploadDone={(file: IUploadedFile) => {
-            setFiles(existingFiles => existingFiles.filter(f => f !== file));
+            setFiles((existingFiles) => existingFiles.filter((f) => f !== file));
             action("uploadDone")([file]);
         }}
         onDoneAll={() => {
-            setFiles(existingFiles => existingFiles.filter(f => f.progress <= 1));
+            setFiles((existingFiles) => existingFiles.filter((f) => f.progress <= 1));
             action("doneAll")();
         }}
         files={files}

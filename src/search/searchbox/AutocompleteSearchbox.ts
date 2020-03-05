@@ -45,7 +45,7 @@ export class AutocompleteSearchBox extends Component<AutocompleteSearchBox_t, Au
 
         this.autocompleteTimer = setTimeout(() => {
             this.autocompleteTimer = null;
-            return this.getAutocompleteList(text).then(autoCompleteList => {
+            return this.getAutocompleteList(text).then((autoCompleteList) => {
                 this.setState({ currentSuggestions: autoCompleteList });
             });
         }, 200);

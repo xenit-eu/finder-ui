@@ -211,8 +211,8 @@ export function DocList({ className, columns, data, nodes, onDownloadButtonClick
     if (togglable) {
         const allRows = nodes.map((_: any, key: number) => key);
         const rowToggleState: boolean[] = nodes.map((_: any, key: number) => rowToggled(key));
-        const allRowsToggled = rowToggleState.every(toggled => toggled);
-        const noRowsToggled = rowToggleState.every(toggled => !toggled);
+        const allRowsToggled = rowToggleState.every((toggled) => toggled);
+        const noRowsToggled = rowToggleState.every((toggled) => !toggled);
         const style = {
             width: "initial",
         };
@@ -237,7 +237,7 @@ export function DocList({ className, columns, data, nodes, onDownloadButtonClick
     }
     const headerelements = (<Array<ReactElement<any>>> [_.th({ key: "Menu" }, "")])
         .concat(togglable ? [_.th({ key: "toggle", style: { textAlign: "center", width: "1px" } }, downloadComponents)] : [])
-        .concat(columns.map(c => SortableTh(c, onSortColumnSelected, translations)));
+        .concat(columns.map((c) => SortableTh(c, onSortColumnSelected, translations)));
 
     const header = _.thead({ key: "header" }, [_.tr({ key: "head" }, headerelements)]);
     const style = rowStyle ? rowStyle : (i: number) => ({});
@@ -246,7 +246,7 @@ export function DocList({ className, columns, data, nodes, onDownloadButtonClick
             .concat((togglable ? [
                 _.td({ key: "toggle", style: { textAlign: "center" } }, __(Checkbox, { checked: rowToggled(i), onCheck: (ev: any, checked: boolean) => onRowToggled(checked, i, nodeToRow(node)) })),
             ] : []))
-            .concat(columns.map(col => buildSingleTD(col, node, onRowSelected, i)));
+            .concat(columns.map((col) => buildSingleTD(col, node, onRowSelected, i)));
 
     const bodycontent = nodes.map((node, i) => _.tr({ style: style(i), key: "tableRow" + i }, singleRowElements(node, i)));
     const body = _.tbody({ key: "body" }, bodycontent);
@@ -294,7 +294,7 @@ function upgradeDataToNodes(data?: Row_t[], nodes?: Node_t[]): Node_t[] {
 
 function nodeToRow(node: Node_t): Row_t {
     let row = {};
-    Object.keys(node.properties).forEach(key => row[key] = node.properties[key][0]);
+    Object.keys(node.properties).forEach((key) => row[key] = node.properties[key][0]);
     return row;
 }
 

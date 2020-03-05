@@ -38,14 +38,14 @@ export class SearchQueryElementReadableStringVisitor implements ISearchQueryElem
     public visitOrSearchQueryElement(query: OrSearchQueryElement): Promise<string> {
         const normalized = query.visit(this.normalizer);
         if (normalized instanceof OrSearchQueryElement) {
-            return Promise.all(query.children.map(c => c.visit(this))).then(childText => this.translate(OR) + "(" + childText.join(", ") + ")");
+            return Promise.all(query.children.map((c) => c.visit(this))).then((childText) => this.translate(OR) + "(" + childText.join(", ") + ")");
         }
         return normalized.visit(this);
     }
     public visitAndSearchQueryElement(query: AndSearchQueryElement): Promise<string> {
         const normalized = query.visit(this.normalizer);
         if (normalized instanceof AndSearchQueryElement) {
-            return Promise.all(query.children.map(c => c.visit(this))).then(childText => this.translate(AND) + "(" + childText.join(", ") + ")");
+            return Promise.all(query.children.map((c) => c.visit(this))).then((childText) => this.translate(AND) + "(" + childText.join(", ") + ")");
         }
         return normalized.visit(this);
     }

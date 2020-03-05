@@ -178,7 +178,7 @@ export class LabeledDateRange implements IDateRange {
     }
     public static ParseFromJSON(json: any): IDateRange {
         const dateRanges = DateRangeSearchables;
-        const ret = dateRanges.filter(e => e.label === json.label)[0];
+        const ret = dateRanges.filter((e) => e.label === json.label)[0];
         if (!ret) {
             console.error("ret is null");
             console.error(json);
@@ -213,7 +213,7 @@ export const DateRangeSearchables = [TODAY_RANGE, LAST_WEEK_RANGE, LAST_MONTH_RA
 function toParsable(TYPE: string, ParseFromJSON: (json: any) => IDateRange) {
     return { TYPE, ParseFromJSON };
 }
-const dateRangeParsables = [LabeledDateRange, FromDateRange, UntilDateRange, SimpleDateRange].map(t => toParsable(t.TYPE, t.ParseFromJSON));
+const dateRangeParsables = [LabeledDateRange, FromDateRange, UntilDateRange, SimpleDateRange].map((t) => toParsable(t.TYPE, t.ParseFromJSON));
 export function ParseDateRangeJSON(json: any) {
     for (const dateRangeParsable of dateRangeParsables) {
         if (dateRangeParsable.TYPE === json.TYPE) {

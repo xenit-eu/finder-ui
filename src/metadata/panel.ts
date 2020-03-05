@@ -81,12 +81,12 @@ export class MetadataPanel<T> extends Component<MetadataPanel_Props_t<T>, Metada
             loading: true,
             error: null,
         }, () => {
-            this.props.onLoadNodeFormskeleton(nodes).then(skeletons => {
+            this.props.onLoadNodeFormskeleton(nodes).then((skeletons) => {
                 this.setState({
                     skeletons,
                     loading: false,
                 });
-            }).catch(e => {
+            }).catch((e) => {
                 this.setState({
                     skeletons: null,
                     loading: false,
@@ -159,7 +159,7 @@ export class MetadataPanel<T> extends Component<MetadataPanel_Props_t<T>, Metada
         return _.div({ className: "metadata-content" },
             _.div({ key: "metadata-header", className: "metadata-header" }, this.getButtons()),
             _.div({ key: "metadata-error", className: "metadata-error" }, this.state.error),
-            ...this.state.skeletons.map(skeleton => __(skeleton, {
+            ...this.state.skeletons.map((skeleton) => __(skeleton, {
                 node: this.state.nodes,
                 onChange: this._onChange.bind(this),
                 renderMode: this.state.renderMode,
@@ -172,15 +172,15 @@ export class MetadataPanel<T> extends Component<MetadataPanel_Props_t<T>, Metada
             return this.props.onSaveAll(this.state.nodes, this.props.nodes);
         } else {
             return Promise.all(this.state.nodes.map((node, index) => this.props.onSave!(node, this.props.nodes[index])))
-                .then(results => results.reduce((a, b) => a && b));
+                .then((results) => results.reduce((a, b) => a && b));
         }
     }
 
     private _onSave() {
         this.setState({ error: null });
         this._getSavePromise()
-            .then(result => result && this.setState({ renderMode: RenderMode.VIEW }))
-            .catch(e => this.setState({ error: e.toString() }));
+            .then((result) => result && this.setState({ renderMode: RenderMode.VIEW }))
+            .catch((e) => this.setState({ error: e.toString() }));
     }
 
     private _onCancel() {

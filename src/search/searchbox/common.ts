@@ -22,10 +22,10 @@ export function SearchQueryElementToChipVM(sQE: ISearchQueryElement, index: numb
     if (isHierarchicSearchQueryElement(sQE)) {
         const childVMsP = Promise.all(sQE.children.map((e, i) => SearchQueryElementToChipVM(e, index.concat([i]), onRemoveAtIndex)));
         const tooltip = sQE.getTooltipText();
-        return Promise.all([childVMsP, tooltip] as any[]).then(data => new HierarchicChipVM(sQE.getConnectWord(), data[1], index, true, data[0], () => onRemoveAtIndex(index)));
+        return Promise.all([childVMsP, tooltip] as any[]).then((data) => new HierarchicChipVM(sQE.getConnectWord(), data[1], index, true, data[0], () => onRemoveAtIndex(index)));
     }
 
-    return Promise.all([sQE.getTooltipText(), sQE.getSimpleSearchbarText()]).then(texts =>
+    return Promise.all([sQE.getTooltipText(), sQE.getSimpleSearchbarText()]).then((texts) =>
         new LeafChipVM(texts[0], texts[1], index, sQE.isReferential() ? Colors.blue100 : Colors.grey200, sQE.isRemovable(), () => onRemoveAtIndex(index), sQE instanceof ToFillInSearchQueryElement));
 }
 
@@ -35,7 +35,7 @@ export function ChipVMToChip(chipVM: ChipVM_t, getInputBox: () => any): ReactEle
     const deleteAction = chipVM.deletable ? () => chipVM.onDelete && chipVM.onDelete() : undefined;
     if (!chipVM.leaf) {
         const props: HierarchicChipProps = {
-            children: (chipVM as HierarchicChipVM).children.map(c => ChipVMToChip(c, getInputBox)),
+            children: (chipVM as HierarchicChipVM).children.map((c) => ChipVMToChip(c, getInputBox)),
             label: (chipVM as HierarchicChipVM).connectWord,
             onDelete: deleteAction,
             onClick: () => { },

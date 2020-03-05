@@ -40,11 +40,11 @@ export class SearchQueryFilter implements ISearchQueryElementVisitor<ISearchQuer
     }
     public visitOrSearchQueryElement(query: OrSearchQueryElement): ISearchQueryElement[] {
         const base = this.includeIfConditionTrue(query);
-        return base.concat(flatten(query.children.map(c => c.visit(this))));
+        return base.concat(flatten(query.children.map((c) => c.visit(this))));
     }
     public visitAndSearchQueryElement(query: AndSearchQueryElement): ISearchQueryElement[] {
         const base = this.includeIfConditionTrue(query);
-        return base.concat(flatten(query.children.map(c => c.visit(this))));
+        return base.concat(flatten(query.children.map((c) => c.visit(this))));
     }
     public visitAspectSearchQueryElement(query: AspectSearchQueryElement) {
         return this.includeIfConditionTrue(query);
