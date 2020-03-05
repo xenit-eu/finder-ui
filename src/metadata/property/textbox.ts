@@ -3,6 +3,7 @@ import { Component, createElement as __, FormEvent, ReactNode } from "react";
 import * as _ from "react-dom-factories";
 
 declare var require: (m: string) => any;
+// tslint:disable-next-line:no-var-requires
 const ChipInput = require("material-ui-chip-input").default;
 
 import { FieldSkeleton_Props_t, RenderMode } from "../fields";

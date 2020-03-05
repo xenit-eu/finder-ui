@@ -1,5 +1,4 @@
-//import debug from "debug";
-const debug: any = require("debug");
+import debug from "debug";
 import DatePicker from "material-ui/DatePicker";
 import { Component, createElement as __, FormEvent, ReactElement } from "react";
 import * as _ from "react-dom-factories";

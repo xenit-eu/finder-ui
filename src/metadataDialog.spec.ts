@@ -1,12 +1,10 @@
-
+import debug from "debug";
 import { Component, createElement as __ } from "react";
 import * as _ from "react-dom-factories";
 import { Fixture, simulateEvent } from "./testUtils";
 
 import { MetadataType_t } from "./metadata";
 import { MetaDataDialog, MetaDataDialog_t } from "./metadataDialog";
-
-const debug: any = require("debug");
 
 describe("Metadata component", () => {
 

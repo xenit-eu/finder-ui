@@ -104,7 +104,7 @@ const TreeSelectBox: PropertyRenderer_t<string[] | string> = (config: PropertyRe
 };
 export default TreeSelectBox;
 
-const CheckboxTree = require("react-checkbox-tree");
+import CheckboxTree from "react-checkbox-tree";
 import "react-checkbox-tree/lib/react-checkbox-tree.css";
 import "./treeselectbox.less";
 
@@ -214,7 +214,7 @@ class TreeSelectBoxImpl extends Component<TreeSelectBoxImpl_Props_t, TreeSelectB
             }),
             __(CheckboxTree, {
                 nodes: this._buildNodesTree(),
-                checked: this.props.multiple ? this.props.value : [this.props.value],
+                checked: this.props.multiple ? this.props.value as string[] : [this.props.value as string],
                 expanded: this.state.expanded,
                 onCheck: (checked: string[]) => this._onCheck(checked),
                 onExpand: (expanded: string[]) => {
