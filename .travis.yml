@@ -1,5 +1,11 @@
 language: node_js
 node_js: 12
+addons:
+    artifacts:
+        paths:
+            - __tests__/__image_snapshots__/__diff_output__/
+            - storybook-static/
+            - failed-storyshots.html
 install:
   - npm install
 script:

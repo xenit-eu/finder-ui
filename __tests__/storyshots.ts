@@ -10,10 +10,14 @@ initStoryshots({
     }),
 });
 
+
 initStoryshots({
 
     suite: "Image storyshots",
     test: imageSnapshot({
         storybookUrl,
+        getMatchOptions: () => ({
+            blur: 2,
+        }),
     }),
 });
