@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { ChangeEvent, createElement as __, ReactElement } from "react";
 import * as _ from "react-dom-factories";
 import { ColumnSet_t } from "..";
-import { ENGLISH, FRENCH, DUTCH, WordTranslator, TranslationsChecked, SPANISH } from "../WordTranslator";
+import { DUTCH, ENGLISH, FRENCH, SPANISH, TranslationsChecked, WordTranslator } from "../WordTranslator";
 
 type ColumnSetManager_Props_t = {
     columnSets: ColumnSet_t[],
@@ -34,7 +34,7 @@ const translations: TranslationsChecked = {
         [SAVE_AS_NEW]: "Opslaan als nieuw...",
         [DELETE]: "Verwijderen",
     },
-    [SPANISH]:{
+    [SPANISH]: {
         [SAVE]: "Guardar",
         [SAVE_AS_NEW]: "Guardar como nuevo...",
         [DELETE]: "Borrar",
@@ -42,7 +42,7 @@ const translations: TranslationsChecked = {
 };
 function ColumnSetManager(props: ColumnSetManager_Props_t): ReactElement {
     const translator = new WordTranslator(() => props.language, translations);
-    const selectedSet = props.columnSets.find(set => set.id === props.currentSet);
+    const selectedSet = props.columnSets.find((set) => set.id === props.currentSet);
 
     let selectedValue = "";
     let isModified = false;
@@ -53,7 +53,7 @@ function ColumnSetManager(props: ColumnSetManager_Props_t): ReactElement {
 
     const noneItem = __(MenuItem, { value: "", key: "None", disabled: true }, "(None)");
     const columnSetItems = props.columnSets.map((set, i) => __(MenuItem, { key: set.id, value: set.id }, set.label));
-    let modifiedSetItem = [] as ReactElement<any>[];
+    let modifiedSetItem = [] as Array<ReactElement<any>>;
 
     if (selectedSet && isModified) {
         modifiedSetItem = [__(MenuItem, { key: "selectedSetColumnsModified", value: "--mod-" + selectedSet.id }, selectedSet.label + "*")];
@@ -74,7 +74,7 @@ function ColumnSetManager(props: ColumnSetManager_Props_t): ReactElement {
                 if (value === "") {
                     props.onSelect(null);
                 } else {
-                    props.onSelect(props.columnSets.find(set => set.id === value)!);
+                    props.onSelect(props.columnSets.find((set) => set.id === value)!);
                 }
             },
         }, setsList),
@@ -122,7 +122,7 @@ function ColumnSetManager(props: ColumnSetManager_Props_t): ReactElement {
         ));
 }
 
-export default withStyles(theme => ({
+export default withStyles((theme) => ({
     root: {
         display: "flex",
         alignItems: "center",

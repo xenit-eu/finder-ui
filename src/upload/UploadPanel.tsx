@@ -1,15 +1,15 @@
-import * as React from "react";
-import UploadList, { IUploadedFile } from "./UploadList";
-import FileDropZone from "./FileDropZone";
-import Overlay, { OverlayCentered } from "../overlay";
-import CloudUpload from "@material-ui/icons/CloudUpload";
-import Edit from "@material-ui/icons/Edit";
-import DoneAll from "@material-ui/icons/DoneAll";
-import Done from "@material-ui/icons/Done";
+import { Button, IconButton, Typography } from "@material-ui/core";
 import { Theme, WithStyles, withStyles } from "@material-ui/core/styles";
-import { Typography, Button, IconButton } from "@material-ui/core";
+import CloudUpload from "@material-ui/icons/CloudUpload";
+import Done from "@material-ui/icons/Done";
+import DoneAll from "@material-ui/icons/DoneAll";
+import Edit from "@material-ui/icons/Edit";
+import * as React from "react";
 import { useTranslation } from "react-i18next";
+import Overlay, { OverlayCentered } from "../overlay";
+import FileDropZone from "./FileDropZone";
 import UploadButton from "./UploadButton";
+import UploadList, { IUploadedFile } from "./UploadList";
 
 export type UploadPanel_Props_t<T extends IUploadedFile = IUploadedFile> = {
     onUploadAdded: (file: File) => void,
@@ -23,7 +23,7 @@ export type UploadPanel_Props_t<T extends IUploadedFile = IUploadedFile> = {
 export default function UploadPanel<T extends IUploadedFile = IUploadedFile>(props: UploadPanel_Props_t<T>) {
     const { t } = useTranslation("finder-ui");
     function uploadFiles(files: readonly File[]) {
-        files.forEach(file => props.onUploadAdded(file));
+        files.forEach((file) => props.onUploadAdded(file));
     }
     return <FileDropZone onFilesDropped={uploadFiles}>
         {(isDragging: boolean) => {

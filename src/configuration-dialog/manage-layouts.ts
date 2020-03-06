@@ -1,9 +1,9 @@
 import {Button, FormControl, IconButton, Input, InputLabel, List, ListItem, ListItemSecondaryAction, ListItemText, Radio, WithStyles} from "@material-ui/core";
-import {KeyboardEvent, ChangeEvent, Component, ComponentType, createElement as __, Fragment} from "react";
-import FullWidthFlexContainer from "./full-width-flexcontainer";
+import {withStyles} from "@material-ui/core";
 import AddCircle from "@material-ui/icons/AddCircle";
 import Delete from "@material-ui/icons/Delete";
-import {withStyles} from "@material-ui/core";
+import {ChangeEvent, Component, ComponentType, createElement as __, Fragment, KeyboardEvent} from "react";
+import FullWidthFlexContainer from "./full-width-flexcontainer";
 
 export type ManageLayouts_t = {
     selectedLayout?: string,
@@ -91,7 +91,7 @@ class ManageLayouts extends Component<ManageLayouts_Props_t, { input: string }> 
 
 const comp: ComponentType<ManageLayouts_Props_t> = ManageLayouts;
 
-export default withStyles(theme => ({
+export default withStyles((theme) => ({
     rightIcon: {
         marginLeft: theme.spacing.unit,
     },

@@ -20,7 +20,7 @@ const NColumn: (ncolumns: number) => FieldsetRenderer_t = (ncolumns: number) => 
                 ),
             );
         };
-        (<any>component).displayName = "Fieldset.NColumn(" + ncolumns + ")(" + JSON.stringify(config) + ")";
+        (<any> component).displayName = "Fieldset.NColumn(" + ncolumns + ")(" + JSON.stringify(config) + ")";
         return component;
     };
 };

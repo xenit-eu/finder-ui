@@ -1,3 +1,4 @@
+import { DocumentSizeRange_t } from "./../documentSize";
 import { IDateRange, IDateRangeTranslator } from "./DateRange";
 import {
     AllSimpleSearchQueryElement, AndSearchQueryElement, AspectSearchQueryElement,
@@ -5,9 +6,8 @@ import {
     IRetrievePathOfFolder, ISearchQueryElement, ISynchronousTranslationService,
     NodeRefSearchQueryElement, OrSearchQueryElement, PropertyNameService_t,
     ReferenceSimpleSearchQueryElement, SearchQuery,
-    StringValuePropertySearchQueryElement, TextSearchQueryElement, ToFillInSearchQueryElement, TypeSearchQueryElement, SizeQueryElement,
+    SizeQueryElement, StringValuePropertySearchQueryElement, TextSearchQueryElement, ToFillInSearchQueryElement, TypeSearchQueryElement,
 } from "./searchquery";
-import { DocumentSizeRange_t } from "./../documentSize";
 
 export interface IFolderSearchQueryElementFactory {
     buildFolderQueryElement(noderef: string): FolderSearchQueryElement;
@@ -77,5 +77,5 @@ export class SearchQueryFactory implements IFolderSearchQueryElementFactory {
     }
 
     public buildSizeQueryElement(range: DocumentSizeRange_t) {
-        return new SizeQueryElement(range,this.wordTranslator);
+        return new SizeQueryElement(range, this.wordTranslator);
     }}

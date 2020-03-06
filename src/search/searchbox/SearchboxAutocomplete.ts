@@ -53,7 +53,7 @@ export class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
     private handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
         e.stopPropagation();
         switch (e.keyCode) {
-            case 9://Tab
+            case 9: //Tab
             case 40: // ARROWKEY_DOWN
             e.preventDefault();
             if (this.menu) {
@@ -102,7 +102,7 @@ export class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
                     onKeyDown: this.handleKeyDown.bind(this),
                     onKeyUp: this.props.onKeyUp,
                     onFocus: this.props.onFocus,
-                    ref: input => { this.inputElem = input as HTMLInputElement; },
+                    ref: (input) => { this.inputElem = input as HTMLInputElement; },
                 }),
                 __(AutocompleteMenu, {
                     key: "autocomplete-menu",
@@ -159,7 +159,7 @@ class AutocompleteMenu extends Component<AutocompleteMenu_Props_t> {
                 minWidth: "500px",
             },
         },
-            __(Menu, <any>{
+            __(Menu, <any> {
                 ref: this.props.menuRef,
                 //Types of maxheight are correct, runtime checks are not. See in browser, this does work.
                 maxHeight: "80vh",
@@ -196,6 +196,6 @@ class AutocompleteMenu extends Component<AutocompleteMenu_Props_t> {
 }
 
 function uniqueSuggestionsFilter(suggestion: IAutocompleteSuggestion, i: number, suggestions: IAutocompleteSuggestion[]): boolean {
-    const firstIndex = suggestions.findIndex(sug => sug.DisplayKey() === suggestion.DisplayKey() && sug.DisplayValue() === suggestion.DisplayValue());
+    const firstIndex = suggestions.findIndex((sug) => sug.DisplayKey() === suggestion.DisplayKey() && sug.DisplayValue() === suggestion.DisplayValue());
     return i === firstIndex;
 }

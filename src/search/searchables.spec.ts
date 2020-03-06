@@ -19,7 +19,7 @@ function DummyISearchQuery(name: string): SearchQuery {
 describe("ReferenceSearchableQueryElement", () => {
     it("should show its suggestion when the name is partially typed", (done) => {
         const SOT = new ReferenceSearchableQueryElement("testName", DummyISearchQuery("referenceQueryName"));
-        SOT.getPartiallyMatchingAutocompleteListElements("testN", "").then(matches => {
+        SOT.getPartiallyMatchingAutocompleteListElements("testN", "").then((matches) => {
             expect(matches.length).toBe(1);
             expect(matches[0].DisplayValue()).toBe("testName");
             expect(matches[0].DisplayKey()).toBe("");
@@ -28,21 +28,21 @@ describe("ReferenceSearchableQueryElement", () => {
     });
     it("should match exactly when the name is type correct", (done) => {
         const SOT = new ReferenceSearchableQueryElement("testName", DummyISearchQuery("referenceQueryName"));
-        SOT.matchKeyValue("", "testName").then(match => {
+        SOT.matchKeyValue("", "testName").then((match) => {
             expect(match).toEqual(expect.any(SimpleSearchQueryElementValueMatch));
             done();
         });
     });
     it("should match exactly when the name its letters are correct but wrongly cased.", (done) => {
         const SOT = new ReferenceSearchableQueryElement("testName", DummyISearchQuery("referenceQueryName"));
-        SOT.matchKeyValue("", "TESTname").then(match => {
+        SOT.matchKeyValue("", "TESTname").then((match) => {
             expect(match).toEqual(expect.any(SimpleSearchQueryElementValueMatch));
             done();
         });
     });
     it("should not match exactly when the name is only typed partially", (done) => {
         const SOT = new ReferenceSearchableQueryElement("testName", DummyISearchQuery("referenceQueryName"));
-        SOT.matchKeyValue("", "testNam").then(matches => {
+        SOT.matchKeyValue("", "testNam").then((matches) => {
             expect(matches).toEqual(expect.any(NoResultValueMatch));
             done();
         });
@@ -62,7 +62,7 @@ export function EnumPropertySearchable12() {
 }
 describe("EnumPropertySearchable", () => {
     it("should show all property completions when the key is partially typed", (done) => {
-        EnumPropertySearchable12().getPartiallyMatchingAutocompleteListElements("TRANSLATEKEY", "").then(matches => {
+        EnumPropertySearchable12().getPartiallyMatchingAutocompleteListElements("TRANSLATEKEY", "").then((matches) => {
             expect(matches.length).toBe(2);
             expect(matches[0].DisplayValue()).toBe("TRANSLATEVALUE1");
             expect(matches[0].DisplayKey()).toBe("TRANSLATEKEYtestProperty");
@@ -70,7 +70,7 @@ describe("EnumPropertySearchable", () => {
         });
     });
     it("should only show the property completions for which the value partially matches", (done) => {
-        EnumPropertySearchable12().getPartiallyMatchingAutocompleteListElements("TRANSLATEKEY", "VALUE2").then(matches => {
+        EnumPropertySearchable12().getPartiallyMatchingAutocompleteListElements("TRANSLATEKEY", "VALUE2").then((matches) => {
             expect(matches.length).toBe(1);
             expect(matches[0].DisplayValue()).toBe("TRANSLATEVALUE2");
             expect(matches[0].DisplayKey()).toBe("TRANSLATEKEYtestProperty");
@@ -78,7 +78,7 @@ describe("EnumPropertySearchable", () => {
         });
     });
     it("should match the exact key value translations", (done) => {
-        EnumPropertySearchable12().matchKeyValue("TRANSLATEKEYtestProperty", "TRANSLATEVALUE2").then(match => {
+        EnumPropertySearchable12().matchKeyValue("TRANSLATEKEYtestProperty", "TRANSLATEVALUE2").then((match) => {
             expect(match).toEqual(expect.any(SimpleSearchQueryElementValueMatch));
             const sMatch = (match as SimpleSearchQueryElementValueMatch);
             expect(sMatch.simpleSearchQueryElement).toBeDefined();
@@ -109,25 +109,25 @@ describe("TextSearchable", () => {
         TextSearchable12().getPartiallyMatchingAutocompleteListElements("text", "1").then((t: IAutocompleteSuggestion[]) => { expect(t.length).toBe(0); done(); });
     });
     it("should match the exact key value", (done) => {
-        TextSearchable12().matchKeyValue("tekst", "12").then(t => {
+        TextSearchable12().matchKeyValue("tekst", "12").then((t) => {
             expect(t).toEqual(expect.any(SimpleSearchQueryElementValueMatch));
             done();
         });
     });
     it("should not match untranslated key", (done) => {
-        TextSearchable12().matchKeyValue("text", "12").then(t => {
+        TextSearchable12().matchKeyValue("text", "12").then((t) => {
             expect(t).toEqual(expect.any(NoResultValueMatch));
             done();
         });
     });
     it("should not match empty", (done) => {
-        TextSearchable12().matchKeyValue("", "12").then(t => {
+        TextSearchable12().matchKeyValue("", "12").then((t) => {
             expect(t).toEqual(expect.any(NoResultValueMatch));
             done();
         });
     });
     it("should not match wrong value", (done) => {
-        TextSearchable12().matchKeyValue("tekst", "122").then(t => {
+        TextSearchable12().matchKeyValue("tekst", "122").then((t) => {
             expect(t).toEqual(expect.any(NoResultValueMatch));
             done();
         });
@@ -140,7 +140,7 @@ function DateSearchableDummy() {
 describe("DateSearchable", () => {
     it("should propose all dateword date values for autocompletion", (done) => {
         const testdummyPropertyService = dummyPropertyService();
-        DateSearchableDummy().getPartiallyMatchingAutocompleteListElements("TRANSLATEKEYqname", "").then(s => {
+        DateSearchableDummy().getPartiallyMatchingAutocompleteListElements("TRANSLATEKEYqname", "").then((s) => {
             expect(s.length).toBe(DateSearchableWords.length);
             for (let i = 0; i < s.length; i++) {
                 expect(s[i].DisplayKey()).toBe(testdummyPropertyService.translatePropertyKeyDebugDirect("qname"));
@@ -151,14 +151,14 @@ describe("DateSearchable", () => {
     });
     it("should propose all dateword translations that start with last", (done) => {
         const testdummyPropertyService = dummyPropertyService();
-        DateSearchableDummy().getPartiallyMatchingAutocompleteListElements("TRANSLATEKEYqname", "RANSLATEDlast").then(s => {
+        DateSearchableDummy().getPartiallyMatchingAutocompleteListElements("TRANSLATEKEYqname", "RANSLATEDlast").then((s) => {
             expect(s.length).toBe(4);
             done();
         });
     });
     it("should match exact on today translated", (done) => {
         const testdummyPropertyService = dummyPropertyService();
-        DateSearchableDummy().matchKeyValue("TRANSLATEKEYqname", "TRANSLATEDtoday").then(match => {
+        DateSearchableDummy().matchKeyValue("TRANSLATEKEYqname", "TRANSLATEDtoday").then((match) => {
             expect(match).toEqual(expect.any(SimpleSearchQueryElementValueMatch));
             const sMatch = (match as SimpleSearchQueryElementValueMatch);
             expect(sMatch.simpleSearchQueryElement).toBeDefined();
@@ -170,7 +170,7 @@ describe("DateSearchable", () => {
     });
     it("should match exact on until translated", (done) => {
         const testdummyPropertyService = dummyPropertyService();
-        DateSearchableDummy().matchKeyValue("TRANSLATEKEYqname", "TRANSLATEDuntil...").then(match => {
+        DateSearchableDummy().matchKeyValue("TRANSLATEKEYqname", "TRANSLATEDuntil...").then((match) => {
             expect(match).toEqual(expect.any(DateFillinValueMatch));
             const sMatch = (match as DateFillinValueMatch);
             const untilToday = sMatch.onFillIn(new Date());

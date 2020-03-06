@@ -1,4 +1,4 @@
-import {highlightInfo, splitHighlightSnippet, toHighlightInfos, parseHighlights} from "./highlightRenderer";
+import {highlightInfo, parseHighlights, splitHighlightSnippet, toHighlightInfos} from "./highlightRenderer";
 
 let prefix = "<em>";
 let postfix = "</em>";

@@ -1,15 +1,15 @@
+import { AND, OR } from "../WordTranslator";
 import {
     AllSimpleSearchQueryElement, AndSearchQueryElement, AspectSearchQueryElement,
     DatePropertySearchQueryElement, FolderSearchQueryElement, ISearchQueryElementVisitor,
-    NodeRefSearchQueryElement, OrSearchQueryElement, ReferenceSimpleSearchQueryElement, StringValuePropertySearchQueryElement,
+    NodeRefSearchQueryElement, OrSearchQueryElement, ReferenceSimpleSearchQueryElement, SizeQueryElement,
+    StringValuePropertySearchQueryElement,
     TextSearchQueryElement,
     ToFillInSearchQueryElement,
     TypeSearchQueryElement,
-    SizeQueryElement,
 
 } from "./searchquery";
 import { SearchQueryNormalizeVisitor } from "./SearchQueryNormalizeVisitor";
-import { AND, OR } from "../WordTranslator";
 export class SearchQueryElementReadableStringVisitor implements ISearchQueryElementVisitor<Promise<string>> {
     public visitSizeQueryElement(query: SizeQueryElement): Promise<string> {
         return query.getSimpleSearchbarText();
@@ -38,14 +38,14 @@ export class SearchQueryElementReadableStringVisitor implements ISearchQueryElem
     public visitOrSearchQueryElement(query: OrSearchQueryElement): Promise<string> {
         const normalized = query.visit(this.normalizer);
         if (normalized instanceof OrSearchQueryElement) {
-            return Promise.all(query.children.map(c => c.visit(this))).then(childText => this.translate(OR) + "(" + childText.join(", ") + ")");
+            return Promise.all(query.children.map((c) => c.visit(this))).then((childText) => this.translate(OR) + "(" + childText.join(", ") + ")");
         }
         return normalized.visit(this);
     }
     public visitAndSearchQueryElement(query: AndSearchQueryElement): Promise<string> {
         const normalized = query.visit(this.normalizer);
         if (normalized instanceof AndSearchQueryElement) {
-            return Promise.all(query.children.map(c => c.visit(this))).then(childText => this.translate(AND) + "(" + childText.join(", ") + ")");
+            return Promise.all(query.children.map((c) => c.visit(this))).then((childText) => this.translate(AND) + "(" + childText.join(", ") + ")");
         }
         return normalized.visit(this);
     }

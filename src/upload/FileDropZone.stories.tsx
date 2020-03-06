@@ -1,6 +1,6 @@
+import { action } from "@storybook/addon-actions";
 import * as React from "react";
 import FileDropZone from "./FileDropZone";
-import { action } from "@storybook/addon-actions";
 
 export default {
     title: "upload/FileDropZone",

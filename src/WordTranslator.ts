@@ -1,8 +1,8 @@
+import { ADD_A_COMMENT } from "./comment";
 import {
-    DATE_BETWEEN, DATE_FROM, DATE_LASTMONTH, DATE_LASTWEEK, DATE_LASTYEAR, DATE_ON, DATE_RANGE_PICK, DATE_TODAY, DATE_UNTIL, DATE_LAST6MONTH,
+    DATE_BETWEEN, DATE_FROM, DATE_LAST6MONTH, DATE_LASTMONTH, DATE_LASTWEEK, DATE_LASTYEAR, DATE_ON, DATE_RANGE_PICK, DATE_TODAY, DATE_UNTIL,
 } from "./search/DateRange";
 import { PLACEHOLDERTRANSLATION } from "./search/searchbox";
-import { ADD_A_COMMENT } from "./comment";
 import { DOCUMENT_NO_VERSION_HISTORY } from "./versionhistoryPanel";
 export const FOLDER = "Folder";
 export const TEXT = "text";
@@ -21,6 +21,7 @@ export const SPANISH = "es-es";
 type Translation = { [word: string]: string };
 
 //In case adding new language, change this interface to get typed checked assurance that you translate everything.
+// tslint:disable-next-line:interface-name
 export interface TranslationsChecked {
     [FRENCH]: Translation;
     [ENGLISH]: Translation;

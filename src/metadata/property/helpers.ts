@@ -14,23 +14,23 @@ export class ChangeOnBlurTextField extends Component<TextFieldProps, ChangeOnBlu
     }
 
     public componentWillReceiveProps(nextProps: TextFieldProps) {
-        if(nextProps.value !== this.state.value) {
+        if (nextProps.value !== this.state.value) {
             this.setState({ value: nextProps.value });
         }
     }
 
     public render() {
         return __(TextField, {
-            ...<any>this.props,
+            ...<any> this.props,
             value: this.state.value,
             onChange: (evt: FormEvent<{}>, value: string) => {
                 this.setState({ value });
             },
             onBlur: (evt: any) => {
-                if(this.props.onChange && this.state.value !== undefined && this.state.value !== this.props.value) {
-                    this.props.onChange(<any>null, this.state.value.toString());
+                if (this.props.onChange && this.state.value !== undefined && this.state.value !== this.props.value) {
+                    this.props.onChange(<any> null, this.state.value.toString());
                 }
-                if(this.props.onBlur) {
+                if (this.props.onBlur) {
                     this.props.onBlur(evt);
                 }
             },

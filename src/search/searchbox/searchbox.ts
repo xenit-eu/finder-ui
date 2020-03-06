@@ -10,7 +10,7 @@ import "react-flatpickr/node_modules/flatpickr/dist/themes/material_blue.css";
 import { SimpleDateRange } from "../DateRange";
 import { DateFillinValueMatch, DateRangeFillinValueMatch, HierarchicQueryValueMatch, IAutocompleteSuggestion, InputHandleRequired, SimpleSearchQueryElementValueMatch } from "../searchables";
 import { ISearchQueryElement, ISimpleSearchQueryElement } from "../searchquery";
-import { ChipVMToChip, ChipVM_t, getKeyValue, SearchBox_t, SearchQueryElementToChipVM, HaveChipsFillIn } from "./common";
+import { ChipVM_t, ChipVMToChip, getKeyValue, HaveChipsFillIn, SearchBox_t, SearchQueryElementToChipVM } from "./common";
 import "./searchbox.less";
 import { SearchboxAutocomplete } from "./SearchboxAutocomplete";
 import { SearchboxHierarchyPicker, SearchboxHierarchyPickerProps } from "./searchboxHierarchyPicker";
@@ -128,7 +128,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
 
     public onApplyTextSuggestion({ key, value }: { key: string, value: string }) {
         return this.props.matchKeyValueExact(key, value)
-            .then(match => {
+            .then((match) => {
                 if (!match || !match.hasResult()) {
                     return;
                 }
@@ -141,7 +141,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                     return;
                 }
                 if (match.isHierarchic()) {
-                    const hierarchicMatch = <HierarchicQueryValueMatch>match;
+                    const hierarchicMatch = <HierarchicQueryValueMatch> match;
                     if (hierarchicMatch.hierarchyInfo.requiresUserChoice) {
                         this.setState({ currentValueMatchWaitingForInput: hierarchicMatch });
                         return;
@@ -178,7 +178,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
     }
 
     public inputChanged(t: string) {
-        this.setState(state => ({
+        this.setState((state) => ({
             textValue: t,
             suggestionsOpened: state.suggestionsOpenManualTrigger ? state.suggestionsOpened : t.length > 0,
             suggestionsOpenManualTrigger: state.suggestionsOpenManualTrigger === undefined ? false : state.suggestionsOpenManualTrigger,
@@ -197,7 +197,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
 
     private updateChips(queryElements: ReadonlyArray<ISearchQueryElement>) {
         return Promise.all(queryElements.map((sQE, i) => SearchQueryElementToChipVM(sQE, [i], (n) => this.props.onRemoveQueryElement(n))))
-            .then(chipVMs => this.setState({ currentChipVMs: chipVMs }))
+            .then((chipVMs) => this.setState({ currentChipVMs: chipVMs }))
             .then(() => {
                 if (this.props.onChipsUpdated) {
                     this.props.onChipsUpdated();
@@ -225,7 +225,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
             onBackspace: () => {
                 me.props.onRemoveLastQueryElement();
             },
-            onRequestAutocomplete: () => me.setState(state => ({
+            onRequestAutocomplete: () => me.setState((state) => ({
                 suggestionsOpened: true,
                 suggestionsOpenManualTrigger: state.suggestionsOpenManualTrigger === undefined ? true : state.suggestionsOpenManualTrigger,
                 focusSuggestions: true,
@@ -261,7 +261,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                 color: iconColor,
                 onClick: () => this.props.onSaveAsQuery(prompt("Save query as") || "query", this.props.searchedQueryElements),
             }));
-        const hierarchyPicker = this.isHierarchyPickerOpen() && __(SearchboxHierarchyPicker, <SearchboxHierarchyPickerProps>{
+        const hierarchyPicker = this.isHierarchyPickerOpen() && __(SearchboxHierarchyPicker, <SearchboxHierarchyPickerProps> {
             open: this.isHierarchyPickerOpen() || false,
             handleClose: () => {
                 this.selectedHierarchy = this.getHierarchicQueryValueMatch().hierarchyInfo.possibilities[0].index;

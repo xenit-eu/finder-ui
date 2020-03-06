@@ -3,7 +3,7 @@ import getMuiTheme from "material-ui/styles/getMuiTheme";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import { Component, createElement as __, ReactElement } from "react";
 import * as _ from "react-dom-factories";
-import { Explorer, Explorer_t, ExplorerNode_t, ExplorerNode, ExplorerNode_Props_t } from "./explorer";
+import { Explorer, Explorer_t, ExplorerNode, ExplorerNode_Props_t, ExplorerNode_t } from "./explorer";
 import { Fixture, simulateEvent, TestWrapper } from "./testUtils";
 
 ;

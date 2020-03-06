@@ -1,9 +1,9 @@
+import { Button, IconButton, Input, ListItem, Radio, Select } from "@material-ui/core";
+import AddCircle from "@material-ui/icons/AddCircle";
 import { configure, mount } from "enzyme";
 import { createElement as __ } from "react";
 import * as React from "react";
 import { ConfigurationDialog, ConfigurationDialog_Props_t } from "./index";
-import { Button, IconButton, Input, ListItem, Radio, Select } from "@material-ui/core";
-import AddCircle from "@material-ui/icons/AddCircle";
 
 describe("Basic generalSettings dialog test", () => {
 

@@ -1,7 +1,7 @@
-import * as React from "react";
-import { Paper, Grid, IconButton } from "@material-ui/core";
+import { Grid, IconButton, Paper } from "@material-ui/core";
 import { action } from "@storybook/addon-actions";
-import { text, number, boolean } from "@storybook/addon-knobs";
+import { boolean, number, text } from "@storybook/addon-knobs";
+import * as React from "react";
 import Overlay from "./Overlay";
 
 export default {

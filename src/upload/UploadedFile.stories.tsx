@@ -1,9 +1,9 @@
-import * as React from "react";
-import UploadedFile from "./UploadedFile";
-import { Paper, Grid, IconButton } from "@material-ui/core";
+import { Grid, IconButton, Paper } from "@material-ui/core";
 import Visibility from "@material-ui/icons/Visibility";
 import { action } from "@storybook/addon-actions";
-import { text, number, boolean } from "@storybook/addon-knobs";
+import { boolean, number, text } from "@storybook/addon-knobs";
+import * as React from "react";
+import UploadedFile from "./UploadedFile";
 
 export default {
     title: "upload/UploadedFile",

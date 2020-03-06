@@ -1,7 +1,7 @@
-import * as React from "react";
 import { List, ListItem } from "@material-ui/core";
-import UploadedFile from "./UploadedFile";
 import { WithStyles, withStyles } from "@material-ui/core/styles";
+import * as React from "react";
+import UploadedFile from "./UploadedFile";
 
 export interface IUploadedFile {
     readonly fileName: string;

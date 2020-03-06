@@ -2,8 +2,8 @@ import { Chip } from "material-ui";
 import * as Colors from "material-ui/styles/colors";
 import { createElement as __, ReactElement } from "react";
 import * as _ from "react-dom-factories";
-import { IAutocompleteSuggestion, ISearchableQueryElement, IExactValueMatch } from "../searchables";
-import { ISearchQueryElement, isHierarchicSearchQueryElement, ToFillInSearchQueryElement, ISimpleSearchQueryElement } from "../searchquery";
+import { IAutocompleteSuggestion, IExactValueMatch, ISearchableQueryElement } from "../searchables";
+import { ISearchQueryElement, isHierarchicSearchQueryElement, ISimpleSearchQueryElement, ToFillInSearchQueryElement } from "../searchquery";
 import { HierarchicChip, HierarchicChipProps } from "./Chips/HierarchicChip";
 export function getKeyValue(s: string | undefined): { key: string, value: string } {
     if (!s) {
@@ -22,20 +22,20 @@ export function SearchQueryElementToChipVM(sQE: ISearchQueryElement, index: numb
     if (isHierarchicSearchQueryElement(sQE)) {
         const childVMsP = Promise.all(sQE.children.map((e, i) => SearchQueryElementToChipVM(e, index.concat([i]), onRemoveAtIndex)));
         const tooltip = sQE.getTooltipText();
-        return Promise.all([childVMsP, tooltip] as any[]).then(data => new HierarchicChipVM(sQE.getConnectWord(), data[1], index, true, data[0], () => onRemoveAtIndex(index)));
+        return Promise.all([childVMsP, tooltip] as any[]).then((data) => new HierarchicChipVM(sQE.getConnectWord(), data[1], index, true, data[0], () => onRemoveAtIndex(index)));
     }
 
-    return Promise.all([sQE.getTooltipText(), sQE.getSimpleSearchbarText()]).then(texts =>
+    return Promise.all([sQE.getTooltipText(), sQE.getSimpleSearchbarText()]).then((texts) =>
         new LeafChipVM(texts[0], texts[1], index, sQE.isReferential() ? Colors.blue100 : Colors.grey200, sQE.isRemovable(), () => onRemoveAtIndex(index), sQE instanceof ToFillInSearchQueryElement));
 }
 
-export const hasChipFillIn = (chipVM: ChipVM_t): boolean => (chipVM.leaf) ? chipVM.isFillIn : (<any>chipVM).children.some(hasChipFillIn);
+export const hasChipFillIn = (chipVM: ChipVM_t): boolean => (chipVM.leaf) ? chipVM.isFillIn : (<any> chipVM).children.some(hasChipFillIn);
 export const HaveChipsFillIn = (chips: ChipVM_t[]): boolean => chips.some(hasChipFillIn);
 export function ChipVMToChip(chipVM: ChipVM_t, getInputBox: () => any): ReactElement<any> {
     const deleteAction = chipVM.deletable ? () => chipVM.onDelete && chipVM.onDelete() : undefined;
     if (!chipVM.leaf) {
         const props: HierarchicChipProps = {
-            children: (chipVM as HierarchicChipVM).children.map(c => ChipVMToChip(c, getInputBox)),
+            children: (chipVM as HierarchicChipVM).children.map((c) => ChipVMToChip(c, getInputBox)),
             label: (chipVM as HierarchicChipVM).connectWord,
             onDelete: deleteAction,
             onClick: () => { },

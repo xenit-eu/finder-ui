@@ -1,7 +1,7 @@
 import { allButFirst, last, lastMust, replaceLast, replaceOrRemoveAt } from "@xenit/finder-utils";
 import {
-    AndSearchQueryElement, ISearchQueryElement, isHierarchicSearchQueryElement, OrSearchQueryElement, SearchQuery,
-    ToFillInSearchQueryElement, containsToFillInSearchQueryElement,
+    AndSearchQueryElement, containsToFillInSearchQueryElement, ISearchQueryElement, isHierarchicSearchQueryElement, OrSearchQueryElement,
+    SearchQuery, ToFillInSearchQueryElement,
 } from "./searchquery";
 import { SearchQueryNormalizeVisitor } from "./SearchQueryNormalizeVisitor";
 type ComplexSearchQueryElement_t = AndSearchQueryElement | OrSearchQueryElement;
@@ -63,7 +63,7 @@ export class SearchQueryOperator {
     public AppendElement(toAdd: ISearchQueryElement, onto: SearchQuery) {
         const lastChild = last(onto.elements);
         const canAddOnExisting = lastChild !== undefined && this.CanAppendElementOnElement(lastChild);
-        const nonConflictingChildren = onto.elements.filter(elem => !toAdd.conflictsWith(elem));
+        const nonConflictingChildren = onto.elements.filter((elem) => !toAdd.conflictsWith(elem));
         const newChildren = canAddOnExisting ? replaceLast(onto.elements, this.AppendElementOnElement(toAdd, lastChild as ComplexSearchQueryElement_t)) :
             nonConflictingChildren.concat([toAdd]);
         return this.normalizer.visitSearchQuery(onto.CreateFromChildren(newChildren));

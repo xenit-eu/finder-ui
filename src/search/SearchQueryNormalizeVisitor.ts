@@ -1,12 +1,12 @@
 import {
     AllSimpleSearchQueryElement, AndSearchQueryElement, AspectSearchQueryElement,
     DatePropertySearchQueryElement, FolderSearchQueryElement, ISearchQueryElement, ISearchQueryElementVisitor,
-    NodeRefSearchQueryElement, OrSearchQueryElement, ReferenceSimpleSearchQueryElement, StringValuePropertySearchQueryElement,
+    NodeRefSearchQueryElement, OrSearchQueryElement, ReferenceSimpleSearchQueryElement, SearchQuery,
+    SizeQueryElement,
+    StringValuePropertySearchQueryElement,
     TextSearchQueryElement,
     ToFillInSearchQueryElement,
     TypeSearchQueryElement,
-    SearchQuery,
-    SizeQueryElement,
 } from "./searchquery";
 
 export class SearchQueryNormalizeVisitor implements ISearchQueryElementVisitor<ISearchQueryElement> {
@@ -35,13 +35,13 @@ export class SearchQueryNormalizeVisitor implements ISearchQueryElementVisitor<I
         if (query.children.length === 1) {
             return query.children[0];
         }
-        return new OrSearchQueryElement(query.children.map(c => c.visit(this)), query.getOrText);
+        return new OrSearchQueryElement(query.children.map((c) => c.visit(this)), query.getOrText);
     }
     public visitAndSearchQueryElement(query: AndSearchQueryElement): ISearchQueryElement {
         if (query.children.length === 1) {
             return query.children[0];
         }
-        return new AndSearchQueryElement(query.children.map(c => c.visit(this)), query.getAndText);
+        return new AndSearchQueryElement(query.children.map((c) => c.visit(this)), query.getAndText);
     }
     public visitAspectSearchQueryElement(query: AspectSearchQueryElement): ISearchQueryElement {
         return query;

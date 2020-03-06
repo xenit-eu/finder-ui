@@ -1,9 +1,9 @@
 import debug from "debug";
+import { ALL, ASPECT, NODEREF, TEXT, TYPE } from "../WordTranslator";
+import { DocumentSizeRange_t, GetSizeTranslation } from "./../documentSize";
 import { IDateRange, IDateRangeTranslator } from "./DateRange";
 import { SearchQueryElementReadableStringVisitor } from "./SearchQueryElementReadableStringVisitor";
 import { SearchQueryFactory } from "./SearchQueryFactory";
-import { ALL, ASPECT, NODEREF, TEXT, TYPE } from "../WordTranslator";
-import { GetSizeTranslation, DocumentSizeRange_t } from "./../documentSize";
 const d = debug("finder-ui:finderquery");
 
 // This is a fake type. The document type is mapped to this QName to be able to put all document information in a hashmap.
@@ -136,7 +136,7 @@ export class SizeQueryElement implements ISimpleSearchQueryElement {
     public isReferential() { return false; }
     public isRemovable() { return true; }
     public getSimpleSearchbarText() {
-        const ret = this.translate("Size") + ": " + GetSizeTranslation((s) => this.translate(s),this.range);
+        const ret = this.translate("Size") + ": " + GetSizeTranslation((s) => this.translate(s), this.range);
         return Promise.resolve(ret);
     }
     public getTooltipText() {
@@ -166,7 +166,7 @@ export class AspectSearchQueryElement implements ISimpleSearchQueryElement {
     public isRemovable() { return true; }
 
     public getSimpleSearchbarText() {
-        return this.translateAspectName(this.aspect).then(translatedAspect => this.translateAspect(ASPECT) + ": " + translatedAspect);
+        return this.translateAspectName(this.aspect).then((translatedAspect) => this.translateAspect(ASPECT) + ": " + translatedAspect);
     }
     public getTooltipText() {
         return this.getSimpleSearchbarText();
@@ -196,7 +196,7 @@ export class TypeSearchQueryElement implements ISimpleSearchQueryElement {
     public isRemovable() { return true; }
 
     public getSimpleSearchbarText() {
-        return this.translateTypeName(this.pType).then(translatedType => this.translateType(TYPE) + ": " + translatedType);
+        return this.translateTypeName(this.pType).then((translatedType) => this.translateType(TYPE) + ": " + translatedType);
     }
     public getTooltipText() {
         return this.getSimpleSearchbarText();
@@ -236,7 +236,7 @@ export class FolderSearchQueryElement implements ISimpleSearchQueryElement {
         return this.cachedQnamePath ? Promise.resolve(this.cachedQnamePath) : this.getPaths().then(() => "" + this.cachedQnamePath);
     }
     private getPaths(): Promise<void> {
-        return this.retrievePath(this.noderef).then(p => {
+        return this.retrievePath(this.noderef).then((p) => {
             this.cachedQnamePath = p.qnamePath;
             this.cachedDisplayPath = p.displayPath;
         });
@@ -246,7 +246,7 @@ export class FolderSearchQueryElement implements ISimpleSearchQueryElement {
         //displayPath here means (the alfresco displayPath + "/"  + name), but no '/' in the begin, so for example: "Company Home/Data Dictionary"
     }
     public getSimpleSearchbarText() {
-        return this.getDisplayPath().then(displayPath => this.translationService("Folder") + ":" + displayPath);
+        return this.getDisplayPath().then((displayPath) => this.translationService("Folder") + ":" + displayPath);
     }
     public getTooltipText() {
         return this.getDisplayPath();
@@ -309,7 +309,7 @@ export abstract class PropertySearchQueryElement implements ISimpleSearchQueryEl
                 this.propertyNameService.translatePropertyKey(this.key),
                 this.GetValueSimpleSearchbarText(),
             ])
-            .then(kv => kv[0] + ":" + kv[1]);
+            .then((kv) => kv[0] + ":" + kv[1]);
     }
     public abstract visit<T>(visitor: ISearchQueryElementVisitor<T>): T;
 
@@ -372,6 +372,7 @@ export class NodeRefSearchQueryElement implements ISimpleSearchQueryElement {
         return other instanceof NodeRefSearchQueryElement && other.noderef === this.noderef;
     }
 }
+// tslint:disable-next-line:interface-name
 export interface HierarchicSearchQueryElement<T> {
     getChildren(): ReadonlyArray<ISearchQueryElement>;
     withChildren(children: ReadonlyArray<ISearchQueryElement>): T;
@@ -386,14 +387,14 @@ export function containsToFillInSearchQueryElement(element: ISearchQueryElement)
         return true;
     }
     if (isHierarchicSearchQueryElement(element)) {
-        return element.getChildren().some(elem => containsToFillInSearchQueryElement(elem));
+        return element.getChildren().some((elem) => containsToFillInSearchQueryElement(elem));
     }
     return false;
 }
 export class AndSearchQueryElement implements ISearchQueryElement, HierarchicSearchQueryElement<AndSearchQueryElement> {
 
     public getTooltipText(): Promise<string> {
-        return Promise.all(this.children.map(c => c.getTooltipText())).then(childTexts => childTexts.join(this.getConnectWord()));
+        return Promise.all(this.children.map((c) => c.getTooltipText())).then((childTexts) => childTexts.join(this.getConnectWord()));
     }
     public getConnectWord() {
         return this.getAndText(AndSearchQueryElement.AND);
@@ -421,7 +422,7 @@ export class AndSearchQueryElement implements ISearchQueryElement, HierarchicSea
     }
     public static ParseFromJSON(json: any, context: ISearchQueryElementFromJSONContext) {
         const typecheckSafety: AndSearchQueryElement = json;
-        return context.searchQueryFactory().buildAndQueryElement(typecheckSafety.children.map(e => context.SearchQueryElementFromJSON(e)));
+        return context.searchQueryFactory().buildAndQueryElement(typecheckSafety.children.map((e) => context.SearchQueryElementFromJSON(e)));
     }
     constructor(public readonly children: ReadonlyArray<ISearchQueryElement>, public readonly getAndText: (and: string) => string) {
     }
@@ -451,7 +452,7 @@ export class AndSearchQueryElement implements ISearchQueryElement, HierarchicSea
 export class OrSearchQueryElement implements ISearchQueryElement, HierarchicSearchQueryElement<OrSearchQueryElement> {
     public static readonly OR = "or";
     public getTooltipText(): Promise<string> {
-        return Promise.all(this.children.map(c => c.getTooltipText())).then(childTexts => childTexts.join(this.getConnectWord()));
+        return Promise.all(this.children.map((c) => c.getTooltipText())).then((childTexts) => childTexts.join(this.getConnectWord()));
     }
     public getConnectWord() {
         return this.getOrText(OrSearchQueryElement.OR);
@@ -480,7 +481,7 @@ export class OrSearchQueryElement implements ISearchQueryElement, HierarchicSear
     public readonly TYPE = OrSearchQueryElement.TYPE;
     public static ParseFromJSON(json: any, context: ISearchQueryElementFromJSONContext) {
         const typecheckSafety: OrSearchQueryElement = json;
-        return context.searchQueryFactory().buildOrQueryElement(typecheckSafety.children.map(e => context.SearchQueryElementFromJSON(e)));
+        return context.searchQueryFactory().buildOrQueryElement(typecheckSafety.children.map((e) => context.SearchQueryElementFromJSON(e)));
     }
     constructor(public readonly children: ReadonlyArray<ISearchQueryElement>, public readonly getOrText: (or: string) => string) {
     }

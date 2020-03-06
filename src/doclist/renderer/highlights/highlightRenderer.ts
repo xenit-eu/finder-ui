@@ -1,6 +1,6 @@
 import * as _ from "react-dom-factories";
-import { ColumnRenderer_Config_t, ColumnRenderer_Factory_t, ColumnRenderer_Props_t, ColumnRenderer_t } from "../interface";
 import { FieldHighlights_t, HighlightedTextPart_t } from "../../../metadata/fields";
+import { ColumnRenderer_Config_t, ColumnRenderer_Factory_t, ColumnRenderer_Props_t, ColumnRenderer_t } from "../interface";
 
 function generateHtml(highlightInfo: HighlightedTextPart_t): any/*Whatever React function*/ {
     return highlightInfo.map((pair) => (pair.highlighted ? _.strong({}, pair.text) : _.span({}, pair.text)));
@@ -21,7 +21,7 @@ export const HighlightRenderer: ColumnRenderer_Factory_t<FieldHighlights_t[]> =
         };
     };
 
-export type highlightInfo = { text: string, highlighted: boolean }[];
+export type highlightInfo = Array<{ text: string, highlighted: boolean }>;
 
 export function splitHighlightSnippet(highlightString: string, prefix: string, postfix: string): string[] {
     let delimiterExpression: RegExp = new RegExp(prefix + "|" + postfix);

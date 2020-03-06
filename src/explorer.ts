@@ -6,8 +6,8 @@ import { CircularProgress, IconButton, List, ListItem, ListItemProps } from "mat
 import { NavigationExpandLess } from "material-ui/svg-icons";
 import { NavigationExpandMore } from "material-ui/svg-icons";
 
-import { Component, createElement as __, ReactElement } from "react";
 import classNames from "classnames";
+import { Component, createElement as __, ReactElement } from "react";
 
 export type Explorer_t<T extends ExplorerNode_t> = {
     onClick: (node: T) => void,
@@ -62,13 +62,13 @@ export class ExplorerNode<T extends ExplorerNode_t> extends Component<ExplorerNo
         this.setState({
             loading: true,
         }, () => {
-            this.props.onRequestChildren(this.props.node).then(children => {
+            this.props.onRequestChildren(this.props.node).then((children) => {
                 this.setState({
                     children,
                     loading: false,
                     loaded: true,
                 });
-            }).catch(e => this.setState({ loading: false, open: false }));
+            }).catch((e) => this.setState({ loading: false, open: false }));
         });
     }
 
@@ -122,7 +122,7 @@ export class ExplorerNode<T extends ExplorerNode_t> extends Component<ExplorerNo
             primaryTogglesNestedList: false,
             leftAvatar: this.props.node.icon,
             className: isSelected ? "explorer-selected" : "  ",
-            nestedItems: this.state.children.map((child, i) => __(ExplorerNode, <any>{ ...this.props, key: i, node: child, nestedLevel: this.props.nestedLevel! + 1 })),
+            nestedItems: this.state.children.map((child, i) => __(ExplorerNode, <any> { ...this.props, key: i, node: child, nestedLevel: this.props.nestedLevel! + 1 })),
             rightIconButton: this._getRightIconButton(),
         };
         return __(ListItem, props);
@@ -134,12 +134,12 @@ export class ExplorerNode<T extends ExplorerNode_t> extends Component<ExplorerNo
  */
 export function Explorer<T extends ExplorerNode_t>(props: Explorer_t<T>) {
     console.warn("Deprecated, use V2 instead.");
-    return __(List, <any>{ className: "explorer" }, [
+    return __(List, <any> { className: "explorer" }, [
         __(ExplorerNode, { key: "rootExplorerNode", ...props, nestedLevel: 0 }),
     ]);
 }
 export function ExplorerV2<T extends ExplorerNode_t>(props: Explorer_t<T>) {
-    return __(List, <any>{ className: "explorer" }, [
+    return __(List, <any> { className: "explorer" }, [
         __(StyledExplorerNodeV2, { key: "rootExplorerNode", ...props, nestedLevel: 0 }),
     ]);
 }
@@ -178,13 +178,13 @@ class ExplorerNodeV2<T extends ExplorerNode_t> extends Component<ExplorerNodeV2_
         this.setState({
             loading: true,
         }, () => {
-            this.props.onRequestChildren(this.props.node).then(children => {
+            this.props.onRequestChildren(this.props.node).then((children) => {
                 this.setState({
                     children,
                     loading: false,
                     loaded: true,
                 });
-            }).catch(e => this.setState({ loading: false, open: false }));
+            }).catch((e) => this.setState({ loading: false, open: false }));
         });
     }
     private isOpenAndLoaded() {
@@ -205,7 +205,7 @@ class ExplorerNodeV2<T extends ExplorerNode_t> extends Component<ExplorerNodeV2_
 
     public render(): ReactElement<any> {
         const isSelected = this.props.selectedNodes && this.props.selectedNodes.indexOf(this.props.node.id) >= 0;
-        const nestedItems = this.state.children.map((child, i) => __(ExplorerNodeV2, <any>{ ...this.props, key: i, node: child, nestedLevel: this.props.nestedLevel! + 1 }));
+        const nestedItems = this.state.children.map((child, i) => __(ExplorerNodeV2, <any> { ...this.props, key: i, node: child, nestedLevel: this.props.nestedLevel! + 1 }));
         const listItem = __(ListItemMUIV1, {
             component: "div",
             onClick: () => this.props.onClick(this.props.node),
@@ -219,7 +219,7 @@ class ExplorerNodeV2<T extends ExplorerNode_t> extends Component<ExplorerNodeV2_
             __(ListItemText, { className: "explorer-node-label", primary: this.props.node.primaryText }),
             this._getRightIconButton());
         const collapsible = __(Collapse, { in: this.isOpenAndLoaded(), style: { paddingLeft: "20px" }, className: "explorer-node-children" }, nestedItems);
-        return __(List, <any>{
+        return __(List, <any> {
             style: {
                 padding: "0px",
             },
@@ -232,7 +232,7 @@ class ExplorerNodeV2<T extends ExplorerNode_t> extends Component<ExplorerNodeV2_
     }
 }
 
-const StyledExplorerNodeV2 = withStyles(theme => ({
+const StyledExplorerNodeV2 = withStyles((theme) => ({
     node: {
         paddingTop: "2px",
         paddingBottom: "2px",

@@ -9,13 +9,13 @@ const PropertyRenderer: ColumnRenderer_Factory_t<Property_t | Property_t[]> = (c
     // If a resource resolver is given, always use the resource resolver renderer instead of a plain property
     // The plain property renderer will only show the underlying value that is not translated through a resource resolver
     if (config.parameters.resolver) {
-        return ResourceResolverRenderer(<any>config);
+        return ResourceResolverRenderer(<any> config);
     }
     // tslint:disable-next-line:only-arrow-functions
     return function Property(props: ColumnRenderer_Props_t) {
         let value = config.mapToView(props.node);
         const valueAsList = !Array.isArray(value) ? [value] : value;
-        const stringRepresentation = valueAsList.map(v => convertToString(config.parameters, v)).join(", ");
+        const stringRepresentation = valueAsList.map((v) => convertToString(config.parameters, v)).join(", ");
         return _.span({ title: stringRepresentation }, stringRepresentation);
     };
 };

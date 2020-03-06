@@ -1,9 +1,9 @@
+import { addElement } from "@xenit/finder-utils";
 import { Component, createElement as __ } from "react";
-import { GeneralSettings_t } from "./content";
 import Dialog from "../dialog";
+import { GeneralSettings_t } from "./content";
 import ConfigurationDialogContent from "./content";
 import { ManageLayouts_t } from "./manage-layouts";
-import { addElement } from "@xenit/finder-utils";
 
 export type ConfigurationDialog_Props_t = {
     open: boolean,
@@ -65,14 +65,14 @@ export class ConfigurationDialog extends Component<ConfigurationDialog_Props_t, 
                             this.setState((state) => ({
                                 manageLayouts: {
                                     ...state.manageLayouts,
-                                    layouts: state.manageLayouts.layouts.filter(value1 => value1.name !== value),
+                                    layouts: state.manageLayouts.layouts.filter((value1) => value1.name !== value),
                                 },
                             }));
                         },
                         onSaveCurrentLayout: (value: string) => {
                             let trimVal = value.trim();
                             if (trimVal) {
-                                if (this.state.manageLayouts.layouts.findIndex(layout => layout.name === value) === -1) {
+                                if (this.state.manageLayouts.layouts.findIndex((layout) => layout.name === value) === -1) {
                                     this.setState((state) => ({
                                         manageLayouts: {
                                             ...state.manageLayouts,

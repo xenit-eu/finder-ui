@@ -1,5 +1,4 @@
-//import debug from "debug";
-const debug: any = require("debug");
+import debug from "debug";
 import DatePicker from "material-ui/DatePicker";
 import { Component, createElement as __, FormEvent, ReactElement } from "react";
 import * as _ from "react-dom-factories";
@@ -40,7 +39,7 @@ const DateTimePicker: PropertyRenderer_t<Date | Date[]> = (config: PropertyRende
                         props.onChange(config.mapToModel(props.node, v));
                     },
                     defaultDate: defaultValue,
-                    value: <Date>value,
+                    value: <Date> value,
                     formatDate: (date: Date) => moment(date).format(config.parameters["date-format"] || "Y/M/D"),
                 }));
             } else {
@@ -53,7 +52,7 @@ const DateTimePicker: PropertyRenderer_t<Date | Date[]> = (config: PropertyRende
             }
             return _.span(
                 { className: "metadata-value metadata-field-datetimepicker" },
-                (Array.isArray(value) ? value : [value]).map(v => moment(v).format(config.parameters["date-format"] || "Y/M/D")).join(", "),
+                (Array.isArray(value) ? value : [value]).map((v) => moment(v).format(config.parameters["date-format"] || "Y/M/D")).join(", "),
             );
         }
     };

@@ -3,7 +3,7 @@ import ToggleIndeterminateCheckBox from "material-ui/svg-icons/toggle/indetermin
 import { createElement as __, CSSProperties, MouseEvent } from "react";
 import ReactTable, { Column, RowInfo, SortingRule, TableProps } from "react-table";
 import "react-table/react-table.css";
-import { Node_t, FieldHighlights_t } from "../metadata";
+import { FieldHighlights_t, Node_t } from "../metadata";
 import { ColumnRenderer_t } from "./renderer/interface";
 import RowMenu, { MenuItem_t } from "./RowMenu";
 export { MenuItem_t as NodeTableRowMenuItem_t } from "./RowMenu";
@@ -52,7 +52,7 @@ export interface INodeTableRow<T> {
 
 type NodeTableMenuLoad_Callback_t<T> = (menuItemIndex: number, menuItem: MenuItem_t<T>) => void;
 export interface INodeTableProps<T> {
-    rows: INodeTableRow<T>[]; // List of rows to show in the table
+    rows: Array<INodeTableRow<T>>; // List of rows to show in the table
     columns: INodeTableColumn[]; // Columns to show in the table
     pager: {
         totalItems: number, // Total number of available items
@@ -97,8 +97,8 @@ export function NodeTable<T>(props: INodeTableProps<T>) {
     if (props.onRowToggled !== undefined) {
         const onToggleAllFallback = (checked: boolean) => props.rows.forEach((row, i) => props.onRowToggled!(row.node, checked, i));
         const onToggleAll = props.onToggleAll || onToggleAllFallback;
-        const allRowsToggled = props.rows.every(row => row.toggled || false);
-        const noRowsToggled = props.rows.every(row => !row.toggled);
+        const allRowsToggled = props.rows.every((row) => row.toggled || false);
+        const noRowsToggled = props.rows.every((row) => !row.toggled);
         const indeterminate = !allRowsToggled && !noRowsToggled;
         firstColumns.push({
             id: "--norowselect-toggle",
@@ -122,7 +122,7 @@ export function NodeTable<T>(props: INodeTableProps<T>) {
     }
     const columns: Column[] = props.columns.map(createColumn);
 
-    const sorted: SortingRule[] = props.columns.map(createSortingRule).filter(c => !!c) as SortingRule[];
+    const sorted: SortingRule[] = props.columns.map(createSortingRule).filter((c) => !!c) as SortingRule[];
 
     const translations = props.translations ? {
         previousText: props.translations[NodeTableTranslations.PREVIOUS],
@@ -148,7 +148,7 @@ export function NodeTable<T>(props: INodeTableProps<T>) {
         multiSort: false,
         sorted,
         onSortedChange: (newSorted: SortingRule[], column: Column, additive: boolean) => {
-            const sorts: INodeTableBasicColumn[] = props.columns.map(col => sortingRuleToBasicColumn(col, newSorted));
+            const sorts: INodeTableBasicColumn[] = props.columns.map((col) => sortingRuleToBasicColumn(col, newSorted));
             props.onSortChanged(sorts);
         },
         getTrProps: (state: TableProps, rowInfo?: RowInfo) => (rowInfo ? {
@@ -166,7 +166,7 @@ export function NodeTable<T>(props: INodeTableProps<T>) {
 }
 
 function sortingRuleToBasicColumn(col: INodeTableBasicColumn, rules: SortingRule[]): INodeTableBasicColumn {
-    const sortingRule = rules.find(sort => sort.id === col.name);
+    const sortingRule = rules.find((sort) => sort.id === col.name);
     if (!sortingRule) {
         return {
             name: col.name,

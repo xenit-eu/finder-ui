@@ -1,7 +1,7 @@
 import { flatten } from "@xenit/finder-utils";
 import { Component, createElement as __ } from "react";
 import { IAutocompleteSuggestion } from "../searchables";
-import { getKeyValue, SearchBox_t, SearchBox_data_t, SearchBox_actions_t } from "./common";
+import { getKeyValue, SearchBox_actions_t, SearchBox_data_t, SearchBox_t } from "./common";
 import { SearchBox } from "./searchbox";
 type AutocompleteSearchBox_State_t = {
     autocompleteText?: string,
@@ -45,7 +45,7 @@ export class AutocompleteSearchBox extends Component<AutocompleteSearchBox_t, Au
 
         this.autocompleteTimer = setTimeout(() => {
             this.autocompleteTimer = null;
-            return this.getAutocompleteList(text).then(autoCompleteList => {
+            return this.getAutocompleteList(text).then((autoCompleteList) => {
                 this.setState({ currentSuggestions: autoCompleteList });
             });
         }, 200);

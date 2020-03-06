@@ -5,9 +5,10 @@ import { Component, createElement as __, ReactElement } from "react";
 import * as _ from "react-dom-factories";
 import "./HierarchicChip.less";
 
+// tslint:disable-next-line:interface-name
 export interface HierarchicChipProps {
     label: string;
-    children: ReactElement<any>[];
+    children: Array<ReactElement<any>>;
     onDelete?: (event: any) => void;
     onClick?: (event: any) => void;
     onKeyDown?: (event: any) => void;
@@ -47,7 +48,7 @@ export class HierarchicChip extends Component<HierarchicChipProps, {}> {
     }
 
     public render() {
-        const childrenInterleaved: Array<any> = [];
+        const childrenInterleaved: any[] = [];
         this.props.children.forEach((c, i) => {
             childrenInterleaved.push(c);
             if (i < this.props.children.length - 1) {
@@ -61,7 +62,7 @@ export class HierarchicChip extends Component<HierarchicChipProps, {}> {
         }, childrenInterleaved, __(CancelIcon, {
             color: "#000A",
             className: "cancel-icon",
-            key:"CANCELINCON",
+            key: "CANCELINCON",
             onClick: (event: any) => this.handleDeleteIconClick(event),
 
         }));

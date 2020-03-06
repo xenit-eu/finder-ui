@@ -1,5 +1,5 @@
 import { withStyles, WithStyles } from "@material-ui/core";
-import { ReactNode, ComponentType } from "react";
+import { ComponentType, ReactNode } from "react";
 import * as _ from "react-dom-factories";
 
 type FullWidthFlexcontainer_t =  WithStyles<"flex"> & {children?: ReactNode[] | ReactNode};
@@ -10,7 +10,7 @@ function FullWidthFlexContainer(props: FullWidthFlexcontainer_t) {
 
 const comp: ComponentType<FullWidthFlexcontainer_t> = FullWidthFlexContainer;
 
-export default withStyles(theme => ({
+export default withStyles((theme) => ({
     flex: {
         display: "flex",
         width: "100%",

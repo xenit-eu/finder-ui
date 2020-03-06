@@ -1,4 +1,3 @@
-import {ChangeEvent, Component, ComponentType, createElement as __, Fragment} from "react";
 import {
     FormControl,
     InputLabel,
@@ -7,6 +6,7 @@ import {
     WithStyles,
     withStyles,
 } from "@material-ui/core";
+import {ChangeEvent, Component, ComponentType, createElement as __, Fragment} from "react";
 import ConfigurationExpansionPanel from "./configuration-expansion-panel";
 import FullWidthFlexContainer from "./full-width-flexcontainer";
 import ManageLayouts, {ManageLayouts_Callbacks_t, ManageLayouts_t} from "./manage-layouts";
@@ -56,7 +56,7 @@ class ConfigurationDialogContent extends Component<ConfigurationDialog_Props_t> 
 
 const comp: ComponentType<ConfigurationDialog_Props_t> = ConfigurationDialogContent;
 
-export default withStyles(theme => ({
+export default withStyles((theme) => ({
     formControl: {
         flexGrow: 1,
         flexBase: "0%",

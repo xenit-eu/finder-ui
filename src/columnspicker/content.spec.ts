@@ -1,11 +1,11 @@
 import { Button, DialogActions, Select } from "@material-ui/core";
 import { configure, mount, ReactWrapper } from "enzyme";
 import { createElement as __ } from "react";
+import { ENGLISH } from "../WordTranslator";
 import AvailableColumns from "./availablecolumns";
 import ColumnSetManager from "./columnset";
 import { ColumnsPickerContent } from "./content";
 import SortableColumns from "./sortablecolumns";
-import { ENGLISH } from "../WordTranslator";
 
 describe("ColumnsPicker: ColumnsPickerContent", () => {
 

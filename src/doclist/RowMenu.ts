@@ -1,6 +1,6 @@
 import { IconButton, IconMenu, MenuItem } from "material-ui";
 import MoreHorizIcon from "material-ui/svg-icons/navigation/more-horiz";
-import { createElement as __, MouseEvent, Component } from "react";
+import { Component, createElement as __, MouseEvent } from "react";
 type RowMenu_SharedProps_t<T> = {
     menuItems: Array<MenuItem_t<T>>,
     onMenuItemSelected: (menuKey: T, menuIndex: number) => void,

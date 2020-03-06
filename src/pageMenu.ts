@@ -1,6 +1,6 @@
 import { Fade, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, withStyles } from "@material-ui/core";
-import MoreVert from "@material-ui/icons/MoreVert";
 import ArrowRight from "@material-ui/icons/ArrowRight";
+import MoreVert from "@material-ui/icons/MoreVert";
 import FontIcon from "material-ui/FontIcon";
 import { Component, createElement as __, Fragment, MouseEvent, ReactElement } from "react";
 
@@ -52,7 +52,7 @@ class SubMenuItem extends Component<MenuItemWrapper_t, SubMenuItem_State_t> {
     }
 
     private menuItemsNeedInset() {
-        return this.props.menuItem.children!.find(menuItem => !!menuItem.iconName) !== undefined;
+        return this.props.menuItem.children!.find((menuItem) => !!menuItem.iconName) !== undefined;
     }
 
     public render() {

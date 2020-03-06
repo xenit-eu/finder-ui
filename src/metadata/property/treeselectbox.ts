@@ -34,7 +34,7 @@ const TreeSelectBox: PropertyRenderer_t<string[] | string> = (config: PropertyRe
 
         private _getSanitizedValue(): string[] | string | null {
             const value = config.mapToView(this.props.node);
-            return Array.isArray(value) ? value.map(v => v.toString()) : value !== null ? value.toString() : null;
+            return Array.isArray(value) ? value.map((v) => v.toString()) : value !== null ? value.toString() : null;
         }
 
         private _getViewValue(): string[] {
@@ -81,8 +81,8 @@ const TreeSelectBox: PropertyRenderer_t<string[] | string> = (config: PropertyRe
                     value: value || [],
                 });
                 let values = this._getViewValue();
-                values = this.state.currentValuesLoaded ? this.state.currentValues.map(item => item.value) : ["Loading..."];
-                return _.span({ className: "metadata-field metadata-field-treeselectbox" }, __(SelectField, <any>{
+                values = this.state.currentValuesLoaded ? this.state.currentValues.map((item) => item.value) : ["Loading..."];
+                return _.span({ className: "metadata-field metadata-field-treeselectbox" }, __(SelectField, <any> {
                     openImmediately: this.state.updateTrigger,
                     dropDownMenuProps: {
                         autoWidth: true,
@@ -94,7 +94,7 @@ const TreeSelectBox: PropertyRenderer_t<string[] | string> = (config: PropertyRe
                 }, menuItems));
             } else {
                 let values = this._getViewValue();
-                values = this.state.currentValuesLoaded ? this.state.currentValues.map(item => item.value) : ["Loading..."];
+                values = this.state.currentValuesLoaded ? this.state.currentValues.map((item) => item.value) : ["Loading..."];
                 return _.span({ className: "metadata-value metadata-field-treeselectbox" }, values.sort().join(", "));
             }
         }
@@ -104,7 +104,7 @@ const TreeSelectBox: PropertyRenderer_t<string[] | string> = (config: PropertyRe
 };
 export default TreeSelectBox;
 
-const CheckboxTree = require("react-checkbox-tree");
+import CheckboxTree from "react-checkbox-tree";
 import "react-checkbox-tree/lib/react-checkbox-tree.css";
 import "./treeselectbox.less";
 
@@ -131,7 +131,7 @@ class TreeSelectBoxImpl extends Component<TreeSelectBoxImpl_Props_t, TreeSelectB
     constructor(props: TreeSelectBoxImpl_Props_t) {
         super(props);
         this.state = {
-            expanded: this._getParentsFor(<string[]>(props.multiple ? props.value : [props.value])),
+            expanded: this._getParentsFor(<string[]> (props.multiple ? props.value : [props.value])),
             searchFilter: "",
         };
     }
@@ -140,7 +140,7 @@ class TreeSelectBoxImpl extends Component<TreeSelectBoxImpl_Props_t, TreeSelectB
         if (!nodeKey) {
             return [];
         }
-        const node = this.props.treeDescription.find(n => n.key === nodeKey);
+        const node = this.props.treeDescription.find((n) => n.key === nodeKey);
         if (!node) {
             return [];
         }
@@ -149,14 +149,14 @@ class TreeSelectBoxImpl extends Component<TreeSelectBoxImpl_Props_t, TreeSelectB
 
     private _getParentsFor(values: string[]): string[] {
         const selectedNodes = this.props.treeDescription
-            .filter(node => values.indexOf(node.key) >= 0);
-        return (<string[]>[]).concat(...selectedNodes.map(node => this._getParents(node.parent)));
+            .filter((node) => values.indexOf(node.key) >= 0);
+        return (<string[]> []).concat(...selectedNodes.map((node) => this._getParents(node.parent)));
     }
 
     private _getFilteredValues(filter: string) {
         const matchingNodes = this.props.treeDescription
-            .filter(node => node.value.toLowerCase().indexOf(filter.toLowerCase()) >= 0);
-        return (<string[]>[]).concat(...matchingNodes.map(node => this._getParents(node.key).concat([node.key])));
+            .filter((node) => node.value.toLowerCase().indexOf(filter.toLowerCase()) >= 0);
+        return (<string[]> []).concat(...matchingNodes.map((node) => this._getParents(node.key).concat([node.key])));
     }
 
     private _getFilteredTreeDescription() {
@@ -164,14 +164,14 @@ class TreeSelectBoxImpl extends Component<TreeSelectBoxImpl_Props_t, TreeSelectB
             return this.props.treeDescription;
         }
         const filteredNodes = this._getFilteredValues(this.state.searchFilter);
-        return this.props.treeDescription.filter(node => filteredNodes.indexOf(node.key) >= 0);
+        return this.props.treeDescription.filter((node) => filteredNodes.indexOf(node.key) >= 0);
     }
 
     private _buildNodesTree(nodeKey?: string): CheckboxTreeData_t[] {
         const checked = this.props.multiple ? (key: string) => this.props.value.indexOf(key) >= 0 : (key: string) => key === this.props.value;
         return this._getFilteredTreeDescription()
-            .filter(node => node.parent === nodeKey)
-            .map(node => ({
+            .filter((node) => node.parent === nodeKey)
+            .map((node) => ({
                 value: node.key,
                 label: node.value,
                 children: node.key === undefined ? (() => {
@@ -185,7 +185,7 @@ class TreeSelectBoxImpl extends Component<TreeSelectBoxImpl_Props_t, TreeSelectB
         if (this.props.multiple) {
             this.props.onChange(checked);
         } else {
-            const newlyChecked = checked.filter(item => this.props.value.indexOf(item) === -1);
+            const newlyChecked = checked.filter((item) => this.props.value.indexOf(item) === -1);
             if (newlyChecked[0]) {
                 this.props.onChange(newlyChecked[0]);
             } else {
@@ -214,7 +214,7 @@ class TreeSelectBoxImpl extends Component<TreeSelectBoxImpl_Props_t, TreeSelectB
             }),
             __(CheckboxTree, {
                 nodes: this._buildNodesTree(),
-                checked: this.props.multiple ? this.props.value : [this.props.value],
+                checked: this.props.multiple ? this.props.value as string[] : [this.props.value as string],
                 expanded: this.state.expanded,
                 onCheck: (checked: string[]) => this._onCheck(checked),
                 onExpand: (expanded: string[]) => {

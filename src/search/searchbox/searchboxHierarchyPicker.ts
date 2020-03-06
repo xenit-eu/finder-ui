@@ -1,10 +1,10 @@
-import { List, ListItem, Dialog, DialogTitle } from "@material-ui/core";
+import { Dialog, DialogTitle, List, ListItem } from "@material-ui/core";
 import { Component, createElement as __ } from "react";
-import { HierarchicQueryValueMatch } from "../searchables";
-import { ChipVM_t, SearchQueryElementToChipVM, ChipVMToChip } from "./common";
 import * as _ from "react-dom-factories";
-import { SearchQuery, ISynchronousTranslationService } from "../searchquery";
 import { SELECTINTENDEDQUERY } from "../../WordTranslator";
+import { HierarchicQueryValueMatch } from "../searchables";
+import { ISynchronousTranslationService, SearchQuery } from "../searchquery";
+import { ChipVM_t, ChipVMToChip, SearchQueryElementToChipVM } from "./common";
 export type SearchboxHierarchyPickerProps = {
     open: boolean,
     pickedChip: (id: number[]) => void,
@@ -14,7 +14,7 @@ export type SearchboxHierarchyPickerProps = {
 };
 
 export type SearchboxHierarchyPickerState = {
-    showPossibilities: { id: number[], chips: ChipVM_t[] }[];
+    showPossibilities: Array<{ id: number[], chips: ChipVM_t[] }>;
 };
 
 export class SearchboxHierarchyPicker extends Component<SearchboxHierarchyPickerProps, SearchboxHierarchyPickerState> {
@@ -34,8 +34,8 @@ export class SearchboxHierarchyPicker extends Component<SearchboxHierarchyPicker
         const possibilities = info.hierarchyInfo.possibilities;
         Promise.all(possibilities.map((p) =>
             Promise.all(p.structure.elements.map((rootElement, i) => SearchQueryElementToChipVM(rootElement, p.index.concat([i]), () => { })))
-                .then(vm => ({ id: p.index, chips: vm }))))
-            .then(renderedPossibilities => { this.setState({ showPossibilities: renderedPossibilities }); });
+                .then((vm) => ({ id: p.index, chips: vm }))))
+            .then((renderedPossibilities) => { this.setState({ showPossibilities: renderedPossibilities }); });
     }
     public render() {
         return __(Dialog, { // Dialog to display the date (range) selector.
@@ -52,7 +52,7 @@ export class SearchboxHierarchyPicker extends Component<SearchboxHierarchyPicker
                     key: i,
                     button: true,
                     onClick: () => this.props.pickedChip(p.id),
-                }, _.span({}, p.chips.map(chip => ChipVMToChip(chip, () => "..."))),
+                }, _.span({}, p.chips.map((chip) => ChipVMToChip(chip, () => "..."))),
                 )),
             ),
         );

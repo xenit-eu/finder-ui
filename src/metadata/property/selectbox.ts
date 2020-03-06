@@ -41,7 +41,7 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
 
         private _getSanitizedValue(): string[] | string {
             const value = config.mapToView(this.props.node);
-            return Array.isArray(value) ? value.map(v => v.toString()) : value ? value.toString() : "";
+            return Array.isArray(value) ? value.map((v) => v.toString()) : value ? value.toString() : "";
         }
 
         private _getViewValue(): string[] {
@@ -50,7 +50,7 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
         }
 
         private setStateP<K extends keyof SelectBox_State_t>(state: Pick<SelectBox_State_t, K>): Promise<void> {
-            return (new Promise(resolve => this.setState(state, resolve)));
+            return (new Promise((resolve) => this.setState(state, resolve)));
         }
 
         private lookupCurrentValues() {
@@ -102,7 +102,7 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
                 // This happens when using a custom resource resolver with min-input-length > 0
                 // Not a problem for multivalue, because the selectionRenderer is always called for multivalue fields
                 const useCurrentValues = this.state.menuItems.length === 0 && !this.state.searchFilter && !isMultiValue;
-                const menuItems = useCurrentValues ? this.state.currentValues.filter(v => !!v) : this.state.menuItems;
+                const menuItems = useCurrentValues ? this.state.currentValues.filter((v) => !!v) : this.state.menuItems;
 
                 const menuItemComponents = menuItems.map((item: KV_t) => __(MenuItem, {
                     key: item.key,
@@ -146,7 +146,7 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
                         let val = evt.target.value as any as string[];
                         // Filter out "undefined" values from clicking the searchbox
                         if (Array.isArray(val)) {
-                            val = val.filter(v => !!v);
+                            val = val.filter((v) => !!v);
                         }
                         this.props.onChange(config.mapToModel(this.props.node, val));
                     },

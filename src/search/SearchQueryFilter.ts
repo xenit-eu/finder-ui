@@ -1,11 +1,11 @@
 import {
     AllSimpleSearchQueryElement, AndSearchQueryElement, AspectSearchQueryElement, DatePropertySearchQueryElement,
     FolderSearchQueryElement, ISearchQueryElement, ISearchQueryElementVisitor,
-    NodeRefSearchQueryElement, OrSearchQueryElement, ReferenceSimpleSearchQueryElement, StringValuePropertySearchQueryElement,
+    NodeRefSearchQueryElement, OrSearchQueryElement, ReferenceSimpleSearchQueryElement, SizeQueryElement,
+    StringValuePropertySearchQueryElement,
     TextSearchQueryElement,
     ToFillInSearchQueryElement,
     TypeSearchQueryElement,
-    SizeQueryElement,
 } from "./searchquery";
 function flatten<T>(arr: T[][]) {
     return ([] as T[]).concat(...arr);
@@ -40,11 +40,11 @@ export class SearchQueryFilter implements ISearchQueryElementVisitor<ISearchQuer
     }
     public visitOrSearchQueryElement(query: OrSearchQueryElement): ISearchQueryElement[] {
         const base = this.includeIfConditionTrue(query);
-        return base.concat(flatten(query.children.map(c => c.visit(this))));
+        return base.concat(flatten(query.children.map((c) => c.visit(this))));
     }
     public visitAndSearchQueryElement(query: AndSearchQueryElement): ISearchQueryElement[] {
         const base = this.includeIfConditionTrue(query);
-        return base.concat(flatten(query.children.map(c => c.visit(this))));
+        return base.concat(flatten(query.children.map((c) => c.visit(this))));
     }
     public visitAspectSearchQueryElement(query: AspectSearchQueryElement) {
         return this.includeIfConditionTrue(query);

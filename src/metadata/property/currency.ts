@@ -95,7 +95,7 @@ const Currency: PropertyRenderer_t<number | null> = (config: PropertyRenderConfi
                     errorText: isError ? isError.toString() : "",
                 }));
             } else {
-                return __(label, <any>{ ...this.props, className: "metadata-value metadata-field-currency" });
+                return __(label, <any> { ...this.props, className: "metadata-value metadata-field-currency" });
             }
 
         }

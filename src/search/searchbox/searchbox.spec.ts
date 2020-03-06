@@ -1,13 +1,13 @@
-import { SearchQueryFactory } from "../SearchQueryFactory";
 import "core-js";
 import "es6-shim";
 import { createElement as __ } from "react";
 import { Fixture } from "../../testUtils";
-import { AllSearchable, ISearchableQueryElement, SimpleAutoCompleteListElement, TextSearchable, NoResultValueMatch } from "../searchables";
-import { SearchBox } from "./searchbox";
+import { AllSearchable, ISearchableQueryElement, NoResultValueMatch, SimpleAutoCompleteListElement, TextSearchable } from "../searchables";
 import { ISimpleSearchQueryElement, StringValuePropertySearchQueryElement } from "../searchquery";
+import { SearchQueryFactory } from "../SearchQueryFactory";
 import { AutocompleteSearchBox_t } from "./AutocompleteSearchbox";
 import { SearchBox_t } from "./common";
+import { SearchBox } from "./searchbox";
 
 const ENTER_KEY_CODE: number = 13;
 export function dummyPropertyService() {
@@ -85,8 +85,8 @@ describe("SearchBox component tests", () => {
             wrapper.update();
             expect(wrapper.find("Chip").length).toBe(qE.length);
             Promise.all(qE.map((q, i) => q.getSimpleSearchbarText()
-                .then(ssT => expect(wrapper.find("Chip").at(i).text()).toBe(ssT))))
-                .then(theTestIs => done())
+                .then((ssT) => expect(wrapper.find("Chip").at(i).text()).toBe(ssT))))
+                .then((theTestIs) => done())
                 .catch((e) => { console.error(e); fail(); });
         };
         const wrapper = Fixture(__(SearchBox, props));
@@ -100,12 +100,12 @@ describe("SearchBox component tests", () => {
             wrapper.update();
             expect(wrapper.find("Chip").length).toBe(qE.length);
             Promise.all(qE.map((q, i) => q.getSimpleSearchbarText()
-                .then(ssT => expect(wrapper.find("Chip").at(i).text()).toBe(ssT))))
+                .then((ssT) => expect(wrapper.find("Chip").at(i).text()).toBe(ssT))))
                 .catch((e) => { console.error(e); fail(); })
                 .then(() => {
                     const onrequestDelete = wrapper.find("Chip").at(1).prop("onRequestDelete") as any;
                     onrequestDelete();
-                }).catch(e => {
+                }).catch((e) => {
                     console.error(e); fail();
                 });
         };

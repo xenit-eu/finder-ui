@@ -28,7 +28,7 @@ export type TabsPanelStyle_t = {
 
 export const TabsPanel = ({ tabsInfo, onchange, selectedPanel, style = {} }: TabsPanel_t) => {
     const tabChildren = tabsInfo.map((p, i) => __(Tab, { style: style.styleTabs, label: p.label, value: name, key: i }, p.content));
-    let index = tabsInfo.map(p => p.name).indexOf(selectedPanel);
+    let index = tabsInfo.map((p) => p.name).indexOf(selectedPanel);
     let cssKeycontent = style.styleContentcssKey ? style.styleContentcssKey : "tabspanel";
     const tabs = __(Tabs, {
         onChange: onchange,

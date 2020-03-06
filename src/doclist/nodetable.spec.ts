@@ -93,7 +93,7 @@ phantomDescribe("NodeList", () => {
         const rows = reactTable.find("TableComponent Tbody TrComponent");
 
         expect(rows.length).toEqual(20); // There are always 20 rows rendered in total
-        expect(rows.filterWhere(component => !component.hasClass("-padRow")).length).toEqual(2); // But 2 rows are not padding rows
+        expect(rows.filterWhere((component) => !component.hasClass("-padRow")).length).toEqual(2); // But 2 rows are not padding rows
 
         const cells = rows.first().find("TdComponent");
 
@@ -174,7 +174,7 @@ phantomDescribe("NodeList", () => {
             },
         };
 
-        const rows: INodeTableRow<any>[] = [];
+        const rows: Array<INodeTableRow<any>> = [];
         for (let i = 0; i < 50; i++) {
             rows.push({
                 node: node1,
