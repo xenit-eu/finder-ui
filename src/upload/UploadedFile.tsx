@@ -3,7 +3,7 @@ import { Grid, CircularProgress, IconButton } from "@material-ui/core";
 import CheckCircle from "@material-ui/icons/CheckCircle";
 import Cancel from "@material-ui/icons/Cancel";
 import { Theme, WithStyles, withStyles } from "@material-ui/core/styles";
-import * as classNames from "classnames";
+import classNames from "classnames";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import { useTranslation } from "react-i18next";
 

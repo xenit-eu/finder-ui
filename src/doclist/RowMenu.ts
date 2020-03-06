@@ -16,7 +16,7 @@ type RowMenu_Props_t<T> = RowMenu_SharedProps_t<T> & {
 };
 export function RowMenu<T>({ menuItems, onMenuItemSelected, ...props }: RowMenu_Props_t<T>) {
     return __(IconMenu, {
-        iconButtonElement: __(IconButton, { style: { padding: "0", height: "initial" }, disableTouchRipple: true }, __(MoreHorizIcon, { color: "grey" })),
+        iconButtonElement: __(IconButton, { style: { padding: "0", height: "initial" }, disableTouchRipple: true }, __(MoreHorizIcon, { color: "grey" })) as any,
         targetOrigin: { horizontal: "right", vertical: "top" },
         anchorOrigin: { horizontal: "right", vertical: "top" },
         onRequestChange: props.onRequestChange,

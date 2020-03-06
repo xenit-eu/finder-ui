@@ -8,19 +8,7 @@ import { Fixture, simulateEvent } from "../testUtils";
 import { Pager_t } from "../pager";
 import { DocList, DocList_t, MenuItem_t, SortDirection_t } from "./doclist";
 
-import { configure } from "enzyme";
-import * as Adapter from "enzyme-adapter-react-16";
-
-configure({ adapter: new Adapter() });
-
-// tslint:disable-next-line:no-var-requires
-const jasmineEnzyme = require("jasmine-enzyme"); // no typings for jasmine-engine => require instead of import.
-
 describe("DocList component tests", () => {
-
-    beforeEach(() => {
-        jasmineEnzyme();
-    });
 
     it("should not display table if no data passed in props", () => {
 
@@ -150,7 +138,7 @@ describe("DocList component tests", () => {
             onDownloadButtonClick: () => { },
         };
 
-        spyOn(props, "onRowSelected");
+        jest.spyOn(props, "onRowSelected").mockImplementation(() => { });
 
         const wrapper = Fixture(DocList(props));
 
@@ -199,7 +187,7 @@ describe("DocList component tests", () => {
             onDownloadButtonClick: () => { },
         };
 
-        spyOn(props, "onMenuSelected");
+        jest.spyOn(props, "onMenuSelected").mockImplementation(() => { });
 
         const wrapper = Fixture(DocList(props));
 

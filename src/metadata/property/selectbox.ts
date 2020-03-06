@@ -3,7 +3,7 @@ import Chip from "@material-ui/core/Chip";
 import ListItemText from "@material-ui/core/ListItemText";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
-import * as ld from "lodash";
+import ld from "lodash";
 import { TextField } from "material-ui";
 import { ChangeEvent, Component, createElement as __, SyntheticEvent } from "react";
 import * as _ from "react-dom-factories";

@@ -42,7 +42,7 @@ type RowMenu_t = {
 function RowMenu({ rowIndex, menuItems, onMenuSelected }: RowMenu_t): ReactElement<any> {
     return __(IconMenu, {
         iconButtonElement: __(IconButton, { style: { height: "15px", padding: "0" } },
-            __(MoreHorizIcon, { color: "grey" })),
+            __(MoreHorizIcon, { color: "grey" })) as any,
         targetOrigin: { horizontal: "right", vertical: "top" },
         anchorOrigin: { horizontal: "right", vertical: "top" },
     },

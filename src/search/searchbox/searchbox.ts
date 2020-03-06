@@ -242,7 +242,6 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
                 label: "Done",
                 primary: true,
                 keyboardFocused: false,
-                onTouchTap: this.handleCloseDialog.bind(this),
                 onClick: this.handleCloseDialog.bind(this),
             }),
         ];

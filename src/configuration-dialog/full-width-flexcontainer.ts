@@ -1,5 +1,5 @@
-import {withStyles, WithStyles} from "@material-ui/core";
-import {ReactNode, ComponentType} from "react";
+import { withStyles, WithStyles } from "@material-ui/core";
+import { ReactNode, ComponentType } from "react";
 import * as _ from "react-dom-factories";
 
 type FullWidthFlexcontainer_t =  WithStyles<"flex"> & {children?: ReactNode[] | ReactNode};

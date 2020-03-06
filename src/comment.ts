@@ -2,7 +2,7 @@ import { Card, CardTitle } from "material-ui/Card";
 import FlatButton from "material-ui/FlatButton";
 import FontIcon from "material-ui/FontIcon";
 import TextField from "material-ui/TextField";
-import * as moment from "moment";
+import moment from "moment";
 import { Component, createElement as __ } from "react";
 import * as _ from "react-dom-factories";
 

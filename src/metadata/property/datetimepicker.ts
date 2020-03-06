@@ -1,10 +1,10 @@
-//import * as debug from "debug";
+//import debug from "debug";
 const debug: any = require("debug");
 import DatePicker from "material-ui/DatePicker";
 import { Component, createElement as __, FormEvent, ReactElement } from "react";
 import * as _ from "react-dom-factories";
 const d = debug("finder-ui:metadata:property:datetimepicker");
-import * as moment from "moment";
+import moment from "moment";
 
 import { FieldSkeleton_Props_t, RenderMode } from "../fields";
 import { PropertyRenderConfig_t, PropertyRenderer_t } from "./interface";

@@ -40,6 +40,7 @@ export default function FileDropZone(props: FileDropZone_Props_t) {
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
         children={children(isDragging)}
+        aria-dropeffect="copy"
         {...rest}
     />;
 

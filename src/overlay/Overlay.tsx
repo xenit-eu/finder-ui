@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Theme, WithStyles, withStyles } from "@material-ui/core/styles";
-import * as classnames from "classnames";
+import classnames from "classnames";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import OverlayCentered from "./OverlayCentered";
 
@@ -34,7 +34,7 @@ function Overlay(props: Overlay_Props_t & WithStyles<typeof overlayStyle>) {
     if (props.overlay) {
         overlay = props.overlay;
         if (props.centered) {
-            overlay = <OverlayCentered>{overlay}</OverlayCentered>
+            overlay = <OverlayCentered>{overlay}</OverlayCentered>;
 
         }
     }
@@ -45,7 +45,7 @@ function Overlay(props: Overlay_Props_t & WithStyles<typeof overlayStyle>) {
         })}>
             {overlay}
         </div> : null}
-        {...React.Children.toArray(props.children)}
+        {props.children}
     </div>;
 }
 

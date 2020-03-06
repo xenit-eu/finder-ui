@@ -40,7 +40,7 @@ const translations: TranslationsChecked = {
         [DELETE]: "Borrar",
     },
 };
-function ColumnSetManager(props: ColumnSetManager_Props_t) {
+function ColumnSetManager(props: ColumnSetManager_Props_t): ReactElement {
     const translator = new WordTranslator(() => props.language, translations);
     const selectedSet = props.columnSets.find(set => set.id === props.currentSet);
 

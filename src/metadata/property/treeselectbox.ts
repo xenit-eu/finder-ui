@@ -1,4 +1,4 @@
-import * as ld from "lodash";
+import ld from "lodash";
 import { MenuItem, SelectField, TextField } from "material-ui";
 import { Component, createElement as __, FormEvent, ReactElement, SyntheticEvent } from "react";
 import * as _ from "react-dom-factories";

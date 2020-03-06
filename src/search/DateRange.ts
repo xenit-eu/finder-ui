@@ -1,4 +1,4 @@
-import * as moment from "moment";
+import moment from "moment";
 
 export const DATE_ON = "on...";
 export const DATE_FROM = "from...";

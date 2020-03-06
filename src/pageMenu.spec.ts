@@ -5,20 +5,8 @@ import { Fixture, simulateEvent } from "./testUtils";
 
 import { PageMenu, PageMenu_t } from "./pageMenu";
 
-import { configure } from "enzyme";
-import * as Adapter from "enzyme-adapter-react-16";
-
-configure({ adapter: new Adapter() });
-
-// tslint:disable-next-line:no-var-requires
-const jasmineEnzyme = require("jasmine-enzyme"); // no typings for jasmine-engine => require instead of import.
-
 // TODO: Can not be tested because enzyme does not support traversing a react portal.
 xdescribe("PageMenu component tests", () => {
-
-    beforeEach(() => {
-        jasmineEnzyme();
-    });
 
     it("should display all menu items (labels) when clicking on icon", () => {
         const props: PageMenu_t = {
@@ -61,7 +49,7 @@ xdescribe("PageMenu component tests", () => {
 
         const clickedIndex = 1;
 
-        spyOn(props, "onMenuSelected");
+        jest.spyOn(props, "onMenuSelected").mockImplementation(() => { });
 
         const wrapper = Fixture(PageMenu(props));
 

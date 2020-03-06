@@ -1,6 +1,5 @@
 import { Button, DialogActions, Select } from "@material-ui/core";
 import { configure, mount, ReactWrapper } from "enzyme";
-import * as Adapter from "enzyme-adapter-react-16";
 import { createElement as __ } from "react";
 import AvailableColumns from "./availablecolumns";
 import ColumnSetManager from "./columnset";
@@ -8,15 +7,7 @@ import { ColumnsPickerContent } from "./content";
 import SortableColumns from "./sortablecolumns";
 import { ENGLISH } from "../WordTranslator";
 
-configure({ adapter: new Adapter() });
-
-// tslint:disable-next-line:no-var-requires
-const jasmineEnzyme = require("jasmine-enzyme"); // no typings for jasmine-engine => require instead of import.
-
 describe("ColumnsPicker: ColumnsPickerContent", () => {
-    beforeEach(() => {
-        jasmineEnzyme();
-    });
 
     const columnSets = [
         {
@@ -164,8 +155,8 @@ describe("ColumnsPicker: ColumnsPickerContent", () => {
 
     it("Reordering columns in a columnset", () => {
         const props = testProps;
-        const onSetsChangeSpy = spyOn(props, "onSetsChange");
-        const onDoneSpy = spyOn(props, "onDone");
+        const onSetsChangeSpy = jest.spyOn(props, "onSetsChange");
+        const onDoneSpy = jest.spyOn(props, "onDone");
 
         const component = mount(__(ColumnsPickerContent, props) as any);
         component.find(ColumnSetManager).prop("onSelect")(columnSets[1]);
@@ -241,8 +232,8 @@ describe("ColumnsPicker: ColumnsPickerContent", () => {
     it("Adding/removing columns in a columnset", () => {
         const props = testProps;
 
-        const onSetsChangeSpy = spyOn(props, "onSetsChange");
-        const onDoneSpy = spyOn(props, "onDone");
+        const onSetsChangeSpy = jest.spyOn(props, "onSetsChange");
+        const onDoneSpy = jest.spyOn(props, "onDone");
 
         const component: ReactWrapper<ColumnsPickerContent["props"], ColumnsPickerContent["state"], ColumnsPickerContent> = mount(__(ColumnsPickerContent, props));
         component.find(ColumnSetManager).prop("onSelect")(component.state("sets")[1]);

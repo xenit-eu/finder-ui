@@ -14,6 +14,7 @@ module.exports = {
     '@storybook/addon-a11y/register',
   ],
   webpackFinal: async config => {
+    config.entry.push('typeface-roboto');
     config.module.rules.push({
       test: /\.less$/,
       loader: "style-loader!css-loader!less-loader"

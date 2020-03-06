@@ -42,4 +42,40 @@ function UploadPanelWrapper() {
 
 }
 
-export const normal = () => <UploadPanelWrapper />;
+export const interactive = () => <UploadPanelWrapper />;
+interactive.story = {
+    parameters: {
+        storyshots: { disable: true },
+    },
+};
+
+export const empty = () => <UploadPanel
+    files={[]}
+    onUploadAdded={action("uploadAdded")}
+    onUploadCancel={action("uploadCancel")}
+    onUploadEditMetadata={action("uploadEditMetadata")}
+    onUploadDone={action("uploadDone")}
+    onDoneAll={action("doneAll")}
+/>;
+
+export const withItems = () => <UploadPanel
+    files={[
+        {
+            fileName: "uploaded-file.txt",
+            progress: 1,
+        },
+        {
+            fileName: "uploading-file.txt",
+            progress: 0.43,
+        },
+        {
+            fileName: "pending-file.txt",
+            progress: 0,
+        },
+    ]}
+    onUploadAdded={action("uploadAdded")}
+    onUploadCancel={action("uploadCancel")}
+    onUploadEditMetadata={action("uploadEditMetadata")}
+    onUploadDone={action("uploadDone")}
+    onDoneAll={action("doneAll")}
+/>;

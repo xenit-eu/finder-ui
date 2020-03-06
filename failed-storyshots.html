@@ -1,0 +1,33 @@
+<!DOCTYPE html5>
+<html>
+    <head>
+        <title>Failed storyshots</title>
+        <style>
+            img {
+                border: 1px solid black;
+                width: 100%;
+                margin-bottom: 5px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="root"></div>
+        <script>
+            var s3Path = location.pathname.replace(/\/[^/]+\.html$/, '/storyshots-').replace(/^\//, '');
+            fetch("/?prefix="+s3Path)
+                .then(function(response){ return response.text(); })
+                .then(function(text) { return (new DOMParser()).parseFromString(text, "text/xml"); })
+                .then(function(listBucket) { return Array.prototype.slice.call(listBucket.querySelectorAll("Contents > Key")); })
+                .then(function(items) { return items.map(function(item){ return item.textContent; });})
+                .then(function(urls) { return urls.map(function(url) {
+                    var image = new Image();
+                    image.src = "/"+url;
+                    image.title=url;
+                    return image;
+                }); })
+                .then(function(images) { images.forEach(function(image) {
+                    document.getElementById("root").appendChild(image);
+                }) });
+        </script>
+    </body>
+</html>
