@@ -1,12 +1,7 @@
 node_modules/
-typings/
 .vscode/
+.idea/
 test-results/
-.gradle/
-build/
-.settings
 npm-debug.log*
-.idea
-tmp
 storybook-static/
-.project
+dist/

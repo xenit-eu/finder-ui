@@ -7,7 +7,9 @@
         "moduleResolution": "node",
         "isolatedModules": false,
         "jsx": "react",
+        "sourceMap": true,
         "declaration": true,
+        "declarationMap": true,
         "noImplicitAny": true,
         "preserveConstEnums": true,
         "skipDefaultLibCheck": true,
@@ -15,8 +17,15 @@
         "strictNullChecks": true,
         "skipLibCheck": true,
         "noImplicitThis": true,
+        "rootDir": "src/",
     },
     "include": [
         "src"
+    ],
+    "exclude": [
+        "src/**/*.spec.ts",
+        "src/**/*.spec.tsx",
+        "src/**/*.stories.ts",
+        "src/**/*.stories.tsx"
     ]
 }
