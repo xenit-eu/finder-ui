@@ -1,10 +1,12 @@
 {
-  "name": "finder-ui",
+  "name": "@xenit/finder-ui",
   "version": "2.5.0",
   "description": "Finder UI components using ReactJS (based on material-ui.com)",
-  "main": "src/index.ts",
-  "types": "src/index.ts",
+  "main": "./dist/index.ts",
+  "types": "./dist/index.ts",
   "scripts": {
+    "clean": "rimraf dist",
+    "prepare": "npm run clean && tsc",
     "postversion": "git push && git push --tags",
     "test": "build-storybook && jest",
     "lint": "tslint -c ./tslint.json 'src/**/*.ts' 'src/**/*.tsx'",
@@ -12,15 +14,19 @@
     "build-storybook": "build-storybook"
   },
   "repository": {
-    "type": "git"
+    "type": "git",
+    "url": "git@github.com:xenit-eu/finder-ui.git"
   },
   "keywords": [
     "finder",
     "ui",
     "react"
   ],
-  "author": "xenit.eu",
-  "license": "LGPL",
+  "author": {
+    "name": "Xenit",
+    "url": "https://xenit.eu"
+  },
+  "license": "LGPL-3.0-or-later",
   "peerDependencies": {
     "react-dom": "*",
     "react": ">=16.8.0",

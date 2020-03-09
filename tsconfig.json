@@ -1,20 +1,22 @@
 {
     "compilerOptions": {
-        "outDir": "./tmp",
+        "outDir": "./dist",
         "target": "es5",
         "module": "commonjs",
-        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
         "moduleResolution": "node",
         "isolatedModules": false,
         "jsx": "react",
-        "declaration": false,
+        "declaration": true,
         "noImplicitAny": true,
         "preserveConstEnums": true,
         "skipDefaultLibCheck": true,
         "suppressImplicitAnyIndexErrors": true,
         "strictNullChecks": true,
-        "baseUrl": "./",
         "skipLibCheck": true,
         "noImplicitThis": true,
-    }
+    },
+    "include": [
+        "src"
+    ]
 }
