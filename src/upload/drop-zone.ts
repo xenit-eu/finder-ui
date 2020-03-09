@@ -158,7 +158,7 @@ export class DropZone extends Component<DropZone_t, State_t> {
         }
     }
 
-    public render() {
+    public render(): ReactElement {
 
         const show = this.state.show ? "flex" : "none";
         const selection: boolean = this.state.files.filter((a) => a.selected).length > 0;
@@ -172,31 +172,31 @@ export class DropZone extends Component<DropZone_t, State_t> {
             onClick: this.onDropZoneClick.bind(this),
         }, [
 
-                _.input(<any> { type: "file", style: { display: "none" }, multiple: "multiple", ref: (input: HTMLInputElement) => this.fileInput = input }),
+            _.input(<any> { type: "file", style: { display: "none" }, multiple: "multiple", ref: (input: HTMLInputElement) => this.fileInput = input }),
 
-                _.div({ className: "overlay", style: { display: show } },
-                    _.ul({ className: "files-list" },
-                        this.state.files.map((f: FileStatus_t, i: number) => __("li", {}, [
-                            _.label({ htmlFor: "ids_" + i, className: this.state.files[i].selected ? "selected" : "" }, f.file.name),
-                            __(Checkbox, {
-                                className: "check-box",
-                                id: "ids_" + i,
-                                checked: this.state.files[i].selected,
-                                style: { visibility: this.state.files[i].progress === 100 ? "visible" : "hidden" },
-                                onCheck: (evt: any, checked: boolean) => this.onFileSelected(checked, i),
-                            }),
-                            __(LinearProgress, { mode: "determinate", value: this.state.files[i].progress }),
-                        ])),
-                    ),
-                    _.div({ className: "buttons" }, [
-                        __(RaisedButton, { label: "Save", disabled: !selection, primary: true, onClick: this.onSaveButtonClicked.bind(this) }),
-                        __(RaisedButton, { label: "Skip", disabled: !selection, onClick: this.onRemoveButtonClicked.bind(this) }),
-                        __(RaisedButton, { label: "Cancel", onClick: this.onCancelButtonClicked.bind(this) }),
-                    ]),
+            _.div({ className: "overlay", style: { display: show } },
+                _.ul({ className: "files-list" },
+                    this.state.files.map((f: FileStatus_t, i: number) => __("li", {}, [
+                        _.label({ htmlFor: "ids_" + i, className: this.state.files[i].selected ? "selected" : "" }, f.file.name),
+                        __(Checkbox, {
+                            className: "check-box",
+                            id: "ids_" + i,
+                            checked: this.state.files[i].selected,
+                            style: { visibility: this.state.files[i].progress === 100 ? "visible" : "hidden" },
+                            onCheck: (evt: any, checked: boolean) => this.onFileSelected(checked, i),
+                        }),
+                        __(LinearProgress, { mode: "determinate", value: this.state.files[i].progress }),
+                    ])),
                 ),
-                _.div({ style: { display: "inline-block", filter: this.state.show ? "blur(5px)" : "" } }, this.props.children),
+                _.div({ className: "buttons" }, [
+                    __(RaisedButton, { label: "Save", disabled: !selection, primary: true, onClick: this.onSaveButtonClicked.bind(this) }),
+                    __(RaisedButton, { label: "Skip", disabled: !selection, onClick: this.onRemoveButtonClicked.bind(this) }),
+                    __(RaisedButton, { label: "Cancel", onClick: this.onCancelButtonClicked.bind(this) }),
+                ]),
+            ),
+            _.div({ style: { display: "inline-block", filter: this.state.show ? "blur(5px)" : "" } }, this.props.children),
 
-            ]);
+        ]);
     }
 
 }
