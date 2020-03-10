@@ -1,8 +1,9 @@
 import { Grid, IconButton, Paper } from "@material-ui/core";
 import Visibility from "@material-ui/icons/Visibility";
 import { action } from "@storybook/addon-actions";
-import { boolean, number, text } from "@storybook/addon-knobs";
+import { number, text } from "@storybook/addon-knobs";
 import * as React from "react";
+import { interceptAction, stopIntercept } from "../puppeteerActionInterceptor";
 import UploadedFile from "./UploadedFile";
 
 export default {
@@ -12,7 +13,7 @@ export default {
 
 export const withoutCancelButton = () => <Paper>
     <Grid container>
-        <Grid item xs>
+        <Grid item xs id="uploadedItem">
             <UploadedFile
                 progress={number("progress", 0.5, { range: true, min: 0, max: 1, step: 0.01 })}
                 name={text("name", "Some_filename.txt")}
@@ -33,9 +34,24 @@ export const withCancelButton = () => <Paper>
     </Grid>
 </Paper>;
 
+withCancelButton.story = {
+    parameters: {
+        async puppeteerTest(page: any) {
+            const cancelActionPromise = interceptAction(page, "cancel");
+
+            const button = await page.$("button");
+            await button.click();
+            const cancelActionData = await cancelActionPromise;
+            expect(cancelActionData.name).toBe("cancel");
+
+            stopIntercept(page);
+        },
+    },
+};
+
 export const clickable = () => <Paper>
     <Grid container >
-        <Grid item xs>
+        <Grid item xs id="uploadedItem">
             <UploadedFile
                 progress={number("progress", 0.5, { range: true, min: 0, max: 1, step: 0.01 })}
                 name={text("name", "Some_filename.txt")}
@@ -45,6 +61,26 @@ export const clickable = () => <Paper>
         </Grid>
     </Grid>
 </Paper>;
+
+clickable.story = {
+    parameters: {
+        async puppeteerTest(page: any) {
+            const cancelActionPromise = interceptAction(page, "cancel");
+            const button = await page.$("button");
+            await button.click();
+            const cancelActionData = await cancelActionPromise;
+            expect(cancelActionData.name).toBe("cancel");
+
+            const clickActionPromise = interceptAction(page, "click");
+            const uploadedItem = await page.$("#uploadedItem");
+            await uploadedItem.click();
+            const clickActionData = await clickActionPromise;
+            expect(clickActionData.name).toBe("click");
+
+            stopIntercept(page);
+        },
+    },
+};
 
 export const actions = () => <Paper>
     <Grid container >
