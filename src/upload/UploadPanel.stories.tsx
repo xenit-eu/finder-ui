@@ -1,5 +1,7 @@
 import { action } from "@storybook/addon-actions";
+import { resolve } from "path";
 import * as React from "react";
+import { interceptAction, stopIntercept } from "../puppeteerActionInterceptor";
 import { IUploadedFile } from "./UploadList";
 import UploadPanel from "./UploadPanel";
 
@@ -58,6 +60,22 @@ export const empty = () => <UploadPanel
     onDoneAll={action("doneAll")}
 />;
 
+empty.story = {
+    parameters: {
+        async puppeteerTest(page: any) {
+            const filesPath = resolve(__dirname, "../../__tests__");
+            const uploadAddedActionPromise = interceptAction(page, "uploadAdded");
+
+            const uploadInput = await page.$("input");
+            await uploadInput.uploadFile(filesPath + "/testFile1");
+            await uploadInput.evaluate((input: HTMLInputElement) => input.dispatchEvent(new Event("change", { bubbles: true })));
+            await uploadAddedActionPromise;
+
+            stopIntercept(page);
+        },
+    },
+};
+
 export const withItems = () => <UploadPanel
     files={[
         {
@@ -79,3 +97,38 @@ export const withItems = () => <UploadPanel
     onUploadDone={action("uploadDone")}
     onDoneAll={action("doneAll")}
 />;
+
+withItems.story = {
+    parameters: {
+        async puppeteerTest(page: any) {
+            const filesPath = resolve(__dirname, "../../__tests__");
+            const uploadAddedActionPromise = interceptAction(page, "uploadAdded");
+            const uploadInput = await page.$("input");
+            await uploadInput.uploadFile(filesPath + "/testFile1");
+            await uploadInput.evaluate((input: HTMLInputElement) => input.dispatchEvent(new Event("change", { bubbles: true })));
+            await uploadAddedActionPromise;
+
+            const doneAllActionPromise = interceptAction(page, "doneAll");
+            const doneAllButton = await page.$("button[title$='done-all']");
+            await doneAllButton.click();
+            await doneAllActionPromise;
+
+            const editActionPromise = interceptAction(page, "uploadEditMetadata");
+            const editButton = await page.$("button[title$='edit-metadata']");
+            await editButton.click();
+            await editActionPromise;
+
+            const doneActionPromise = interceptAction(page, "uploadDone");
+            const doneButton = await page.$("button[title$='done']");
+            await doneButton.click();
+            await doneActionPromise;
+
+            const cancelActionPromise = interceptAction(page, "uploadCancel");
+            const cancelButton = await page.$("button[title$='cancel']");
+            await cancelButton.click();
+            await cancelActionPromise;
+
+            stopIntercept(page);
+        },
+    },
+};
