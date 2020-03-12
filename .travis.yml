@@ -12,6 +12,7 @@ script:
   - npm test
   - npm run lint
 deploy:
+  skip_cleanup: true
   provider: npm
   email: vierbergenlars@gmail.com
   api_key:
