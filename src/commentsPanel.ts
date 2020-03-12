@@ -1,5 +1,4 @@
-// tslint:disable-next-line:ordered-imports
-import { createElement as __ } from "react";
+import { createElement as __, ReactElement } from "react";
 import * as _ from "react-dom-factories";
 import { Comment_t, CommentCards, NewCommentCard } from "./comment";
 
@@ -29,7 +28,7 @@ export type CommentsPanel_t = {
 //@Param onSaveEditing (updatedComment: Comment_t) => void "called when an existing comment has been modified"
 
 export function CommentsPanel({ show, language, comments,
-    onSaveNewComment, onDeleteComment, onStartEditing, onSaveEditing, onCancelEditing, canAdd, translate }: CommentsPanel_t) {
+    onSaveNewComment, onDeleteComment, onStartEditing, onSaveEditing, onCancelEditing, canAdd, translate }: CommentsPanel_t): ReactElement {
     return _.div({ className: "comments-panel" },
         _.div({ className: "comments-content" },
             show ? [

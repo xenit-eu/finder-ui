@@ -1,20 +1,31 @@
 {
     "compilerOptions": {
-        "outDir": "./tmp",
+        "outDir": "./dist",
         "target": "es5",
         "module": "commonjs",
-        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
         "moduleResolution": "node",
         "isolatedModules": false,
         "jsx": "react",
-        "declaration": false,
+        "sourceMap": true,
+        "declaration": true,
+        "declarationMap": true,
         "noImplicitAny": true,
         "preserveConstEnums": true,
         "skipDefaultLibCheck": true,
         "suppressImplicitAnyIndexErrors": true,
         "strictNullChecks": true,
-        "baseUrl": "./",
         "skipLibCheck": true,
         "noImplicitThis": true,
-    }
+        "rootDir": "src/",
+    },
+    "include": [
+        "src"
+    ],
+    "exclude": [
+        "src/**/*.spec.ts",
+        "src/**/*.spec.tsx",
+        "src/**/*.stories.ts",
+        "src/**/*.stories.tsx"
+    ]
 }

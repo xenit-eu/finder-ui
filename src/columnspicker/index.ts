@@ -1,7 +1,7 @@
 import { Dialog } from "@material-ui/core";
 import FontIcon from "material-ui/FontIcon";
 import IconButton from "material-ui/IconButton";
-import { Component, createElement as __ } from "react";
+import { Component, createElement as __, ReactElement } from "react";
 import * as _ from "react-dom-factories";
 import ColumnsPickerContent from "./content";
 import "./index.less";
@@ -69,7 +69,7 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
             console.warn("finder-ui: ColumnsPicker: prop allColumns is deprecated. Use columnGroups instead");
         }
     }
-    public render() {
+    public render(): ReactElement {
         const dialog = __(ColumnsPickerContent, {
             key: "dialog",
             opened: this.state.opened,

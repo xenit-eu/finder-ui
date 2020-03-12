@@ -1,13 +1,33 @@
 language: node_js
 node_js: 12
 addons:
-    artifacts:
-        paths:
-            - __tests__/__image_snapshots__/__diff_output__/
-            - storybook-static/
-            - failed-storyshots.html
+  artifacts:
+    paths:
+      - __tests__/__image_snapshots__/__diff_output__/
+      - storybook-static/
+      - failed-storyshots.html
 install:
   - npm install
 script:
   - npm test
   - npm run lint
+deploy:
+    - skip_cleanup: true
+      provider: npm
+      email: vierbergenlars@gmail.com
+      api_key:
+        secure: KcQlMC190QVK+wFfCOOVv6tEO26oMhIlzgngF66ZvPiqV7A927k5o1z6zoZnTqGTV+DxsQplH0QHWQCFFAhKFKIwuSY43ZQwvpE8eV3Z20MCEuRu7bZNxXoqNFplXoAaT+b2e4srT3ZlrdKvVCn+Njkc2hdo7CHdWJfQ2QuORzot3PV7BU3glip8ozfhvf3BfGVYVywrn2EyYMMpwTVZC/c40QhLkFdMAym18HQ374+PUlVpin0V5Tbp+oWXaL7us9bnIiOlPZ8HLcHf5/wcLGzLgXJ3l0ZyaCVFVOvWRsbrOKGzK2cluaM3eetYG3ScrmiC3eKE4mugG/UvkyQxvWnLy4MEGZa5xnvH7EJyp3IsErxrzyJVniBW1Cdmwx/fD4ZHLfe4qUg0nw4EHQGFmHgpsvGUis8aVWbaLTCK6Xy+IQSWwA+RuJUw5mg1w4MewnA/eVE0brMbuqxnEdFMtLjtooLyE/PwHfxmykOk3RZ9HcFdGm8+I4ZxFBmaVYZneVpLkzUlUKlrgjTVN+VZ2aJvSZD1UbN7oz+SeicfcqvlTEy1jVDUydhAM80m99s2Mnx+8lpXACZKt8Pe1QNbBKhDS+JowWTlEPtcd3eARpNEPTdZsJM/UGq6fqSLcGrfkcjUfu6Ws2CYnvn2KaEIDdfPWqqaUOLCv9rOkuna7Gg=
+      on:
+        tags: true
+        condition: "$TRAVIS_TAG != v*.*.*-*" # Not for versions of the form x.x.x-prerelease
+        repo: xenit-eu/finder-ui
+    - skip_cleanup: true
+      provider: npm
+      tag: next
+      email: vierbergenlars@gmail.com
+      api_key:
+        secure: KcQlMC190QVK+wFfCOOVv6tEO26oMhIlzgngF66ZvPiqV7A927k5o1z6zoZnTqGTV+DxsQplH0QHWQCFFAhKFKIwuSY43ZQwvpE8eV3Z20MCEuRu7bZNxXoqNFplXoAaT+b2e4srT3ZlrdKvVCn+Njkc2hdo7CHdWJfQ2QuORzot3PV7BU3glip8ozfhvf3BfGVYVywrn2EyYMMpwTVZC/c40QhLkFdMAym18HQ374+PUlVpin0V5Tbp+oWXaL7us9bnIiOlPZ8HLcHf5/wcLGzLgXJ3l0ZyaCVFVOvWRsbrOKGzK2cluaM3eetYG3ScrmiC3eKE4mugG/UvkyQxvWnLy4MEGZa5xnvH7EJyp3IsErxrzyJVniBW1Cdmwx/fD4ZHLfe4qUg0nw4EHQGFmHgpsvGUis8aVWbaLTCK6Xy+IQSWwA+RuJUw5mg1w4MewnA/eVE0brMbuqxnEdFMtLjtooLyE/PwHfxmykOk3RZ9HcFdGm8+I4ZxFBmaVYZneVpLkzUlUKlrgjTVN+VZ2aJvSZD1UbN7oz+SeicfcqvlTEy1jVDUydhAM80m99s2Mnx+8lpXACZKt8Pe1QNbBKhDS+JowWTlEPtcd3eARpNEPTdZsJM/UGq6fqSLcGrfkcjUfu6Ws2CYnvn2KaEIDdfPWqqaUOLCv9rOkuna7Gg=
+      on:
+        tags: true
+        condition: "$TRAVIS_TAG == v*.*.*-*" # For versions of the form x.x.x-prerelease
+        repo: xenit-eu/finder-ui

@@ -3,7 +3,7 @@ import FlatButton from "material-ui/FlatButton";
 import FontIcon from "material-ui/FontIcon";
 import TextField from "material-ui/TextField";
 import moment from "moment";
-import { Component, createElement as __ } from "react";
+import { Component, createElement as __, ReactElement } from "react";
 import * as _ from "react-dom-factories";
 
 import "./comment.less";
@@ -22,7 +22,6 @@ export type Comment_t = {
     modified: string,
 };
 
-declare var require: any;
 const calendarTime = (date: string, language?: string, format?: string): string => {
     if (format) {
         return moment(date, format).calendar();
@@ -53,7 +52,7 @@ export class NewCommentCard extends Component<NewCommentCard_t, State_t> {
         this.state = { newComment: "" };
     }
 
-    public render() {
+    public render(): ReactElement {
         const propsTranslate = this.props.translate;
         const translated = (propsTranslate ? propsTranslate : (s: string) => s)(ADD_A_COMMENT);
         const cardContent = _.div({ className: "comment-card-body" },
@@ -90,7 +89,7 @@ export function CommentCards(
     onSaveEditing: (updatedComment: Comment_t) => void,
     onCancelEditing: (canceledComment: Comment_t) => void,
     translate?: (s: string) => string,
-) {
+): ReactElement[] {
     return comments.map((comment: Comment_t, i: number) => {
         let cardText: any;
         if (!comment.editing || !comment.editable) {

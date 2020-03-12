@@ -1,5 +1,5 @@
 import { Menu, MenuItem, Paper } from "material-ui";
-import { Component, createElement as __, KeyboardEvent } from "react";
+import { Component, createElement as __, KeyboardEvent, ReactElement } from "react";
 import * as _ from "react-dom-factories";
 import { IAutocompleteSuggestion } from "../searchables";
 import { ISynchronousTranslationService } from "../searchquery";
@@ -55,8 +55,8 @@ export class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
         switch (e.keyCode) {
             case 9: //Tab
             case 40: // ARROWKEY_DOWN
-            e.preventDefault();
-            if (this.menu) {
+                e.preventDefault();
+                if (this.menu) {
                     this.props.onRequestAutocomplete();
                     (this.menu as any).setFocusIndex(e, 0, true);
                 }
@@ -88,33 +88,33 @@ export class SearchboxAutocomplete extends Component<Autocomplete_t, {}> {
         const translated: string | undefined = this.props.translate(PLACEHOLDERTRANSLATION);
         return translated ? translated : PLACEHOLDERDEFAULT;
     }
-    public render() {
+    public render(): ReactElement {
         return _.div({
             className: "searchbox-input-wrapper",
             ref: (ref: any) => { this.root = ref; },
         }, [
-                _.input({
-                    value: this.props.value,
-                    key: "input",
-                    id: "searchbox",
-                    placeholder: this.getPlaceHolder(),
-                    onChange: this.props.onChange,
-                    onKeyDown: this.handleKeyDown.bind(this),
-                    onKeyUp: this.props.onKeyUp,
-                    onFocus: this.props.onFocus,
-                    ref: (input) => { this.inputElem = input as HTMLInputElement; },
-                }),
-                __(AutocompleteMenu, {
-                    key: "autocomplete-menu",
-                    open: this.props.open,
-                    onFocusInput: () => this.inputElem.focus(),
-                    focusAutocomplete: this.props.focusAutocomplete,
-                    suggestions: this.props.suggestions,
-                    onSuggestionClick: this.props.onSuggestionClick,
-                    onDismiss: this.handleDismiss.bind(this),
-                    menuRef: (menu: any) => { this.menu = menu; },
-                }),
-            ]);
+            _.input({
+                value: this.props.value,
+                key: "input",
+                id: "searchbox",
+                placeholder: this.getPlaceHolder(),
+                onChange: this.props.onChange,
+                onKeyDown: this.handleKeyDown.bind(this),
+                onKeyUp: this.props.onKeyUp,
+                onFocus: this.props.onFocus,
+                ref: (input) => { this.inputElem = input as HTMLInputElement; },
+            }),
+            __(AutocompleteMenu, {
+                key: "autocomplete-menu",
+                open: this.props.open,
+                onFocusInput: () => this.inputElem.focus(),
+                focusAutocomplete: this.props.focusAutocomplete,
+                suggestions: this.props.suggestions,
+                onSuggestionClick: this.props.onSuggestionClick,
+                onDismiss: this.handleDismiss.bind(this),
+                menuRef: (menu: any) => { this.menu = menu; },
+            }),
+        ]);
     }
 }
 

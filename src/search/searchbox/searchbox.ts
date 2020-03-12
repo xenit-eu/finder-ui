@@ -4,7 +4,7 @@ import Dialog from "material-ui/Dialog";
 import FlatButton from "material-ui/FlatButton";
 import SearchIcon from "material-ui/svg-icons/action/search";
 import StarIcon from "material-ui/svg-icons/toggle/star-border";
-import { cloneElement, Component, createElement as __, KeyboardEvent } from "react";
+import { cloneElement, Component, createElement as __, KeyboardEvent, ReactElement } from "react";
 import * as _ from "react-dom-factories";
 import "react-flatpickr/node_modules/flatpickr/dist/themes/material_blue.css";
 import { SimpleDateRange } from "../DateRange";
@@ -235,7 +235,7 @@ export class SearchBox extends Component<SearchBox_t, State_t> {
         });
     }
 
-    public render() {
+    public render(): ReactElement {
         const doneButton = [
             __(FlatButton, {
                 key: "done-button",

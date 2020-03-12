@@ -21,3 +21,4 @@ export * from "./upload";
 export * from "./versionhistoryPanel";
 export * from "./WordTranslator";
 export * from "./configuration-dialog";
+export { DocumentSizeAtLeast, DocumentSizeBetween, DocumentSizeBetweenAnd, DocumentSizeRange_t } from "./documentSize";

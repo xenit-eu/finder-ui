@@ -1,7 +1,7 @@
 import Dialog from "material-ui/Dialog";
 import FlatButton from "material-ui/FlatButton";
 import TextField from "material-ui/TextField";
-import { createElement as __ } from "react";
+import { createElement as __, ReactElement } from "react";
 import * as _ from "react-dom-factories";
 import { Metadata_t, metadataFields } from "./metadata";
 
@@ -37,11 +37,11 @@ export type MetaDataPanelGroupInfo_t = {
     itemToGroup: { [id: string]: string },
 };
 
-export function MetaDataPanel({ allowEdition, editionMode, fields, onEdit, onSave, groups }: MetaDataPanel_t, style?: MetaDataPanelStyle_t) {
+export function MetaDataPanel({ allowEdition, editionMode, fields, onEdit, onSave, groups }: MetaDataPanel_t, style?: MetaDataPanelStyle_t): ReactElement {
     return fields.length > 0 ? _.div({ className: "metadata" },
         // header with "Save" button
-        allowEdition ? _.div({  className: "metadata-header" },
-             __(FlatButton,
+        allowEdition ? _.div({ className: "metadata-header" },
+            __(FlatButton,
                 {
                     key: editionMode ? "Save" : "Edit",
                     label: editionMode ? "Save" : "Edit", primary: true, keyboardFocused: false,

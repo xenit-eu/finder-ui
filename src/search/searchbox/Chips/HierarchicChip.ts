@@ -47,7 +47,7 @@ export class HierarchicChip extends Component<HierarchicChipProps, {}> {
         }
     }
 
-    public render() {
+    public render(): ReactElement {
         const childrenInterleaved: any[] = [];
         this.props.children.forEach((c, i) => {
             childrenInterleaved.push(c);
