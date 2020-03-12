@@ -47,7 +47,7 @@
     "@types/node": "^8.10.59",
     "@types/react-dom-factories": "^1.0.2",
     "@types/react-table": "^6.8.7",
-    "@xenit/finder-utils": "^1.0.1",
+    "@xenit/finder-utils": "^1.0.2",
     "classnames": "^2.2.6",
     "debug": "^3.2.6",
     "filesize": "^3.5.11",
