@@ -4,6 +4,9 @@
   "description": "Finder UI components using ReactJS (based on material-ui.com)",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "publishConfig": {
+      "access": "public"
+  },
   "scripts": {
     "clean": "rimraf dist",
     "dist": "cpy '**/*.less' ../dist/ --cwd=src --parents && tsc",
