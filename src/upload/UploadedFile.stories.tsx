@@ -3,7 +3,7 @@ import Visibility from "@material-ui/icons/Visibility";
 import { action } from "@storybook/addon-actions";
 import { number, text } from "@storybook/addon-knobs";
 import * as React from "react";
-import { interceptAction, stopIntercept } from "../puppeteerActionInterceptor";
+import { interceptAction, raceActionWithCustomMessage, sendCustomMessage, stopIntercept } from "../puppeteerActionInterceptor";
 import UploadedFile from "./UploadedFile";
 
 export default {
@@ -66,10 +66,14 @@ clickable.story = {
     parameters: {
         async puppeteerTest(page: any) {
             const cancelActionPromise = interceptAction(page, "cancel");
+            const msg = "no click action logged";
+            const clickRacePromise = raceActionWithCustomMessage(page, "click", msg);
             const button = await page.$("button");
             await button.click();
             const cancelActionData = await cancelActionPromise;
             expect(cancelActionData.name).toBe("cancel");
+            await sendCustomMessage(page, msg);
+            await expect(clickRacePromise).resolves.toBe(msg);
 
             const clickActionPromise = interceptAction(page, "click");
             const uploadedItem = await page.$("#uploadedItem");
