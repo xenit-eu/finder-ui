@@ -74,7 +74,7 @@ export const empty = () => <Paper>
 
 export const withActions = () => <Paper>
     <UploadListWithWrapper
-        uploadActions={(file: IUploadedFile) => <IconButton><Visibility /></IconButton>}
+        uploadActions={(file: IUploadedFile) => <IconButton onClick={(e) => e.stopPropagation()}><Visibility /></IconButton>}
     />
 </Paper>;
 
