@@ -2,7 +2,7 @@ import { IconButton, Paper } from "@material-ui/core";
 import Visibility from "@material-ui/icons/Visibility";
 import { action } from "@storybook/addon-actions";
 import * as React from "react";
-import { interceptAction, stopIntercept } from "../puppeteerActionInterceptor";
+import { interceptAction, raceActionWithCustomMessage, sendCustomMessage, stopIntercept } from "../puppeteerActionInterceptor";
 import UploadList, { IUploadedFile, UploadList_Props_t } from "./UploadList";
 
 export default {
@@ -57,6 +57,7 @@ normal.story = {
             const uploadCancelActionData = await uploadCancelActionPromise;
             expect(uploadCancelActionData.name).toBe("onUploadCancel");
             expect(uploadCancelActionData.args[0][0]).toEqual({ fileName: "File2.doc", progress: 0.5 });
+
             uploadListItems = await page.$$(uploadListItemsSelector);
             expect(uploadListItems.length).toBe(1);
             const itemName = await uploadListItems[0].evaluate((item: HTMLDivElement) => item.innerText);
@@ -73,6 +74,22 @@ export const empty = () => <Paper>
 
 export const withActions = () => <Paper>
     <UploadListWithWrapper
-        uploadActions={(file: IUploadedFile) => <IconButton><Visibility /></IconButton>}
+        uploadActions={(file: IUploadedFile) => <IconButton onClick={(e) => e.stopPropagation()}><Visibility /></IconButton>}
     />
 </Paper>;
+
+withActions.story = {
+    parameters: {
+        async puppeteerTest(page: any) {
+            const msg = "no click action logged";
+            const racePromise = raceActionWithCustomMessage(page, "uploadClick", msg);
+
+            const button = await page.$("button");
+            await button.click();
+            await sendCustomMessage(page, msg);
+            await expect(racePromise).resolves.toBe(msg);
+
+            stopIntercept(page);
+        },
+    },
+};

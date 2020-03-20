@@ -1,7 +1,7 @@
 import { action } from "@storybook/addon-actions";
 import { resolve } from "path";
 import * as React from "react";
-import { interceptAction, stopIntercept } from "../puppeteerActionInterceptor";
+import { interceptAction, raceActionWithCustomMessage, sendCustomMessage, stopIntercept } from "../puppeteerActionInterceptor";
 import { IUploadedFile } from "./UploadList";
 import UploadPanel from "./UploadPanel";
 
@@ -119,9 +119,13 @@ withItems.story = {
             await editActionPromise;
 
             const doneActionPromise = interceptAction(page, "uploadDone");
+            const msg = "no edit action logged";
+            const editRacePromise = raceActionWithCustomMessage(page, "uploadEditMetadata", msg);
             const doneButton = await page.$("button[title$='done']");
             await doneButton.click();
             await doneActionPromise;
+            await sendCustomMessage(page, msg);
+            await expect(editRacePromise).resolves.toBe(msg);
 
             const cancelActionPromise = interceptAction(page, "uploadCancel");
             const cancelButton = await page.$("button[title$='cancel']");

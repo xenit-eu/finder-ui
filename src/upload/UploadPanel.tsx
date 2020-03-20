@@ -36,10 +36,16 @@ export default function UploadPanel<T extends IUploadedFile = IUploadedFile>(pro
                     placeholder={<EmptyUploadList onFilesSelected={uploadFiles} />}
                     uploadActions={(file: T) => {
                         return <>
-                            <IconButton onClick={() => props.onUploadEditMetadata([file])} title={t("upload/UploadPanel/edit-metadata")}>
+                            <IconButton onClick={(e) => {
+                                e.stopPropagation();
+                                props.onUploadEditMetadata([file]);
+                            }} title={t("upload/UploadPanel/edit-metadata")}>
                                 <Edit />
                             </IconButton>
-                            <IconButton onClick={() => props.onUploadDone(file)} title={t("upload/UploadPanel/done")}>
+                            <IconButton onClick={(e) => {
+                                e.stopPropagation();
+                                props.onUploadDone(file);
+                            }} title={t("upload/UploadPanel/done")}>
                                 <Done />
                             </IconButton>
                         </>;
