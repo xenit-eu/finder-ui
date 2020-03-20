@@ -56,5 +56,6 @@ export async function raceActionWithCustomMessage(page: any, actionName: string,
 }
 
 export async function sendCustomMessage(page: any, customMsg: string) {
+    // tslint:disable-next-line:no-console
     return page.evaluate((msg: string) => console.debug("custom message", msg), customMsg);
 }
