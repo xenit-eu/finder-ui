@@ -18,8 +18,7 @@ const styles = (theme: Theme) => ({
     } as CSSProperties,
 });
 
-
-type ButtonWithProgress_Props_t = {
+export type ButtonWithProgress_Props_t = {
     isLoading: boolean,
 } & WithStyles<typeof styles> & ButtonProps;
 function ButtonWithProgress(props: ButtonWithProgress_Props_t) {
