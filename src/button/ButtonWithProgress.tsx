@@ -19,7 +19,7 @@ const styles = (theme: Theme) => ({
 });
 
 export type ButtonWithProgress_Props_t = {
-    isLoading: boolean,
+    isLoading: boolean | { progress: number },
 } & WithStyles<typeof styles> & ButtonProps;
 function ButtonWithProgress(props: ButtonWithProgress_Props_t) {
     const { isLoading, classes, ...buttonProps } = props;
@@ -28,10 +28,15 @@ function ButtonWithProgress(props: ButtonWithProgress_Props_t) {
         <Button
             {...buttonProps}
             classes={buttonClasses}
-            disabled={buttonProps.disabled || isLoading}
+            disabled={buttonProps.disabled || !!isLoading}
         />
-        {isLoading && <CircularProgress size={24} className={progress} />}
-    </div>
+        {isLoading && <CircularProgress
+            size={24}
+            className={progress}
+            variant={isLoading === true ? "indeterminate" : "determinate"}
+            value={isLoading !== true ? isLoading.progress : undefined}
+        />}
+    </div>;
 }
 
 export default withStyles(styles, { name: "FinderButtonWithProgress" })(ButtonWithProgress);

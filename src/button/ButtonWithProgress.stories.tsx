@@ -24,7 +24,7 @@ for (const buttonVariantName of Object.keys(buttonVariants)) {
         const buttonSize = buttonSizes[buttonSizeName];
 
         module.exports[buttonVariantName + buttonSizeName] = () => <ButtonWithProgress
-            isLoading={boolean("isLoading", true)}
+            isLoading={boolean("isLoading", true) ? { progress: 50 } : false}
             variant={select("variant", buttonVariants, buttonVariant)}
             size={select("size", buttonSizes, buttonSize)}
         >Click me</ButtonWithProgress>;
