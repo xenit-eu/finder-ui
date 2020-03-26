@@ -1,4 +1,5 @@
 export * from "./AlfredTheming";
+export * from "./button";
 export * from "./columnspicker";
 export * from "./comment";
 export * from "./commentsDialog";
