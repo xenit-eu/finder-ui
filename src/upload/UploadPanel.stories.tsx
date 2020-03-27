@@ -83,6 +83,11 @@ export const withItems = () => <UploadPanel
             progress: 1,
         },
         {
+            fileName: "failed-file.txt",
+            progress: 0,
+            errorMessage: "Upload failed error message",
+        },
+        {
             fileName: "uploading-file.txt",
             progress: 0.43,
         },

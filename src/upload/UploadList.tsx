@@ -6,6 +6,7 @@ import UploadedFile from "./UploadedFile";
 export interface IUploadedFile {
     readonly fileName: string;
     readonly progress: number;
+    readonly errorMessage?: string;
 };
 
 export type UploadList_Props_t<T extends IUploadedFile = IUploadedFile> = {
@@ -37,6 +38,7 @@ function UploadListInternal<T extends IUploadedFile>(props: UploadList_Props_t<T
                 <UploadedFile
                     name={file.fileName}
                     progress={file.progress}
+                    error={file.errorMessage}
                     onCancel={() => props.onUploadCancel(file)}
                     actions={props.uploadActions && props.uploadActions(file)}
                 />

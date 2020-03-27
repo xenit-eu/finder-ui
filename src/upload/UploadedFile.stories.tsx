@@ -100,3 +100,16 @@ export const actions = () => <Paper>
         </Grid>
     </Grid>
 </Paper>;
+
+export const withError = () => <Paper>
+    <Grid container>
+        <Grid item xs>
+            <UploadedFile
+                progress={number("progress", 0, { range: true, min: 0, max: 1, step: 0.01 })}
+                name={text("name", "Some_filename.txt")}
+                error={text("error", "Upload failed error message")}
+                onCancel={action("cancel")}
+            />
+        </Grid>
+    </Grid>
+</Paper>;
