@@ -17,6 +17,10 @@ function UploadListWithWrapper(props: Partial<UploadList_Props_t>) {
     }, {
         fileName: "File2.doc",
         progress: 0.5,
+    }, {
+        fileName: "File3.pdf",
+        progress: 0,
+        errorMessage: "Upload failed error message",
     }] as IUploadedFile[]);
 
     return <div id="uploadListDiv">
@@ -45,7 +49,7 @@ normal.story = {
             const uploadListItemsSelector = "div#uploadListDiv > div > *";
             let uploadListItems = await page.$$(uploadListItemsSelector);
 
-            expect(uploadListItems.length).toBe(2);
+            expect(uploadListItems.length).toBe(3);
             await uploadListItems[0].click();
             const uploadClickActionData = await uploadClickActionPromise;
             expect(uploadClickActionData.name).toBe("uploadClick");
@@ -59,7 +63,7 @@ normal.story = {
             expect(uploadCancelActionData.args[0][0]).toEqual({ fileName: "File2.doc", progress: 0.5 });
 
             uploadListItems = await page.$$(uploadListItemsSelector);
-            expect(uploadListItems.length).toBe(1);
+            expect(uploadListItems.length).toBe(2);
             const itemName = await uploadListItems[0].evaluate((item: HTMLDivElement) => item.innerText);
             expect(itemName).toContain("Filename.txt");
 
