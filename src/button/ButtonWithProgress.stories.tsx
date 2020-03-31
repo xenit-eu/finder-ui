@@ -13,8 +13,8 @@ const buttonVariants = {
 };
 
 const buttonSizes = {
-    Normal: "normal",
     Large: "large",
+    Medium: "medium",
     Small: "small",
 };
 
