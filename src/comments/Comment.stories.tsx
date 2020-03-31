@@ -13,6 +13,12 @@ export const withoutModify = () => <Comment comment={{
     body: "Once a police officer caught Chuck Norris, the cop was lucky enough to escape with a warning.",
 }} />;
 
+export const multiLine = () => <Comment comment={{
+    author: "C. Norris",
+    date: new Date("2020-04-01T00:00:00.000Z"),
+    body: "Once a police officer caught Chuck Norris.\nThe cop was lucky enough to escape with a warning.",
+}} />;
+
 export const withEdit = () => <Comment
     comment={{
         author: "C. Norris",
