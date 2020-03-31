@@ -5,8 +5,7 @@ import MoreVert from "@material-ui/icons/MoreVert";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { OverflowMenu } from "../menu";
-import { IComment } from "./BaseComment";
-import BaseComment from "./BaseComment";
+import BaseComment, { IComment } from "./BaseComment";
 
 type Comment_Props_t = {
     comment: IComment,
@@ -14,13 +13,23 @@ type Comment_Props_t = {
     onEdit?: () => void,
 };
 export default function Comment(props: Comment_Props_t) {
-    const { t } = useTranslation("finder-ui");
     return <BaseComment
         comment={props.comment}
         headerAction={<CommentActions {...props} />}
     >
-        <Typography paragraph>{props.comment.body}</Typography>
+        <BodyRenderer>{props.comment.body}</BodyRenderer>
     </BaseComment>;
+}
+
+function BodyRenderer({ children }: { children: React.ReactNode }) {
+    return <>
+        {React.Children.map(children, (body) => {
+            if (typeof body === "string") {
+                return <>{body.split(/(\r\n|\r|\n)/).map((part, i) => <Typography paragraph key={i}>{part}</Typography>)}</>;
+            }
+            return body;
+        })}
+    </>;
 }
 
 function CommentActions(props: Comment_Props_t) {
