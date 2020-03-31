@@ -1,6 +1,7 @@
 import { Button, CircularProgress, Theme, withStyles, WithStyles } from "@material-ui/core";
 import { ButtonProps } from "@material-ui/core/Button";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
+import classnames from "classnames";
 import * as React from "react";
 
 const styles = (theme: Theme) => ({
@@ -22,9 +23,9 @@ export type ButtonWithProgress_Props_t = {
     isLoading: boolean | { progress: number },
 } & WithStyles<typeof styles> & ButtonProps;
 function ButtonWithProgress(props: ButtonWithProgress_Props_t) {
-    const { isLoading, classes, ...buttonProps } = props;
+    const { isLoading, classes, className, ...buttonProps } = props;
     const { root, progress, ...buttonClasses } = classes;
-    return <div className={root}>
+    return <div className={classnames(root, className)}>
         <Button
             {...buttonProps}
             classes={buttonClasses}
