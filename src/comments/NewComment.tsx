@@ -7,7 +7,7 @@ import { ButtonWithIcon, ButtonWithProgress } from "../button";
 import useUuid from "../util/hooks/useUuid";
 import BaseComment from "./BaseComment";
 
-type NewComment_Props_t = {
+export type NewComment_Props_t = {
     isEditing: boolean
     isSaving: boolean,
     onCreate: () => void,
@@ -30,7 +30,7 @@ export default function NewComment(props: NewComment_Props_t) {
             icon={<AddCommentIcon />}
             color="primary"
             variant="contained"
-            onClick={props.onCancel}
+            onClick={props.onCreate}
         >
             {t("comments/NewComment/create")}
         </ButtonWithIcon>;
