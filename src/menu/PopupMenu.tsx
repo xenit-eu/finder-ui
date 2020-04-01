@@ -1,14 +1,14 @@
 import { IconButton, Menu } from "@material-ui/core";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { v4 } from "uuid";
+import useUuid from "../util/hooks/useUuid";
 
 type PopupMenu_Props_t = {
     icon: React.ReactElement,
     children: (closeMenu: () => void) => React.ReactElement[],
 };
 export default function PopupMenu(props: PopupMenu_Props_t) {
-    const [menuId] = React.useState<string>(() => "menu-PopupMenu-" + v4());
+    const menuId = useUuid("menu-PopupMenu-");
     const [anchorElement, setAnchorElement] = React.useState<HTMLElement | null>(null);
     const open = !!anchorElement;
     const { t } = useTranslation("finder-ui");

@@ -5,11 +5,10 @@ export interface IComment {
     author: string;
     date: Date;
     body: string;
-
 }
 
 type BaseComment_Props_t = {
-    comment: IComment,
+    comment?: IComment,
     headerAction?: React.ReactElement,
     children: React.ReactNode,
     footerAction?: React.ReactElement,
@@ -17,14 +16,14 @@ type BaseComment_Props_t = {
 export default function BaseComment(props: BaseComment_Props_t) {
     const { t } = useTranslation("finder-ui");
     return <Card>
-        <CardHeader
-            title={props.comment.author}
+        {(props.comment || props.headerAction) && <CardHeader
+            title={props.comment?.author}
             titleTypographyProps={{
                 variant: "body2",
             }}
-            subheader={t("comments/BaseComment/date", props.comment.date)}
+            subheader={props.comment?.date && t("comments/BaseComment/date", props.comment.date)}
             action={props.headerAction}
-        />
+        />}
         <CardContent>
             {props.children}
         </CardContent>
