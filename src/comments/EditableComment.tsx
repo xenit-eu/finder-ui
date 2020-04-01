@@ -1,9 +1,9 @@
 import { Button, TextField } from "@material-ui/core";
-import { withStyles, WithStyles } from "@material-ui/core/styles";
-import Typography from "material-ui/styles/typography";
+import SaveIcon from "@material-ui/icons/Save";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { ButtonWithProgress } from "../button";
+import useUuid from "../util/hooks/useUuid";
 import BaseComment, { IComment } from "./BaseComment";
 
 type EditableComment_Props_t = {
@@ -15,6 +15,8 @@ type EditableComment_Props_t = {
 
 export default function EditableComment(props: EditableComment_Props_t) {
     const [newBody, setNewBody] = React.useState(props.comment.body);
+    const { t } = useTranslation("finder-ui");
+    const formId = useUuid("comments-EditableComment-");
     return <BaseComment
         comment={props.comment}
         footerAction={
@@ -26,6 +28,8 @@ export default function EditableComment(props: EditableComment_Props_t) {
         }
     >
         <TextField
+            id={formId}
+            label={t("comments/EditableComment/comment-label")}
             value={newBody}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => setNewBody(event.target.value)}
             fullWidth
@@ -46,6 +50,7 @@ function EditableCommentActions(props: EditableCommentActions_Props_t) {
     const { t } = useTranslation("finder-ui");
     return <>
         <ButtonWithProgress
+            icon={<SaveIcon />}
             isLoading={props.isSaving}
             variant="contained"
             color="primary"
