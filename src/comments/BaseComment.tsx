@@ -2,9 +2,9 @@ import { Card, CardActions, CardContent, CardHeader } from "@material-ui/core";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 export interface IComment {
-    author: string;
-    date: Date;
-    body: string;
+    readonly author: string;
+    readonly date: Date;
+    readonly body: string;
 }
 
 type BaseComment_Props_t = {
