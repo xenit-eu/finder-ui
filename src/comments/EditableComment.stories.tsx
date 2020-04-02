@@ -23,7 +23,7 @@ export const multiLine = () => <EditableComment
     comment={{
         author: "C. Norris",
         date: new Date("2020-04-01T00:00:00.000Z"),
-        body: "Once a police officer caught Chuck Norris.\nThe cop was lucky enough to escape with a warning.",
+        body: "Once a police officer caught Chuck Norris.<br>The cop was lucky enough to escape with a warning.",
     }}
     isSaving={boolean("isSaving", false)}
     onSave={action("save")}

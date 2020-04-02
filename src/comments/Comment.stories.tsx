@@ -16,7 +16,7 @@ export const withoutModify = () => <Comment comment={{
 export const multiLine = () => <Comment comment={{
     author: "C. Norris",
     date: new Date("2020-04-01T00:00:00.000Z"),
-    body: "Once a police officer caught Chuck Norris.\nThe cop was lucky enough to escape with a warning.",
+    body: "Once a police officer caught Chuck Norris.<br>The cop was lucky enough to escape with a warning.",
 }} />;
 
 export const withEdit = () => <Comment
@@ -45,4 +45,12 @@ export const withEditAndDelete = () => <Comment
     }}
     onEdit={action("edit")}
     onDelete={action("delete")}
+/>;
+
+export const withHTML = () => <Comment
+    comment={{
+        author: "C. Norris",
+        date: new Date("2020-04-01T00:00:00.000Z"),
+        body: "<p>This comment has some</p><p style='color: red'><b>HTML</b> content</p>",
+    }}
 />;
