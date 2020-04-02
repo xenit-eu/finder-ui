@@ -1,7 +1,7 @@
 import { Theme, WithStyles, withStyles } from "@material-ui/core/styles";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import * as React from "react";
-import { IComment } from "./BaseComment";
+import { IComment } from "./_BaseComment";
 import Comment from "./Comment";
 import EditableComment from "./EditableComment";
 import NewComment, { NewComment_Props_t } from "./NewComment";

@@ -5,8 +5,8 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 import RichTextEditor from "react-rte";
 import { ButtonWithIcon, ButtonWithProgress } from "../button";
+import BaseComment from "./_BaseComment";
 import { toolbarConfig } from "./_RichTextEditorConfig";
-import BaseComment from "./BaseComment";
 
 export type NewComment_Props_t = {
     isEditing: boolean
