@@ -1,9 +1,11 @@
 import { Theme, WithStyles, withStyles } from "@material-ui/core/styles";
+import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import * as React from "react";
 import { IComment } from "./BaseComment";
 import Comment from "./Comment";
 import EditableComment from "./EditableComment";
 import NewComment, { NewComment_Props_t } from "./NewComment";
+import NewCommentFab from "./NewCommentFab";
 
 export interface ICommentPanelComment extends IComment {
     readonly permissions: {
@@ -19,6 +21,7 @@ export interface ICommentPanelComment extends IComment {
 
 type CommentPanel_Props_t<C extends ICommentPanelComment> = {
     newComment?: NewComment_Props_t,
+    newCommentFab?: true,
     comments: readonly C[],
     onCommentEdit: (comment: C) => void,
     onCommentSave: (comment: C, newBody: string) => void,
@@ -28,21 +31,31 @@ type CommentPanel_Props_t<C extends ICommentPanelComment> = {
 
 const styles = (theme: Theme) => ({
     root: {
+        position: "relative",
+    } as CSSProperties,
+    commentList: {
 
     },
-    comment: {
-        margin: theme.spacing.unit / 2,
+    commentItem: {
+        marginTop: theme.spacing.unit / 2,
+        marginBottom: theme.spacing.unit / 2,
     },
+    newCommentFab: {
+        position: "sticky",
+        bottom: 0,
+        paddingBottom: theme.spacing.unit,
+        float: "right",
+
+    } as CSSProperties,
 });
 
-function CommentPanelInternal<C extends ICommentPanelComment>(props: CommentPanel_Props_t<C>) {
+function CommentPanelList<C extends ICommentPanelComment>(props: CommentPanel_Props_t<C>) {
     if (props.comments.length === 0) {
         return null;
     }
-
-    return <div className={props.classes.root}>
+    return <>
         {props.comments.map((comment, i) =>
-            <div className={props.classes.comment}>
+            <div className={props.classes.commentItem}>
                 {comment.state.isEditing ? <EditableComment
                     key={i}
                     comment={comment}
@@ -57,8 +70,32 @@ function CommentPanelInternal<C extends ICommentPanelComment>(props: CommentPane
                     />}
             </div>,
         )}
-        {props.newComment && <div className={props.classes.comment}>
-            <NewComment {...props.newComment} />
+    </>;
+}
+
+function NewCommentItem<C extends ICommentPanelComment>(props: CommentPanel_Props_t<C>) {
+    if (!props.newComment) {
+        return null;
+    }
+    if (props.newCommentFab && !props.newComment.isEditing) {
+        return null;
+    }
+    return <div className={props.classes.commentItem}>
+        <NewComment {...props.newComment} />
+    </div>;
+
+}
+
+function CommentPanelInternal<C extends ICommentPanelComment>(props: CommentPanel_Props_t<C>) {
+    return <div className={props.classes.root}>
+        <div className={props.classes.commentList}>
+            <CommentPanelList {...props} />
+            <NewCommentItem {...props} />
+        </div>
+        {props.newComment && props.newCommentFab && <div className={props.classes.newCommentFab}>
+            <NewCommentFab
+                onCreate={props.newComment.onCreate}
+            />
         </div>}
     </div>;
 }

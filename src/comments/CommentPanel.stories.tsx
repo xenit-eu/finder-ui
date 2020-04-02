@@ -1,4 +1,5 @@
 import { action } from "@storybook/addon-actions";
+import { boolean } from "@storybook/addon-knobs";
 import * as React from "react";
 import { v4 } from "uuid";
 import CommentPanel from "./CommentPanel";
@@ -99,6 +100,7 @@ function CommentPanelWrapper() {
                 }, 1500);
             },
         }}
+        newCommentFab={boolean("newCommentFab", false)}
         onCommentDelete={(comment) => dispatch({ type: "delete", payload: comment })}
         onCommentEdit={(comment) => dispatch({ type: "editStart", payload: comment })}
         onCommentEditCancel={(comment) => dispatch({ type: "editEnd", payload: comment })}
@@ -146,6 +148,23 @@ export const withNewComment = () => <CommentPanel
         onCancel: action("newComment.cancel"),
         onSave: action("newComment.save"),
     }}
+    comments={comments}
+    onCommentDelete={action("commentDelete")}
+    onCommentEdit={action("commentEdit")}
+    onCommentEditCancel={action("commentEditCancel")}
+    onCommentSave={action("commentSave")}
+/>;
+
+export const withNewCommentFab = () => <CommentPanel
+    newComment={{
+        isEditing: false,
+        isSaving: false,
+
+        onCreate: action("newComment.create"),
+        onCancel: action("newComment.cancel"),
+        onSave: action("newComment.save"),
+    }}
+    newCommentFab={true}
     comments={comments}
     onCommentDelete={action("commentDelete")}
     onCommentEdit={action("commentEdit")}
