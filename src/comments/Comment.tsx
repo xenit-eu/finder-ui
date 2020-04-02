@@ -7,6 +7,8 @@ import { useTranslation } from "react-i18next";
 import { OverflowMenu } from "../menu";
 import BaseComment, { IComment } from "./BaseComment";
 
+const BodyRenderer = React.lazy(() => import("./HTMLBodyRenderer"));
+
 type Comment_Props_t = {
     comment: IComment,
     onDelete?: () => void,
@@ -19,17 +21,6 @@ export default function Comment(props: Comment_Props_t) {
     >
         <BodyRenderer>{props.comment.body}</BodyRenderer>
     </BaseComment>;
-}
-
-function BodyRenderer({ children }: { children: React.ReactNode }) {
-    return <>
-        {React.Children.map(children, (body) => {
-            if (typeof body === "string") {
-                return <>{body.split(/(\r\n|\r|\n)/).map((part, i) => <Typography paragraph key={i}>{part}</Typography>)}</>;
-            }
-            return body;
-        })}
-    </>;
 }
 
 function CommentActions(props: Comment_Props_t) {
