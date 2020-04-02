@@ -5,9 +5,9 @@ import MoreVert from "@material-ui/icons/MoreVert";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { OverflowMenu } from "../menu";
-import BaseComment, { IComment } from "./BaseComment";
+import BaseComment, { IComment } from "./_BaseComment";
 
-const BodyRenderer = React.lazy(() => import("./HTMLBodyRenderer"));
+const BodyRenderer = React.lazy(() => import("./_HTMLBodyRenderer"));
 
 type Comment_Props_t = {
     comment: IComment,

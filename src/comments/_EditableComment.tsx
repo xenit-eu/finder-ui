@@ -4,8 +4,8 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 import RichTextEditor from "react-rte";
 import { ButtonWithProgress } from "../button";
+import BaseComment, { IComment } from "./_BaseComment";
 import { toolbarConfig } from "./_RichTextEditorConfig";
-import BaseComment, { IComment } from "./BaseComment";
 
 type EditableComment_Props_t = {
     comment: IComment,
