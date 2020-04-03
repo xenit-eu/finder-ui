@@ -51,7 +51,7 @@ function EditableCommentActions(props: EditableCommentActions_Props_t) {
             isLoading={props.isSaving}
             variant="contained"
             color="primary"
-            onClick={props.onSave}
+            onClick={() => props.onSave()}
             className={props.className}
         >
             {t("comments/EditableComment/save")}
@@ -59,7 +59,7 @@ function EditableCommentActions(props: EditableCommentActions_Props_t) {
         <Button
             disabled={props.isSaving}
             variant="contained"
-            onClick={props.onCancel}
+            onClick={() => props.onCancel()}
             className={props.className}
         >
             {t("comments/EditableComment/cancel")}

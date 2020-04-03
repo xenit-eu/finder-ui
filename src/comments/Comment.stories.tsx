@@ -41,7 +41,6 @@ withEdit.story = {
             const editAction = await editActionPromise;
             expect(editAction.name).toEqual("edit");
 
-            stopIntercept(page);
         },
     },
 };
@@ -65,7 +64,6 @@ withDelete.story = {
 
             const deleteAction = await deleteActionPromise;
             expect(deleteAction.name).toEqual("delete");
-            stopIntercept(page);
         },
     },
 };
@@ -139,8 +137,6 @@ withEditAndDelete.story = {
             await page.waitForSelector("#" + menuId, { timeout: 1000, hidden: true });
 
             expect(await menu.isIntersectingViewport()).toEqual(false);
-
-            stopIntercept(page);
         },
     },
 };

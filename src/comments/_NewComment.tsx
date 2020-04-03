@@ -36,7 +36,7 @@ export default function NewComment(props: NewComment_Props_t) {
             icon={<AddCommentIcon />}
             color="primary"
             variant="contained"
-            onClick={props.onCreate}
+            onClick={() => props.onCreate()}
         >
             {t("comments/NewComment/create")}
         </ButtonWithIcon>;
@@ -48,7 +48,7 @@ export default function NewComment(props: NewComment_Props_t) {
                 <NewCommentActions
                     isSaving={props.isSaving}
                     onSave={() => props.onSave(newBody.toString("html"))}
-                    onCancel={props.onCancel}
+                    onCancel={() => props.onCancel()}
                 />
             }
         >
