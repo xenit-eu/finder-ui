@@ -1,5 +1,7 @@
 import { action } from "@storybook/addon-actions";
+import type { Page } from "puppeteer";
 import * as React from "react";
+import { interceptAction, stopIntercept } from "../puppeteerActionInterceptor";
 import Comment from "./Comment";
 
 export default {
