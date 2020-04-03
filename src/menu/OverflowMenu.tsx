@@ -41,7 +41,7 @@ function OverflowMenu(props: OverflowMenu_Props_t) {
 export default withStyles(overflowMenuStyles, { name: "FinderOverflowMenu" })(OverflowMenu);
 
 function OverflowMenuVisibleItem({ item }: { item: IMenuItem }) {
-    const commonProps = { onClick: item.onClick, disabled: item.disabled };
+    const commonProps = { onClick: item.onClick ? () => item.onClick!() : undefined, disabled: item.disabled };
     if (item.icon) {
         return <IconButton aria-label={item.label} {...commonProps}>
             {item.icon}
