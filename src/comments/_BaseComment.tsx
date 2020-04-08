@@ -7,7 +7,7 @@ export interface IComment {
     readonly body: string;
 }
 
-type BaseComment_Props_t = {
+export type BaseComment_Props_t = {
     comment?: IComment,
     headerAction?: React.ReactElement,
     children: React.ReactNode,

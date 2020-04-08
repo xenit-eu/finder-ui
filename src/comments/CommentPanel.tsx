@@ -2,6 +2,7 @@ import { Theme, WithStyles, withStyles } from "@material-ui/core/styles";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import * as React from "react";
 import { IComment } from "./_BaseComment";
+import PlaceholderComment from "./_PlaceholderComment";
 import Comment from "./Comment";
 import EditableComment from "./EditableComment";
 import NewComment, { NewComment_Props_t } from "./NewComment";
@@ -55,18 +56,18 @@ function CommentPanelList<C extends ICommentPanelComment>(props: CommentPanel_Pr
     return <>
         {props.comments.map((comment, i) =>
             <div className={props.classes.commentItem}>
-                {comment.state.isEditing ? <EditableComment
-                    key={i}
-                    comment={comment}
-                    isSaving={comment.state.isSaving}
-                    onSave={(newBody: string) => props.onCommentSave(comment, newBody)}
-                    onCancel={() => props.onCommentEditCancel(comment)}
-                /> : <Comment
-                        key={i}
+                <React.Suspense fallback={<PlaceholderComment comment={comment} />} key={i}>
+                    {comment.state.isEditing ? <EditableComment
                         comment={comment}
-                        onDelete={comment.permissions.deletable ? () => props.onCommentDelete(comment) : undefined}
-                        onEdit={comment.permissions.editable ? () => props.onCommentEdit(comment) : undefined}
-                    />}
+                        isSaving={comment.state.isSaving}
+                        onSave={(newBody: string) => props.onCommentSave(comment, newBody)}
+                        onCancel={() => props.onCommentEditCancel(comment)}
+                    /> : <Comment
+                            comment={comment}
+                            onDelete={comment.permissions.deletable ? () => props.onCommentDelete(comment) : undefined}
+                            onEdit={comment.permissions.editable ? () => props.onCommentEdit(comment) : undefined}
+                        />}
+                </React.Suspense>
             </div>,
         )}
     </>;
@@ -80,7 +81,9 @@ function NewCommentItem<C extends ICommentPanelComment>(props: CommentPanel_Prop
         return null;
     }
     return <div className={props.classes.commentItem}>
-        <NewComment {...props.newComment} />
+        <React.Suspense fallback={<PlaceholderComment />}>
+            <NewComment {...props.newComment} />
+        </React.Suspense>
     </div>;
 
 }
