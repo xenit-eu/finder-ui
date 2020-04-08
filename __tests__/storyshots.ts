@@ -17,6 +17,10 @@ initStoryshots({
                 page.once("load", resolve);
                 page.evaluate("document.readyState === 'complete'")
                     .then((pageComplete: boolean) => pageComplete && resolve());
+            }).then(() => {
+                return new Promise((resolve) => {
+                    setTimeout(resolve, 1000);
+                });
             });
         },
     }),
