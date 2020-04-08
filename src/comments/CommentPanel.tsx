@@ -41,10 +41,9 @@ const styles = (theme: Theme) => ({
         marginBottom: theme.spacing.unit / 2,
     },
     newCommentFab: {
-        position: "sticky",
-        bottom: 0,
-        paddingBottom: theme.spacing.unit,
-        float: "right",
+        position: "fixed",
+        bottom: theme.spacing.unit,
+        right: theme.spacing.unit,
 
     } as CSSProperties,
 });
@@ -94,7 +93,7 @@ function CommentPanelInternal<C extends ICommentPanelComment>(props: CommentPane
         </div>
         {props.newComment && props.newCommentFab && <div className={props.classes.newCommentFab}>
             <NewCommentFab
-                onCreate={props.newComment.onCreate}
+                {...props.newComment}
             />
         </div>}
     </div>;

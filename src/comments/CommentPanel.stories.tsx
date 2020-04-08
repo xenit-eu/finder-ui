@@ -171,3 +171,27 @@ export const withNewCommentFab = () => <CommentPanel
     onCommentEditCancel={action("commentEditCancel")}
     onCommentSave={action("commentSave")}
 />;
+
+export const emptyWithNewCommentFab = () => <div style={{
+    height: "500px",
+    width: "500px",
+    backgroundColor: "red",
+    position: "relative",
+    transform: "translate(0)",
+}}>
+    <CommentPanel
+        newComment={{
+            isEditing: false,
+            isSaving: false,
+            onCreate: action("newComment.create"),
+            onCancel: action("newComment.cancel"),
+            onSave: action("newComment.save"),
+        }}
+        newCommentFab={true}
+        comments={[]}
+        onCommentDelete={action("commentDelete")}
+        onCommentEdit={action("commentEdit")}
+        onCommentEditCancel={action("commentEditCancel")}
+        onCommentSave={action("commentSave")}
+    />
+</div>;

@@ -1,20 +1,22 @@
-import { Button } from "@material-ui/core";
+import { Button, Zoom } from "@material-ui/core";
 import AddCommentIcon from "@material-ui/icons/AddComment";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
+import { NewComment_Props_t } from "./NewComment";
 
-type NewCommentFab_Props_t = {
-    onCreate: () => void,
-};
-
-export default function NewCommentFab(props: NewCommentFab_Props_t) {
+export default function NewCommentFab(props: NewComment_Props_t) {
     const { t } = useTranslation("finder-ui");
-    return <Button
-        color="primary"
-        variant="fab"
-        aria-label={t("comments/NewComment/create")}
-        onClick={props.onCreate}
+    return <Zoom
+        in={!props.isEditing}
+        appear={false}
     >
-        <AddCommentIcon />
-    </Button>;
+        <Button
+            color="primary"
+            variant="fab"
+            aria-label={t("comments/NewComment/create")}
+            onClick={props.onCreate}
+        >
+            <AddCommentIcon />
+        </Button>
+    </Zoom>;
 }
