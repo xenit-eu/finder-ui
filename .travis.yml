@@ -29,11 +29,11 @@ deploy:
         tags: true
         condition: "$TRAVIS_TAG == v*.*.*-*" # For versions of the form x.x.x-prerelease
         repo: xenit-eu/finder-ui
-   - skip_cleanup: true
-     provider: pages
-     github_token: $GITHUB_TOKEN
-     local_dir: ./storybook-static/
-     keep_history: true
-     committer_from_gh: true
-     on:
-         branch: master
+    - skip_cleanup: true
+      provider: pages
+      github_token: $GITHUB_TOKEN
+      local_dir: ./storybook-static/
+      keep_history: true
+      committer_from_gh: true
+      on:
+        branch: master
