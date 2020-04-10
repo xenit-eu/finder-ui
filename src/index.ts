@@ -5,6 +5,7 @@ export * from "./comment";
 export * from "./comments";
 export * from "./commentsDialog";
 export * from "./commentsPanel";
+export * from "./snackbar";
 export * from "./doclist";
 export * from "./docpreview";
 export * from "./docpreviewPdfjs";
