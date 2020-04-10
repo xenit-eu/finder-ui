@@ -85,6 +85,9 @@ function AnimatedSnackbar<T extends SnackbarManager_Message_t>({ message, onClos
             }}
             autoHideDuration={6000}
             onClose={(event, reason) => {
+                if (reason === "clickaway") {
+                    return;
+                }
                 if (message?.expires) {
                     setOpen(false);
                 }
