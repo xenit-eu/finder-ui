@@ -30,3 +30,10 @@ export const error = () => <SnackbarNotification
     message="Error message"
     onClose={action("close")}
 />;
+
+export const errorWithTrace = () => <SnackbarNotification
+    variant="error"
+    message="Error message with trace"
+    onClose={action("close")}
+    onTrace={action("trace")}
+/>;
