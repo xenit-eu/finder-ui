@@ -1,15 +1,8 @@
 import initStoryshots from "@storybook/addon-storyshots";
-import { imageSnapshot, puppeteerTest } from "@storybook/addon-storyshots-puppeteer";
+import { imageSnapshot } from "@storybook/addon-storyshots-puppeteer";
 import { resolve } from "path";
 
 const storybookUrl = "file://" + resolve(__dirname, "../storybook-static");
-
-initStoryshots({
-    test: puppeteerTest({
-        storybookUrl,
-    }),
-});
-
 
 initStoryshots({
 
@@ -24,6 +17,10 @@ initStoryshots({
                 page.once("load", resolve);
                 page.evaluate("document.readyState === 'complete'")
                     .then((pageComplete: boolean) => pageComplete && resolve());
+            }).then(() => {
+                return new Promise((resolve) => {
+                    setTimeout(resolve, 1000);
+                });
             });
         },
     }),

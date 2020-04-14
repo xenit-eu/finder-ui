@@ -1,7 +1,8 @@
-import { Button, CircularProgress, Theme, withStyles, WithStyles } from "@material-ui/core";
-import { ButtonProps } from "@material-ui/core/Button";
+import { CircularProgress, Theme, withStyles, WithStyles } from "@material-ui/core";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
+import classnames from "classnames";
 import * as React from "react";
+import ButtonWithIcon, { ButtonWithIcon_Props_t } from "./ButtonWithIcon";
 
 const styles = (theme: Theme) => ({
     root: {
@@ -20,12 +21,12 @@ const styles = (theme: Theme) => ({
 
 export type ButtonWithProgress_Props_t = {
     isLoading: boolean | { progress: number },
-} & WithStyles<typeof styles> & ButtonProps;
+} & WithStyles<typeof styles> & ButtonWithIcon_Props_t;
 function ButtonWithProgress(props: ButtonWithProgress_Props_t) {
-    const { isLoading, classes, ...buttonProps } = props;
+    const { isLoading, classes, className, ...buttonProps } = props;
     const { root, progress, ...buttonClasses } = classes;
-    return <div className={root}>
-        <Button
+    return <div className={classnames(root, className)}>
+        <ButtonWithIcon
             {...buttonProps}
             classes={buttonClasses}
             disabled={buttonProps.disabled || !!isLoading}

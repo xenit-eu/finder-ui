@@ -2,6 +2,7 @@ export * from "./AlfredTheming";
 export * from "./button";
 export * from "./columnspicker";
 export * from "./comment";
+export * from "./comments";
 export * from "./commentsDialog";
 export * from "./commentsPanel";
 export * from "./doclist";
