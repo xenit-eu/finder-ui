@@ -2,7 +2,7 @@ import { Button, IconButton, ListItemIcon, ListItemText, MenuItem } from "@mater
 import { withStyles, WithStyles } from "@material-ui/core/styles";
 import * as React from "react";
 import PopupMenu from "./PopupMenu";
-interface IMenuItem {
+export interface IOverflowMenuItem {
     icon?: React.ReactElement;
     label: string;
     onClick?: () => void;
@@ -16,8 +16,8 @@ const overflowMenuStyles = {
 };
 
 type OverflowMenu_Props_t = {
-    items: readonly IMenuItem[],
-    menuIcon: React.ReactElement,
+    items: readonly IOverflowMenuItem[],
+    menuIcon?: React.ReactElement,
     maxItems: number,
 } & WithStyles<typeof overflowMenuStyles>;
 
@@ -40,7 +40,7 @@ function OverflowMenu(props: OverflowMenu_Props_t) {
 
 export default withStyles(overflowMenuStyles, { name: "FinderOverflowMenu" })(OverflowMenu);
 
-function OverflowMenuVisibleItem({ item }: { item: IMenuItem }) {
+function OverflowMenuVisibleItem({ item }: { item: IOverflowMenuItem }) {
     const commonProps = { onClick: item.onClick ? () => item.onClick!() : undefined, disabled: item.disabled };
     if (item.icon) {
         return <IconButton aria-label={item.label} {...commonProps}>
@@ -51,7 +51,7 @@ function OverflowMenuVisibleItem({ item }: { item: IMenuItem }) {
     }
 }
 
-function OverflowMenuMenuItem({ item, closeMenu }: { item: IMenuItem, closeMenu: () => void }) {
+function OverflowMenuMenuItem({ item, closeMenu }: { item: IOverflowMenuItem, closeMenu: () => void }) {
     return <MenuItem
         onClick={() => {
             if (item.onClick) {

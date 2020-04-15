@@ -1,10 +1,11 @@
 import { IconButton, Menu } from "@material-ui/core";
+import MoreVert from "@material-ui/icons/MoreVert";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import useUuid from "../util/hooks/useUuid";
 
 type PopupMenu_Props_t = {
-    icon: React.ReactElement,
+    icon?: React.ReactElement,
     children: (closeMenu: () => void) => React.ReactElement[],
 };
 export default function PopupMenu(props: PopupMenu_Props_t) {
@@ -20,7 +21,7 @@ export default function PopupMenu(props: PopupMenu_Props_t) {
             aria-haspopup="true"
             onClick={(event: React.MouseEvent<HTMLElement>) => setAnchorElement(event.currentTarget)}
             disabled={open}
-        >{props.icon}</IconButton>
+        >{props.icon || <MoreVert />}</IconButton>
         <Menu
             open={open}
             anchorEl={anchorElement}
