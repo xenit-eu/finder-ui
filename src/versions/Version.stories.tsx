@@ -56,3 +56,11 @@ export const selected = () => <Version version={{
 
     onClick={action("click")}
 />;
+
+export const withoutComment = () => <Version version={{
+    title: "some_document.pdf",
+    versionNumber: "1.2",
+    versionDate: new Date("2020-04-01T00:00:00.000Z"),
+    author: "C. Norris",
+    comment: "",
+}} />;

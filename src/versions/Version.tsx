@@ -56,6 +56,9 @@ const styles = (theme: Theme) => ({
     versionDescription: {
         flexGrow: 1,
     },
+    versionCommentEmpty: {
+        color: theme.palette.text.disabled,
+    },
 
 });
 
@@ -82,7 +85,10 @@ function Version(props: Version_Props_t) {
                 <Grid item className={props.classes.versionDescription}>
                     <Typography variant="subheading" gutterBottom>{props.version.title}</Typography>
                     <Typography variant="caption" gutterBottom>{props.version.author} &bull; {t("versions/Version/date", { date: props.version.versionDate })}</Typography>
-                    <Typography>{props.version.comment}</Typography>
+                    {props.version.comment.length > 0 ?
+                        <Typography>{props.version.comment}</Typography> :
+                        <Typography className={props.classes.versionCommentEmpty}>{t("versions/Version/no-comment")}</Typography>
+                    }
                 </Grid>
                 <Grid item>
                     <StopPropagation>
