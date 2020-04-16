@@ -80,3 +80,5 @@ export const withSelectedVersion = () => <VersionPanel
     onDetails={action("details")}
     onRevert={action("revert")}
 />;
+
+export const empty = () => <VersionPanel versions={[]} />;

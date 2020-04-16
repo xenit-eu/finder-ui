@@ -1,5 +1,7 @@
 import { Theme, WithStyles, withStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
 import React, { useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import type { IVersion } from "./Version";
 import Version from "./Version";
 export interface IVersionPanelVersion extends IVersion {
@@ -24,7 +26,8 @@ const styles = (theme: Theme) => ({
 
 function VersionPanel<T extends IVersionPanelVersion>(props: VersionPanel_Props_t<T>) {
     if (props.versions.length === 0) {
-        return null;
+        const { t } = useTranslation("finder-ui");
+        return <Typography variant="subheading">{t("versions/VersionPanel/empty-list")}</Typography>;
     }
     const latestVersion = props.versions[0];
     const selectedVersion = props.selectedVersion;
