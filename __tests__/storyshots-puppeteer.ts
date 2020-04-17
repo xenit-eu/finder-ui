@@ -10,6 +10,7 @@ initStoryshots({
     test: puppeteerTest({
         storybookUrl,
         customizePage: async (page: Page) => {
+            page.setDefaultTimeout(10000);
             stopIntercept(page)
         }
     }),
