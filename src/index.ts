@@ -21,6 +21,7 @@ export * from "./search";
 export * from "./tabspanel";
 export * from "./upload";
 export * from "./versionhistoryPanel";
+export * from "./versions";
 export * from "./WordTranslator";
 export * from "./configuration-dialog";
 export { DocumentSizeAtLeast, DocumentSizeBetween, DocumentSizeBetweenAnd, DocumentSizeRange_t } from "./documentSize";
