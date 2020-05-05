@@ -26,26 +26,14 @@ const styles = (theme: Theme) => ({
 
 function VersionPanel<T extends IVersionPanelVersion>(props: VersionPanel_Props_t<T>) {
     if (props.versions.length === 0) {
-        const { t } = useTranslation("finder-ui");
-        return <Typography variant="subheading">{t("versions/VersionPanel/empty-list")}</Typography>;
+        return <VersionPanelEmpty />;
     }
-    const latestVersion = props.versions[0];
-    const selectedVersion = props.selectedVersion;
     return <div>
         {props.versions.map((version, i) => {
-            const onVersionClick = useCallback(() => props.onVersionClick!(version), [props.onVersionClick, version]);
-            const onDownload = useCallback(() => props.onDownload!(version), [props.onDownload, version]);
-            const onDetails = useCallback(() => props.onDetails!(version), [props.onDetails, version]);
-            const onRevert = useCallback(() => props.onRevert!(version), [props.onRevert, version]);
             return <div className={props.classes.versionItem} key={i}>
-                <Version
+                <VersionPanelMemoizedVersion
                     version={version}
-                    latest={version === latestVersion}
-                    selected={version === selectedVersion}
-                    onClick={!props.onVersionClick ? undefined : onVersionClick}
-                    onDownload={version === latestVersion || !props.onDownload ? undefined : onDownload}
-                    onDetails={!props.onDetails ? undefined : onDetails}
-                    onRevert={version === latestVersion || !props.onRevert ? undefined : onRevert}
+                    {...props}
                 />
             </div>;
         })}
@@ -53,3 +41,38 @@ function VersionPanel<T extends IVersionPanelVersion>(props: VersionPanel_Props_
 }
 
 export default withStyles(styles, { name: "FinderVersionPanel" })(VersionPanel);
+
+/**
+ * This component is split out, because calling hooks in a condition is not allowed.
+ * We only want to use the `useTranslation()` hook when we need it here, to avoid unnecessarily triggering a Suspense
+ */
+function VersionPanelEmpty() {
+    const { t } = useTranslation("finder-ui");
+    return <Typography variant="subheading">{t("versions/VersionPanel/empty-list")}</Typography>;
+}
+
+type VersionPanelMemoizedVersion_Props_t<T extends IVersionPanelVersion> = VersionPanel_Props_t<T> & {
+    version: T,
+};
+/**
+ * This component is split out, because calling hooks in a loop is not allowed.
+ * We still want to use the `useCallback()` hook to reduce the number of rerenders because of new callbacks being created
+ */
+function VersionPanelMemoizedVersion<T extends IVersionPanelVersion>(props: VersionPanelMemoizedVersion_Props_t<T>) {
+    const onVersionClick = useCallback(() => props.onVersionClick!(props.version), [props.onVersionClick, props.version]);
+    const onDownload = useCallback(() => props.onDownload!(props.version), [props.onDownload, props.version]);
+    const onDetails = useCallback(() => props.onDetails!(props.version), [props.onDetails, props.version]);
+    const onRevert = useCallback(() => props.onRevert!(props.version), [props.onRevert, props.version]);
+    const isLatestVersion = props.version === props.versions[0];
+    const isSelectedVersion = props.version === props.selectedVersion;
+    return <Version
+        version={props.version}
+        latest={isLatestVersion}
+        selected={isSelectedVersion}
+        onClick={!props.onVersionClick ? undefined : onVersionClick}
+        onDownload={isLatestVersion || !props.onDownload ? undefined : onDownload}
+        onDetails={!props.onDetails ? undefined : onDetails}
+        onRevert={isLatestVersion || !props.onRevert ? undefined : onRevert}
+    />;
+
+}
