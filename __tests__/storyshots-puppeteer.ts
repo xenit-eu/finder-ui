@@ -2,7 +2,7 @@ import initStoryshots from "@storybook/addon-storyshots";
 import { puppeteerTest } from "@storybook/addon-storyshots-puppeteer";
 import { resolve } from "path";
 import { Page } from "puppeteer";
-import { stopIntercept } from "../src/puppeteerActionInterceptor";
+import { stopIntercept } from "../src/__tests/puppeteerActionInterceptor";
 
 const storybookUrl = "file://" + resolve(__dirname, "../storybook-static");
 

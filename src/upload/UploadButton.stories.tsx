@@ -1,7 +1,7 @@
 import { action } from "@storybook/addon-actions";
 import { resolve } from "path";
 import * as React from "react";
-import { interceptAction, stopIntercept } from "../puppeteerActionInterceptor";
+import { interceptAction, stopIntercept } from "../__tests/puppeteerActionInterceptor";
 import UploadButton from "./UploadButton";
 
 export default {

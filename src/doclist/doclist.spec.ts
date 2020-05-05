@@ -3,7 +3,7 @@ import { mount, shallow } from "enzyme";
 import { Component, createElement as __ } from "react";
 import * as _ from "react-dom-factories";
 
-import { Fixture, simulateEvent } from "../testUtils";
+import { Fixture, simulateEvent } from "../__tests/testUtils";
 
 import { Pager_t } from "../pager";
 import { DocList, DocList_t, MenuItem_t, SortDirection_t } from "./doclist";

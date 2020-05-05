@@ -2,7 +2,7 @@ import { action } from "@storybook/addon-actions";
 import { boolean } from "@storybook/addon-knobs";
 import { Page } from "puppeteer";
 import * as React from "react";
-import { interceptAction } from "../puppeteerActionInterceptor";
+import { interceptAction } from "../__tests/puppeteerActionInterceptor";
 import NewComment from "./NewComment";
 
 export default {
