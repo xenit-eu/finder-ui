@@ -1,6 +1,6 @@
 import { action } from "@storybook/addon-actions";
 import * as React from "react";
-import { interceptAction, stopIntercept } from "../puppeteerActionInterceptor";
+import { interceptAction, stopIntercept } from "../__tests/puppeteerActionInterceptor";
 import FileDropZone from "./FileDropZone";
 
 export default {

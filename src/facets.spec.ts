@@ -4,8 +4,8 @@ import getMuiTheme from "material-ui/styles/getMuiTheme";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import { Component, createElement as __, ReactElement } from "react";
 import * as _ from "react-dom-factories";
+import { simulateEvent, TestWrapper } from "./__tests/testUtils";
 import { Facets, Facets_t } from "./facets";
-import { simulateEvent, TestWrapper } from "./testUtils";
 
 ;
 

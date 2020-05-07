@@ -1,7 +1,7 @@
 import "core-js";
 import "es6-shim";
 import { createElement as __ } from "react";
-import { Fixture } from "../../testUtils";
+import { Fixture } from "../../__tests/testUtils";
 import { AllSearchable, ISearchableQueryElement, NoResultValueMatch, SimpleAutoCompleteListElement, TextSearchable } from "../searchables";
 import { ISimpleSearchQueryElement, StringValuePropertySearchQueryElement } from "../searchquery";
 import { SearchQueryFactory } from "../SearchQueryFactory";

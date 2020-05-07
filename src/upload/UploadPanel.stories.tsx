@@ -1,7 +1,7 @@
 import { action } from "@storybook/addon-actions";
 import { resolve } from "path";
 import * as React from "react";
-import { interceptAction, raceActionWithCustomMessage, sendCustomMessage, stopIntercept } from "../puppeteerActionInterceptor";
+import { interceptAction, raceActionWithCustomMessage, sendCustomMessage, stopIntercept } from "../__tests/puppeteerActionInterceptor";
 import { IUploadedFile } from "./UploadList";
 import UploadPanel from "./UploadPanel";
 

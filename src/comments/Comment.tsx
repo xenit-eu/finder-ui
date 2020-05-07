@@ -52,6 +52,5 @@ function CommentActions(props: Comment_Props_t) {
             onClick: action.action,
         }))}
         maxItems={1}
-        menuIcon={<MoreVert />}
     />;
 }

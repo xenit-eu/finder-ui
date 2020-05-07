@@ -1,7 +1,7 @@
 
 import { createElement as __ } from "react";
 import * as _ from "react-dom-factories";
-import { Fixture, simulateEvent } from "./testUtils";
+import { Fixture, simulateEvent } from "./__tests/testUtils";
 
 import { PageMenu, PageMenu_t } from "./pageMenu";
 

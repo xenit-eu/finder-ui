@@ -1,9 +1,9 @@
 
 import { Component, createElement as __ } from "react";
 import * as _ from "react-dom-factories";
+import { Fixture, simulateEvent } from "./__tests/testUtils";
 import { Comment_t } from "./comment";
 import { CommentsDialog, CommentsDialog_t } from "./commentsDialog";
-import { Fixture, simulateEvent } from "./testUtils";
 
 describe("Metadata component", () => {
 

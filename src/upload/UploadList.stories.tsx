@@ -2,7 +2,7 @@ import { IconButton, Paper } from "@material-ui/core";
 import Visibility from "@material-ui/icons/Visibility";
 import { action } from "@storybook/addon-actions";
 import * as React from "react";
-import { interceptAction, raceActionWithCustomMessage, sendCustomMessage, stopIntercept } from "../puppeteerActionInterceptor";
+import { interceptAction, raceActionWithCustomMessage, sendCustomMessage, stopIntercept } from "../__tests/puppeteerActionInterceptor";
 import UploadList, { IUploadedFile, UploadList_Props_t } from "./UploadList";
 
 export default {

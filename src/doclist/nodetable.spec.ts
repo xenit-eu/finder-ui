@@ -1,8 +1,8 @@
 import { configure, mount } from "enzyme";
 
 import { createElement } from "react";
+import { Fixture } from "../__tests/testUtils";
 import { Node_t } from "../metadata";
-import { Fixture } from "../testUtils";
 import { INodeTableRow, NodeTable, NodeTableSortDirection, NodeTableTranslations } from "./nodetable";
 import { Property } from "./renderer";
 function isRunningPhantom() {

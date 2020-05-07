@@ -47,5 +47,4 @@ export const withIcons = () => <OverflowMenu
 export const withoutItems = () => <OverflowMenu
     items={[]}
     maxItems={number("maxItems", 2)}
-    menuIcon={<MoreVert />}
 />;

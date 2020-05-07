@@ -1,6 +1,6 @@
 import { configure, mount, shallow } from "enzyme";
 import { createElement } from "react";
-import { Fixture } from "../testUtils";
+import { Fixture } from "../__tests/testUtils";
 import DynamicRowMenu, { RowMenu } from "./RowMenu";
 
 describe("Doclist DynamicRowMenu", () => {
