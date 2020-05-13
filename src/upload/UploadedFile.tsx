@@ -1,4 +1,5 @@
 import { CircularProgress, Grid, IconButton } from "@material-ui/core";
+import { green } from "@material-ui/core/colors";
 import { Theme, WithStyles, withStyles } from "@material-ui/core/styles";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import Cancel from "@material-ui/icons/Cancel";
@@ -30,7 +31,7 @@ const styles = (theme: Theme) => ({
     },
 
     uploadedIcon: {
-
+        color: green[600],
     },
 
     uploadProgress: {
@@ -43,7 +44,7 @@ const styles = (theme: Theme) => ({
     },
 
     failedIcon: {
-
+        color: theme.palette.error.main,
     },
 
     uploadTitle: {
