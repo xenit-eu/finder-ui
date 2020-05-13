@@ -14,6 +14,7 @@ function UploadListWithWrapper(props: Partial<UploadList_Props_t>) {
     const [files, setFiles] = React.useState([{
         fileName: "Filename.txt",
         progress: 1,
+        selected: true,
     }, {
         fileName: "File2.doc",
         progress: 0.5,
@@ -53,7 +54,7 @@ normal.story = {
             await uploadListItems[0].click();
             const uploadClickActionData = await uploadClickActionPromise;
             expect(uploadClickActionData.name).toBe("uploadClick");
-            expect(uploadClickActionData.args[0]).toEqual({ fileName: "Filename.txt", progress: 1 });
+            expect(uploadClickActionData.args[0]).toEqual({ fileName: "Filename.txt", progress: 1, selected: true });
 
             const uploadCancelActionPromise = interceptAction(page, "onUploadCancel");
             const button = await page.$("button");
