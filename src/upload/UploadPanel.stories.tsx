@@ -30,7 +30,10 @@ function UploadPanelWrapper() {
             setFiles((existingFiles) => existingFiles.filter((f) => f !== file));
             action("onUploadCancel")([file]);
         }}
-        onUploadEditMetadata={action("uploadEditMetadata")}
+        onUploadEditMetadata={(editingFiles: IUploadedFile[]) => {
+            setFiles(((existingFiles) => existingFiles.map((f) => editingFiles.indexOf(f) !== -1 ? { ...f, selected: true } : f)));
+            action("uploadEditMetadata")([editingFiles]);
+        }}
         onUploadDone={(file: IUploadedFile) => {
             setFiles((existingFiles) => existingFiles.filter((f) => f !== file));
             action("uploadDone")([file]);
