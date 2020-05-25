@@ -44,6 +44,8 @@ const folderListItemStyles = (theme: Theme) => ({
         transition: theme.transitions.create("background-color", {
             duration: theme.transitions.duration.standard,
         }),
+        overflow: "hidden",
+        borderRadius: "48px 0 0 48px",
     },
     selectedItem: {
         backgroundColor: theme.palette.primary.light,

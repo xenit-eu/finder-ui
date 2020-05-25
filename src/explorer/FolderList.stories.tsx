@@ -78,6 +78,30 @@ export const withActions = () => <FolderList
     folderActions={(folder) => <><IconButton><MoreVertIcon /></IconButton></>}
 />;
 
+export const selected = () => <FolderList
+    onClick={action("click")}
+    folders={[
+        {
+            name: "NDAs",
+            type: ExplorerFolderType.FOLDER,
+            state: ExplorerFolderState.OPEN,
+            children: [
+                {
+                    name: "2015-2016",
+                    type: ExplorerFolderType.FOLDER,
+                    state: ExplorerFolderState.CLOSED,
+                    selected: true,
+                },
+                {
+                    name: "2016-2017",
+                    type: ExplorerFolderType.FOLDER,
+                    state: ExplorerFolderState.LOADING,
+                },
+            ],
+        },
+    ]}
+/>;
+
 const folders = {
     id: uuid(),
     name: "Company Home",
