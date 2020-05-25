@@ -7,6 +7,7 @@ import Edit from "@material-ui/icons/Edit";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import Overlay, { OverlayCentered } from "../overlay";
+import LargeIcon from "../util/LargeIcon";
 import FileDropZone from "./FileDropZone";
 import UploadButton from "./UploadButton";
 import UploadList, { IUploadedFile } from "./UploadList";
@@ -56,18 +57,13 @@ export default function UploadPanel<T extends IUploadedFile = IUploadedFile>(pro
     </FileDropZone>;
 }
 
-const largeCloudUploadIconStyles = {
-    root: {
-        fontSize: 80,
-    },
-};
-
-const LargeCloudUploadIcon = withStyles(largeCloudUploadIconStyles)(({ classes }) => <span className={classes.root}><CloudUpload fontSize="inherit" /></span>);
 function EmptyUploadList(props: UploadPanelUploadButton_Props_t) {
     const { t } = useTranslation("finder-ui");
     return <OverlayCentered>
         <OverlayCentered>
-            <LargeCloudUploadIcon />
+            <LargeIcon>
+                <CloudUpload />
+            </LargeIcon>
         </OverlayCentered>
         <OverlayCentered>
             <Typography variant="subheading">{t("upload/UploadPanel/empty-list")}</Typography>
@@ -87,7 +83,9 @@ function UploadPanelOverlay(props: UploadPanelOverlay_Props_t) {
     return <Overlay {...props} overlay={
         <OverlayCentered>
             <OverlayCentered>
-                <LargeCloudUploadIcon />
+                <LargeIcon>
+                    <CloudUpload />
+                </LargeIcon>
             </OverlayCentered>
             <Typography variant="subheading" color="inherit">{t("upload/UploadPanel/drop-to-upload")}</Typography>
         </OverlayCentered>
