@@ -3,6 +3,7 @@ import { Theme, withStyles, WithStyles } from "@material-ui/core/styles";
 import type { CSSProperties } from "@material-ui/core/styles/withStyles";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import React, { useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
 import BreadcrumbsBase, { BreadcrumbsBase_Props_t } from "./BreadcrumbsBase";
 type Breadcrumbs_Props_t = BreadcrumbsBase_Props_t & {
     maxItems?: number | null,
@@ -53,8 +54,9 @@ type CollapsedBreadcrumb_Props_t = {
     onClick: () => void,
 };
 function CollapsedBreadcrumb_(props: CollapsedBreadcrumb_Props_t & WithStyles<typeof collapsedBreadcrumbStyle>) {
+    const { t } = useTranslation("finder-ui");
     return <ButtonBase onClick={props.onClick} className={props.classes.button} focusRipple>
-        <MoreHorizIcon className={props.classes.icon} />
+        <MoreHorizIcon className={props.classes.icon} aria-label={t("breadcrumbs/Breadcrumbs/expand")} />
     </ButtonBase>;
 }
 const CollapsedBreadcrumb = withStyles(collapsedBreadcrumbStyle)(CollapsedBreadcrumb_);

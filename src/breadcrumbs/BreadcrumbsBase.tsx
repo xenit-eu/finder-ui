@@ -40,7 +40,7 @@ function BreadcrumbsBase({ children, separator = "/", classes }: BreadcrumbsBase
     ] : [];
 
     for (let i = 1; i < childArray.length; i++) {
-        childNodes.push(<li className={classes.separator} key={"separator-" + i}>{separator}</li>);
+        childNodes.push(<li className={classes.separator} key={"separator-" + i} role="separator" aria-hidden="true">{separator}</li>);
         childNodes.push(<li className={classes.li} key={"child-" + i}>{childArray[i]}</li>);
     }
 
