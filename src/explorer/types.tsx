@@ -26,6 +26,7 @@ export enum ExplorerFolderState {
     OPEN,
     LOADING,
 }
+
 export interface IExplorerListFolder extends IExplorerFolder {
     readonly state: ExplorerFolderState;
     readonly selected: boolean;

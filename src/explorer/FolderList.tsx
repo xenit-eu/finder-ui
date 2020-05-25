@@ -1,5 +1,4 @@
 import Collapse from "@material-ui/core/Collapse";
-import IconButton from "@material-ui/core/IconButton";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
@@ -14,6 +13,7 @@ type FolderList_Props_t<T extends IExplorerListFolder> = {
     folders: readonly T[],
     onClick: (folder: T) => void,
     folderActions?: (folder: T) => React.ReactNode,
+    disableRoundedSide?: boolean,
 };
 export default function FolderList<T extends IExplorerListFolder>(props: FolderList_Props_t<T>) {
     const { folders, ...listProps } = props;
@@ -24,6 +24,7 @@ export default function FolderList<T extends IExplorerListFolder>(props: FolderL
             folder={folder}
             onClick={props.onClick}
             listProps={listProps}
+            disableRoundedSide={!!props.disableRoundedSide}
             actions={props.folderActions && props.folderActions(folder)}
         />)}
     </List>;
@@ -31,6 +32,7 @@ export default function FolderList<T extends IExplorerListFolder>(props: FolderL
 
 type FolderListItem_Props_t<T extends IExplorerListFolder> = {
     folder: T,
+    disableRoundedSide: boolean,
     actions?: React.ReactNode,
     onClick: (folder: T) => void,
     listProps: Pick<FolderList_Props_t<T>, Exclude<keyof FolderList_Props_t<T>, "folders">>,
@@ -44,6 +46,8 @@ const folderListItemStyles = (theme: Theme) => ({
         transition: theme.transitions.create("background-color", {
             duration: theme.transitions.duration.standard,
         }),
+    },
+    roundedSide: {
         overflow: "hidden",
         borderRadius: "48px 0 0 48px",
     },
@@ -57,6 +61,7 @@ function FolderListItem_<T extends IExplorerListFolder>(props: FolderListItem_Pr
     const onClick = useCallback(() => props.onClick(props.folder), [props.onClick, props.folder]);
     return <>
         <div className={classnames(props.classes.selectionIndicator, {
+            [props.classes.roundedSide]: !props.disableRoundedSide,
             [props.classes.selectedItem]: props.folder.selected,
         })}>
             <ListItem onClick={onClick} button>
