@@ -4,20 +4,20 @@ import { folderIcons, IExplorerFolder } from "./types";
 
 type FolderBreadcrumbs_Props_t<T extends IExplorerFolder> = {
     folders: readonly T[],
-    onSelect: (folder: T) => void,
+    onClick: (folder: T) => void,
 };
 
 export default function FolderBreadcrumbs<T extends IExplorerFolder>(props: FolderBreadcrumbs_Props_t<T>) {
     return <Breadcrumbs>
-        {props.folders.map((folder, i) => <FolderBreadcrumbsFolder key={i} folder={folder} onSelect={props.onSelect} />)}
+        {props.folders.map((folder, i) => <FolderBreadcrumbsFolder key={i} folder={folder} onClick={props.onClick} />)}
     </Breadcrumbs>;
 }
 
 type FolderBreadcrumbsFolder_Props_t<T extends IExplorerFolder> = {
     folder: T,
-    onSelect: (folder: T) => void,
+    onClick: (folder: T) => void,
 };
-function FolderBreadcrumbsFolder<T extends IExplorerFolder>({ folder, onSelect }: FolderBreadcrumbsFolder_Props_t<T>) {
-    const onClick = useCallback(() => onSelect(folder), [onSelect, folder]);
-    return <ChipBreadcrumb avatar={folderIcons[folder.type]} label={folder.name} onClick={onClick} />;
+function FolderBreadcrumbsFolder<T extends IExplorerFolder>(props: FolderBreadcrumbsFolder_Props_t<T>) {
+    const onClick = useCallback(() => props.onClick(props.folder), [props.onClick, props.folder]);
+    return <ChipBreadcrumb avatar={folderIcons[props.folder.type]} label={props.folder.name} onClick={onClick} />;
 }

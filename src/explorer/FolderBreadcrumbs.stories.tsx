@@ -8,7 +8,7 @@ export default {
     component: FolderBreadcrumbs,
 };
 
-export const normal = () => <FolderBreadcrumbs onSelect={action("select")} folders={[
+export const normal = () => <FolderBreadcrumbs onClick={action("click")} folders={[
     {
         name: "Company Home",
         type: ExplorerFolderType.HOME,
