@@ -1,21 +1,21 @@
 import invariant from "tiny-invariant";
 
-export type AutosizeParameters_t = {
+export type GenerateAutoCollapseParameters_t = {
     itemsBeforeCollapse?: number | { min?: number, max?: number },
     itemsAfterCollapse?: number | { min?: number, max?: number },
     maxItems?: number,
     size: number,
 };
 
-type AutosizeOutput_t = {
+type AutoCollapseOutput_t = {
     maxItems: number,
     itemsBeforeCollapse: number,
     itemsAfterCollapse: number,
 };
 
-export type GenerateParametersOutput_t = {
+export type GenerateAutoCollapseParametersOutput_t = {
     priority: number,
-    output: AutosizeOutput_t,
+    output: AutoCollapseOutput_t,
 };
 function sumIfDefined(a: number | undefined, b: number | undefined): number | undefined {
     if (a !== undefined && b !== undefined) {
@@ -38,7 +38,7 @@ function getMax(n: number | { max?: number } | undefined): number | undefined {
     return n.max;
 }
 
-function* generateAutosizeParameters(parameters: AutosizeParameters_t): Generator<GenerateParametersOutput_t> {
+function* autoCollapseParametersGen(parameters: GenerateAutoCollapseParameters_t): Generator<GenerateAutoCollapseParametersOutput_t> {
     const minItemsBeforeCollapse = getMin(parameters.itemsBeforeCollapse) || 1;
     const minItemsAfterCollapse = getMin(parameters.itemsAfterCollapse) || 1;
     // If max items is set, only one option is available, that with the configured options
@@ -126,6 +126,6 @@ function toArray<T>(generator: Generator<T>): readonly T[] {
     return data;
 }
 
-export default function autosizeParameters(parameters: AutosizeParameters_t): readonly GenerateParametersOutput_t[] {
-    return toArray(generateAutosizeParameters(parameters));
+export default function generateAutoCollapseParameters(parameters: GenerateAutoCollapseParameters_t): readonly GenerateAutoCollapseParametersOutput_t[] {
+    return toArray(autoCollapseParametersGen(parameters));
 }

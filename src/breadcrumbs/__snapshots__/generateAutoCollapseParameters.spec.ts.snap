@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`breadcrumbs/autosizeparameters generates one set of parameters when maxItems is set 1`] = `
+exports[`breadcrumbs/generateAutoCollapseParameters generates one set of parameters when maxItems is set 1`] = `
 Array [
   Object {
     "output": Object {
@@ -13,7 +13,7 @@ Array [
 ]
 `;
 
-exports[`breadcrumbs/autosizeparameters generates parameters when having both itemsBeforeCollapse and itemsAfterCollapse set to a range 1`] = `
+exports[`breadcrumbs/generateAutoCollapseParameters generates parameters when having both itemsBeforeCollapse and itemsAfterCollapse set to a range 1`] = `
 Array [
   Object {
     "output": Object {
@@ -50,7 +50,7 @@ Array [
 ]
 `;
 
-exports[`breadcrumbs/autosizeparameters generates parameters when having itemsAfterCollapse fixed 1`] = `
+exports[`breadcrumbs/generateAutoCollapseParameters generates parameters when having itemsAfterCollapse fixed 1`] = `
 Array [
   Object {
     "output": Object {
@@ -111,7 +111,7 @@ Array [
 ]
 `;
 
-exports[`breadcrumbs/autosizeparameters generates parameters when having itemsAfterCollapse set to a range 1`] = `
+exports[`breadcrumbs/generateAutoCollapseParameters generates parameters when having itemsAfterCollapse set to a range 1`] = `
 Array [
   Object {
     "output": Object {
@@ -172,7 +172,7 @@ Array [
 ]
 `;
 
-exports[`breadcrumbs/autosizeparameters generates parameters when having itemsBeforeCollapse fixed 1`] = `
+exports[`breadcrumbs/generateAutoCollapseParameters generates parameters when having itemsBeforeCollapse fixed 1`] = `
 Array [
   Object {
     "output": Object {
@@ -241,7 +241,7 @@ Array [
 ]
 `;
 
-exports[`breadcrumbs/autosizeparameters generates parameters when having itemsBeforeCollapse set to a range 1`] = `
+exports[`breadcrumbs/generateAutoCollapseParameters generates parameters when having itemsBeforeCollapse set to a range 1`] = `
 Array [
   Object {
     "output": Object {
@@ -310,7 +310,7 @@ Array [
 ]
 `;
 
-exports[`breadcrumbs/autosizeparameters generates parameters when no constraints are set 1`] = `
+exports[`breadcrumbs/generateAutoCollapseParameters generates parameters when no constraints are set 1`] = `
 Array [
   Object {
     "output": Object {

@@ -1,12 +1,12 @@
 import React from "react";
-import AutosizeBreadcrumbs from "./AutosizeBreadcrumbs";
+import AutoCollapseBreadcrumbs from "./AutoCollapseBreadcrumbs";
 
 export default {
-    title: "breadcrumbs/AutosizeBreadcrumbs",
-    component: AutosizeBreadcrumbs,
+    title: "breadcrumbs/AutoCollapseBreadcrumbs",
+    component: AutoCollapseBreadcrumbs,
 };
 
-export const aboveLimit = () => <AutosizeBreadcrumbs>
+export const aboveLimit = () => <AutoCollapseBreadcrumbs>
     <span>AAAAAAAA</span>
     <span>BBBBBBBB</span>
     <span>CCCCCCCC</span>
@@ -15,4 +15,4 @@ export const aboveLimit = () => <AutosizeBreadcrumbs>
     <span>FFFFFFFF</span>
     <span>GGGGGGGG</span>
     <span>HHHHHHHH</span>
-</AutosizeBreadcrumbs>;
+</AutoCollapseBreadcrumbs>;

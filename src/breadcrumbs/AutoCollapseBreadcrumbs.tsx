@@ -4,19 +4,19 @@ import classnames from "classnames";
 import debug from "debug";
 import React, { ReactElement, useReducer } from "react";
 import { SizeMe, withSize } from "react-sizeme";
-import generateAutosizeParameters, { AutosizeParameters_t, GenerateParametersOutput_t } from "./autosizeparameters";
+import generateAutoCollapseParameters, { AutoCollapseParameters_t, GenerateParametersOutput_t } from "./autocollapseparameters";
 import { Breadcrumbs_Props_t } from "./Breadcrumbs";
 import Breadcrumbs from "./Breadcrumbs";
 
-const d = debug("finder-ui:breadcrumbs:AutosizeBreadcrumbs");
+const d = debug("finder-ui:breadcrumbs:AutoCollapseBreadcrumbs");
 
-type AutosizeBreadcrumbs_Props_t = Breadcrumbs_Props_t & Pick<AutosizeParameters_t, Exclude<keyof AutosizeParameters_t, "size">>;
+type AutoCollapseBreadcrumbs_Props_t = Breadcrumbs_Props_t & Pick<AutoCollapseParameters_t, Exclude<keyof AutoCollapseParameters_t, "size">>;
 
 type BreadcrumbsParameters_t = GenerateParametersOutput_t & {
     width: number,
 };
 
-export default function AutosizeBreadcrumbs({ itemsBeforeCollapse, itemsAfterCollapse, maxItems, ...parentProps }: AutosizeBreadcrumbs_Props_t) {
+export default function AutoCollapseBreadcrumbs({ itemsBeforeCollapse, itemsAfterCollapse, maxItems, ...parentProps }: AutoCollapseBreadcrumbs_Props_t) {
 
     const [breadcrumbsParameters, receiveParameters] = useReducer((state: BreadcrumbsParameters_t[], action: BreadcrumbsParameters_t) => {
         d("Received parameters %o", action);
@@ -25,7 +25,7 @@ export default function AutosizeBreadcrumbs({ itemsBeforeCollapse, itemsAfterCol
 
     const size = React.Children.count(parentProps.children);
 
-    const autosizeParameters = generateAutosizeParameters({
+    const autocollapseParameters = generateAutoCollapseParameters({
         size,
         itemsBeforeCollapse,
         itemsAfterCollapse,
@@ -39,7 +39,7 @@ export default function AutosizeBreadcrumbs({ itemsBeforeCollapse, itemsAfterCol
 
         return <div>
             <OffscreenRender>
-                {autosizeParameters.map((parameters, i) => <BreadcrumbsTestRender
+                {autocollapseParameters.map((parameters, i) => <BreadcrumbsTestRender
                     key={i}
                     parameters={parameters}
                     children={parentProps.children}

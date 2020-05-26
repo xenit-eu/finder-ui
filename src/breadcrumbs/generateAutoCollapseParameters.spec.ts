@@ -1,12 +1,12 @@
-import generateAutosizeParameters, { GenerateParametersOutput_t } from "./autosizeparameters";
+import generateAutoCollapseParameters, { GenerateAutoCollapseParametersOutput_t } from "./generateAutoCollapseParameters";
 
-function sortByPriority(params: readonly GenerateParametersOutput_t[]): readonly GenerateParametersOutput_t[] {
+function sortByPriority(params: readonly GenerateAutoCollapseParametersOutput_t[]): readonly GenerateAutoCollapseParametersOutput_t[] {
     return params.slice().sort((a, b) => b.priority - a.priority);
 }
 
-describe("breadcrumbs/autosizeparameters", () => {
+describe("breadcrumbs/generateAutoCollapseParameters", () => {
     it("generates one set of parameters when maxItems is set", () => {
-        const data = generateAutosizeParameters({
+        const data = generateAutoCollapseParameters({
             size: 10,
             maxItems: 4,
         });
@@ -15,7 +15,7 @@ describe("breadcrumbs/autosizeparameters", () => {
     });
 
     it("generates parameters when no constraints are set", () => {
-        const data = generateAutosizeParameters({
+        const data = generateAutoCollapseParameters({
             size: 10,
         });
 
@@ -31,11 +31,10 @@ describe("breadcrumbs/autosizeparameters", () => {
     });
 
     it("generates parameters when having itemsBeforeCollapse fixed", () => {
-        const data =
-            generateAutosizeParameters({
-                size: 10,
-                itemsBeforeCollapse: 1,
-            });
+        const data = generateAutoCollapseParameters({
+            size: 10,
+            itemsBeforeCollapse: 1,
+        });
 
         expect(data.map((d) => d.output.itemsBeforeCollapse)).not.toContain(2);
 
@@ -45,11 +44,10 @@ describe("breadcrumbs/autosizeparameters", () => {
     });
 
     it("generates parameters when having itemsAfterCollapse fixed", () => {
-        const data =
-            generateAutosizeParameters({
-                size: 10,
-                itemsAfterCollapse: 2,
-            });
+        const data = generateAutoCollapseParameters({
+            size: 10,
+            itemsAfterCollapse: 2,
+        });
 
         expect(data.slice(1).map((d) => d.output.itemsAfterCollapse)).not.toContain(1);
         expect(data.map((d) => d.output.itemsAfterCollapse)).not.toContain(3);
@@ -61,28 +59,26 @@ describe("breadcrumbs/autosizeparameters", () => {
     });
 
     it("generates parameters when having itemsBeforeCollapse set to a range", () => {
-        const data =
-            generateAutosizeParameters({
-                size: 10,
-                itemsBeforeCollapse: {
-                    min: 1,
-                    max: 2,
-                },
-            });
+        const data = generateAutoCollapseParameters({
+            size: 10,
+            itemsBeforeCollapse: {
+                min: 1,
+                max: 2,
+            },
+        });
 
         expect(data.slice(1).map((d) => d.output.itemsBeforeCollapse)).not.toContain(3);
         expect(sortByPriority(data)).toMatchSnapshot();
     });
 
     it("generates parameters when having itemsAfterCollapse set to a range", () => {
-        const data =
-            generateAutosizeParameters({
-                size: 10,
-                itemsAfterCollapse: {
-                    min: 2,
-                    max: 4,
-                },
-            });
+        const data = generateAutoCollapseParameters({
+            size: 10,
+            itemsAfterCollapse: {
+                min: 2,
+                max: 4,
+            },
+        });
 
         expect(data.slice(1).map((d) => d.output.itemsAfterCollapse)).not.toContain(1);
         expect(data.slice(1).map((d) => d.output.itemsAfterCollapse)).not.toContain(5);
@@ -90,18 +86,17 @@ describe("breadcrumbs/autosizeparameters", () => {
     });
 
     it("generates parameters when having both itemsBeforeCollapse and itemsAfterCollapse set to a range", () => {
-        const data =
-            generateAutosizeParameters({
-                size: 10,
-                itemsBeforeCollapse: {
-                    min: 1,
-                    max: 2,
-                },
-                itemsAfterCollapse: {
-                    min: 1,
-                    max: 2,
-                },
-            });
+        const data = generateAutoCollapseParameters({
+            size: 10,
+            itemsBeforeCollapse: {
+                min: 1,
+                max: 2,
+            },
+            itemsAfterCollapse: {
+                min: 1,
+                max: 2,
+            },
+        });
         expect(data.slice(1).map((d) => d.output.itemsBeforeCollapse)).toContain(2);
         expect(data.slice(1).map((d) => d.output.itemsAfterCollapse)).toContain(2);
         expect(data.slice(1).map((d) => d.output.itemsBeforeCollapse)).not.toContain(3);
