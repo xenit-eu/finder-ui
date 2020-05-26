@@ -2,17 +2,18 @@ import { withStyles, WithStyles } from "@material-ui/core/styles";
 import type { CSSProperties } from "@material-ui/core/styles/withStyles";
 import classnames from "classnames";
 import debug from "debug";
-import React, { ReactElement, useReducer } from "react";
+import React, { useReducer } from "react";
 import { SizeMe, withSize } from "react-sizeme";
-import generateAutoCollapseParameters, { AutoCollapseParameters_t, GenerateParametersOutput_t } from "./autocollapseparameters";
 import { Breadcrumbs_Props_t } from "./Breadcrumbs";
 import Breadcrumbs from "./Breadcrumbs";
+import generateAutoCollapseParameters, { GenerateAutoCollapseParameters_t, GenerateAutoCollapseParametersOutput_t } from "./generateAutoCollapseParameters";
 
 const d = debug("finder-ui:breadcrumbs:AutoCollapseBreadcrumbs");
 
-type AutoCollapseBreadcrumbs_Props_t = Breadcrumbs_Props_t & Pick<AutoCollapseParameters_t, Exclude<keyof AutoCollapseParameters_t, "size">>;
+type AutoCollapseBreadcrumbs_Props_t = Pick<Breadcrumbs_Props_t, Exclude<keyof Breadcrumbs_Props_t, keyof GenerateAutoCollapseParameters_t>> &
+    Pick<GenerateAutoCollapseParameters_t, Exclude<keyof GenerateAutoCollapseParameters_t, "size">>;
 
-type BreadcrumbsParameters_t = GenerateParametersOutput_t & {
+type BreadcrumbsParameters_t = GenerateAutoCollapseParametersOutput_t & {
     width: number,
 };
 
@@ -58,9 +59,9 @@ export default function AutoCollapseBreadcrumbs({ itemsBeforeCollapse, itemsAfte
 const BreadcrumbsWithWidth = withSize({ monitorWidth: true, noPlaceholder: true })(Breadcrumbs);
 
 type BreadcrumbsTestRender_Props_t = {
-    parameters: GenerateParametersOutput_t
+    parameters: GenerateAutoCollapseParametersOutput_t
     children: React.ReactNode,
-    onResult: (parameters: GenerateParametersOutput_t, width: number) => void,
+    onResult: (parameters: GenerateAutoCollapseParametersOutput_t, width: number) => void,
 };
 
 function BreadcrumbsTestRender(props: BreadcrumbsTestRender_Props_t) {
