@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { Breadcrumbs, ChipBreadcrumb } from "../breadcrumbs";
+import { AutoCollapseBreadcrumbs, ChipBreadcrumb } from "../breadcrumbs";
 import { folderIcons, IExplorerFolder } from "./types";
 
 type FolderBreadcrumbs_Props_t<T extends IExplorerFolder> = {
@@ -8,9 +8,9 @@ type FolderBreadcrumbs_Props_t<T extends IExplorerFolder> = {
 };
 
 export default function FolderBreadcrumbs<T extends IExplorerFolder>(props: FolderBreadcrumbs_Props_t<T>) {
-    return <Breadcrumbs>
+    return <AutoCollapseBreadcrumbs itemsBeforeCollapse={{ max: 2 }}>
         {props.folders.map((folder, i) => <FolderBreadcrumbsFolder key={i} folder={folder} onClick={props.onClick} />)}
-    </Breadcrumbs>;
+    </AutoCollapseBreadcrumbs>;
 }
 
 type FolderBreadcrumbsFolder_Props_t<T extends IExplorerFolder> = {

@@ -57,7 +57,7 @@ function* autoCollapseParametersGen(parameters: GenerateAutoCollapseParameters_t
     yield {
         priority: parameters.size + 1,
         output: {
-            maxItems: parameters.size,
+            maxItems: Math.max(parameters.size, minItemsAfterCollapse + minItemsAfterCollapse + 1),
             itemsBeforeCollapse: minItemsBeforeCollapse,
             itemsAfterCollapse: minItemsAfterCollapse,
         },
