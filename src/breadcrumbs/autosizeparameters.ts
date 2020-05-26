@@ -38,7 +38,7 @@ function getMax(n: number | { max?: number } | undefined): number | undefined {
     return n.max;
 }
 
-export default function* generateParameters(parameters: AutosizeParameters_t): Generator<GenerateParametersOutput_t> {
+function* generateAutosizeParameters(parameters: AutosizeParameters_t): Generator<GenerateParametersOutput_t> {
     const minItemsBeforeCollapse = getMin(parameters.itemsBeforeCollapse) || 1;
     const minItemsAfterCollapse = getMin(parameters.itemsAfterCollapse) || 1;
     // If max items is set, only one option is available, that with the configured options
@@ -68,17 +68,20 @@ export default function* generateParameters(parameters: AutosizeParameters_t): G
 
     // Calculate minimum and maximum number of items that are shown
     const minItemsShown = minItemsBeforeCollapse + minItemsAfterCollapse;
-    const maxItemsShown = sumIfDefined(maxItemsBeforeCollapse, maxItemsAfterCollapse) || parameters.size;
+    const maxItemsShown = sumIfDefined(maxItemsBeforeCollapse, maxItemsAfterCollapse) || parameters.size - 1;
 
     let itemsBeforeCollapse = getMin(parameters.itemsBeforeCollapse) || 1;
     let itemsAfterCollapse = getMin(parameters.itemsAfterCollapse) || 1;
 
     // Step through the options, incrementing the collapse item that is furthest away from its maximum value with every step
     for (let i = minItemsShown; i <= maxItemsShown; i++) {
+        if (itemsBeforeCollapse + itemsAfterCollapse >= parameters.size - 1) {
+            break;
+        }
         yield {
             priority: i,
             output: {
-                maxItems: i,
+                maxItems: parameters.size - 1,
                 itemsBeforeCollapse,
                 itemsAfterCollapse,
             },
@@ -109,4 +112,20 @@ function calculatePreference(minValue: number, maxValue: number, currentValue: n
     currentValue = currentValue - minValue;
 
     return 1 - currentValue / maxValue;
+}
+
+function toArray<T>(generator: Generator<T>): readonly T[] {
+    const data: T[] = [];
+    let value = generator.next();
+
+    while (!value.done) {
+        data.push(value.value);
+        value = generator.next();
+    }
+
+    return data;
+}
+
+export default function autosizeParameters(parameters: AutosizeParameters_t): readonly GenerateParametersOutput_t[] {
+    return toArray(generateAutosizeParameters(parameters));
 }

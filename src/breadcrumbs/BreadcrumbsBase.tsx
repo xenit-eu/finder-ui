@@ -1,11 +1,10 @@
 import { Theme, WithStyles, withStyles } from "@material-ui/core/styles";
-import type { CSSProperties } from "@material-ui/core/styles/withStyles";
+import type { CSSProperties, StyledComponentProps } from "@material-ui/core/styles/withStyles";
+import classnames from "classnames";
 import React from "react";
 
 const styles = (theme: Theme) => ({
-    root: {
 
-    },
     separator: {
         display: "flex",
         userSelect: "none",
@@ -26,14 +25,20 @@ const styles = (theme: Theme) => ({
     li: {
 
     },
+    measureOnly: {
+        display: "inline-flex",
+        flexWrap: "nowrap",
+    } as CSSProperties,
 });
 
 export type BreadcrumbsBase_Props_t = {
     children: React.ReactNode,
     separator?: React.ReactNode,
-};
+    // @internal
+    _measureOnly?: boolean,
+} & StyledComponentProps<keyof ReturnType<typeof styles>>;
 
-function BreadcrumbsBase({ children, separator = "/", classes }: BreadcrumbsBase_Props_t & WithStyles<typeof styles>) {
+function BreadcrumbsBase({ children, separator = "/", _measureOnly = false, classes }: BreadcrumbsBase_Props_t & WithStyles<typeof styles>) {
     const childArray = React.Children.toArray(children);
     const childNodes = childArray.length > 0 ? [
         <li className={classes.li} key={"child-0"}>{childArray[0]}</li>,
@@ -44,11 +49,11 @@ function BreadcrumbsBase({ children, separator = "/", classes }: BreadcrumbsBase
         childNodes.push(<li className={classes.li} key={"child-" + i}>{childArray[i]}</li>);
     }
 
-    return <nav className={classes.root}>
-        <ol className={classes.ol}>
-            {childNodes}
-        </ol>
-    </nav>;
+    return <ol className={classnames(classes.ol, {
+        [classes.measureOnly]: _measureOnly,
+    })}>
+        {childNodes}
+    </ol>;
 
 }
 

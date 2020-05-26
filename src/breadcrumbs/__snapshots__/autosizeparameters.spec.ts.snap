@@ -27,7 +27,7 @@ Array [
     "output": Object {
       "itemsAfterCollapse": 2,
       "itemsBeforeCollapse": 2,
-      "maxItems": 4,
+      "maxItems": 9,
     },
     "priority": 4,
   },
@@ -35,7 +35,7 @@ Array [
     "output": Object {
       "itemsAfterCollapse": 1,
       "itemsBeforeCollapse": 2,
-      "maxItems": 3,
+      "maxItems": 9,
     },
     "priority": 3,
   },
@@ -43,7 +43,7 @@ Array [
     "output": Object {
       "itemsAfterCollapse": 1,
       "itemsBeforeCollapse": 1,
-      "maxItems": 2,
+      "maxItems": 9,
     },
     "priority": 2,
   },
@@ -63,24 +63,8 @@ Array [
   Object {
     "output": Object {
       "itemsAfterCollapse": 2,
-      "itemsBeforeCollapse": 8,
-      "maxItems": 10,
-    },
-    "priority": 10,
-  },
-  Object {
-    "output": Object {
-      "itemsAfterCollapse": 2,
-      "itemsBeforeCollapse": 7,
-      "maxItems": 9,
-    },
-    "priority": 9,
-  },
-  Object {
-    "output": Object {
-      "itemsAfterCollapse": 2,
       "itemsBeforeCollapse": 6,
-      "maxItems": 8,
+      "maxItems": 9,
     },
     "priority": 8,
   },
@@ -88,7 +72,7 @@ Array [
     "output": Object {
       "itemsAfterCollapse": 2,
       "itemsBeforeCollapse": 5,
-      "maxItems": 7,
+      "maxItems": 9,
     },
     "priority": 7,
   },
@@ -96,7 +80,7 @@ Array [
     "output": Object {
       "itemsAfterCollapse": 2,
       "itemsBeforeCollapse": 4,
-      "maxItems": 6,
+      "maxItems": 9,
     },
     "priority": 6,
   },
@@ -104,7 +88,7 @@ Array [
     "output": Object {
       "itemsAfterCollapse": 2,
       "itemsBeforeCollapse": 3,
-      "maxItems": 5,
+      "maxItems": 9,
     },
     "priority": 5,
   },
@@ -112,7 +96,7 @@ Array [
     "output": Object {
       "itemsAfterCollapse": 2,
       "itemsBeforeCollapse": 2,
-      "maxItems": 4,
+      "maxItems": 9,
     },
     "priority": 4,
   },
@@ -120,7 +104,7 @@ Array [
     "output": Object {
       "itemsAfterCollapse": 2,
       "itemsBeforeCollapse": 1,
-      "maxItems": 3,
+      "maxItems": 9,
     },
     "priority": 3,
   },
@@ -139,25 +123,9 @@ Array [
   },
   Object {
     "output": Object {
-      "itemsAfterCollapse": 4,
-      "itemsBeforeCollapse": 6,
-      "maxItems": 10,
-    },
-    "priority": 10,
-  },
-  Object {
-    "output": Object {
-      "itemsAfterCollapse": 3,
-      "itemsBeforeCollapse": 6,
-      "maxItems": 9,
-    },
-    "priority": 9,
-  },
-  Object {
-    "output": Object {
       "itemsAfterCollapse": 3,
       "itemsBeforeCollapse": 5,
-      "maxItems": 8,
+      "maxItems": 9,
     },
     "priority": 8,
   },
@@ -165,7 +133,7 @@ Array [
     "output": Object {
       "itemsAfterCollapse": 3,
       "itemsBeforeCollapse": 4,
-      "maxItems": 7,
+      "maxItems": 9,
     },
     "priority": 7,
   },
@@ -173,7 +141,7 @@ Array [
     "output": Object {
       "itemsAfterCollapse": 3,
       "itemsBeforeCollapse": 3,
-      "maxItems": 6,
+      "maxItems": 9,
     },
     "priority": 6,
   },
@@ -181,7 +149,7 @@ Array [
     "output": Object {
       "itemsAfterCollapse": 3,
       "itemsBeforeCollapse": 2,
-      "maxItems": 5,
+      "maxItems": 9,
     },
     "priority": 5,
   },
@@ -189,7 +157,7 @@ Array [
     "output": Object {
       "itemsAfterCollapse": 2,
       "itemsBeforeCollapse": 2,
-      "maxItems": 4,
+      "maxItems": 9,
     },
     "priority": 4,
   },
@@ -197,7 +165,7 @@ Array [
     "output": Object {
       "itemsAfterCollapse": 2,
       "itemsBeforeCollapse": 1,
-      "maxItems": 3,
+      "maxItems": 9,
     },
     "priority": 3,
   },
@@ -216,25 +184,9 @@ Array [
   },
   Object {
     "output": Object {
-      "itemsAfterCollapse": 9,
-      "itemsBeforeCollapse": 1,
-      "maxItems": 10,
-    },
-    "priority": 10,
-  },
-  Object {
-    "output": Object {
-      "itemsAfterCollapse": 8,
-      "itemsBeforeCollapse": 1,
-      "maxItems": 9,
-    },
-    "priority": 9,
-  },
-  Object {
-    "output": Object {
       "itemsAfterCollapse": 7,
       "itemsBeforeCollapse": 1,
-      "maxItems": 8,
+      "maxItems": 9,
     },
     "priority": 8,
   },
@@ -242,7 +194,7 @@ Array [
     "output": Object {
       "itemsAfterCollapse": 6,
       "itemsBeforeCollapse": 1,
-      "maxItems": 7,
+      "maxItems": 9,
     },
     "priority": 7,
   },
@@ -250,7 +202,7 @@ Array [
     "output": Object {
       "itemsAfterCollapse": 5,
       "itemsBeforeCollapse": 1,
-      "maxItems": 6,
+      "maxItems": 9,
     },
     "priority": 6,
   },
@@ -258,7 +210,7 @@ Array [
     "output": Object {
       "itemsAfterCollapse": 4,
       "itemsBeforeCollapse": 1,
-      "maxItems": 5,
+      "maxItems": 9,
     },
     "priority": 5,
   },
@@ -266,7 +218,7 @@ Array [
     "output": Object {
       "itemsAfterCollapse": 3,
       "itemsBeforeCollapse": 1,
-      "maxItems": 4,
+      "maxItems": 9,
     },
     "priority": 4,
   },
@@ -274,7 +226,7 @@ Array [
     "output": Object {
       "itemsAfterCollapse": 2,
       "itemsBeforeCollapse": 1,
-      "maxItems": 3,
+      "maxItems": 9,
     },
     "priority": 3,
   },
@@ -282,7 +234,7 @@ Array [
     "output": Object {
       "itemsAfterCollapse": 1,
       "itemsBeforeCollapse": 1,
-      "maxItems": 2,
+      "maxItems": 9,
     },
     "priority": 2,
   },
@@ -301,25 +253,9 @@ Array [
   },
   Object {
     "output": Object {
-      "itemsAfterCollapse": 8,
-      "itemsBeforeCollapse": 2,
-      "maxItems": 10,
-    },
-    "priority": 10,
-  },
-  Object {
-    "output": Object {
-      "itemsAfterCollapse": 7,
-      "itemsBeforeCollapse": 2,
-      "maxItems": 9,
-    },
-    "priority": 9,
-  },
-  Object {
-    "output": Object {
       "itemsAfterCollapse": 6,
       "itemsBeforeCollapse": 2,
-      "maxItems": 8,
+      "maxItems": 9,
     },
     "priority": 8,
   },
@@ -327,7 +263,7 @@ Array [
     "output": Object {
       "itemsAfterCollapse": 5,
       "itemsBeforeCollapse": 2,
-      "maxItems": 7,
+      "maxItems": 9,
     },
     "priority": 7,
   },
@@ -335,7 +271,7 @@ Array [
     "output": Object {
       "itemsAfterCollapse": 4,
       "itemsBeforeCollapse": 2,
-      "maxItems": 6,
+      "maxItems": 9,
     },
     "priority": 6,
   },
@@ -343,7 +279,7 @@ Array [
     "output": Object {
       "itemsAfterCollapse": 3,
       "itemsBeforeCollapse": 2,
-      "maxItems": 5,
+      "maxItems": 9,
     },
     "priority": 5,
   },
@@ -351,7 +287,7 @@ Array [
     "output": Object {
       "itemsAfterCollapse": 2,
       "itemsBeforeCollapse": 2,
-      "maxItems": 4,
+      "maxItems": 9,
     },
     "priority": 4,
   },
@@ -359,7 +295,7 @@ Array [
     "output": Object {
       "itemsAfterCollapse": 1,
       "itemsBeforeCollapse": 2,
-      "maxItems": 3,
+      "maxItems": 9,
     },
     "priority": 3,
   },
@@ -367,7 +303,7 @@ Array [
     "output": Object {
       "itemsAfterCollapse": 1,
       "itemsBeforeCollapse": 1,
-      "maxItems": 2,
+      "maxItems": 9,
     },
     "priority": 2,
   },
@@ -386,25 +322,9 @@ Array [
   },
   Object {
     "output": Object {
-      "itemsAfterCollapse": 5,
-      "itemsBeforeCollapse": 5,
-      "maxItems": 10,
-    },
-    "priority": 10,
-  },
-  Object {
-    "output": Object {
-      "itemsAfterCollapse": 4,
-      "itemsBeforeCollapse": 5,
-      "maxItems": 9,
-    },
-    "priority": 9,
-  },
-  Object {
-    "output": Object {
       "itemsAfterCollapse": 4,
       "itemsBeforeCollapse": 4,
-      "maxItems": 8,
+      "maxItems": 9,
     },
     "priority": 8,
   },
@@ -412,7 +332,7 @@ Array [
     "output": Object {
       "itemsAfterCollapse": 3,
       "itemsBeforeCollapse": 4,
-      "maxItems": 7,
+      "maxItems": 9,
     },
     "priority": 7,
   },
@@ -420,7 +340,7 @@ Array [
     "output": Object {
       "itemsAfterCollapse": 3,
       "itemsBeforeCollapse": 3,
-      "maxItems": 6,
+      "maxItems": 9,
     },
     "priority": 6,
   },
@@ -428,7 +348,7 @@ Array [
     "output": Object {
       "itemsAfterCollapse": 2,
       "itemsBeforeCollapse": 3,
-      "maxItems": 5,
+      "maxItems": 9,
     },
     "priority": 5,
   },
@@ -436,7 +356,7 @@ Array [
     "output": Object {
       "itemsAfterCollapse": 2,
       "itemsBeforeCollapse": 2,
-      "maxItems": 4,
+      "maxItems": 9,
     },
     "priority": 4,
   },
@@ -444,7 +364,7 @@ Array [
     "output": Object {
       "itemsAfterCollapse": 1,
       "itemsBeforeCollapse": 2,
-      "maxItems": 3,
+      "maxItems": 9,
     },
     "priority": 3,
   },
@@ -452,7 +372,7 @@ Array [
     "output": Object {
       "itemsAfterCollapse": 1,
       "itemsBeforeCollapse": 1,
-      "maxItems": 2,
+      "maxItems": 9,
     },
     "priority": 2,
   },
