@@ -140,11 +140,12 @@ type OffscreenRender_Props_t = {
 };
 
 function OffscreenRender_(props: OffscreenRender_Props_t & WithStyles<typeof offscreenRenderStyle>) {
+    const showDebug = d.extend("overlay").enabled;
     return <div className={classnames(props.classes.root, {
-        [props.classes.rootDebug]: d.enabled,
+        [props.classes.rootDebug]: showDebug,
     })}>
         {React.Children.map(props.children, (c) => <div className={classnames(props.classes.item, {
-            [props.classes.itemDebug]: d.enabled,
+            [props.classes.itemDebug]: showDebug,
         })}>{c}</div>)}
     </div>;
 }
