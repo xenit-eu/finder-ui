@@ -1,0 +1,460 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`breadcrumbs/autosizeparameters generates one set of parameters when maxItems is set 1`] = `
+Array [
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 1,
+      "itemsBeforeCollapse": 1,
+      "maxItems": 4,
+    },
+    "priority": 1,
+  },
+]
+`;
+
+exports[`breadcrumbs/autosizeparameters generates parameters when having both itemsBeforeCollapse and itemsAfterCollapse set to a range 1`] = `
+Array [
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 1,
+      "itemsBeforeCollapse": 1,
+      "maxItems": 10,
+    },
+    "priority": 11,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 2,
+      "itemsBeforeCollapse": 2,
+      "maxItems": 4,
+    },
+    "priority": 4,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 1,
+      "itemsBeforeCollapse": 2,
+      "maxItems": 3,
+    },
+    "priority": 3,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 1,
+      "itemsBeforeCollapse": 1,
+      "maxItems": 2,
+    },
+    "priority": 2,
+  },
+]
+`;
+
+exports[`breadcrumbs/autosizeparameters generates parameters when having itemsAfterCollapse fixed 1`] = `
+Array [
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 2,
+      "itemsBeforeCollapse": 1,
+      "maxItems": 10,
+    },
+    "priority": 11,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 2,
+      "itemsBeforeCollapse": 8,
+      "maxItems": 10,
+    },
+    "priority": 10,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 2,
+      "itemsBeforeCollapse": 7,
+      "maxItems": 9,
+    },
+    "priority": 9,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 2,
+      "itemsBeforeCollapse": 6,
+      "maxItems": 8,
+    },
+    "priority": 8,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 2,
+      "itemsBeforeCollapse": 5,
+      "maxItems": 7,
+    },
+    "priority": 7,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 2,
+      "itemsBeforeCollapse": 4,
+      "maxItems": 6,
+    },
+    "priority": 6,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 2,
+      "itemsBeforeCollapse": 3,
+      "maxItems": 5,
+    },
+    "priority": 5,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 2,
+      "itemsBeforeCollapse": 2,
+      "maxItems": 4,
+    },
+    "priority": 4,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 2,
+      "itemsBeforeCollapse": 1,
+      "maxItems": 3,
+    },
+    "priority": 3,
+  },
+]
+`;
+
+exports[`breadcrumbs/autosizeparameters generates parameters when having itemsAfterCollapse set to a range 1`] = `
+Array [
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 2,
+      "itemsBeforeCollapse": 1,
+      "maxItems": 10,
+    },
+    "priority": 11,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 4,
+      "itemsBeforeCollapse": 6,
+      "maxItems": 10,
+    },
+    "priority": 10,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 3,
+      "itemsBeforeCollapse": 6,
+      "maxItems": 9,
+    },
+    "priority": 9,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 3,
+      "itemsBeforeCollapse": 5,
+      "maxItems": 8,
+    },
+    "priority": 8,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 3,
+      "itemsBeforeCollapse": 4,
+      "maxItems": 7,
+    },
+    "priority": 7,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 3,
+      "itemsBeforeCollapse": 3,
+      "maxItems": 6,
+    },
+    "priority": 6,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 3,
+      "itemsBeforeCollapse": 2,
+      "maxItems": 5,
+    },
+    "priority": 5,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 2,
+      "itemsBeforeCollapse": 2,
+      "maxItems": 4,
+    },
+    "priority": 4,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 2,
+      "itemsBeforeCollapse": 1,
+      "maxItems": 3,
+    },
+    "priority": 3,
+  },
+]
+`;
+
+exports[`breadcrumbs/autosizeparameters generates parameters when having itemsBeforeCollapse fixed 1`] = `
+Array [
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 1,
+      "itemsBeforeCollapse": 1,
+      "maxItems": 10,
+    },
+    "priority": 11,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 9,
+      "itemsBeforeCollapse": 1,
+      "maxItems": 10,
+    },
+    "priority": 10,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 8,
+      "itemsBeforeCollapse": 1,
+      "maxItems": 9,
+    },
+    "priority": 9,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 7,
+      "itemsBeforeCollapse": 1,
+      "maxItems": 8,
+    },
+    "priority": 8,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 6,
+      "itemsBeforeCollapse": 1,
+      "maxItems": 7,
+    },
+    "priority": 7,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 5,
+      "itemsBeforeCollapse": 1,
+      "maxItems": 6,
+    },
+    "priority": 6,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 4,
+      "itemsBeforeCollapse": 1,
+      "maxItems": 5,
+    },
+    "priority": 5,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 3,
+      "itemsBeforeCollapse": 1,
+      "maxItems": 4,
+    },
+    "priority": 4,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 2,
+      "itemsBeforeCollapse": 1,
+      "maxItems": 3,
+    },
+    "priority": 3,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 1,
+      "itemsBeforeCollapse": 1,
+      "maxItems": 2,
+    },
+    "priority": 2,
+  },
+]
+`;
+
+exports[`breadcrumbs/autosizeparameters generates parameters when having itemsBeforeCollapse set to a range 1`] = `
+Array [
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 1,
+      "itemsBeforeCollapse": 1,
+      "maxItems": 10,
+    },
+    "priority": 11,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 8,
+      "itemsBeforeCollapse": 2,
+      "maxItems": 10,
+    },
+    "priority": 10,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 7,
+      "itemsBeforeCollapse": 2,
+      "maxItems": 9,
+    },
+    "priority": 9,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 6,
+      "itemsBeforeCollapse": 2,
+      "maxItems": 8,
+    },
+    "priority": 8,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 5,
+      "itemsBeforeCollapse": 2,
+      "maxItems": 7,
+    },
+    "priority": 7,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 4,
+      "itemsBeforeCollapse": 2,
+      "maxItems": 6,
+    },
+    "priority": 6,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 3,
+      "itemsBeforeCollapse": 2,
+      "maxItems": 5,
+    },
+    "priority": 5,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 2,
+      "itemsBeforeCollapse": 2,
+      "maxItems": 4,
+    },
+    "priority": 4,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 1,
+      "itemsBeforeCollapse": 2,
+      "maxItems": 3,
+    },
+    "priority": 3,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 1,
+      "itemsBeforeCollapse": 1,
+      "maxItems": 2,
+    },
+    "priority": 2,
+  },
+]
+`;
+
+exports[`breadcrumbs/autosizeparameters generates parameters when no constraints are set 1`] = `
+Array [
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 1,
+      "itemsBeforeCollapse": 1,
+      "maxItems": 10,
+    },
+    "priority": 11,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 5,
+      "itemsBeforeCollapse": 5,
+      "maxItems": 10,
+    },
+    "priority": 10,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 4,
+      "itemsBeforeCollapse": 5,
+      "maxItems": 9,
+    },
+    "priority": 9,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 4,
+      "itemsBeforeCollapse": 4,
+      "maxItems": 8,
+    },
+    "priority": 8,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 3,
+      "itemsBeforeCollapse": 4,
+      "maxItems": 7,
+    },
+    "priority": 7,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 3,
+      "itemsBeforeCollapse": 3,
+      "maxItems": 6,
+    },
+    "priority": 6,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 2,
+      "itemsBeforeCollapse": 3,
+      "maxItems": 5,
+    },
+    "priority": 5,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 2,
+      "itemsBeforeCollapse": 2,
+      "maxItems": 4,
+    },
+    "priority": 4,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 1,
+      "itemsBeforeCollapse": 2,
+      "maxItems": 3,
+    },
+    "priority": 3,
+  },
+  Object {
+    "output": Object {
+      "itemsAfterCollapse": 1,
+      "itemsBeforeCollapse": 1,
+      "maxItems": 2,
+    },
+    "priority": 2,
+  },
+]
+`;
