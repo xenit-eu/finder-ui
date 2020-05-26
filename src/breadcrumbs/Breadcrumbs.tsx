@@ -4,23 +4,31 @@ import type { CSSProperties } from "@material-ui/core/styles/withStyles";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import React, { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
+import invariant from "tiny-invariant";
 import BreadcrumbsBase, { BreadcrumbsBase_Props_t } from "./BreadcrumbsBase";
-type Breadcrumbs_Props_t = BreadcrumbsBase_Props_t & {
+
+export type Breadcrumbs_Props_t = BreadcrumbsBase_Props_t & {
     maxItems?: number | null,
+    itemsBeforeCollapse?: number,
+    itemsAfterCollapse?: number,
 };
 
-export default function Breadcrumbs({ maxItems = 5, children, ...props }: Breadcrumbs_Props_t) {
+export default function Breadcrumbs({ maxItems = 5, itemsBeforeCollapse = 1, itemsAfterCollapse = 1, children, ...props }: Breadcrumbs_Props_t) {
     let childArray = React.Children.toArray(children);
     const [collapsed, setCollapsed] = useState(true);
     const uncollapse = useCallback(() => setCollapsed(false), [setCollapsed]);
 
-    if (maxItems !== null && childArray.length > maxItems && collapsed) {
+    if (maxItems !== null) {
+        invariant(maxItems > itemsBeforeCollapse + itemsAfterCollapse, "The maximum number of items before collapsing must be greater than the number of items that is displayed when collapsed.");
 
-        childArray = [
-            childArray[0],
-            <CollapsedBreadcrumb onClick={uncollapse} />,
-            childArray[childArray.length - 1],
-        ];
+        if (maxItems !== null && childArray.length > maxItems && collapsed) {
+
+            childArray = [
+                childArray.slice(0, itemsBeforeCollapse),
+                <CollapsedBreadcrumb onClick={uncollapse} />,
+                childArray.slice(childArray.length - itemsAfterCollapse),
+            ];
+        }
     }
 
     return <BreadcrumbsBase {...props} children={childArray} />;
