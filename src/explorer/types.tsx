@@ -15,6 +15,7 @@ export enum ExplorerFolderType {
     SHARED,
 }
 
+// @internal
 export const folderIcons = {
     [ExplorerFolderType.HOME]: <HomeIcon />,
     [ExplorerFolderType.FOLDER]: <FolderIcon />,
@@ -33,6 +34,7 @@ export interface IExplorerListFolder extends IExplorerFolder {
     readonly children?: readonly IExplorerListFolder[];
 }
 
+// @internal
 export const folderStateIcons = {
     [ExplorerFolderState.OPEN]: <FolderOpenIcon />,
     [ExplorerFolderState.LOADING]: <LoopIcon />,
