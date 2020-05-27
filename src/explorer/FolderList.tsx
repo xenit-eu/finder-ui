@@ -13,6 +13,7 @@ import { useTranslation } from "react-i18next";
 import { OverlayCentered } from "../overlay";
 import Overlay from "../overlay/Overlay";
 import { FileDropZone } from "../upload";
+import IconWithText from "../util/IconWithText";
 import { ExplorerFolderState, folderIcons, folderStateIcons, IExplorerListFolder } from "./types";
 
 type FolderList_Props_t<T extends IExplorerListFolder> = {
@@ -105,7 +106,7 @@ type FolderListItemOverlay_Props_t = {
 function FolderListItemOverlay(props: FolderListItemOverlay_Props_t) {
     const { t } = useTranslation("finder-ui");
     return <Overlay {...props} overlay={<OverlayCentered>
-        <Typography color="inherit"><CloudUploadIcon /> {t("explorer/FolderList/upload-file-here")}</Typography>
+        <IconWithText icon={<CloudUploadIcon />} text={t("explorer/FolderList/upload-file-here")} />
     </OverlayCentered>
     } />;
 }
