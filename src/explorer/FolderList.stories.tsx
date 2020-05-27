@@ -14,6 +14,7 @@ export default {
 
 export const withoutActions = () => <FolderList
     onClick={action("click")}
+    onFilesDropped={action("filesDropped")}
     folders={[
         {
             name: "Company Home",
@@ -56,6 +57,7 @@ export const withoutActions = () => <FolderList
 
 export const withActions = () => <FolderList
     onClick={action("click")}
+    onFilesDropped={action("filesDropped")}
     folders={[
         {
             name: "NDAs",
@@ -80,6 +82,7 @@ export const withActions = () => <FolderList
 
 export const selected = () => <FolderList
     onClick={action("click")}
+    onFilesDropped={action("filesDropped")}
     folders={[
         {
             name: "NDAs",

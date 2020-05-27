@@ -5,13 +5,20 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import ListItemText from "@material-ui/core/ListItemText";
 import { Theme, withStyles, WithStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import classnames from "classnames";
 import React, { useCallback } from "react";
+import { useTranslation } from "react-i18next";
+import { OverlayCentered } from "../overlay";
+import Overlay from "../overlay/Overlay";
+import { FileDropZone } from "../upload";
 import { ExplorerFolderState, folderIcons, folderStateIcons, IExplorerListFolder } from "./types";
 
 type FolderList_Props_t<T extends IExplorerListFolder> = {
     folders: readonly T[],
     onClick: (folder: T) => void,
+    onFilesDropped?: (folder: T, files: readonly File[]) => void,
     folderActions?: (folder: T) => React.ReactNode,
     disableRoundedSide?: boolean,
 };
@@ -23,6 +30,7 @@ export default function FolderList<T extends IExplorerListFolder>(props: FolderL
             key={i}
             folder={folder}
             onClick={props.onClick}
+            onFilesDropped={props.onFilesDropped}
             listProps={listProps}
             disableRoundedSide={!!props.disableRoundedSide}
             actions={props.folderActions && props.folderActions(folder)}
@@ -35,6 +43,7 @@ type FolderListItem_Props_t<T extends IExplorerListFolder> = {
     disableRoundedSide: boolean,
     actions?: React.ReactNode,
     onClick: (folder: T) => void,
+    onFilesDropped?: (folder: T, files: readonly File[]) => void,
     listProps: Pick<FolderList_Props_t<T>, Exclude<keyof FolderList_Props_t<T>, "folders">>,
 };
 
@@ -59,19 +68,25 @@ const folderListItemStyles = (theme: Theme) => ({
 
 function FolderListItem_<T extends IExplorerListFolder>(props: FolderListItem_Props_t<T> & WithStyles<typeof folderListItemStyles>) {
     const onClick = useCallback(() => props.onClick(props.folder), [props.onClick, props.folder]);
+    const onFilesDropped = useCallback((files) => props.onFilesDropped!(props.folder, files), [props.onFilesDropped, props.folder]);
     return <>
-        <div className={classnames(props.classes.selectionIndicator, {
-            [props.classes.roundedSide]: !props.disableRoundedSide,
-            [props.classes.selectedItem]: props.folder.selected,
-        })}>
-            <ListItem onClick={onClick} button>
-                <ListItemIcon>
-                    {folderStateIcons[props.folder.state] || folderIcons[props.folder.type]}
-                </ListItemIcon>
-                <ListItemText>{props.folder.name}</ListItemText>
-                {props.actions ? <ListItemSecondaryAction>{props.actions}</ListItemSecondaryAction> : null}
-            </ListItem>
-        </div>
+        <FileDropZone
+            onFilesDropped={props.onFilesDropped && onFilesDropped}
+            className={classnames(props.classes.selectionIndicator, {
+                [props.classes.roundedSide]: !props.disableRoundedSide,
+                [props.classes.selectedItem]: props.folder.selected,
+            })}
+        >{(isDropping: boolean) =>
+            <FolderListItemOverlay open={isDropping}>
+                <ListItem onClick={onClick} button>
+                    <ListItemIcon>
+                        {folderStateIcons[props.folder.state] || folderIcons[props.folder.type]}
+                    </ListItemIcon>
+                    <ListItemText>{props.folder.name}</ListItemText>
+                    {props.actions ? <ListItemSecondaryAction>{props.actions}</ListItemSecondaryAction> : null}
+                </ListItem>
+            </FolderListItemOverlay>
+            }</FileDropZone>
         <Collapse in={props.folder.state === ExplorerFolderState.OPEN} unmountOnExit className={props.classes.childList}>
             {props.folder.children ? <FolderList
                 folders={props.folder.children}
@@ -82,3 +97,15 @@ function FolderListItem_<T extends IExplorerListFolder>(props: FolderListItem_Pr
 }
 
 const FolderListItem = withStyles(folderListItemStyles)(FolderListItem_);
+
+type FolderListItemOverlay_Props_t = {
+    open: boolean,
+    children: React.ReactNode,
+};
+function FolderListItemOverlay(props: FolderListItemOverlay_Props_t) {
+    const { t } = useTranslation("finder-ui");
+    return <Overlay {...props} overlay={<OverlayCentered>
+        <Typography color="inherit"><CloudUploadIcon /> {t("explorer/FolderList/upload-file-here")}</Typography>
+    </OverlayCentered>
+    } />;
+}
