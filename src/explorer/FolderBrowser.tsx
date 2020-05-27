@@ -28,7 +28,6 @@ export default function FolderBrowser<PathFolder extends IExplorerFolder, ListFo
         />
         {props.folders.length > 0 ? <FolderList
             folders={props.folders}
-            disableRoundedSide
             onClick={props.onOpen as ((folder: ListFolder) => void)}
             folderActions={(folder) => <OverflowMenu
                 items={[

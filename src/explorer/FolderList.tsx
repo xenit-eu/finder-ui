@@ -21,7 +21,7 @@ type FolderList_Props_t<T extends IExplorerListFolder> = {
     onClick: (folder: T) => void,
     onFilesDropped?: (folder: T, files: readonly File[]) => void,
     folderActions?: (folder: T) => React.ReactNode,
-    disableRoundedSide?: boolean,
+    withRoundedSide?: boolean,
 };
 export default function FolderList<T extends IExplorerListFolder>(props: FolderList_Props_t<T>) {
     const { folders, ...listProps } = props;
@@ -33,7 +33,7 @@ export default function FolderList<T extends IExplorerListFolder>(props: FolderL
             onClick={props.onClick}
             onFilesDropped={props.onFilesDropped}
             listProps={listProps}
-            disableRoundedSide={!!props.disableRoundedSide}
+            withRoundedSide={!!props.withRoundedSide}
             actions={props.folderActions && props.folderActions(folder)}
         />)}
     </List>;
@@ -41,7 +41,7 @@ export default function FolderList<T extends IExplorerListFolder>(props: FolderL
 
 type FolderListItem_Props_t<T extends IExplorerListFolder> = {
     folder: T,
-    disableRoundedSide: boolean,
+    withRoundedSide: boolean,
     actions?: React.ReactNode,
     onClick: (folder: T) => void,
     onFilesDropped?: (folder: T, files: readonly File[]) => void,
@@ -74,7 +74,7 @@ function FolderListItem_<T extends IExplorerListFolder>(props: FolderListItem_Pr
         <FileDropZone
             onFilesDropped={props.onFilesDropped && onFilesDropped}
             className={classnames(props.classes.selectionIndicator, {
-                [props.classes.roundedSide]: !props.disableRoundedSide,
+                [props.classes.roundedSide]: props.withRoundedSide,
                 [props.classes.selectedItem]: props.folder.selected,
             })}
         >{(isDropping: boolean) =>
@@ -92,6 +92,7 @@ function FolderListItem_<T extends IExplorerListFolder>(props: FolderListItem_Pr
             {props.folder.children ? <FolderList
                 folders={props.folder.children}
                 {...props.listProps}
+                withRoundedSide
             /> : null}
         </Collapse>
     </>;
