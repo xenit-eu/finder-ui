@@ -1,47 +1,27 @@
-import * as React from "react";
-import { useState } from "react";
+import React from "react";
+import { useDropzone } from "react-dropzone";
 
 type FileDropZone_Props_t = {
-    onFilesDropped: (file: readonly File[]) => void,
+    onFilesDropped?: (file: readonly File[]) => void,
     children: (isDragging: boolean) => React.ReactElement;
 } & React.HTMLAttributes<HTMLDivElement>;
 
-export default function FileDropZone(props: FileDropZone_Props_t) {
-    const { onFilesDropped, children, ...rest } = props;
+export default function FileDropZone({ onFilesDropped, children, ...rest }: FileDropZone_Props_t) {
 
-    const [isDragging, setDragging] = useState(false);
+    const { getRootProps, isDragActive } = useDropzone({
+        onDrop: onFilesDropped,
+        noClick: true,
+        disabled: !onFilesDropped,
+    });
 
-    function onDrop(event: React.DragEvent) {
-        event.dataTransfer.effectAllowed = "copy";
-        event.dataTransfer.dropEffect = "copy";
-        event.preventDefault();
-        event.stopPropagation();
-        const files: File[] = new Array(event.dataTransfer.files.length);
-        for (let i = 0; i < event.dataTransfer.files.length; i++) {
-            files[i] = event.dataTransfer.files[i];
-        }
-        onFilesDropped(files);
-        setDragging(false);
-    }
+    const props = onFilesDropped ? getRootProps({
+        children: children(isDragActive),
+        ...rest,
+    }) : {
+            children: children(false),
+            ...rest,
+        };
 
-    function onDragOver(event: React.DragEvent) {
-        setDragging(true);
-        event.dataTransfer.effectAllowed = "copy";
-        event.dataTransfer.dropEffect = "copy";
-        event.preventDefault();
-    }
-
-    function onDragLeave(event: React.DragEvent) {
-        setDragging(false);
-    }
-
-    return <div
-        onDrop={onDrop}
-        onDragOver={onDragOver}
-        onDragLeave={onDragLeave}
-        children={children(isDragging)}
-        aria-dropeffect="copy"
-        {...rest}
-    />;
+    return <div {...props} />;
 
 }
