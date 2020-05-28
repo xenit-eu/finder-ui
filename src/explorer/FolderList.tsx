@@ -13,6 +13,7 @@ import { useTranslation } from "react-i18next";
 import { OverlayCentered } from "../overlay";
 import Overlay from "../overlay/Overlay";
 import { FileDropZone } from "../upload";
+import useDelayedProp from "../util/hooks/useDelayedProp";
 import IconWithText from "../util/IconWithText";
 import { ExplorerFolderState, folderIcons, folderStateIcons, IExplorerListFolder } from "./types";
 
@@ -70,6 +71,7 @@ const folderListItemStyles = (theme: Theme) => ({
 function FolderListItem_<T extends IExplorerListFolder>(props: FolderListItem_Props_t<T> & WithStyles<typeof folderListItemStyles>) {
     const onClick = useCallback(() => props.onClick(props.folder), [props.onClick, props.folder]);
     const onFilesDropped = useCallback((files) => props.onFilesDropped!(props.folder, files), [props.onFilesDropped, props.folder]);
+    const delayedChildren = useDelayedProp(props.folder.children, 1000, (p) => !!p); // Delay children when they disappear, so collapse can happen smoothly
     return <>
         <FileDropZone
             onFilesDropped={props.onFilesDropped && onFilesDropped}
@@ -88,9 +90,9 @@ function FolderListItem_<T extends IExplorerListFolder>(props: FolderListItem_Pr
                 </ListItem>
             </FolderListItemOverlay>
             }</FileDropZone>
-        <Collapse in={props.folder.state === ExplorerFolderState.OPEN} unmountOnExit className={props.classes.childList}>
-            {props.folder.children ? <FolderList
-                folders={props.folder.children}
+        <Collapse in={props.folder.state === ExplorerFolderState.OPEN && !!props.folder.children} unmountOnExit className={props.classes.childList}>
+            {delayedChildren ? <FolderList
+                folders={delayedChildren}
                 {...props.listProps}
                 withRoundedSide
             /> : null}
