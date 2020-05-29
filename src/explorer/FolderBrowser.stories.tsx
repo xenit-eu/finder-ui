@@ -122,3 +122,16 @@ interactive.story = {
         storyshots: { disable: true },
     },
 };
+
+export const loading = () => <FolderBrowser
+    path={demoPath}
+    folders={null}
+    onOpen={action("open")}
+    onSelect={action("select")}
+/>;
+
+loading.story = {
+    parameters: {
+        storyshots: { disable: true },
+    },
+};

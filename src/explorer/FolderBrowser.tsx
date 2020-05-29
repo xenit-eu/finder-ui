@@ -1,4 +1,5 @@
 import Button from "@material-ui/core/Button";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import Typography from "@material-ui/core/Typography";
 import FolderOpenIcon from "@material-ui/icons/FolderOpen";
 import RadioButtonCheckedIcon from "@material-ui/icons/RadioButtonChecked";
@@ -16,7 +17,7 @@ type FolderBrowser_Props_t<PathFolder extends IExplorerFolder, ListFolder extend
     path: readonly PathFolder[],
     onOpen: (folder: PathFolder | ListFolder) => void,
     onSelect: (folder: PathFolder | ListFolder) => void,
-    folders: readonly ListFolder[],
+    folders: readonly ListFolder[] | null,
 };
 
 export default function FolderBrowser<PathFolder extends IExplorerFolder, ListFolder extends IExplorerListFolder>(props: FolderBrowser_Props_t<PathFolder, ListFolder>) {
@@ -26,20 +27,21 @@ export default function FolderBrowser<PathFolder extends IExplorerFolder, ListFo
             folders={props.path}
             onClick={props.onOpen}
         />
-        {props.folders.length > 0 ? <FolderList
-            folders={props.folders}
-            onClick={props.onOpen as ((folder: ListFolder) => void)}
-            folderActions={(folder) => <OverflowMenu
-                items={[
-                    {
-                        icon: folder.selected ? <RadioButtonCheckedIcon /> : <RadioButtonUncheckedIcon />,
-                        label: t("explorer/FolderBrowser/select-folder"),
-                        onClick: () => props.onSelect(folder),
-                    },
-                ]}
-                maxItems={1}
-            />}
-        /> : <FolderBrowserEmpty {...props} />}
+        {!props.folders ? <OverlayCentered><CircularProgress /></OverlayCentered> :
+            props.folders.length > 0 ? <FolderList
+                folders={props.folders}
+                onClick={props.onOpen as ((folder: ListFolder) => void)}
+                folderActions={(folder) => <OverflowMenu
+                    items={[
+                        {
+                            icon: folder.selected ? <RadioButtonCheckedIcon /> : <RadioButtonUncheckedIcon />,
+                            label: t("explorer/FolderBrowser/select-folder"),
+                            onClick: () => props.onSelect(folder),
+                        },
+                    ]}
+                    maxItems={1}
+                />}
+            /> : <FolderBrowserEmpty {...props} />}
     </>;
 
 }
