@@ -21,7 +21,7 @@ export default function BaseComment(props: BaseComment_Props_t) {
             titleTypographyProps={{
                 variant: "body2",
             }}
-            subheader={props.comment?.date && t("comments/BaseComment/date", props.comment.date)}
+            subheader={props.comment?.date && t("comments/BaseComment/date", { date: props.comment.date })}
             action={props.headerAction}
         />}
         <CardContent>
