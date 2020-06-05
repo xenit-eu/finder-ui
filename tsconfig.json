@@ -17,6 +17,7 @@
         "strictNullChecks": true,
         "skipLibCheck": true,
         "noImplicitThis": true,
+        "stripInternal": true,
         "rootDir": "src/",
     },
     "include": [
