@@ -29,25 +29,25 @@ function CommentActions(props: Comment_Props_t) {
         icon: React.ReactElement,
         action: () => void,
     }>;
+    const { t } = useTranslation("finder-ui");
     if (props.onEdit) {
         actions.push({
-            label: "edit",
+            label: t("comments/Comment/edit"),
             icon: <Edit />,
             action: props.onEdit,
         });
     }
     if (props.onDelete) {
         actions.push({
-            label: "delete",
+            label: t("comments/Comment/delete"),
             icon: <Delete />,
             action: props.onDelete,
         });
     }
-    const { t } = useTranslation("finder-ui");
 
     return <OverflowMenu
         items={actions.map((action) => ({
-            label: t("comments/Comment/" + action.label),
+            label: action.label,
             icon: action.icon,
             onClick: action.action,
         }))}
