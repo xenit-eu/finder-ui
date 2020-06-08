@@ -82,3 +82,8 @@ export const withSelectedVersion = () => <VersionPanel
 />;
 
 export const empty = () => <VersionPanel versions={[]} />;
+
+export const withCreateButton = () => <VersionPanel
+    versions={versions}
+    onCreateVersion={action("versionCreate")}
+/>;
