@@ -1,23 +1,23 @@
 import { action } from "@storybook/addon-actions";
 import React from "react";
-import CreateVersionDialog from "./CreateVersionDialog";
-import { VersionPanelCreateVersionType } from "./types";
+import { VersionCreateVersionType } from "./types";
+import VersionCreateDialog from "./VersionCreateDialog";
 
 export default {
-    title: "versions/CreateVersion/CreateVersionDialog",
-    component: CreateVersionDialog,
+    title: "versions/VersionCreateDialog",
+    component: VersionCreateDialog,
 };
 
-export const empty = () => <CreateVersionDialog
+export const empty = () => <VersionCreateDialog
     currentVersion="2.4"
     state={{}}
     onChange={action("change")}
 />;
 
-export const withData = () => <CreateVersionDialog
+export const withData = () => <VersionCreateDialog
     currentVersion="2.4"
     state={{
-        type: VersionPanelCreateVersionType.MAJOR,
+        type: VersionCreateVersionType.MAJOR,
         file: {
             name: "Some file name",
         } as any,

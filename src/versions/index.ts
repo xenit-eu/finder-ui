@@ -1,2 +1,3 @@
 export { default as VersionPanel, IVersionPanelVersion } from "./VersionPanel";
-export { CreateVersionDialog as VersionCreateDialog } from "./CreateVersion"
+export { default as VersionCreateDialog } from "./VersionCreateDialog"
+export * from "./types";

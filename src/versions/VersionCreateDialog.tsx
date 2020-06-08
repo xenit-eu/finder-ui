@@ -1,4 +1,4 @@
-import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, TextField } from "@material-ui/core";
+import { FormControlLabel, FormLabel, Radio, RadioGroup, TextField } from "@material-ui/core";
 import { Theme, WithStyles, withStyles } from "@material-ui/core/styles";
 import type { CSSProperties } from "@material-ui/core/styles/withStyles";
 import Typography from "@material-ui/core/Typography";
@@ -6,15 +6,14 @@ import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import classnames from "classnames";
 import React, { ChangeEvent } from "react";
 import { useTranslation } from "react-i18next";
-import { ButtonWithIcon } from "../../button";
-import { OverlayCentered } from "../../overlay";
-import { UploadButton } from "../../upload";
-import { IVersionPanelCreateVersion, VersionPanelCreateVersionType } from "./types";
+import { ButtonWithIcon } from "../button";
+import { UploadButton } from "../upload";
+import { IVersionCreateVersion, VersionCreateVersionType } from "./types";
 
 type CreateVersionDialog_Props_t = {
     currentVersion: string,
-    state: Partial<IVersionPanelCreateVersion>,
-    onChange: (state: Partial<IVersionPanelCreateVersion>) => void,
+    state: Partial<IVersionCreateVersion>,
+    onChange: (state: Partial<IVersionCreateVersion>) => void,
 };
 
 const styles = (theme: Theme) => ({
@@ -74,24 +73,24 @@ function CreateVersionDialog(props: CreateVersionDialog_Props_t & WithStyles<typ
         <FormLabel component={"div" as any} className={props.classes.label}>{t("versions/CreateVersion/version-change")}</FormLabel>
         <RadioGroup
             aria-label={t("versions/CreateVersion/version-change")}
-            value={props.state.type ?? VersionPanelCreateVersionType.MINOR}
+            value={props.state.type ?? VersionCreateVersionType.MINOR}
             onChange={(event: ChangeEvent<HTMLInputElement>) => props.onChange({
                 ...props.state,
-                type: event.target.value as VersionPanelCreateVersionType,
+                type: event.target.value as VersionCreateVersionType,
             })}
             className={props.classes.field}
         >
             <FormControlLabel
-                value={VersionPanelCreateVersionType.MINOR}
+                value={VersionCreateVersionType.MINOR}
                 label={t("versions/CreateVersion/version-change-minor", {
-                    newVersion: calculatedVersions[VersionPanelCreateVersionType.MINOR],
+                    newVersion: calculatedVersions[VersionCreateVersionType.MINOR],
                 })}
                 control={<Radio />}
             />
             <FormControlLabel
-                value={VersionPanelCreateVersionType.MAJOR}
+                value={VersionCreateVersionType.MAJOR}
                 label={t("versions/CreateVersion/version-change-major", {
-                    newVersion: calculatedVersions[VersionPanelCreateVersionType.MAJOR],
+                    newVersion: calculatedVersions[VersionCreateVersionType.MAJOR],
                 })}
                 control={<Radio />}
             />
@@ -118,7 +117,7 @@ export function calculateNextVersion(currentVersion: string): { [versionType: st
     const parts = currentVersion.split(".").map((s) => parseInt(s, 10));
 
     return {
-        [VersionPanelCreateVersionType.MINOR]: parts[0] + "." + (parts[1] + 1),
-        [VersionPanelCreateVersionType.MAJOR]: (parts[0] + 1) + "." + parts[1],
+        [VersionCreateVersionType.MINOR]: parts[0] + "." + (parts[1] + 1),
+        [VersionCreateVersionType.MAJOR]: (parts[0] + 1) + "." + parts[1],
     };
 }

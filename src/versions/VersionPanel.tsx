@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import Overlay, { OverlayCentered } from "../overlay";
 import { FileDropZone } from "../upload";
 import LargeIcon from "../util/LargeIcon";
-import { CreateVersionFab } from "./CreateVersion";
+import CreateVersionFab from "./CreateVersionFab";
 import type { IVersion } from "./Version";
 import Version from "./Version";
 export interface IVersionPanelVersion extends IVersion {
