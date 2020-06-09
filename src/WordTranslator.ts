@@ -3,7 +3,6 @@ import {
     DATE_BETWEEN, DATE_FROM, DATE_LAST6MONTH, DATE_LASTMONTH, DATE_LASTWEEK, DATE_LASTYEAR, DATE_ON, DATE_RANGE_PICK, DATE_TODAY, DATE_UNTIL,
 } from "./search/DateRange";
 import { PLACEHOLDERTRANSLATION } from "./search/searchbox";
-import { DOCUMENT_NO_VERSION_HISTORY } from "./versionhistoryPanel";
 export const FOLDER = "Folder";
 export const TEXT = "text";
 export const ASPECT = "aspect";
@@ -250,20 +249,6 @@ export const translateComments: TranslationsChecked = {
         [ADD_A_COMMENT]: "Añadir un comentario...",
     },
 };
-export const translateVersions: TranslationsChecked = {
-    [ENGLISH]: {
-        [DOCUMENT_NO_VERSION_HISTORY]: DOCUMENT_NO_VERSION_HISTORY,
-    },
-    [FRENCH]: {
-        [DOCUMENT_NO_VERSION_HISTORY]: "Le document n'a pas d'historique de version.",
-    },
-    [DUTCH]: {
-        [DOCUMENT_NO_VERSION_HISTORY]: "Het document heeft geen versie geschiedenis.",
-    },
-    [SPANISH]: {
-        [DOCUMENT_NO_VERSION_HISTORY]: "El documento no tiene historial de versiones.",
-    },
-};
 
 function isObject(item: any) {
     return (item && typeof item === "object" && !Array.isArray(item));
@@ -296,7 +281,6 @@ export class CombinedWordTranslator extends WordTranslator {
             textWordTranslations,
             translateSearchboxTranslations,
             translateComments,
-            translateVersions,
             typeTranslations);
         super(languageSelection, merged);
     }

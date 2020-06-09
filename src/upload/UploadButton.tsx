@@ -3,6 +3,7 @@ import classnames from "classnames";
 import * as React from "react";
 
 export type UploadButton_Props_t = {
+    multiple?: boolean,
     onFilesSelected: (files: readonly File[]) => void,
     children: React.ReactNode,
 } & React.HTMLAttributes<HTMLDivElement>;
@@ -17,7 +18,7 @@ const styles = {
 
     },
 };
-function UploadButton({ onFilesSelected, classes, children, ...props }: UploadButton_Props_t & WithStyles<typeof styles>) {
+function UploadButton({ onFilesSelected, classes, children, multiple = true, ...props }: UploadButton_Props_t & WithStyles<typeof styles>) {
     const inputRef = React.useRef<HTMLInputElement>(null);
     function onChange(event: React.ChangeEvent<HTMLInputElement>) {
         onFilesSelected(Array.prototype.slice.call(event.target.files));
@@ -33,7 +34,7 @@ function UploadButton({ onFilesSelected, classes, children, ...props }: UploadBu
     }
 
     return <div {...props} onClick={onDivClick} className={classnames(props.className, classes.root)}>
-        <input ref={inputRef} type="file" multiple onChange={onChange} className={classes.fileInput} />
+        <input ref={inputRef} type="file" multiple={multiple} onChange={onChange} className={classes.fileInput} />
         {children}
     </div>;
 }
