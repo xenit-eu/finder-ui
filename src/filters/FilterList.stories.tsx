@@ -1,5 +1,5 @@
 import { action } from "@storybook/addon-actions";
-import React, { useReducer } from "react";
+import React, { useCallback, useReducer } from "react";
 import FilterList from "./FilterList";
 
 export default {
@@ -82,11 +82,14 @@ function FilterListInteractive() {
         }
     }, filters);
 
+    const onFilterOpenChange = useCallback((filter, openState) => dispatch({ type: "toggle", filter, open: openState }), [dispatch]);
+    const onFilterValueClick = useCallback((filter, value) => dispatch({ type: "valueClick", filter, value }), [dispatch]);
+
     return <FilterList
         filters={filterList}
-        onFilterOpenChange={(filter, openState) => dispatch({ type: "toggle", filter, open: openState })}
+        onFilterOpenChange={onFilterOpenChange}
 
-        onFilterValueClick={(filter, value) => dispatch({type: "valueClick", filter, value})}
+        onFilterValueClick={onFilterValueClick}
     />;
 
 }

@@ -94,12 +94,17 @@ function itemBadgeStyle(theme: Theme) {
 
 function FilterValueList_<T extends IFilterValue>(props: Filter_Props_t<T> & WithStyles<typeof filterValueListStyle>) {
     return <List className={props.classes.list}>
-        {props.values.map((value, i) => <ListItem className={props.classes.listItem} key={i} onClick={() => props.onValueClick(value)} button >
-            <Checkbox className={props.classes.listItemCheckbox} checked={value.selected} disableRipple tabIndex={-1} />
-            <ListItemText className={props.classes.listItemText} primary={value.title} />
-            <span className={props.classes.listItemBadge}>{value.count}</span>
-        </ListItem>)}
+        {props.values.map((value, i) => <FilterValueListItem value={value} props={props} key={i} />)}
     </List>;
 }
 
 const FilterValueList = withStyles(filterValueListStyle)(FilterValueList_);
+
+function FilterValueListItem<T extends IFilterValue>({value, props}: { value: T, props: Filter_Props_t<T> & WithStyles<typeof filterValueListStyle> }) {
+    const onClick = useCallback(() => props.onValueClick(value), [value, props.onValueClick]);
+    return <ListItem className={props.classes.listItem} onClick={onClick} button >
+        <Checkbox className={props.classes.listItemCheckbox} checked={value.selected} disableRipple tabIndex={-1} />
+        <ListItemText className={props.classes.listItemText} primary={value.title} />
+        <span className={props.classes.listItemBadge}>{value.count}</span>
+    </ListItem>;
+}
