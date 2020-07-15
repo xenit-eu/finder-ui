@@ -35,20 +35,20 @@ const filterStyle = (theme: Theme) => ({
 
 });
 
-function Filter<T extends IFilterValue>(props: Filter_Props_t<T> & WithStyles<typeof filterStyle>) {
+function Filter<T extends IFilterValue>({ classes, ...props }: Filter_Props_t<T> & WithStyles<typeof filterStyle>) {
 
     const onChange = useCallback((event, expanded: boolean) => props.onOpenChange(expanded), [props.onOpenChange]);
     const selectedItems = props.values.filter((f) => f.selected);
     return <ExpansionPanel expanded={props.open} onChange={onChange}>
         <ExpansionPanelSummary classes={{
-            content: props.classes.summaryContent,
+            content: classes.summaryContent,
         }} expandIcon={<ExpandMoreIcon />}>
-            <Typography className={props.classes.title}>{props.title}</Typography>
+            <Typography className={classes.title} title={props.title}>{props.title}</Typography>
             {selectedItems.length ? <Fade in={!props.open} unmountOnExit>
-                <Typography className={props.classes.selectedItemsSummary}>{selectedItems.map((f) => f.title).join(", ")}</Typography>
+                <Typography className={classes.selectedItemsSummary}>{selectedItems.map((f) => f.title).join(", ")}</Typography>
             </Fade> : null}
         </ExpansionPanelSummary>
-        <ExpansionPanelDetails className={props.classes.expansion}>
+        <ExpansionPanelDetails className={classes.expansion}>
             <FilterValueList {...props} />
         </ExpansionPanelDetails>
     </ExpansionPanel>;
@@ -71,11 +71,7 @@ const filterValueListStyle = (theme: Theme) => ({
     listItemText: {
         marginLeft: theme.spacing.unit * 4,
     },
-    listItemTextPrimary: {
-        overflow: "hidden" as const,
-        textOverflow: "ellipsis" as const,
-        whiteSpace: "nowrap" as const,
-    },
+
     listItemBadge: {
         ...theme.typography.button,
         backgroundColor: theme.palette.primary.main,
@@ -100,10 +96,7 @@ function FilterValueList_<T extends IFilterValue>(props: Filter_Props_t<T> & Wit
     return <List className={props.classes.list}>
         {props.values.map((value, i) => <ListItem className={props.classes.listItem} key={i} onClick={() => props.onValueClick(value)} button >
             <Checkbox className={props.classes.listItemCheckbox} checked={value.selected} disableRipple tabIndex={-1} />
-            <ListItemText classes={{
-                root: props.classes.listItemText,
-                primary: props.classes.listItemTextPrimary,
-            }} primary={value.title} />
+            <ListItemText className={props.classes.listItemText} primary={value.title} />
             <span className={props.classes.listItemBadge}>{value.count}</span>
         </ListItem>)}
     </List>;
