@@ -1,6 +1,7 @@
 import { Checkbox, ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, Fade, List, ListItem, ListItemText, Theme, Typography, withStyles, WithStyles } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import React, { useCallback } from "react";
+import React, { useCallback, useContext } from "react";
+import FilterTranslationsContext from "./FilterTranslationsContext";
 import { IFilter, IFilterValue } from "./types";
 
 type Filter_Props_t<T extends IFilterValue> = IFilter<T> & {
@@ -38,6 +39,7 @@ const filterStyle = (theme: Theme) => ({
 function Filter<T extends IFilterValue>({ classes, ...props }: Filter_Props_t<T> & WithStyles<typeof filterStyle>) {
 
     const onChange = useCallback((event, expanded: boolean) => props.onOpenChange(expanded), [props.onOpenChange]);
+    const translator = useContext(FilterTranslationsContext);
     const selectedItems = props.values.filter((f) => f.selected);
     return <ExpansionPanel expanded={props.open} onChange={onChange}>
         <ExpansionPanelSummary classes={{
@@ -102,9 +104,10 @@ const FilterValueList = withStyles(filterValueListStyle)(FilterValueList_);
 
 function FilterValueListItem<T extends IFilterValue>({value, props}: { value: T, props: Filter_Props_t<T> & WithStyles<typeof filterValueListStyle> }) {
     const onClick = useCallback(() => props.onValueClick(value), [value, props.onValueClick]);
+    const translator = useContext(FilterTranslationsContext);
     return <ListItem className={props.classes.listItem} onClick={onClick} button >
         <Checkbox className={props.classes.listItemCheckbox} checked={value.selected} disableRipple tabIndex={-1} />
-        <ListItemText className={props.classes.listItemText} primary={value.title} />
+        <ListItemText className={props.classes.listItemText} primary={translator.translateFilterValue(value)} />
         <span className={props.classes.listItemBadge}>{value.count}</span>
     </ListItem>;
 }

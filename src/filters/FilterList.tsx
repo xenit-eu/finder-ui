@@ -1,5 +1,6 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useContext } from "react";
 import Filter from "./Filter";
+import FilterTranslationsContext from "./FilterTranslationsContext";
 import { IFilter, IFilterValue } from "./types";
 
 type FilterList_Props_t<T extends IFilter<U>, U extends IFilterValue> = {
@@ -17,8 +18,9 @@ export default function FilterList<T extends IFilter<U>, U extends IFilterValue>
 function FilterListItem<T extends IFilter<U>, U extends IFilterValue>({ filter, props }: { filter: T, props: FilterList_Props_t<T, U> }) {
     const onOpenChange = useCallback((value: boolean) => props.onFilterOpenChange(filter, value), [filter, props.onFilterOpenChange]);
     const onValueClick = useCallback((value: U) => props.onFilterValueClick(filter, value), [filter, props.onFilterValueClick]);
+    const translator = useContext(FilterTranslationsContext);
     return <Filter
-            title={filter.title}
+            title={translator.translateFilterName(filter)}
             values={filter.values}
             open={filter.open}
             onOpenChange={onOpenChange}
