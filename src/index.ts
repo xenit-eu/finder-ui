@@ -10,7 +10,7 @@ export * from "./doclist";
 export * from "./docpreview";
 export * from "./docpreviewPdfjs";
 export * from "./explorer";
-export * from "./facets";
+export * from "./filters";
 export * from "./metadata";
 export * from "./metadataDialog";
 export * from "./metadataPanel";
