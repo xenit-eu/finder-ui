@@ -47,7 +47,7 @@ function Filter<T extends IFilterValue>({ classes, ...props }: Filter_Props_t<T>
         }} expandIcon={<ExpandMoreIcon />}>
             <Typography className={classes.title} title={props.title}>{props.title}</Typography>
             {selectedItems.length ? <Fade in={!props.open} unmountOnExit>
-                <Typography className={classes.selectedItemsSummary}>{selectedItems.map((f) => f.title).join(", ")}</Typography>
+                <Typography className={classes.selectedItemsSummary}>{selectedItems.map((f) => translator.translateFilterValue(f)).join(", ")}</Typography>
             </Fade> : null}
         </ExpansionPanelSummary>
         <ExpansionPanelDetails className={classes.expansion}>
