@@ -1,4 +1,3 @@
-import Chip from "@material-ui/core/Chip";
 import { Theme, withStyles, WithStyles } from "@material-ui/core/styles";
 import { emphasize, fade } from "@material-ui/core/styles/colorManipulator";
 import ArrowRightAltIcon from "@material-ui/icons/ArrowRightAlt";
@@ -9,6 +8,7 @@ import keycode from "keycode";
 import React, { cloneElement, KeyboardEvent, ReactElement, useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
+import ResizableChip from "./ResizableChip";
 
 /**
  * Data structure for editable chips
@@ -73,10 +73,6 @@ type EditableChip_ChangeComponent_Props_t<T> = {
 };
 
 const editableChipStyles = (theme: Theme) => ({
-    root: {
-        height: "unset",
-        minHeight: 32,
-    },
     invalidData: {
         "backgroundColor": theme.palette.error.main,
         "color": theme.palette.error.contrastText,
@@ -112,10 +108,10 @@ function EditableChip<T, D extends IEditableChipData<T>>(props: EditableChip_Pro
 
     }
 
-    return <Chip
+    return <ResizableChip
         onDoubleClick={props.onChange && !isEditing ? () => setEditing(true) : undefined}
         onDelete={isEditing && props.onDelete ? undefined : () => props.onDelete!()}
-        className={classnames(props.classes.root, {
+        className={classnames({
             [props.classes.invalidData]: isInvalid(value ?? props.value),
         })}
         label={<>
