@@ -72,6 +72,10 @@ type EditableChip_ChangeComponent_Props_t<T> = {
 };
 
 const editableChipStyles = (theme: Theme) => ({
+    root: {
+        height: "unset",
+        minHeight: 32,
+    },
     invalidData: {
         "backgroundColor": theme.palette.error.main,
         "color": theme.palette.error.contrastText,
@@ -110,7 +114,7 @@ function EditableChip<T, D extends IEditableChipData<T>>(props: EditableChip_Pro
     return <Chip
         onDoubleClick={props.onChange && !isEditing ? () => setEditing(true) : undefined}
         onDelete={isEditing && props.onDelete ? undefined : () => props.onDelete!()}
-        className={classnames({
+        className={classnames(props.classes.root, {
             [props.classes.invalidData]: isInvalid(value ?? props.value),
         })}
         label={<>
