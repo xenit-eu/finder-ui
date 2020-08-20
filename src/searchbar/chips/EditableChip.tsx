@@ -110,7 +110,7 @@ function EditableChip<T, D extends IEditableChipData<T>>(props: EditableChip_Pro
 
     return <ResizableChip
         onDoubleClick={props.onChange && !isEditing ? () => setEditing(true) : undefined}
-        onDelete={isEditing && props.onDelete ? undefined : () => props.onDelete!()}
+        onDelete={isEditing || !props.onDelete ? undefined : () => props.onDelete!()}
         className={classnames({
             [props.classes.invalidData]: isInvalid(value ?? props.value),
         })}
