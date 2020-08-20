@@ -28,6 +28,10 @@ export interface IEditableChipData<T> {
     readonly fieldValue: Readonly<{ value: T, start?: never, end?: never } | { start: T | null, end: T | null, value?: never }>;
 }
 
+// @internal
+// tslint:disable-next-line
+export const _editing = Symbol();
+
 export type EditableChip_Props_t<T, D extends IEditableChipData<T>> = {
     /**
      * Current chip data to show
@@ -54,7 +58,7 @@ export type EditableChip_Props_t<T, D extends IEditableChipData<T>> = {
      */
     readonly editComponent?: React.ComponentType<EditableChip_ChangeComponent_Props_t<T>>,
     // @internal for storybook testing only
-    readonly _editing?: boolean,
+    readonly _editing?: typeof _editing,
 };
 
 type EditableChip_ViewComponent_Props_t<T> = {
@@ -81,7 +85,7 @@ const editableChipStyles = (theme: Theme) => ({
 });
 
 function EditableChip<T, D extends IEditableChipData<T>>(props: EditableChip_Props_t<T, D> & WithStyles<typeof editableChipStyles>) {
-    const [isEditing, setEditing] = useState(props._editing ?? false);
+    const [isEditing, setEditing] = useState(props._editing ? true : false);
     const [value, setValue] = useState<D|null>(null);
     const cancelEditing = useCallback(() => {
         setValue(null);
@@ -98,8 +102,9 @@ function EditableChip<T, D extends IEditableChipData<T>>(props: EditableChip_Pro
     if (props.onChange) {
         invariant(props.editComponent, "editComponent is required when onChange is set.");
     }
-    if (process.env.NODE_ENV !== "development") {
-        invariant(props._editing === undefined, "_editing prop is only allowed for testing.");
+    if (props._editing) {
+        invariant(props._editing === _editing, "_editing is internal, only to be used in storybook.");
+
     }
 
     return <Chip
