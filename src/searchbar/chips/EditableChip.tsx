@@ -1,6 +1,7 @@
 import Chip from "@material-ui/core/Chip";
 import { Theme, withStyles, WithStyles } from "@material-ui/core/styles";
 import { emphasize, fade } from "@material-ui/core/styles/colorManipulator";
+import ArrowRightAltIcon from "@material-ui/icons/ArrowRightAlt";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CloseIcon from "@material-ui/icons/Close";
 import classnames from "classnames";
@@ -166,7 +167,7 @@ function EditModeChipComponent<T, D extends IEditableChipData<T>>(props: EditMod
         const ViewComponent = props.viewComponent;
         return isRange ? <>
             <ViewComponent value={props.value.fieldValue.start!} />
-            &rarr;
+            <ArrowRightAltIcon />
             <ViewComponent value={props.value.fieldValue.end!} />
         </> : <ViewComponent value={props.value.fieldValue.value!} />;
     } else {
@@ -178,7 +179,7 @@ function EditModeChipComponent<T, D extends IEditableChipData<T>>(props: EditMod
                     onChange={(start: T) => props.onChange({ ...props.value, fieldValue: { start, end: props.value.fieldValue.end! } })}
                     onKeyUp={onKeyUp}
                 />
-                &rarr;
+                <ArrowRightAltIcon />
                 <ChangeComponent
                     value={props.value.fieldValue.end!}
                     onChange={(end: T) => props.onChange({ ...props.value, fieldValue: { start: props.value.fieldValue.start!, end } })}
