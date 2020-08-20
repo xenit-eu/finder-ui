@@ -1,11 +1,13 @@
 import Chip from "@material-ui/core/Chip";
 import { Theme, withStyles, WithStyles } from "@material-ui/core/styles";
 import { fade } from "@material-ui/core/styles/colorManipulator";
-import CancelIcon from "@material-ui/icons/Cancel";
-import DoneIcon from "@material-ui/icons/Done";
+import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import CloseIcon from "@material-ui/icons/Close";
 import classnames from "classnames";
 import keycode from "keycode";
-import React, { cloneElement, KeyboardEvent, ReactElement, ReactNode, useCallback, useEffect, useState } from "react";
+import React, { cloneElement, KeyboardEvent, ReactElement, useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
+import invariant from "tiny-invariant";
 export interface IEditableChipData<T> {
     readonly fieldName: string;
     readonly fieldValue: Readonly<{ value: T, start?: never, end?: never } | { start: T, end: T, value?: never }>;
@@ -39,13 +41,18 @@ export default function EditableChip<T>(props: EditableChip_Props_t<T>) {
         setEditing(false);
     }, [setValue, setEditing]);
     const commitEditing = useCallback(() => {
-        props.onChange!(value!);
+        props.onChange!(value ?? props.value);
         cancelEditing();
-    }, [props.onChange, value, cancelEditing]);
+    }, [props.onChange, value, props.value, cancelEditing]);
+    if (props.onChange) {
+        invariant(props.editComponent, "editComponent is required when onChange is set.");
+    }
+    if (process.env.NODE_ENV !== "development") {
+        invariant(props._editing === undefined, "_editing prop is only allowed for testing.");
+    }
     return <Chip
-        deleteIcon={isEditing ? <DoneIcon /> : <CancelIcon />}
         onDoubleClick={props.onChange && !isEditing ? () => setEditing(true) : undefined}
-        onDelete={isEditing ? undefined : props.onDelete}
+        onDelete={isEditing && props.onDelete ? undefined : () => props.onDelete!()}
         label={<>
             <em>{props.value.fieldName}:</em>
             <EditModeChipComponent
@@ -58,13 +65,15 @@ export default function EditableChip<T>(props: EditableChip_Props_t<T>) {
                 onCancel={cancelEditing}
             />
         </>}
-        onKeyUp={isEditing ? (ev: KeyboardEvent) => {
-            if (keycode.isEventKey(ev.nativeEvent, "esc")) {
+        onKeyUp={(ev: KeyboardEvent) => {
+            if (keycode.isEventKey(ev.nativeEvent, "esc") && isEditing) {
                 cancelEditing();
-            } else if (keycode.isEventKey(ev.nativeEvent, "enter")) {
+            } else if (keycode.isEventKey(ev.nativeEvent, "enter") && isEditing) {
                 commitEditing();
+            } else if (keycode.isEventKey(ev.nativeEvent, "f2") && !isEditing) {
+                setEditing(true);
             }
-        } : undefined}
+        }}
     />;
 }
 
@@ -79,7 +88,13 @@ type EditModeChipComponent_Props_t<T> = {
 };
 
 function EditModeChipComponent<T>(props: EditModeChipComponent_Props_t<T>) {
+    const { t } = useTranslation("finder-ui");
     const isRange = !props.value.fieldValue.value;
+    const onKeyUp = useCallback((ev: KeyboardEvent) => {
+        if (keycode.isEventKey(ev.nativeEvent, "esc")) {
+            props.onCancel();
+        }
+    }, [props.onCancel]);
     if (!props.isEditing) {
         const ViewComponent = props.viewComponent;
         return isRange ? <>
@@ -88,11 +103,6 @@ function EditModeChipComponent<T>(props: EditModeChipComponent_Props_t<T>) {
             <ViewComponent value={props.value.fieldValue.end!} />
         </> : <ViewComponent value={props.value.fieldValue.value!} />;
     } else {
-        const onKeyUp = useCallback((ev: KeyboardEvent) => {
-            if (keycode.isEventKey(ev.nativeEvent, "esc")) {
-                props.onCancel();
-            }
-        }, [props.onCancel]);
         const ChangeComponent = props.editComponent;
         return <>
             {isRange ? <>
@@ -112,17 +122,18 @@ function EditModeChipComponent<T>(props: EditModeChipComponent_Props_t<T>) {
                     onChange={(value: T) => props.onChange({ ...props.value, fieldValue: { value } })}
                     onKeyUp={onKeyUp}
                 />}
-            <EditModeIconButton onClick={props.onCommit}>
-                <DoneIcon />
+            <EditModeIconButton onClick={props.onCommit} color="primary">
+                <CheckCircleIcon aria-label={t("searchbar/chips/EditableChip/edit-done")} />
             </EditModeIconButton>
             <EditModeIconButton onClick={props.onCancel}>
-                <CancelIcon />
+                <CloseIcon aria-label={t("searchbar/chips/EditableChip/edit-cancel")} />
             </EditModeIconButton>
         </>;
     }
 }
 
 type EditModeIconButton_Props_t = {
+    readonly color?: "primary" | "secondary",
     readonly onClick: () => void;
     readonly children: ReactElement;
 };
@@ -141,13 +152,34 @@ const editModeIconButtonStyles = (theme: Theme) => ({
             marginRight: -theme.spacing.unit,
         },
     },
+    rootPrimary: {
+        "color": theme.palette.primary.main,
+        "&:hover": {
+            color: fade(theme.palette.primary.main, 0.4),
+        },
+    },
+    rootSecondary: {
+
+        "color": theme.palette.secondary.main,
+
+        "&:hover": {
+            color: fade(theme.palette.secondary.main, 0.4),
+        },
+    },
 
 });
 function EditModeIconButton_(props: EditModeIconButton_Props_t & WithStyles<typeof editModeIconButtonStyles>) {
     const iconChild = React.Children.only(props.children);
     return cloneElement(iconChild, {
-        className: classnames(iconChild.props.className, props.classes.root),
-        onClick: props.onClick,
+        "className": classnames(iconChild.props.className, props.classes.root, {
+            [props.classes.rootPrimary]: props.color === "primary",
+            [props.classes.rootSecondary]: props.color === "secondary",
+        }),
+        "onClick": props.onClick,
+        "focusable": true,
+        "role": "button",
+        "aria-hidden": false,
+        "tabindex": 0,
     });
 }
 
