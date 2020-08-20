@@ -8,34 +8,68 @@ import keycode from "keycode";
 import React, { cloneElement, KeyboardEvent, ReactElement, useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
+
+/**
+ * Data structure for editable chips
+ */
 export interface IEditableChipData<T> {
+    /**
+     * Name of the field in the chip
+     */
     readonly fieldName: string;
-    readonly fieldValue: Readonly<{ value: T, start?: never, end?: never } | { start: T, end: T, value?: never }>;
+
+    /**
+     * Value of the chip.
+     *
+     * It can be a single value (when the value key is set) or a value range (when the start and/or end keys are set)
+     *
+     * For value range, start or end keys can be omitted. In that case, an open-ended range will be displayed and constructed
+     */
+    readonly fieldValue: Readonly<{ value: T, start?: never, end?: never } | { start: T | null, end: T | null, value?: never }>;
 }
 
-type EditableChip_Props_t<T> = {
-    readonly value: IEditableChipData<T>,
+export type EditableChip_Props_t<T, D extends IEditableChipData<T>> = {
+    /**
+     * Current chip data to show
+     */
+    readonly value: D,
+    /**
+     * Function that will be called when the chip is deleted.
+     * If this function is not present, no delete button will be shown
+     */
     readonly onDelete?: () => void,
-    readonly onChange?: (value: IEditableChipData<T>) => void,
+    /**
+     * Function that is called when the chip has been edited.
+     * If this function is not present, the chip will not be editable.
+     *
+     * If this function is present, {@link editComponent} must be present as well.
+     */
+    readonly onChange?: (value: D) => void,
+    /**
+     * Component that will be used to display field values when the chip is in view-mode
+     */
     readonly viewComponent: React.ComponentType<EditableChip_ViewComponent_Props_t<T>>;
+    /**
+     * Component that will be used to display field values when the chip is in edit-mode
+     */
     readonly editComponent?: React.ComponentType<EditableChip_ChangeComponent_Props_t<T>>,
     // @internal for storybook testing only
     readonly _editing?: boolean,
 };
 
 type EditableChip_ViewComponent_Props_t<T> = {
-    value: T,
+    value: T | null,
 };
 
 type EditableChip_ChangeComponent_Props_t<T> = {
-    value: T,
-    onChange: (value: T) => void,
+    value: T | null,
+    onChange: (value: T | null) => void,
     onKeyUp: (event: KeyboardEvent) => void,
 };
 
-export default function EditableChip<T>(props: EditableChip_Props_t<T>) {
+export default function EditableChip<T, D extends IEditableChipData<T>>(props: EditableChip_Props_t<T, D>) {
     const [isEditing, setEditing] = useState(props._editing ?? false);
-    const [value, setValue] = useState<IEditableChipData<T>|null>(null);
+    const [value, setValue] = useState<D|null>(null);
     const cancelEditing = useCallback(() => {
         setValue(null);
         setEditing(false);
@@ -55,7 +89,7 @@ export default function EditableChip<T>(props: EditableChip_Props_t<T>) {
         onDelete={isEditing && props.onDelete ? undefined : () => props.onDelete!()}
         label={<>
             <em>{props.value.fieldName}:</em>
-            <EditModeChipComponent
+            <EditModeChipComponent<T, D>
                 value={value ?? props.value}
                 onChange={setValue}
                 isEditing={isEditing}
@@ -70,16 +104,16 @@ export default function EditableChip<T>(props: EditableChip_Props_t<T>) {
                 cancelEditing();
             } else if (keycode.isEventKey(ev.nativeEvent, "enter") && isEditing) {
                 commitEditing();
-            } else if (keycode.isEventKey(ev.nativeEvent, "f2") && !isEditing) {
+            } else if (keycode.isEventKey(ev.nativeEvent, "f2") && !isEditing && props.onChange) {
                 setEditing(true);
             }
         }}
     />;
 }
 
-type EditModeChipComponent_Props_t<T> = {
-    readonly value: IEditableChipData<T>,
-    readonly onChange: (value: IEditableChipData<T>) => void,
+type EditModeChipComponent_Props_t<T, D extends IEditableChipData<T>> = {
+    readonly value: D,
+    readonly onChange: (value: D) => void,
     readonly onCancel: () => void,
     readonly onCommit: () => void,
     readonly viewComponent: React.ComponentType<EditableChip_ViewComponent_Props_t<T>>;
@@ -87,7 +121,7 @@ type EditModeChipComponent_Props_t<T> = {
     readonly isEditing: boolean;
 };
 
-function EditModeChipComponent<T>(props: EditModeChipComponent_Props_t<T>) {
+function EditModeChipComponent<T, D extends IEditableChipData<T>>(props: EditModeChipComponent_Props_t<T, D>) {
     const { t } = useTranslation("finder-ui");
     const isRange = !props.value.fieldValue.value;
     const onKeyUp = useCallback((ev: KeyboardEvent) => {
