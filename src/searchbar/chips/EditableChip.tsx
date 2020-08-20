@@ -1,6 +1,6 @@
 import Chip from "@material-ui/core/Chip";
 import { Theme, withStyles, WithStyles } from "@material-ui/core/styles";
-import { fade } from "@material-ui/core/styles/colorManipulator";
+import { emphasize, fade } from "@material-ui/core/styles/colorManipulator";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CloseIcon from "@material-ui/icons/Close";
 import classnames from "classnames";
@@ -67,7 +67,20 @@ type EditableChip_ChangeComponent_Props_t<T> = {
     onKeyUp: (event: KeyboardEvent) => void,
 };
 
-export default function EditableChip<T, D extends IEditableChipData<T>>(props: EditableChip_Props_t<T, D>) {
+const editableChipStyles = (theme: Theme) => ({
+    invalidData: {
+        "backgroundColor": theme.palette.error.main,
+        "color": theme.palette.error.contrastText,
+        "&:hover, &:focus": {
+            backgroundColor: emphasize(theme.palette.error.main, 0.08),
+        },
+        "&:active": {
+            backgroundColor: emphasize(theme.palette.error.main, 0.12),
+        },
+    },
+});
+
+function EditableChip<T, D extends IEditableChipData<T>>(props: EditableChip_Props_t<T, D> & WithStyles<typeof editableChipStyles>) {
     const [isEditing, setEditing] = useState(props._editing ?? false);
     const [value, setValue] = useState<D|null>(null);
     const cancelEditing = useCallback(() => {
@@ -75,18 +88,26 @@ export default function EditableChip<T, D extends IEditableChipData<T>>(props: E
         setEditing(false);
     }, [setValue, setEditing]);
     const commitEditing = useCallback(() => {
-        props.onChange!(value ?? props.value);
-        cancelEditing();
+        const finalValue = value ?? props.value;
+        if (!isInvalid(finalValue)) {
+            props.onChange!(finalValue);
+            cancelEditing();
+        }
     }, [props.onChange, value, props.value, cancelEditing]);
+
     if (props.onChange) {
         invariant(props.editComponent, "editComponent is required when onChange is set.");
     }
     if (process.env.NODE_ENV !== "development") {
         invariant(props._editing === undefined, "_editing prop is only allowed for testing.");
     }
+
     return <Chip
         onDoubleClick={props.onChange && !isEditing ? () => setEditing(true) : undefined}
         onDelete={isEditing && props.onDelete ? undefined : () => props.onDelete!()}
+        className={classnames({
+            [props.classes.invalidData]: isInvalid(value ?? props.value),
+        })}
         label={<>
             <em>{props.value.fieldName}:</em>
             <EditModeChipComponent<T, D>
@@ -111,6 +132,8 @@ export default function EditableChip<T, D extends IEditableChipData<T>>(props: E
     />;
 }
 
+export default withStyles(editableChipStyles)(EditableChip);
+
 type EditModeChipComponent_Props_t<T, D extends IEditableChipData<T>> = {
     readonly value: D,
     readonly onChange: (value: D) => void,
@@ -123,7 +146,8 @@ type EditModeChipComponent_Props_t<T, D extends IEditableChipData<T>> = {
 
 function EditModeChipComponent<T, D extends IEditableChipData<T>>(props: EditModeChipComponent_Props_t<T, D>) {
     const { t } = useTranslation("finder-ui");
-    const isRange = !props.value.fieldValue.value;
+    const isRange = props.value.fieldValue.value === undefined;
+
     const onKeyUp = useCallback((ev: KeyboardEvent) => {
         if (keycode.isEventKey(ev.nativeEvent, "esc")) {
             props.onCancel();
@@ -156,18 +180,25 @@ function EditModeChipComponent<T, D extends IEditableChipData<T>>(props: EditMod
                     onChange={(value: T) => props.onChange({ ...props.value, fieldValue: { value } })}
                     onKeyUp={onKeyUp}
                 />}
-            <EditModeIconButton onClick={props.onCommit} color="primary">
+            <EditModeIconButton onClick={props.onCommit} color={isInvalid(props.value) ? "inherit" : "primary"} disabled={isInvalid(props.value)}>
                 <CheckCircleIcon aria-label={t("searchbar/chips/EditableChip/edit-done")} />
             </EditModeIconButton>
-            <EditModeIconButton onClick={props.onCancel}>
+            <EditModeIconButton onClick={props.onCancel} color="inherit">
                 <CloseIcon aria-label={t("searchbar/chips/EditableChip/edit-cancel")} />
             </EditModeIconButton>
         </>;
     }
 }
 
+function isInvalid<T>(chipData: IEditableChipData<T>) {
+    const isRange = chipData.fieldValue.value === undefined;
+
+    return isRange ? chipData.fieldValue.end === null && chipData.fieldValue.start === null : chipData.fieldValue.value === null;
+}
+
 type EditModeIconButton_Props_t = {
-    readonly color?: "primary" | "secondary",
+    readonly color?: "primary" | "secondary" | "inherit",
+    readonly disabled?: boolean,
     readonly onClick: () => void;
     readonly children: ReactElement;
 };
@@ -179,7 +210,7 @@ const editModeIconButtonStyles = (theme: Theme) => ({
         "cursor": "pointer",
         "height": "auto",
         "marginLeft": theme.spacing.unit / 2,
-        "&:hover": {
+        "&:hover, &:focus": {
             color: fade(theme.palette.text.primary, 0.4),
         },
         "&:last-child": {
@@ -188,7 +219,7 @@ const editModeIconButtonStyles = (theme: Theme) => ({
     },
     rootPrimary: {
         "color": theme.palette.primary.main,
-        "&:hover": {
+        "&:hover, &:focus": {
             color: fade(theme.palette.primary.main, 0.4),
         },
     },
@@ -196,8 +227,23 @@ const editModeIconButtonStyles = (theme: Theme) => ({
 
         "color": theme.palette.secondary.main,
 
-        "&:hover": {
+        "&:hover, &:focus": {
             color: fade(theme.palette.secondary.main, 0.4),
+        },
+    },
+    rootInherit: {
+        "color": "inherit",
+        "&:hover, &:focus": {
+            color: "inherit",
+            opacity: 0.9,
+        },
+    },
+    disabled: {
+        "cursor": "not-allowed",
+        "opacity": 0.5,
+        "&:hover, &:focus": {
+            color: "unset",
+            opacity: 0.5,
         },
     },
 
@@ -208,11 +254,14 @@ function EditModeIconButton_(props: EditModeIconButton_Props_t & WithStyles<type
         "className": classnames(iconChild.props.className, props.classes.root, {
             [props.classes.rootPrimary]: props.color === "primary",
             [props.classes.rootSecondary]: props.color === "secondary",
+            [props.classes.rootInherit]: props.color === "inherit",
+            [props.classes.disabled]: props.disabled ?? false,
         }),
-        "onClick": props.onClick,
-        "focusable": true,
+        "onClick": props.disabled ? undefined : props.onClick,
+        "focusable": !props.disabled,
         "role": "button",
         "aria-hidden": false,
+        "aria-disabled": !!props.disabled,
         "tabindex": 0,
     });
 }
