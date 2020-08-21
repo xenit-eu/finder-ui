@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
 import ChipIconButton from "./ChipIconButton";
 import ResizableChip from "./ResizableChip";
+import useKeypressHandler from "./useKeypressHandler";
 
 /**
  * Data structure for editable chips
@@ -109,6 +110,12 @@ function EditableChip<T, D extends IEditableChipData<T>>(props: EditableChip_Pro
 
     }
 
+    const keyUp = useKeypressHandler({
+        onExit: () => isEditing && cancelEditing(),
+        onCommit: () => isEditing && commitEditing(),
+        onModify: () => !isEditing && props.onChange && setEditing(true),
+    });
+
     return <ResizableChip
         onDoubleClick={props.onChange && !isEditing ? () => setEditing(true) : undefined}
         onDelete={isEditing || !props.onDelete ? undefined : () => props.onDelete!()}
@@ -127,15 +134,7 @@ function EditableChip<T, D extends IEditableChipData<T>>(props: EditableChip_Pro
                 onCancel={cancelEditing}
             />
         </>}
-        onKeyUp={(ev: KeyboardEvent) => {
-            if (keycode.isEventKey(ev.nativeEvent, "esc") && isEditing) {
-                cancelEditing();
-            } else if (keycode.isEventKey(ev.nativeEvent, "enter") && isEditing) {
-                commitEditing();
-            } else if (keycode.isEventKey(ev.nativeEvent, "f2") && !isEditing && props.onChange) {
-                setEditing(true);
-            }
-        }}
+        onKeyUp={keyUp}
     />;
 }
 
@@ -155,11 +154,9 @@ function EditModeChipComponent<T, D extends IEditableChipData<T>>(props: EditMod
     const { t } = useTranslation("finder-ui");
     const isRange = props.value.fieldValue.value === undefined;
 
-    const onKeyUp = useCallback((ev: KeyboardEvent) => {
-        if (keycode.isEventKey(ev.nativeEvent, "esc")) {
-            props.onCancel();
-        }
-    }, [props.onCancel]);
+    const onKeyUp = useKeypressHandler({
+        onExit: props.onCancel,
+    });
     if (!props.isEditing) {
         const ViewComponent = props.viewComponent;
         return isRange ? <>
