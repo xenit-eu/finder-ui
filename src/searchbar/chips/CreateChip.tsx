@@ -21,35 +21,39 @@ type CreateChip_Props_t = {
 };
 
 function CreateChip(props: CreateChip_Props_t) {
+    if (props._editing) {
+        invariant(props._editing === _editing, "_editing is internal, only to be used in storybook.");
+    }
+
     const [value, setValue] = useState<string | null>(props._editing ? "" : null);
-    const keyUp = useKeypressHandler({
+    const handlers = {
         onCommit: () => value === null ? setValue("") : (props.onCreate(value), setValue(null)),
         onExit: () => setValue(null),
         onModify: () => setValue(""),
-    });
+    };
+    const keyUp = useKeypressHandler(handlers);
     return <ResizableChip
         onKeyUp={keyUp}
-        label={<CreateChipLabel {...props} value={value} setValue={setValue}/>}
+        label={<CreateChipLabel {...handlers} value={value} setValue={setValue}/>}
     />;
 }
 
 export default CreateChip;
 
-type CreateChipLabel_Props_t = CreateChip_Props_t & {
+type CreateChipLabel_Props_t = {
+    onCommit: () => void,
+    onExit: () => void,
+    onModify: () => void,
     value: string|null,
     setValue: (v: string|null) => void,
 };
 
 function CreateChipLabel({ value, setValue, ...props }: CreateChipLabel_Props_t) {
     const { t } = useTranslation("finder-ui");
-    if (props._editing) {
-        invariant(props._editing === _editing, "_editing is internal, only to be used in storybook.");
-    }
-
     if (value === null) {
         return <>
             &emsp;
-            <ChipIconButton onClick={() => setValue("")} color="primary">
+            <ChipIconButton onClick={props.onModify} color="primary">
                 <AddCircleIcon aria-label={t("searchbar/chips/CreateChip/add")} />
             </ChipIconButton>
             &emsp;
@@ -57,10 +61,10 @@ function CreateChipLabel({ value, setValue, ...props }: CreateChipLabel_Props_t)
     } else {
         return <>
             <TextField value={value} onChange={(e) => setValue(e.target.value)} />
-            <ChipIconButton onClick={() => props.onCreate(value)} color="primary">
+            <ChipIconButton onClick={props.onCommit} color="primary">
                 <CheckCircleIcon aria-label={t("searchbar/chips/CreateChip/edit-done")} />
             </ChipIconButton>
-            <ChipIconButton onClick={() => setValue(null)} color="inherit">
+            <ChipIconButton onClick={props.onExit} color="inherit">
                 <CloseIcon aria-label={t("searchbar/chips/CreateChip/edit-cancel")} />
             </ChipIconButton>
         </>;
