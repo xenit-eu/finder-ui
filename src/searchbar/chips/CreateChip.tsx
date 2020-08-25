@@ -5,7 +5,6 @@ import CloseIcon from "@material-ui/icons/Close";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
-import StopPropagation from "../../util/StopPropagation";
 import ChipIconButton from "./ChipIconButton";
 import ResizableChip from "./ResizableChip";
 import useKeypressHandler from "./useKeypressHandler";
