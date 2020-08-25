@@ -1,41 +1,21 @@
 import { Theme, withStyles, WithStyles } from "@material-ui/core/styles";
 import { emphasize } from "@material-ui/core/styles/colorManipulator";
-import ArrowRightAltIcon from "@material-ui/icons/ArrowRightAlt";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CloseIcon from "@material-ui/icons/Close";
 import classnames from "classnames";
-import keycode from "keycode";
 import React, { KeyboardEvent, useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
+import FieldRenderer, {FieldRendererComponent, ISearchboxFieldData, isRange} from "../FieldRenderer";
 import ChipIconButton from "./ChipIconButton";
 import ResizableChip from "./ResizableChip";
 import useKeypressHandler from "./useKeypressHandler";
-
-/**
- * Data structure for editable chips
- */
-export interface IEditableChipData<T> {
-    /**
-     * Name of the field in the chip
-     */
-    readonly fieldName: string;
-
-    /**
-     * Value of the chip.
-     *
-     * It can be a single value (when the value key is set) or a value range (when the start and/or end keys are set)
-     *
-     * For value range, start or end keys can be omitted. In that case, an open-ended range will be displayed and constructed
-     */
-    readonly fieldValue: Readonly<{ value: T, start?: never, end?: never } | { start: T | null, end: T | null, value?: never }>;
-}
 
 // @internal
 // tslint:disable-next-line
 export const _editing = Symbol();
 
-export type EditableChip_Props_t<T, D extends IEditableChipData<T>> = {
+export type EditableChip_Props_t<T, D extends ISearchboxFieldData<T>> = {
     /**
      * Current chip data to show
      */
@@ -55,21 +35,16 @@ export type EditableChip_Props_t<T, D extends IEditableChipData<T>> = {
     /**
      * Component that will be used to display field values when the chip is in view-mode
      */
-    readonly viewComponent: React.ComponentType<EditableChip_ViewComponent_Props_t<T>>;
+    readonly viewComponent: FieldRendererComponent<T, {}>;
     /**
      * Component that will be used to display field values when the chip is in edit-mode
      */
-    readonly editComponent?: React.ComponentType<EditableChip_ChangeComponent_Props_t<T>>,
+    readonly editComponent?: FieldRendererComponent<T, EditableChip_ChangeComponent_Props_t<T>>,
     // @internal for storybook testing only
     readonly _editing?: typeof _editing,
 };
 
-type EditableChip_ViewComponent_Props_t<T> = {
-    value: T | null,
-};
-
 type EditableChip_ChangeComponent_Props_t<T> = {
-    value: T | null,
     onChange: (value: T | null) => void,
     onKeyUp: (event: KeyboardEvent) => void,
 };
@@ -87,7 +62,7 @@ const editableChipStyles = (theme: Theme) => ({
     },
 });
 
-function EditableChip<T, D extends IEditableChipData<T>>(props: EditableChip_Props_t<T, D> & WithStyles<typeof editableChipStyles>) {
+function EditableChip<T, D extends ISearchboxFieldData<T>>(props: EditableChip_Props_t<T, D> & WithStyles<typeof editableChipStyles>) {
     const [isEditing, setEditing] = useState(props._editing ? true : false);
     const [value, setValue] = useState<D|null>(null);
     const cancelEditing = useCallback(() => {
@@ -122,9 +97,7 @@ function EditableChip<T, D extends IEditableChipData<T>>(props: EditableChip_Pro
         className={classnames({
             [props.classes.invalidData]: isInvalid(value ?? props.value),
         })}
-        label={<>
-            <em>{props.value.fieldName}:</em>
-            <EditModeChipComponent<T, D>
+        label={<EditModeChipComponent<T, D>
                 value={value ?? props.value}
                 onChange={setValue}
                 isEditing={isEditing}
@@ -132,58 +105,39 @@ function EditableChip<T, D extends IEditableChipData<T>>(props: EditableChip_Pro
                 editComponent={props.editComponent!}
                 onCommit={commitEditing}
                 onCancel={cancelEditing}
-            />
-        </>}
+            />}
         onKeyUp={keyUp}
     />;
 }
 
 export default withStyles(editableChipStyles)(EditableChip);
 
-type EditModeChipComponent_Props_t<T, D extends IEditableChipData<T>> = {
+type EditModeChipComponent_Props_t<T, D extends ISearchboxFieldData<T>> = {
     readonly value: D,
     readonly onChange: (value: D) => void,
     readonly onCancel: () => void,
     readonly onCommit: () => void,
-    readonly viewComponent: React.ComponentType<EditableChip_ViewComponent_Props_t<T>>;
-    readonly editComponent: React.ComponentType<EditableChip_ChangeComponent_Props_t<T>>,
+    readonly viewComponent: FieldRendererComponent<T, {}>,
+    readonly editComponent: FieldRendererComponent<T, EditableChip_ChangeComponent_Props_t<T>>,
     readonly isEditing: boolean;
 };
 
-function EditModeChipComponent<T, D extends IEditableChipData<T>>(props: EditModeChipComponent_Props_t<T, D>) {
+function EditModeChipComponent<T, D extends ISearchboxFieldData<T>>(props: EditModeChipComponent_Props_t<T, D>) {
     const { t } = useTranslation("finder-ui");
-    const isRange = props.value.fieldValue.value === undefined;
 
     const onKeyUp = useKeypressHandler({
         onExit: props.onCancel,
     });
     if (!props.isEditing) {
-        const ViewComponent = props.viewComponent;
-        return isRange ? <>
-            <ViewComponent value={props.value.fieldValue.start!} />
-            <ArrowRightAltIcon />
-            <ViewComponent value={props.value.fieldValue.end!} />
-        </> : <ViewComponent value={props.value.fieldValue.value!} />;
+        return <FieldRenderer data={props.value} component={props.viewComponent} componentProps={{}} />;
     } else {
-        const ChangeComponent = props.editComponent;
         return <>
-            {isRange ? <>
-                <ChangeComponent
-                    value={props.value.fieldValue.start!}
-                    onChange={(start: T) => props.onChange({ ...props.value, fieldValue: { start, end: props.value.fieldValue.end! } })}
-                    onKeyUp={onKeyUp}
-                />
-                <ArrowRightAltIcon />
-                <ChangeComponent
-                    value={props.value.fieldValue.end!}
-                    onChange={(end: T) => props.onChange({ ...props.value, fieldValue: { start: props.value.fieldValue.start!, end } })}
-                    onKeyUp={onKeyUp}
-                />
-            </> : <ChangeComponent
-                    value={props.value.fieldValue.value!}
-                    onChange={(value: T) => props.onChange({ ...props.value, fieldValue: { value } })}
-                    onKeyUp={onKeyUp}
-                />}
+            <FieldRenderer
+                data={props.value}
+                onChange={props.onChange}
+                component={props.editComponent}
+                componentProps={{ onKeyUp }}
+            />
             <ChipIconButton onClick={props.onCommit} color={isInvalid(props.value) ? "inherit" : "primary"} disabled={isInvalid(props.value)}>
                 <CheckCircleIcon aria-label={t("searchbar/chips/EditableChip/edit-done")} />
             </ChipIconButton>
@@ -194,8 +148,6 @@ function EditModeChipComponent<T, D extends IEditableChipData<T>>(props: EditMod
     }
 }
 
-function isInvalid<T>(chipData: IEditableChipData<T>) {
-    const isRange = chipData.fieldValue.value === undefined;
-
-    return isRange ? chipData.fieldValue.end === null && chipData.fieldValue.start === null : chipData.fieldValue.value === null;
+function isInvalid<T>(chipData: ISearchboxFieldData<T>) {
+    return isRange(chipData.fieldValue) ? chipData.fieldValue.end === null && chipData.fieldValue.start === null : chipData.fieldValue.value === null;
 }

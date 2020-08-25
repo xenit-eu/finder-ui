@@ -1,4 +1,4 @@
-import { List, Typography } from "@material-ui/core";
+import { List } from "@material-ui/core";
 import { action } from "@storybook/addon-actions";
 import React from "react";
 import AutocompleteListEntry from "./AutocompleteListEntry";
