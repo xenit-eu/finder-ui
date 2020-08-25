@@ -1,6 +1,6 @@
 import { ListItem, ListItemText } from "@material-ui/core";
 import React from "react";
-import FieldRenderer, { FieldRendererComponent, ISearchboxFieldData } from "./FieldRenderer";
+import FieldRenderer, { FieldRendererComponent, ISearchboxFieldData } from "../FieldRenderer";
 
 type AutocompleteListEntry_Props_t<T, D extends ISearchboxFieldData<T>> = {
     readonly value: D,

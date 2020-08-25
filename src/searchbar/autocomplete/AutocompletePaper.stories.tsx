@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import AutocompletePaper from "./AutocompletePaper";
 
 export default {
-    title: "searchbar/AutocompletePaper",
+    title: "searchbar/autocomplete/AutocompletePaper",
     component: AutocompletePaper,
 };
 

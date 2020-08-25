@@ -4,7 +4,7 @@ import React from "react";
 import AutocompleteListEntry from "./AutocompleteListEntry";
 
 export default {
-    title: "searchbar/AutocompleteListEntry",
+    title: "searchbar/autocomplete/AutocompleteListEntry",
     component: AutocompleteListEntry,
 };
 
