@@ -6,7 +6,7 @@ import classnames from "classnames";
 import React, { KeyboardEvent, useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
-import FieldRenderer, {FieldRendererComponent, ISearchboxFieldData, isRange} from "../FieldRenderer";
+import FieldRenderer, {FieldRendererComponent, ISearchboxFieldData, isEmptyValue, isRange} from "../FieldRenderer";
 import ChipIconButton from "./ChipIconButton";
 import ResizableChip from "./ResizableChip";
 import useKeypressHandler from "./useKeypressHandler";
@@ -83,6 +83,7 @@ function EditableChip<T, D extends ISearchboxFieldData<T>>(props: EditableChip_P
         invariant(props._editing === _editing, "_editing is internal, only to be used in storybook.");
 
     }
+    invariant(!isEmptyValue(props.value.fieldValue), "value.fieldValue can not be an empty value.");
 
     const keyUp = useKeypressHandler({
         onExit: () => isEditing && cancelEditing(),
@@ -148,5 +149,6 @@ function EditModeChipComponent<T, D extends ISearchboxFieldData<T>>(props: EditM
 }
 
 function isInvalid<T>(chipData: ISearchboxFieldData<T>) {
+    invariant(!isEmptyValue(chipData.fieldValue), "chipData.fieldValue can not be an empty value.");
     return isRange(chipData.fieldValue) ? chipData.fieldValue.end === null && chipData.fieldValue.start === null : chipData.fieldValue.value === null;
 }
