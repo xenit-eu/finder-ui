@@ -30,12 +30,14 @@ interface ISearchboxFieldDataRangeValue<T> {
     readonly end: T | null;
 }
 
+export type FieldRendererComponentProps<T, ComponentProps> = AutocompleteListEntry_ViewComponent_Props_t<T> & ComponentProps;
+
 /**
  * A react component that is used to render field values
  * @template T data-type that the component renders
  * @template ComponentProps Additional, shared properties that are passed to the renderer
  */
-export type FieldRendererComponent<T, ComponentProps> = React.ComponentType<AutocompleteListEntry_ViewComponent_Props_t<T> & ComponentProps>;
+export type FieldRendererComponent<T, ComponentProps> = React.ComponentType<FieldRendererComponentProps<T, ComponentProps>>;
 
 /**
  * Properties for the field renderer

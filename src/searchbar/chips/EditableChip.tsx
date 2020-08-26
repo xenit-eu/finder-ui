@@ -45,7 +45,6 @@ export type EditableChip_Props_t<T, D extends ISearchboxFieldData<T>> = {
 };
 
 type EditableChip_ChangeComponent_Props_t<T> = {
-    onChange: (value: T | null) => void,
     onKeyUp: (event: KeyboardEvent) => void,
 };
 
