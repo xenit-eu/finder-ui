@@ -1,4 +1,5 @@
-import { Theme, WithStyles, withStyles } from "@material-ui/core";
+import { TextField, Theme, WithStyles, withStyles } from "@material-ui/core";
+import { TextFieldProps } from "@material-ui/core/TextField";
 import { InlineDatePicker, InlineDateTimePicker } from "material-ui-pickers";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -7,6 +8,10 @@ import { FieldRendererComponentProps } from "../FieldRenderer";
 type DateComponent_Props_t = {
     includeTime: boolean,
 };
+
+function FullWidthTextField(props: TextFieldProps) {
+    return <TextField {...props} fullWidth />;
+}
 
 export default function DateComponent(props: FieldRendererComponentProps<Date, DateComponent_Props_t>) {
     const { t } = useTranslation("finder-ui");
@@ -39,6 +44,7 @@ export default function DateComponent(props: FieldRendererComponentProps<Date, D
                     return invalidLabel;
                 }
             }}
+            TextFieldComponent={FullWidthTextField}
         />;
     } else {
         if (!props.value) {
