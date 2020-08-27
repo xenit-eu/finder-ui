@@ -98,14 +98,14 @@ function EditableChip<T, D extends ISearchboxFieldData<T>>(props: EditableChip_P
             [props.classes.invalidData]: isInvalid(value ?? props.value),
         })}
         label={<EditModeChipComponent<T, D>
-                value={value ?? props.value}
-                onChange={setValue}
-                isEditing={isEditing}
-                viewComponent={props.viewComponent}
-                editComponent={props.editComponent!}
-                onCommit={commitEditing}
-                onCancel={cancelEditing}
-            />}
+            value={value ?? props.value}
+            onChange={setValue}
+            isEditing={isEditing}
+            viewComponent={props.viewComponent}
+            editComponent={props.editComponent!}
+            onCommit={commitEditing}
+            onCancel={cancelEditing}
+        />}
         onKeyUp={keyUp}
     />;
 }

@@ -1,6 +1,7 @@
 import { TextField } from "@material-ui/core";
 import { action } from "@storybook/addon-actions";
 import React from "react";
+import TextComponent from "../renderer/Text";
 import EditableChip, { _editing } from "./EditableChip";
 
 export default {
@@ -29,18 +30,7 @@ const fieldWithNoData = {
 const editingProp = {
     _editing,
 };
-function viewComponent({ value }) {
-    if (value === null) {
-        return "";
-    }
-    return value.toString();
-}
-
-function editComponent({ onChange, value, onKeyUp }) {
-    return <TextField value={value} onChange={(e) => onChange(e.target.value || null)} onKeyUp={onKeyUp} />;
-}
-
-const BaseEditableChip = (props) => <EditableChip viewComponent={viewComponent} editComponent={editComponent} {...props} />;
+const BaseEditableChip = (props) => <EditableChip viewComponent={TextComponent} editComponent={TextComponent} {...props} />;
 
 export const plain = () => <BaseEditableChip value={fieldWithValue} />;
 export const plainRange = () => <BaseEditableChip value={fieldWithRange} />;
