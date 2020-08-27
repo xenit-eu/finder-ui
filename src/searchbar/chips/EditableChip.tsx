@@ -118,7 +118,7 @@ type EditModeChipComponent_Props_t<T, D extends ISearchboxFieldData<T>> = {
     readonly onCancel?: () => void,
     readonly onCommit?: () => void,
     readonly viewComponent: FieldRendererComponent<T, {}>,
-    readonly editComponent: FieldRendererComponent<T, EditableChip_ChangeComponent_Props_t<T>>,
+    readonly editComponent: FieldRendererComponent<T, EditableChip_ChangeComponent_Props_t>,
     readonly isEditing: boolean;
 };
 

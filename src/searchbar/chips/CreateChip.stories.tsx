@@ -1,10 +1,19 @@
 import { action } from "@storybook/addon-actions";
 import React from "react";
-import CreateChip, { _editing } from "./CreateChip";
+import CreateChip from "./CreateChip";
 export default {
     title: "searchbar/chips/CreateChip",
     component: CreateChip,
 };
 
-export const normal = () => <CreateChip onCreate={action("create")} />;
-export const editing = () => <CreateChip onCreate={action("create")} _editing={_editing}/>;
+const BaseCreateChip = (props) => <CreateChip
+    onBeginEditing={action("beginEditing")}
+    onCommitEditing={action("commitEditing")}
+    onCancelEditing={action("cancelEditing")}
+    onChange={action("change")}
+    editing={false}
+    {...props}
+/>;
+
+export const normal = () => <BaseCreateChip />;
+export const editing = () => <BaseCreateChip value={"Some value"} editing={true}/>;
