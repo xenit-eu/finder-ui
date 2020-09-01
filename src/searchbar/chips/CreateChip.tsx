@@ -2,70 +2,86 @@ import { TextField } from "@material-ui/core";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CloseIcon from "@material-ui/icons/Close";
-import React, { useState } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
-import invariant from "tiny-invariant";
 import ChipIconButton from "./ChipIconButton";
 import ResizableChip from "./ResizableChip";
 import useKeypressHandler from "./useKeypressHandler";
 
-// @internal
-// tslint:disable-next-line
-export const _editing = Symbol();
-
 type CreateChip_Props_t = {
-    readonly onCreate: (value: string) => void,
-    // @internal for storybook testing only
-    readonly _editing?: typeof _editing;
+    /**
+     * Current chip data to show
+     */
+    readonly value?: string;
+    /**
+     * Function that is called when the chip data is changed
+     */
+    readonly onChange: (value: string) => void,
+
+    /**
+     * Component is in edit mode
+     */
+    readonly editing: boolean,
+
+    /**
+     * Function that is called when editing is initiated
+     */
+    readonly onBeginEditing: () => void,
+
+    /**
+     * Function that is called when editing is cancelled
+     */
+    readonly onCancelEditing: () => void,
+
+    /**
+     * Function that is called when editing is committed
+     */
+    readonly onCommitEditing: () => void,
 };
 
 function CreateChip(props: CreateChip_Props_t) {
-    if (props._editing) {
-        invariant(props._editing === _editing, "_editing is internal, only to be used in storybook.");
-    }
-
-    const [value, setValue] = useState<string | null>(props._editing ? "" : null);
     const handlers = {
-        onCommit: () => value === null ? setValue("") : (props.onCreate(value), setValue(null)),
-        onExit: () => setValue(null),
-        onModify: () => setValue(""),
+        onExit: props.editing ? props.onCancelEditing : undefined,
+        onCommit: props.editing ? props.onCommitEditing : undefined,
+        onModify: !props.editing ? props.onBeginEditing : () => {},
     };
     const keyUp = useKeypressHandler(handlers);
     return <ResizableChip
         onKeyUp={keyUp}
-        label={<CreateChipLabel {...handlers} value={value} setValue={setValue}/>}
+        label={<CreateChipLabel {...handlers} value={props.value} onChange={props.onChange} editing={props.editing} />}
     />;
 }
 
 export default CreateChip;
 
 type CreateChipLabel_Props_t = {
-    onCommit: () => void,
-    onExit: () => void,
-    onModify: () => void,
-    value: string|null,
-    setValue: (v: string|null) => void,
+    readonly onCommit?: () => void,
+    readonly onExit?: () => void,
+    readonly onModify: () => void,
+    readonly editing: boolean;
+    readonly value?: string,
+    readonly onChange: (v: string) => void,
 };
 
-function CreateChipLabel({ value, setValue, ...props }: CreateChipLabel_Props_t) {
+function CreateChipLabel(props: CreateChipLabel_Props_t) {
     const { t } = useTranslation("finder-ui");
-    if (value === null) {
+    if (!props.editing) {
         return <>
             &emsp;
-            <ChipIconButton onClick={props.onModify} color="primary">
+            <ChipIconButton onClick={() => props.onModify()} color="primary">
                 <AddCircleIcon aria-label={t("searchbar/chips/CreateChip/add")} />
             </ChipIconButton>
             &emsp;
         </>;
     } else {
         return <>
-            <TextField value={value} onChange={(e) => setValue(e.target.value)} />
-            <ChipIconButton onClick={props.onCommit} color="primary">
+            <TextField value={props.value ?? ""} onChange={(e) => props.onChange(e.target.value)} />
+            {props.onCommit && <ChipIconButton onClick={() => props.onCommit!()} color="primary">
                 <CheckCircleIcon aria-label={t("searchbar/chips/CreateChip/edit-done")} />
-            </ChipIconButton>
-            <ChipIconButton onClick={props.onExit} color="inherit">
+            </ChipIconButton>}
+            {props.onExit && <ChipIconButton onClick={() => props.onExit!()} color="inherit">
                 <CloseIcon aria-label={t("searchbar/chips/CreateChip/edit-cancel")} />
-            </ChipIconButton>
+            </ChipIconButton>}
         </>;
     }
 }
