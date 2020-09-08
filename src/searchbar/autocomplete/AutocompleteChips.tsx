@@ -51,6 +51,9 @@ function AutocompleteChips(props: AutocompleteChips_Props_t & WithStyles<typeof 
     const scrollableAreaRef = useRef<HTMLDivElement>(null);
     const childrenContainerRef = useRef<HTMLDivElement>(null);
     useEffect(() => {
+        if (!window.IntersectionObserver) {
+            return;
+        }
         if (!scrollableAreaRef.current || !childrenContainerRef.current) {
             return;
         }
