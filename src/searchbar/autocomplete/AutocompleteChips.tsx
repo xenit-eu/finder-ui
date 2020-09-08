@@ -10,6 +10,11 @@ const styles = (theme: Theme) => ({
         display: "flex" as const,
         overflowY: "auto" as const,
     },
+    disabledAfterOverflowIndicator: {
+        "&:after": {
+            display: "none" as const,
+        },
+    },
     children: {
         "display": "flex" as const,
         "flexDirection": "row" as const,
@@ -43,8 +48,36 @@ const styles = (theme: Theme) => ({
 });
 
 function AutocompleteChips(props: AutocompleteChips_Props_t & WithStyles<typeof styles>) {
-    return <div className={props.classes.root}>
-        <div className={props.classes.children}>
+    const scrollableAreaRef = useRef<HTMLDivElement>(null);
+    const childrenContainerRef = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+        if (!scrollableAreaRef.current || !childrenContainerRef.current) {
+            return;
+        }
+        const lastChild = childrenContainerRef.current.lastElementChild;
+        if (!lastChild) {
+            return;
+        }
+        const observer = new IntersectionObserver((entries) => {
+            if (!entries[0] || !childrenContainerRef.current) {
+                return;
+            }
+            if (entries[0].intersectionRatio > 0.999) {
+                childrenContainerRef.current.classList.add(props.classes.disabledAfterOverflowIndicator);
+            } else {
+                childrenContainerRef.current.classList.remove(props.classes.disabledAfterOverflowIndicator);
+            }
+        }, {
+            root: scrollableAreaRef.current,
+            threshold: 1.0,
+        });
+
+        observer.observe(lastChild);
+
+        return () => observer.disconnect();
+    }, [scrollableAreaRef.current, childrenContainerRef.current]);
+    return <div className={props.classes.root} ref={scrollableAreaRef}>
+        <div className={props.classes.children} ref={childrenContainerRef}>
             {props.children}
         </div>
     </div>;
