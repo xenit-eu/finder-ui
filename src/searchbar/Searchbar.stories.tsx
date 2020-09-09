@@ -39,7 +39,12 @@ const actions = <>
     </IconButton>
 </>;
 
-export const editing = () => <Searchbar value={"Some typed in value"} onChange={action("change")} editing={true} actions={actions}>
+export const editing = () => <Searchbar value="Some typed in value" onChange={action("change")} editing={true} actions={actions}>
+    <SomeEditableChip />
+    <SomeEditableChip />
+</Searchbar>;
+
+export const notEditing = () => <Searchbar value="Some typed in value" onChange={action("change")} editing={false} actions={actions}>
     <SomeEditableChip />
     <SomeEditableChip />
 </Searchbar>;
