@@ -13,11 +13,6 @@ export default {
     component: Searchbar,
 };
 
-const fieldWithValue = {
-    fieldName: "Some field",
-    fieldValue: { value: "abc" },
-};
-
 const SomeEditableChip = (props) => <EditableChip
     viewComponent={TextComponent}
     editComponent={TextComponent}
