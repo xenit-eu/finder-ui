@@ -1,6 +1,7 @@
-import { Collapse, Paper, Theme, WithStyles, withStyles } from "@material-ui/core";
-import React, { useLayoutEffect, useRef, useState } from "react";
+import { Collapse, Paper, Popper, Theme, WithStyles, withStyles } from "@material-ui/core";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { findDOMNode } from "react-dom";
+import sizeMe from "react-sizeme";
 import useKeypressHandler from "../chips/useKeypressHandler";
 
 type AutocompletePaper_Props_t = {
@@ -12,6 +13,9 @@ type AutocompletePaper_Props_t = {
 
 const styles = (theme: Theme) => ({
     root: {
+    },
+    target: {
+
     },
     paper: {
         maxHeight: "100vh",
@@ -32,36 +36,68 @@ const styles = (theme: Theme) => ({
     },
 });
 
+const DivWithSize = sizeMe({ noPlaceholder: true, monitorWidth: true, monitorHeight: false, monitorPosition: false })(({ size, ...props }: any) => <div {...props} />);
+
+function calculateElementTop(element: HTMLElement|null) {
+    let size = 0;
+    if (element) {
+
+        do {
+            size += element.offsetTop;
+        // tslint:disable-next-line
+        } while ((element = element.offsetParent as HTMLElement | null));
+
+    }
+    return size;
+}
+
+function calculateMaxHeight({ windowHeight, elemHeight, elemTop }: Record<"windowHeight"| "elemHeight"| "elemTop", number | null | undefined>) {
+    const maxHeight = (windowHeight ?? 0) - ((elemHeight ?? 0) + (elemTop ?? 0)) - 40;
+    return Math.max(maxHeight, 200);
+}
+
 function AutocompletePaper(props: AutocompletePaper_Props_t & WithStyles<typeof styles>) {
-    const collapseElem = useRef<HTMLDivElement>();
-    const [maxHeight, setMaxHeight] = useState(0);
-    useLayoutEffect(() => {
-        if (collapseElem.current) {
-            const domElem = findDOMNode(collapseElem.current) as HTMLElement | null;
-            if (!domElem) {
-                return;
-            }
-            const offsetParent = domElem.offsetParent as HTMLElement | null;
-            if (offsetParent) {
-                const newMaxHeight = Math.max(offsetParent.offsetHeight - domElem.offsetTop - 40, 200);
-                if (maxHeight !== newMaxHeight && newMaxHeight > 0) {
-                    setMaxHeight(newMaxHeight);
-                }
-            }
-        }
-    });
+    const collapseElem = useRef<React.ReactInstance>();
+    const [targetElem, setTargetElem] = useState<HTMLDivElement|null>(null);
+    const [autocompleteMaxHeight, setAutocompleteMaxHeight] = useState(200);
+    const [autocompleteWidth, setAutocompleteWidth] = useState<number>();
     const onKeyUp = useKeypressHandler({
         onExit: props.onDismiss,
     });
+
+    useEffect(() => {
+        function resizeSubscriber() {
+            setAutocompleteMaxHeight(calculateMaxHeight({
+                windowHeight: window.innerHeight,
+                elemHeight: targetElem?.offsetHeight,
+                elemTop: calculateElementTop(targetElem),
+            }));
+        }
+
+        resizeSubscriber();
+        window.addEventListener("resize", resizeSubscriber);
+        return () => window.removeEventListener("resize", resizeSubscriber);
+    }, [setAutocompleteMaxHeight, targetElem]);
+
     return <div className={props.classes.root}>
-        {props.target}
-        <Collapse in={props.open} className={props.classes.collapse} classes={{
-            wrapperInner: props.classes.collapseInner,
-        }} innerRef={collapseElem}>
-            <Paper elevation={2} className={props.classes.paper} style={{ maxHeight }} onKeyUp={onKeyUp}>
-                {props.children}
-            </Paper>
-        </Collapse>
+        <DivWithSize className={props.classes.target} ref={(e: any) => setTargetElem(findDOMNode(e) as HTMLDivElement)} onSize={({ width }) => {
+            setAutocompleteWidth(width ?? undefined);
+        }}>
+            {props.target}
+        </DivWithSize>
+        <Popper anchorEl={targetElem} open={props.open} placement="bottom-start" transition>
+            {({ TransitionProps }) => <Collapse className={props.classes.collapse} classes={{
+                    wrapperInner: props.classes.collapseInner,
+                }} innerRef={collapseElem} {...TransitionProps}>
+                    <Paper elevation={2} className={props.classes.paper} style={{
+                        width: autocompleteWidth,
+                        maxHeight: autocompleteMaxHeight,
+                    }} onKeyUp={onKeyUp}>
+                        {props.children}
+                    </Paper>
+                </Collapse>
+            }
+        </Popper>
     </div>;
 }
 
