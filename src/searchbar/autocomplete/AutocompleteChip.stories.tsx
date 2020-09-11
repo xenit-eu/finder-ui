@@ -1,4 +1,5 @@
 import { action } from "@storybook/addon-actions";
+import scoreStringSimilarity from "@xenit/finder-string-similarity-score";
 import React from "react";
 import { SearchboxEmptyFieldValue } from "../FieldRenderer";
 import AutocompleteChip from "./AutocompleteChip";
@@ -46,3 +47,7 @@ export const withOpenRange = () => <AutocompleteChip value={fieldWithOpenRange} 
 export const withNoData = () => <AutocompleteChip value={fieldWithNoData} viewComponent={viewComponent} onSelect={action("select")} />;
 export const withEmptyValue = () => <AutocompleteChip value={fieldWithEmptyValue} viewComponent={viewComponent} onSelect={action("select")} />;
 export const withEmptyRange = () => <AutocompleteChip value={fieldWithEmptyRange} viewComponent={viewComponent} onSelect={action("select")} />;
+export const withCustomText = () => <AutocompleteChip value={fieldWithEmptyRange} customText="Some custom value" viewComponent={viewComponent} onSelect={action("select")} />;
+export const withCustomTextHighlights = () => <AutocompleteChip value={fieldWithEmptyRange}
+    customText={scoreStringSimilarity("custo ue", "Some custom value")}
+    viewComponent={viewComponent} onSelect={action("select")} />;

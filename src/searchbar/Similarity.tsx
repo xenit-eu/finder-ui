@@ -30,11 +30,16 @@ type RenderHighlights_Props_t = {
     readonly highlightComponent: React.ComponentType,
 };
 
+function fixText(text: string): string {
+    // Replace spaces with non-breaking spaces, so spaces that end up at the start or end of an HTML tag are not swallowed.
+    return text.replace(/ /g, "\xa0");
+}
+
 export function RenderSimilarity(props: RenderHighlights_Props_t) {
     const similarity = toSimilarity(props.text);
     const debugInfo = d.enabled ? <i style={{outline: "1px dashed deeppink"}}>(Score: {similarity.score})</i> : null;
     return <>{similarity.chunks.map((chunk, i) => chunk.matched ?
-        <props.highlightComponent key={i}>{chunk.text}</props.highlightComponent> :
-        <React.Fragment key={i}>{chunk.text}</React.Fragment>)
+        <props.highlightComponent key={i}>{fixText(chunk.text)}</props.highlightComponent> :
+        <span key={i}>{fixText(chunk.text)}</span>)
     }{debugInfo}</>;
 }
