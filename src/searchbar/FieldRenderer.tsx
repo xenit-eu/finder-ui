@@ -2,6 +2,7 @@ import React from "react";
 
 import ArrowRightAltIcon from "@material-ui/icons/ArrowRightAlt";
 import invariant from "tiny-invariant";
+import { StringOrSimilarity } from "./Similarity";
 
 /**
  * Data structure for fields
@@ -30,10 +31,13 @@ export enum SearchboxEmptyFieldValue {
 
 interface ISearchboxFieldDataSingleValue<T> {
     readonly value: T;
+    readonly similarity?: StringOrSimilarity;
 }
 interface ISearchboxFieldDataRangeValue<T> {
     readonly start: T | null;
+    readonly startSimilarity?: StringOrSimilarity;
     readonly end: T | null;
+    readonly endSimilarity?: StringOrSimilarity;
 }
 
 export type FieldRendererComponentProps<T, ComponentProps> = AutocompleteListEntry_ViewComponent_Props_t<T> & ComponentProps;
@@ -60,6 +64,7 @@ type FieldRenderer_Props_t<T, D extends ISearchboxFieldData<T>, ComponentProps> 
 
 type AutocompleteListEntry_ViewComponent_Props_t<T> = {
     readonly value: T | null,
+    readonly similarity?: StringOrSimilarity,
     readonly onChange?: (newValue: T | null) => void,
 };
 
@@ -116,13 +121,13 @@ function FieldValue<T, D extends ISearchboxFieldData<T>, ComponentProps>(props: 
     }
     if (isRange(props.data.fieldValue)) {
         return <>
-            <props.component {...props.componentProps} value={props.data.fieldValue.start} onChange={createOnChange("start")} />
+            <props.component {...props.componentProps} value={props.data.fieldValue.start} similarity={props.data.fieldValue.startSimilarity} onChange={createOnChange("start")} />
             &nbsp;
             <ArrowRightAltIcon fontSize="inherit" />
             &nbsp;
-            <props.component {...props.componentProps} value={props.data.fieldValue.end} onChange={createOnChange("end")} />
+            <props.component {...props.componentProps} value={props.data.fieldValue.end} similarity={props.data.fieldValue.endSimilarity} onChange={createOnChange("end")} />
         </>;
     } else {
-        return <props.component {...props.componentProps} value={props.data.fieldValue.value} onChange={createOnChange("value")} />;
+        return <props.component {...props.componentProps} value={props.data.fieldValue.value} similarity={props.data.fieldValue.similarity} onChange={createOnChange("value")} />;
     }
 }

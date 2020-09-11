@@ -50,6 +50,7 @@
     "@types/react-rte": "^0.16.1",
     "@types/react-table": "^6.8.7",
     "@types/uuid": "^7.0.2",
+    "@xenit/finder-string-similarity-score": "^0.1.0",
     "@xenit/finder-utils": "^1.0.2",
     "classnames": "^2.2.6",
     "debug": "^4.1.1",

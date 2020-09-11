@@ -1,5 +1,6 @@
 import DateFnsUtils from "@date-io/date-fns";
 import { action } from "@storybook/addon-actions";
+import scoreStringSimilarity from "@xenit/finder-string-similarity-score";
 import { MuiPickersUtilsProvider } from "material-ui-pickers";
 import React from "react";
 import DateComponent from "./Date";
@@ -26,7 +27,7 @@ export const withTime = () => <Wrapper>
 </Wrapper>;
 
 export const empty = () => <Wrapper>
-    <DateComponent value={null} />
+    <DateComponent value={null} includeTime={false} />
 </Wrapper>;
 
 export const editable = () => <Wrapper>
@@ -35,4 +36,8 @@ export const editable = () => <Wrapper>
 
 export const editableWithTime = () => <Wrapper>
     <DateComponent value={date} onChange={action("change")} includeTime={true} />
+</Wrapper>;
+
+export const highlighted = () => <Wrapper>
+    <DateComponent value={date} similarity={scoreStringSimilarity("2020", date.toDateString())} includeTime={false}/>
 </Wrapper>;
