@@ -1,5 +1,5 @@
 import { Collapse, Paper, Popper, Theme, WithStyles, withStyles } from "@material-ui/core";
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { findDOMNode } from "react-dom";
 import sizeMe from "react-sizeme";
 import useKeypressHandler from "../chips/useKeypressHandler";
@@ -16,6 +16,9 @@ const styles = (theme: Theme) => ({
     },
     target: {
 
+    },
+    popover: {
+        zIndex: theme.zIndex.tooltip,
     },
     paper: {
         maxHeight: "100vh",
@@ -85,7 +88,7 @@ function AutocompletePaper(props: AutocompletePaper_Props_t & WithStyles<typeof 
         }}>
             {props.target}
         </DivWithSize>
-        <Popper anchorEl={targetElem} open={props.open} placement="bottom-start" transition>
+        <Popper anchorEl={targetElem} open={props.open} className={props.classes.popover} placement="bottom-start" transition>
             {({ TransitionProps }) => <Collapse className={props.classes.collapse} classes={{
                     wrapperInner: props.classes.collapseInner,
                 }} innerRef={collapseElem} {...TransitionProps}>
