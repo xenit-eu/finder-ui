@@ -1,5 +1,6 @@
 import { List } from "@material-ui/core";
 import { action } from "@storybook/addon-actions";
+import scoreStringSimilarity from "@xenit/finder-string-similarity-score";
 import React from "react";
 import { SearchboxEmptyFieldValue } from "../FieldRenderer";
 import AutocompleteListEntry from "./AutocompleteListEntry";
@@ -60,4 +61,11 @@ export const withEmptyValue = () => <List>
 
 export const withEmptyRange = () => <List>
     <AutocompleteListEntry value={fieldWithEmptyRange} viewComponent={viewComponent} onSelect={action("select")} />
+</List>;
+
+export const withCustomText = () => <List>
+    <AutocompleteListEntry value={fieldWithEmptyRange} customText="Some custom value" viewComponent={viewComponent} onSelect={action("select")} />
+</List>;
+export const withCustomTextHighlights = () => <List>
+    <AutocompleteListEntry value={fieldWithEmptyRange} customText={scoreStringSimilarity("custo ue", "Some custom value")} viewComponent={viewComponent} onSelect={action("select")} />
 </List>;

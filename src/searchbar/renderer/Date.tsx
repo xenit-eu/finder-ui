@@ -4,6 +4,8 @@ import { InlineDatePicker, InlineDateTimePicker } from "material-ui-pickers";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { FieldRendererComponentProps } from "../FieldRenderer";
+import { RenderSimilarity } from "../Similarity";
+import HighlightComponent from "./HighlightComponent";
 
 type DateComponent_Props_t = {
     includeTime: boolean,
@@ -50,10 +52,9 @@ export default function DateComponent(props: FieldRendererComponentProps<Date, D
         if (!props.value) {
             return <EmptyDate />;
         } else {
-            return <>{renderDate(props.value)}</>;
+            return <RenderSimilarity text={props.similarity ?? renderDate(props.value)} highlightComponent={HighlightComponent} />;
         }
     }
-
 }
 
 const emptyDateStyle = (theme: Theme) => ({
