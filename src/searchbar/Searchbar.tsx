@@ -1,4 +1,4 @@
-import { TextField, Theme, withStyles, WithStyles } from "@material-ui/core";
+import { Input, Paper, Theme, withStyles, WithStyles } from "@material-ui/core";
 import React from "react";
 
 type Searchbar_Props_t = {
@@ -38,17 +38,22 @@ const styles = (theme: Theme) => ({
 });
 
 function Searchbar(props: Searchbar_Props_t & WithStyles<typeof styles>) {
-    return <div className={props.classes.root}>
+    return <Paper elevation={0} className={props.classes.root}>
         <div className={props.classes.chips}>
             {props.children}
             {props.editing && <div className={props.classes.inputField}>
-                <TextField fullWidth value={props.value} onChange={(e) => props.onChange(e.target.value)} />
+                <Input
+                    fullWidth
+                    disableUnderline
+                    value={props.value}
+                    onChange={(e) => props.onChange(e.target.value)}
+                />
             </div>}
         </div>
         <div className={props.classes.actions}>
             {props.actions ?? <span/>}
         </div>
-    </div>;
+    </Paper>;
 }
 
 export default withStyles(styles)(Searchbar);
