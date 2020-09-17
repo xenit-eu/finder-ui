@@ -1,5 +1,6 @@
 import { Input, Paper, Theme, withStyles, WithStyles } from "@material-ui/core";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 type Searchbar_Props_t = {
     children: React.ReactNode;
@@ -39,6 +40,7 @@ const styles = (theme: Theme) => ({
 });
 
 function Searchbar(props: Searchbar_Props_t & WithStyles<typeof styles>) {
+    const { t } = useTranslation("finder-ui");
     return <Paper elevation={0} className={props.classes.root}>
         <div className={props.classes.chips}>
             {props.children}
@@ -46,6 +48,7 @@ function Searchbar(props: Searchbar_Props_t & WithStyles<typeof styles>) {
                 <Input
                     fullWidth
                     disableUnderline
+                    placeholder={t("searchbar/Searchbar/placeholder")}
                     value={props.value}
                     onChange={(e) => props.onChange(e.target.value)}
                     onKeyDown={props.onKeyDown}
