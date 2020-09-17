@@ -5,6 +5,7 @@ type Searchbar_Props_t = {
     children: React.ReactNode;
     value: string;
     onChange: (value: string) => void;
+    onKeyDown?: (event: React.KeyboardEvent) => void,
     editing: boolean;
     actions?: React.ReactNode;
 };
@@ -47,6 +48,7 @@ function Searchbar(props: Searchbar_Props_t & WithStyles<typeof styles>) {
                     disableUnderline
                     value={props.value}
                     onChange={(e) => props.onChange(e.target.value)}
+                    onKeyDown={props.onKeyDown}
                 />
             </div>}
         </div>

@@ -35,21 +35,21 @@ const actions = <>
 </>;
 
 export const editing = () => <div style={{ backgroundColor: "hotpink", padding: 25 }}>
-    <Searchbar value="Some typed in value" onChange={action("change")} editing={true} actions={actions}>
+    <Searchbar value="Some typed in value" onChange={action("change")} onKeyDown={action("keyDown")} editing={true} actions={actions}>
         <SomeEditableChip />
         <SomeEditableChip />
     </Searchbar>
 </div>;
 
 export const notEditing = () => <div style={{ backgroundColor: "hotpink", padding: 25 }}>
-    <Searchbar value="Some typed in value" onChange={action("change")} editing={false} actions={actions}>
+    <Searchbar value="Some typed in value" onChange={action("change")} onKeyDown={action("keyDown")} editing={false} actions={actions}>
         <SomeEditableChip />
         <SomeEditableChip />
     </Searchbar>
 </div>;
 
 export const manyChips = () => <div style={{ width: 600, backgroundColor: "hotpink", padding: 25 }}>
-    <Searchbar value="Input value" onChange={action("change")} editing={true} actions={actions}>
+    <Searchbar value="Input value" onChange={action("change")} onKeyDown={action("keyDown")} editing={true} actions={actions}>
         {Array(15).fill(null).map((_, i) => <SomeEditableChip key={i} i={i} />)}
     </Searchbar>
 </div>;
