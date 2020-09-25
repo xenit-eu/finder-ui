@@ -1,8 +1,8 @@
 import React, { DOMAttributes, EventHandler, SyntheticEvent } from "react";
 
 type StopPropagation_Props_t = {
-    children: React.ReactElement<EventDOMAttributes>,
-
+    readonly events?: ReadonlyArray<EventNames> | EventNames,
+    readonly children: React.ReactElement<EventDOMAttributes>,
 };
 type EventHandlerPropertyNames<T> = { [K in keyof T]: T[K] extends EventHandler<any> ? K : never }[keyof T];
 
@@ -23,24 +23,27 @@ const eventNames: ReadonlyArray<EventNames> = [
 
 const defaultHandler: EventHandler<SyntheticEvent> = (ev) => ev.stopPropagation();
 
-const defaultHandlers: Partial<EventDOMAttributes> = {};
-for (const eventHandlerName of eventNames) {
-    defaultHandlers[eventHandlerName] = defaultHandler;
+function createDefaultHandlers(events: ReadonlyArray<EventNames>) {
+    const handlers: Partial<EventDOMAttributes> = {};
+    for (const eventName of events) {
+        handlers[eventName] = defaultHandler;
+    }
+    return handlers;
 }
 
-function containsCustomHandler(obj: object) {
+function containsCustomHandler(obj: object, events: ReadonlyArray<EventNames>) {
     for (const objKey of Object.keys(obj)) {
-        if (eventNames.indexOf(objKey as any) !== -1) {
+        if (events.indexOf(objKey as any) !== -1) {
             return true;
         }
     }
     return false;
 }
 
-function createCustomHandlers(obj: object) {
+function createCustomHandlers(obj: object, events: ReadonlyArray<EventNames>) {
     const customHandlers: Partial<EventDOMAttributes> = {};
     for (const objKey of Object.keys(obj)) {
-        if (obj[objKey] instanceof Function && eventNames.indexOf(objKey as any) !== -1) {
+        if (obj[objKey] instanceof Function && events.indexOf(objKey as any) !== -1) {
             customHandlers[objKey as any] = (ev: SyntheticEvent) => {
                 obj[objKey](ev);
                 defaultHandler(ev);
@@ -59,15 +62,17 @@ function createCustomHandlers(obj: object) {
  * This component only accepts one child element, and requires it to have *ALL* HTML event handlers,
  * so you will have to use either a HTML element as a child, or a component that passes all other props to the HTML element.
  */
-export default function StopPropagation(props: StopPropagation_Props_t) {
-    const child = React.Children.only(props.children);
+export default function StopPropagation({ children, events = eventNames}: StopPropagation_Props_t) {
+    const child = React.Children.only(children);
+    const finishedEvents = Array.isArray(events) ? events : [events];
+    const defaultHandlers = createDefaultHandlers(finishedEvents);
 
-    if (!containsCustomHandler(child.props)) {
+    if (!containsCustomHandler(child.props, finishedEvents)) {
         return React.cloneElement(child, defaultHandlers);
     } else {
         const handlers = {
             ...defaultHandlers,
-            ...createCustomHandlers(child.props),
+            ...createCustomHandlers(child.props, finishedEvents),
         };
         return React.cloneElement(child, handlers);
     }
