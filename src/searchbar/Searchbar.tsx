@@ -1,10 +1,12 @@
-import { TextField, Theme, withStyles, WithStyles } from "@material-ui/core";
+import { Input, Paper, Theme, withStyles, WithStyles } from "@material-ui/core";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 type Searchbar_Props_t = {
     children: React.ReactNode;
     value: string;
     onChange: (value: string) => void;
+    onKeyDown?: (event: React.KeyboardEvent) => void,
     editing: boolean;
     actions?: React.ReactNode;
 };
@@ -38,17 +40,25 @@ const styles = (theme: Theme) => ({
 });
 
 function Searchbar(props: Searchbar_Props_t & WithStyles<typeof styles>) {
-    return <div className={props.classes.root}>
+    const { t } = useTranslation("finder-ui");
+    return <Paper elevation={0} className={props.classes.root}>
         <div className={props.classes.chips}>
             {props.children}
             {props.editing && <div className={props.classes.inputField}>
-                <TextField fullWidth value={props.value} onChange={(e) => props.onChange(e.target.value)} />
+                <Input
+                    fullWidth
+                    disableUnderline
+                    placeholder={t("searchbar/Searchbar/placeholder")}
+                    value={props.value}
+                    onChange={(e) => props.onChange(e.target.value)}
+                    onKeyDown={props.onKeyDown}
+                />
             </div>}
         </div>
         <div className={props.classes.actions}>
             {props.actions ?? <span/>}
         </div>
-    </div>;
+    </Paper>;
 }
 
 export default withStyles(styles)(Searchbar);
