@@ -28,12 +28,14 @@ jobs:
         run: yarn test --ci --coverage --maxWorkers=2
 
       - name: Save failed snapshots
+        if: ${{ failure() }}
         uses: actions/upload-artifact@v2
         with:
           name: failed-snapshots
           path: __tests__/__image_snapshots__/__diff_output__/
 
       - name: Save storybook
+        if: ${{ always() }}
         uses: actions/upload-artifact@v2
         with:
           name: storybook
