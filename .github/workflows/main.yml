@@ -19,13 +19,13 @@ jobs:
           node-version: 12.x
 
       - name: Install dependencies
-        run: yarn install
+        run: npm install
 
       - name: Lint
-        run: yarn lint
+        run: npm run lint
 
       - name: Test
-        run: yarn test --ci
+        run: npm run test -- --ci
 
       - name: Save failed snapshots
         if: ${{ failure() }}
