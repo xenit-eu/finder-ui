@@ -192,7 +192,6 @@ const SelectBox: PropertyRenderer_t<string | string[]> = (config: PropertyRender
                     __(Select, {
                         fullWidth: true,
                         displayEmpty: true,
-                        multiple: isMultiValue,
                         open: this.state.open,
                         onOpen: () => this.setState({ open: true }),
                         MenuProps: {

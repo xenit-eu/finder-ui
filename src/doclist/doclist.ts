@@ -127,7 +127,7 @@ export type DocList_t_Data = {
     togglable: boolean,
     toggledRows: number,
     className: string,
-    rowStyle: (i: number) => any,
+    rowStyle?: (i: number) => any,
     documentNotFoundText?: string,
     translations?: Translations_t,
 };

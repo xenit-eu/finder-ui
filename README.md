@@ -1,6 +1,6 @@
 # Finder UI React components
 
-[![Build Status](https://travis-ci.org/xenit-eu/finder-ui.svg?branch=master)](https://travis-ci.org/xenit-eu/finder-ui)
+[![Build Status](https://github.com/xenit-eu/finder-ui/workflows/CI/badge.svg?event=push)](https://github.com/xenit-eu/finder-ui/actions?query=workflow%3ACI+branch%3Amaster)
 
 Based on:
 
