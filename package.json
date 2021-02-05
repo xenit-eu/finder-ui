@@ -31,8 +31,8 @@
   },
   "license": "LGPL-3.0-or-later",
   "peerDependencies": {
-    "react-dom": "*",
     "react": ">=16.8.0",
+    "react-dom": "*",
     "react-i18next": "^11.3.3"
   },
   "dependencies": {
@@ -114,7 +114,7 @@
     "less": "^3.11.1",
     "less-loader": "^5.0.0",
     "prettier": "^2.0.5",
-    "puppeteer": "^2.1.1",
+    "puppeteer": "^7.0.1",
     "react": "^16.13.0",
     "react-docgen-typescript-loader": "^3.6.0",
     "react-dom": "^16.13.0",
