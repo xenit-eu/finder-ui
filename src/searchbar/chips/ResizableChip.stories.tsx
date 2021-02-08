@@ -22,10 +22,8 @@ export const changingHeight = () => {
     return <ResizableChip label={<span style={{fontSize: size}}>abc</span>} />;
 };
 
-changingHeight.story = {
-    parameters: {
-        storyshots: {
-            disable: true,
-        },
+changingHeight.parameters = {
+    storyshots: {
+        disable: true,
     },
 };

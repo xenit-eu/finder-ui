@@ -117,10 +117,8 @@ function FolderBrowserInteractive() {
 
 export const interactive = () => <FolderBrowserInteractive />;
 
-interactive.story = {
-    parameters: {
-        storyshots: { disable: true },
-    },
+interactive.parameters = {
+    storyshots: { disable: true },
 };
 
 export const loading = () => <FolderBrowser
@@ -130,8 +128,6 @@ export const loading = () => <FolderBrowser
     onSelect={action("select")}
 />;
 
-loading.story = {
-    parameters: {
-        storyshots: { disable: true },
-    },
+loading.parameters = {
+    storyshots: { disable: true },
 };

@@ -29,10 +29,8 @@ function InteractiveSnackbarManager() {
 
 export const interactive = () => <InteractiveSnackbarManager />;
 
-interactive.story = {
-    parameters: {
-        storyshots: { disable: true },
-    },
+interactive.parameters = {
+    storyshots: { disable: true },
 };
 
 function DelayedSnackbarManager(props: any) {
@@ -70,28 +68,26 @@ async function getAttribute(element: ElementHandle, attribute: string): Promise<
     return await property.jsonValue() as string;
 }
 
-withUnexpiringError.story = {
-    parameters: {
-        storyshots: { disable: true },
-        async puppeteerTest(page: Page) {
-            // Wait for notification to appear
-            const notification = await page.waitForSelector("[id^='snackbar-SnackbarNotification']");
-            const notificationId = await getAttribute(notification, "id");
-            const notificationContent = await notification.evaluate((e: HTMLElement) => e.innerText);
+withUnexpiringError.parameters = {
+    storyshots: { disable: true },
+    async puppeteerTest(page: Page) {
+        // Wait for notification to appear
+        const notification = await page.waitForSelector("[id^='snackbar-SnackbarNotification']");
+        const notificationId = await getAttribute(notification, "id");
+        const notificationContent = await notification.evaluate((e: HTMLElement) => e.innerText);
 
-            // Close notification
-            const closeButton = await page.$("button[aria-label='snackbar/SnackbarNotification/close']");
-            await closeButton.click();
-            await page.waitForFunction("document.getElementById('" + notificationId + "') === null");
+        // Close notification
+        const closeButton = await page.$("button[aria-label='snackbar/SnackbarNotification/close']");
+        await closeButton.click();
+        await page.waitForFunction("document.getElementById('" + notificationId + "') === null");
 
-            // Expect next notification to appear
-            const newNotification = await page.waitForSelector("[id^='snackbar-SnackbarNotification']");
-            const newNotificationId = await getAttribute(newNotification, "id");
-            const newNotificationContent = await newNotification.evaluate((e: HTMLElement) => e.innerText);
+        // Expect next notification to appear
+        const newNotification = await page.waitForSelector("[id^='snackbar-SnackbarNotification']");
+        const newNotificationId = await getAttribute(newNotification, "id");
+        const newNotificationContent = await newNotification.evaluate((e: HTMLElement) => e.innerText);
 
-            expect(newNotificationId).not.toEqual(notificationId);
-            expect(newNotificationContent).not.toEqual(notificationContent);
-        },
+        expect(newNotificationId).not.toEqual(notificationId);
+        expect(newNotificationContent).not.toEqual(notificationContent);
     },
 };
 
@@ -119,44 +115,42 @@ async function findEntryMatching<E extends HTMLElement>(elements: Array<ElementH
     return elements[firstIndex];
 }
 
-withUnexpiringErrorTrace.story = {
-    parameters: {
-        storyshots: { disable: true },
-        async puppeteerTest(page: Page) {
-            // Wait for notification to appear
-            const notification = await page.waitForSelector("[id^='snackbar-SnackbarNotification']");
-            const notificationId = await getAttribute(notification, "id");
-            const notificationContent = await notification.evaluate((e: HTMLElement) => e.innerText);
+withUnexpiringErrorTrace.parameters = {
+    storyshots: { disable: true },
+    async puppeteerTest(page: Page) {
+        // Wait for notification to appear
+        const notification = await page.waitForSelector("[id^='snackbar-SnackbarNotification']");
+        const notificationId = await getAttribute(notification, "id");
+        const notificationContent = await notification.evaluate((e: HTMLElement) => e.innerText);
 
-            // Click trace button
-            const traceButton = await page.$("button[aria-label='snackbar/SnackbarNotification/trace']");
-            await traceButton.click();
+        // Click trace button
+        const traceButton = await page.$("button[aria-label='snackbar/SnackbarNotification/trace']");
+        await traceButton.click();
 
-            // Wait for trace dialog to appear
-            await page.waitForFunction("document.getElementById('" + notificationId + "') === null");
-            const dialog = await page.waitForSelector("[role='dialog']");
+        // Wait for trace dialog to appear
+        await page.waitForFunction("document.getElementById('" + notificationId + "') === null");
+        const dialog = await page.waitForSelector("[role='dialog']");
 
-            // Close trace dialog
-            const dialogButtons = await dialog.$$("button");
-            const dialogCloseButton = await findEntryMatching(dialogButtons, "CLOSE");
-            await dialogCloseButton.click();
+        // Close trace dialog
+        const dialogButtons = await dialog.$$("button");
+        const dialogCloseButton = await findEntryMatching(dialogButtons, "CLOSE");
+        await dialogCloseButton.click();
 
-            // Wait for notification to reappear
-            const reappearedNotification = await page.waitForSelector("[id^='snackbar-SnackbarNotification']");
-            const reappearedNotificationId = await getAttribute(reappearedNotification, "id");
-            expect(await reappearedNotification.evaluate((e: HTMLElement) => e.innerText)).toEqual(notificationContent);
+        // Wait for notification to reappear
+        const reappearedNotification = await page.waitForSelector("[id^='snackbar-SnackbarNotification']");
+        const reappearedNotificationId = await getAttribute(reappearedNotification, "id");
+        expect(await reappearedNotification.evaluate((e: HTMLElement) => e.innerText)).toEqual(notificationContent);
 
-            // Close the notification
-            const closeButton = await page.$("button[aria-label='snackbar/SnackbarNotification/close']");
-            await closeButton.click();
-            await page.waitForFunction("document.getElementById('" + reappearedNotificationId + "') === null");
+        // Close the notification
+        const closeButton = await page.$("button[aria-label='snackbar/SnackbarNotification/close']");
+        await closeButton.click();
+        await page.waitForFunction("document.getElementById('" + reappearedNotificationId + "') === null");
 
-            // Expect next notification to appear
-            const newNotification = await page.waitForSelector("[id^='snackbar-SnackbarNotification']");
+        // Expect next notification to appear
+        const newNotification = await page.waitForSelector("[id^='snackbar-SnackbarNotification']");
 
-            const newNotificationId = await getAttribute(newNotification, "id");
-            expect(newNotificationId).not.toEqual(reappearedNotificationId);
-            expect(await newNotification.evaluate((e: HTMLElement) => e.innerText)).not.toEqual(notificationContent);
-        },
+        const newNotificationId = await getAttribute(newNotification, "id");
+        expect(newNotificationId).not.toEqual(reappearedNotificationId);
+        expect(await newNotification.evaluate((e: HTMLElement) => e.innerText)).not.toEqual(notificationContent);
     },
 };

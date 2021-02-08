@@ -96,8 +96,6 @@ function FilterListInteractive() {
 
 export const interactive = () => <FilterListInteractive />;
 
-interactive.story = {
-    parameters: {
-        storyshots: { disable: true },
-    },
+interactive.parameters = {
+    storyshots: { disable: true },
 };

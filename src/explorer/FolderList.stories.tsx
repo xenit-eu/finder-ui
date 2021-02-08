@@ -221,8 +221,6 @@ function InteractiveFolderList() {
 
 export const interactive = () => <InteractiveFolderList />;
 
-interactive.story = {
-    parameters: {
-        storyshots: { disable: true },
-    },
+interactive.parameters = {
+    storyshots: { disable: true },
 };

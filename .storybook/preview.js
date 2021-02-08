@@ -1,12 +1,10 @@
 import { addDecorator } from '@storybook/react';
-import { withA11y } from '@storybook/addon-a11y';
 import { withKnobs } from '@storybook/addon-knobs';
 import { makeDecorator } from '@storybook/addons';
 import i18n from "i18next";
 import { I18nextProvider } from "react-i18next";
 import { createElement, Suspense } from 'react';
 
-addDecorator(withA11y);
 addDecorator(withKnobs);
 
 addDecorator(makeDecorator({

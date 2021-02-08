@@ -21,34 +21,32 @@ export const normal = () => <EditableComment
     onCancel={action("cancel")}
 />;
 
-normal.story = {
-    parameters: {
-        async puppeteerTest(page: Page) {
+normal.parameters = {
+    async puppeteerTest(page: Page) {
 
-            const saveActionPromise = interceptAction(page, "save");
-            const cancelActionPromise = interceptAction(page, "cancel");
+        const saveActionPromise = interceptAction(page, "save");
+        const cancelActionPromise = interceptAction(page, "cancel");
 
-            const buttons = await page.$$("button");
+        const buttons = await page.$$("button");
 
-            const buttonsText = await Promise.all(buttons.map((buttonHandle) => buttonHandle.evaluate((button: HTMLElement) => button.innerText)));
+        const buttonsText = await Promise.all(buttons.map((buttonHandle) => buttonHandle.evaluate((button: HTMLElement) => button.innerText)));
 
-            const saveButton = buttons[buttonsText.indexOf("COMMENTS/EDITABLECOMMENT/SAVE")];
-            expect(saveButton).toBeDefined();
-            const cancelButton = buttons[buttonsText.indexOf("COMMENTS/EDITABLECOMMENT/CANCEL")];
-            expect(cancelButton).toBeDefined();
+        const saveButton = buttons[buttonsText.indexOf("COMMENTS/EDITABLECOMMENT/SAVE")];
+        expect(saveButton).toBeDefined();
+        const cancelButton = buttons[buttonsText.indexOf("COMMENTS/EDITABLECOMMENT/CANCEL")];
+        expect(cancelButton).toBeDefined();
 
-            const textArea = await page.$("[contenteditable]");
-            await textArea.type("Some comment text.");
-            await saveButton.click();
-            const saveAction = await saveActionPromise;
-            expect(saveAction.name).toEqual("save");
-            expect(saveAction.args).toEqual(["<p>Some comment text.Once a police officer caught Chuck Norris, the cop was lucky enough to escape with a warning.</p>"]);
+        const textArea = await page.$("[contenteditable]");
+        await textArea.type("Some comment text.");
+        await saveButton.click();
+        const saveAction = await saveActionPromise;
+        expect(saveAction.name).toEqual("save");
+        expect(saveAction.args).toEqual(["<p>Some comment text.Once a police officer caught Chuck Norris, the cop was lucky enough to escape with a warning.</p>"]);
 
-            await cancelButton.click();
+        await cancelButton.click();
 
-            const cancelAction = await cancelActionPromise;
-            expect(cancelAction.name).toEqual("cancel");
-        },
+        const cancelAction = await cancelActionPromise;
+        expect(cancelAction.name).toEqual("cancel");
     },
 };
 

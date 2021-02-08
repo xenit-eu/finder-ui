@@ -20,7 +20,7 @@ export const withData = () => <VersionCreateDialog
         type: VersionCreateVersionType.MAJOR,
         file: {
             name: "Some file name",
-        } as any,
+        },
         comment: "Some extensive comments\nOn multiple lines",
     }}
     onChange={action("change")}

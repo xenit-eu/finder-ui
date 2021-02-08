@@ -34,18 +34,16 @@ export const withCancelButton = () => <Paper>
     </Grid>
 </Paper>;
 
-withCancelButton.story = {
-    parameters: {
-        async puppeteerTest(page: any) {
-            const cancelActionPromise = interceptAction(page, "cancel");
+withCancelButton.parameters = {
+    async puppeteerTest(page: any) {
+        const cancelActionPromise = interceptAction(page, "cancel");
 
-            const button = await page.$("button");
-            await button.click();
-            const cancelActionData = await cancelActionPromise;
-            expect(cancelActionData.name).toBe("cancel");
+        const button = await page.$("button");
+        await button.click();
+        const cancelActionData = await cancelActionPromise;
+        expect(cancelActionData.name).toBe("cancel");
 
-            stopIntercept(page);
-        },
+        stopIntercept(page);
     },
 };
 
@@ -62,27 +60,25 @@ export const clickable = () => <Paper>
     </Grid>
 </Paper>;
 
-clickable.story = {
-    parameters: {
-        async puppeteerTest(page: any) {
-            const cancelActionPromise = interceptAction(page, "cancel");
-            const msg = "no click action logged";
-            const clickRacePromise = raceActionWithCustomMessage(page, "click", msg);
-            const button = await page.$("button");
-            await button.click();
-            const cancelActionData = await cancelActionPromise;
-            expect(cancelActionData.name).toBe("cancel");
-            await sendCustomMessage(page, msg);
-            await expect(clickRacePromise).resolves.toBe(msg);
+clickable.parameters = {
+    async puppeteerTest(page: any) {
+        const cancelActionPromise = interceptAction(page, "cancel");
+        const msg = "no click action logged";
+        const clickRacePromise = raceActionWithCustomMessage(page, "click", msg);
+        const button = await page.$("button");
+        await button.click();
+        const cancelActionData = await cancelActionPromise;
+        expect(cancelActionData.name).toBe("cancel");
+        await sendCustomMessage(page, msg);
+        await expect(clickRacePromise).resolves.toBe(msg);
 
-            const clickActionPromise = interceptAction(page, "click");
-            const uploadedItem = await page.$("#uploadedItem");
-            await uploadedItem.click();
-            const clickActionData = await clickActionPromise;
-            expect(clickActionData.name).toBe("click");
+        const clickActionPromise = interceptAction(page, "click");
+        const uploadedItem = await page.$("#uploadedItem");
+        await uploadedItem.click();
+        const clickActionData = await clickActionPromise;
+        expect(clickActionData.name).toBe("click");
 
-            stopIntercept(page);
-        },
+        stopIntercept(page);
     },
 };
 
