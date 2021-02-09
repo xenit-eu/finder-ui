@@ -1,11 +1,14 @@
 import type { JSHandle, Page } from "puppeteer";
 import { v4 as uuidv4 } from "uuid";
 function intercept(page: Page, func: (actionObj: object) => void) {
+    page.evaluate(() => {
+        (window as any).__STORYBOOK_ADDONS_CHANNEL__.on("storybook/actions/action-event", console.debug.bind(console, "message arrived at preview storybook/actions/action-event"));
+    });
     page.on("console", async (msg) => {
         if (msg.type() === "debug") {
             const text: string = msg.text();
             if (text.includes("message arrived at preview storybook/actions/action-event")) {
-                const dataObject = await unwrapJSHandle(msg.args()[2]) as object;
+                const dataObject = await unwrapJSHandle(msg.args()[1]) as object;
                 func(dataObject);
             }
         }
