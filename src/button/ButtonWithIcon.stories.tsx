@@ -20,23 +20,26 @@ const buttonSizes = {
     Small: "small",
 };
 
-for (const buttonVariantName of Object.keys(buttonVariants)) {
-    const buttonVariant = buttonVariants[buttonVariantName];
-    for (const buttonSizeName of Object.keys(buttonSizes)) {
-        const buttonSize = buttonSizes[buttonSizeName];
+const ButtonWithVariantAndSize = ({ size, variant }) => <>
+    <ButtonWithIcon
+        style={{ outline: "1px solid red" }}
+        icon={<SaveIcon />}
+        variant={select("variant", buttonVariants, variant)}
+        size={select("size", buttonSizes, size)}
+    >Click me (with icon)</ButtonWithIcon>
+    <Button
+        style={{ outline: "1px solid red" }}
+        variant={select("variant", buttonVariants, variant)}
+        size={select("size", buttonSizes, size)}
+    >Click me (without icon)</Button>
+</>;
 
-        module.exports[buttonVariantName + buttonSizeName] = () => <>
-            <ButtonWithIcon
-                style={{ outline: "1px solid red" }}
-                icon={<SaveIcon />}
-                variant={select("variant", buttonVariants, buttonVariant)}
-                size={select("size", buttonSizes, buttonSize)}
-            >Click me (with icon)</ButtonWithIcon>
-            <Button
-                style={{ outline: "1px solid red" }}
-                variant={select("variant", buttonVariants, buttonVariant)}
-                size={select("size", buttonSizes, buttonSize)}
-            >Click me (without icon)</Button>
-        </>;
-    }
-}
+export const textLarge = () => <ButtonWithVariantAndSize variant="text" size="large" />;
+export const outlinedLarge = () =>  <ButtonWithVariantAndSize variant="outlined" size="large" />;
+export const containedLarge = () =>  <ButtonWithVariantAndSize variant="contained" size="large" />;
+export const textMedium = () =>  <ButtonWithVariantAndSize variant="text" size="medium" />;
+export const outlinedMedium = () =>  <ButtonWithVariantAndSize variant="outlined" size="medium" />;
+export const containedMedium = () =>  <ButtonWithVariantAndSize variant="contained" size="medium" />;
+export const textSmall = () =>  <ButtonWithVariantAndSize variant="text" size="small" />;
+export const outlinedSmall = () =>  <ButtonWithVariantAndSize variant="outlined" size="small" />;
+export const containedSmall = () =>  <ButtonWithVariantAndSize variant="contained" size="small" />;

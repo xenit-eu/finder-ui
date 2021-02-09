@@ -18,15 +18,28 @@ const buttonSizes = {
     Small: "small",
 };
 
-for (const buttonVariantName of Object.keys(buttonVariants)) {
-    const buttonVariant = buttonVariants[buttonVariantName];
-    for (const buttonSizeName of Object.keys(buttonSizes)) {
-        const buttonSize = buttonSizes[buttonSizeName];
-
-        module.exports[buttonVariantName + buttonSizeName] = () => <ButtonWithProgress
-            isLoading={boolean("isLoading", true) ? { progress: 50 } : false}
-            variant={select("variant", buttonVariants, buttonVariant)}
-            size={select("size", buttonSizes, buttonSize)}
+const ButtonWithVariantSizeAndLoading = ({ size, variant, loading }) => <ButtonWithProgress
+            isLoading={boolean("isLoading", loading) ? { progress: 50 } : false}
+            variant={select("variant", buttonVariants, variant)}
+            size={select("size", buttonSizes, size)}
         >Click me</ButtonWithProgress>;
-    }
-}
+
+export const textLarge = () => <ButtonWithVariantSizeAndLoading variant="text" size="large" loading={false} />;
+export const outlinedLarge = () =>  <ButtonWithVariantSizeAndLoading variant="outlined" size="large" loading={false} />;
+export const containedLarge = () =>  <ButtonWithVariantSizeAndLoading variant="contained" size="large" loading={false} />;
+export const textMedium = () =>  <ButtonWithVariantSizeAndLoading variant="text" size="medium" loading={false} />;
+export const outlinedMedium = () =>  <ButtonWithVariantSizeAndLoading variant="outlined" size="medium" loading={false} />;
+export const containedMedium = () =>  <ButtonWithVariantSizeAndLoading variant="contained" size="medium" loading={false} />;
+export const textSmall = () =>  <ButtonWithVariantSizeAndLoading variant="text" size="small" loading={false} />;
+export const outlinedSmall = () =>  <ButtonWithVariantSizeAndLoading variant="outlined" size="small" loading={false} />;
+export const containedSmall = () =>  <ButtonWithVariantSizeAndLoading variant="contained" size="small" loading={false} />;
+
+export const textLargeLoading = () => <ButtonWithVariantSizeAndLoading variant="text" size="large" loading={true} />;
+export const outlinedLargeLoading = () =>  <ButtonWithVariantSizeAndLoading variant="outlined" size="large" loading={true} />;
+export const containedLargeLoading = () =>  <ButtonWithVariantSizeAndLoading variant="contained" size="large" loading={true} />;
+export const textMediumLoading = () =>  <ButtonWithVariantSizeAndLoading variant="text" size="medium" loading={true} />;
+export const outlinedMediumLoading = () =>  <ButtonWithVariantSizeAndLoading variant="outlined" size="medium" loading={true} />;
+export const containedMediumLoading = () =>  <ButtonWithVariantSizeAndLoading variant="contained" size="medium" loading={true} />;
+export const textSmallLoading = () =>  <ButtonWithVariantSizeAndLoading variant="text" size="small" loading={true} />;
+export const outlinedSmallLoading = () =>  <ButtonWithVariantSizeAndLoading variant="outlined" size="small" loading={true} />;
+export const containedSmallLoading = () =>  <ButtonWithVariantSizeAndLoading variant="contained" size="small" loading={true} />;

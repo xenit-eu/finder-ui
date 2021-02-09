@@ -117,10 +117,8 @@ function CommentPanelWrapper() {
 
 export const interactive = () => <CommentPanelWrapper />;
 
-interactive.story = {
-    parameters: {
-        storyshots: { disable: true },
-    },
+interactive.parameters = {
+    storyshots: { disable: true },
 };
 
 export const empty = () => <CommentPanel

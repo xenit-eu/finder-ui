@@ -30,18 +30,16 @@ export const withEdit = () => <Comment
     onEdit={action("edit")}
 />;
 
-withEdit.story = {
-    parameters: {
-        async puppeteerTest(page: Page) {
-            const editActionPromise = interceptAction(page, "edit");
+withEdit.parameters = {
+    async puppeteerTest(page: Page) {
+        const editActionPromise = interceptAction(page, "edit");
 
-            const editButton = await page.$("button[aria-label='comments/Comment/edit']");
-            await editButton.click();
+        const editButton = await page.$("button[aria-label='comments/Comment/edit']");
+        await editButton.click();
 
-            const editAction = await editActionPromise;
-            expect(editAction.name).toEqual("edit");
+        const editAction = await editActionPromise;
+        expect(editAction.name).toEqual("edit");
 
-        },
     },
 };
 
@@ -54,17 +52,15 @@ export const withDelete = () => <Comment
     onDelete={action("delete")}
 />;
 
-withDelete.story = {
-    parameters: {
-        async puppeteerTest(page: Page) {
-            const deleteActionPromise = interceptAction(page, "delete");
+withDelete.parameters = {
+    async puppeteerTest(page: Page) {
+        const deleteActionPromise = interceptAction(page, "delete");
 
-            const deleteButton = await page.$("button[aria-label='comments/Comment/delete']");
-            await deleteButton.click();
+        const deleteButton = await page.$("button[aria-label='comments/Comment/delete']");
+        await deleteButton.click();
 
-            const deleteAction = await deleteActionPromise;
-            expect(deleteAction.name).toEqual("delete");
-        },
+        const deleteAction = await deleteActionPromise;
+        expect(deleteAction.name).toEqual("delete");
     },
 };
 
@@ -96,48 +92,46 @@ async function findEntryMatching<E extends HTMLElement>(elements: Array<ElementH
     return elements[firstIndex];
 }
 
-withEditAndDelete.story = {
-    parameters: {
-        async puppeteerTest(page: Page) {
-            const editActionPromise = interceptAction(page, "edit");
-            const deleteActionPromise = interceptAction(page, "delete");
+withEditAndDelete.parameters = {
+    async puppeteerTest(page: Page) {
+        const editActionPromise = interceptAction(page, "edit");
+        const deleteActionPromise = interceptAction(page, "delete");
 
-            const menuButton = await page.$("button[aria-label='menu/PopupMenu/more']");
-            await menuButton.click();
-            await page.waitForSelector("button[aria-label='menu/PopupMenu/more'][aria-owns]", { timeout: 1000 });
-            const menuId = await getAttribute(menuButton, "aria-owns");
-            expect(menuId).toBeDefined();
+        const menuButton = await page.$("button[aria-label='menu/PopupMenu/more']");
+        await menuButton.click();
+        await page.waitForSelector("button[aria-label='menu/PopupMenu/more'][aria-owns]", { timeout: 1000 });
+        const menuId = await getAttribute(menuButton, "aria-owns");
+        expect(menuId).toBeDefined();
 
-            const menu = await page.$("#" + menuId);
-            expect(menu).not.toBeNull();
+        const menu = await page.$("#" + menuId);
+        expect(menu).not.toBeNull();
 
-            expect(await menu.isIntersectingViewport()).toEqual(true);
+        expect(await menu.isIntersectingViewport()).toEqual(true);
 
-            const editMenuItem = await findEntryMatching<HTMLElement>(await menu.$$("[role=menuitem]"), "comments/Comment/edit");
-            expect(editMenuItem).toBeDefined();
-            await editMenuItem.click();
-            const editAction = await editActionPromise;
-            expect(editAction.name).toEqual("edit");
+        const editMenuItem = await findEntryMatching<HTMLElement>(await menu.$$("[role=menuitem]"), "comments/Comment/edit");
+        expect(editMenuItem).toBeDefined();
+        await editMenuItem.click();
+        const editAction = await editActionPromise;
+        expect(editAction.name).toEqual("edit");
 
-            await page.waitForSelector("#" + menuId, { timeout: 1000, hidden: true });
+        await page.waitForSelector("#" + menuId, { timeout: 1000, hidden: true });
 
-            expect(await menu.isIntersectingViewport()).toEqual(false);
+        expect(await menu.isIntersectingViewport()).toEqual(false);
 
-            await menuButton.click();
-            const newMenu = await page.waitForSelector("#" + menuId, { timeout: 1000, visible: true });
+        await menuButton.click();
+        const newMenu = await page.waitForSelector("#" + menuId, { timeout: 1000, visible: true });
 
-            const deleteMenuItem = await findEntryMatching<HTMLElement>(await newMenu.$$("[role=menuitem]"), "comments/Comment/delete");
+        const deleteMenuItem = await findEntryMatching<HTMLElement>(await newMenu.$$("[role=menuitem]"), "comments/Comment/delete");
 
-            expect(deleteMenuItem).toBeDefined();
+        expect(deleteMenuItem).toBeDefined();
 
-            await deleteMenuItem.click();
+        await deleteMenuItem.click();
 
-            expect((await deleteActionPromise).name).toEqual("delete");
+        expect((await deleteActionPromise).name).toEqual("delete");
 
-            await page.waitForSelector("#" + menuId, { timeout: 1000, hidden: true });
+        await page.waitForSelector("#" + menuId, { timeout: 1000, hidden: true });
 
-            expect(await menu.isIntersectingViewport()).toEqual(false);
-        },
+        expect(await menu.isIntersectingViewport()).toEqual(false);
     },
 };
 
