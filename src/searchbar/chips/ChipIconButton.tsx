@@ -80,7 +80,7 @@ function ChipIconButton({classes, disabled, onClick, color, className, ...props}
         "role": "button",
         "aria-hidden": false,
         "aria-disabled": !!disabled,
-        "tabindex": 0,
+        "tabIndex": 0,
 
         ...props,
     });

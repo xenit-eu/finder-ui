@@ -1,5 +1,5 @@
 import { Input, Paper, Theme, withStyles, WithStyles } from "@material-ui/core";
-import React from "react";
+import React, { useLayoutEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
 type Searchbar_Props_t = {
@@ -8,6 +8,7 @@ type Searchbar_Props_t = {
     onChange: (value: string) => void;
     onKeyDown?: (event: React.KeyboardEvent) => void,
     editing: boolean;
+    tabIndex?: number;
     actions?: React.ReactNode;
 };
 
