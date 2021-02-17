@@ -2,6 +2,7 @@ import { TextField } from "@material-ui/core";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CloseIcon from "@material-ui/icons/Close";
+import FocusTrap from "focus-trap-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import ChipIconButton from "./ChipIconButton";
@@ -45,11 +46,17 @@ function CreateChip(props: CreateChip_Props_t) {
         onCommit: props.editing ? props.onCommitEditing : undefined,
         onModify: !props.editing ? props.onBeginEditing : () => {},
     };
-    const keyUp = useKeypressHandler(handlers);
-    return <ResizableChip
-        onKeyUp={keyUp}
-        label={<CreateChipLabel {...handlers} value={props.value} onChange={props.onChange} editing={props.editing} />}
-    />;
+    const keyPress = useKeypressHandler({
+        ...handlers,
+    });
+    return <FocusTrap active={props.editing} focusTrapOptions={{
+        onDeactivate: () => props.editing ? props.onCancelEditing() : void 0,
+    }}>
+        <ResizableChip
+            onKeyPress={props.editing ? keyPress : undefined}
+            label={<CreateChipLabel {...handlers} value={props.value} onChange={props.onChange} editing={props.editing} />}
+        />
+    </FocusTrap>;
 }
 
 export default CreateChip;
@@ -65,6 +72,9 @@ type CreateChipLabel_Props_t = {
 
 function CreateChipLabel(props: CreateChipLabel_Props_t) {
     const { t } = useTranslation("finder-ui");
+    const keyDown = useKeypressHandler({
+        onExit: props.onExit,
+    });
     if (!props.editing) {
         return <>
             &emsp;
@@ -75,7 +85,9 @@ function CreateChipLabel(props: CreateChipLabel_Props_t) {
         </>;
     } else {
         return <>
-            <TextField value={props.value ?? ""} onChange={(e) => props.onChange(e.target.value)} />
+            <TextField value={props.value ?? ""} onChange={(e) => props.onChange(e.target.value)} inputProps={{
+                onKeyDown: keyDown,
+            }} />
             {props.onCommit && <ChipIconButton onClick={() => props.onCommit!()} color="primary">
                 <CheckCircleIcon aria-label={t("searchbar/chips/CreateChip/edit-done")} />
             </ChipIconButton>}

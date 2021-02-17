@@ -106,7 +106,7 @@ function EditableChip<T, D extends ISearchboxFieldData<T>>(props: EditableChip_P
             onCommit={handlers.onCommit}
             onCancel={handlers.onExit}
         />}
-        onKeyUp={keyUp}
+        onKeyPress={keyUp}
     />;
 }
 

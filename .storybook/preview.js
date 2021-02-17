@@ -11,8 +11,10 @@ addDecorator(makeDecorator({
     name: "withI18nextProvider",
     wrapper: (getStory, context) => {
         const i18nInstance = i18n.createInstance({
-            lng: 'dev',
+            lng: 'cimode',
             debug: true,
+            resources: {
+            }
         });
         i18nInstance.init();
         const story = getStory(context);
