@@ -1,24 +1,23 @@
-import keycode from "keycode";
 import { KeyboardEvent } from "react";
-type KeypressHandlerOpts = {
-    readonly onModify?: () => void,
-    readonly onExit?: () => void,
-    readonly onCommit?: () => void,
-    readonly stopPropagation?: boolean,
+import useKeyboardHandler, {IKeyboardHandlerOpts} from "./useKeyboardHandler";
+interface IKeypressHandlerOpts  extends IKeyboardHandlerOpts {
+    readonly onModify?: () => void;
+    readonly onExit?: () => void;
+    readonly onCommit?: () => void;
+    readonly onDelete?: () => void;
 };
-export default function useKeypressHandler(opts: KeypressHandlerOpts) {
-    const stopPropagation = opts.stopPropagation ? (ev: KeyboardEvent) => ev.stopPropagation() : () => { };
-    return (keyboardEvent: KeyboardEvent) => {
-        const nativeEvent = keyboardEvent.nativeEvent;
-        if (keycode.isEventKey(nativeEvent, "esc") && opts.onExit) {
-            opts.onExit();
-            stopPropagation(keyboardEvent);
-        } else if (keycode.isEventKey(nativeEvent, "enter") && opts.onCommit) {
-            opts.onCommit();
-            stopPropagation(keyboardEvent);
-        } else if (keycode.isEventKey(nativeEvent, "f2") && opts.onModify) {
-            opts.onModify();
-            stopPropagation(keyboardEvent);
+export default function useKeypressHandler(opts: IKeypressHandlerOpts) {
+    const wrap = (fn?: () => void) => (ev: KeyboardEvent) => {
+        if (fn) {
+            fn();
         }
     };
+
+    return useKeyboardHandler({
+        "esc": wrap(opts.onExit),
+        "enter": wrap(opts.onCommit),
+        "f2": wrap(opts.onModify),
+        "backspace": wrap(opts.onDelete),
+        "delete": wrap(opts.onDelete),
+    }, opts);
 }

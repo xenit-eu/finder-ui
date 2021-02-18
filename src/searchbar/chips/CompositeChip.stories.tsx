@@ -20,6 +20,7 @@ function editComponent({ onChange, value, onKeyUp }) {
 }
 
 const SimpleChip = () => <EditableChip
+        editing={false}
         value={{
             fieldName: "Field",
             fieldValue: { value: "abc" },

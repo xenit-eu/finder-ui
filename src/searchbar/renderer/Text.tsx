@@ -5,10 +5,12 @@ import { RenderSimilarity } from "../Similarity";
 import HighlightComponent from "./HighlightComponent";
 
 export default function TextComponent(props: FieldRendererComponentProps<string, {
-    onKeyUp?: (ev: React.KeyboardEvent) => void,
+    onKeyDown?: (ev: React.KeyboardEvent) => void,
 }>) {
     if (props.onChange) {
-        return <TextField value={props.value ?? ""} onChange={(e) => props.onChange!(e.target.value)} onKeyUp={props.onKeyUp} fullWidth />;
+        return <TextField value={props.value ?? ""} onChange={(e) => props.onChange!(e.target.value)} inputProps={{
+            onKeyDown: props.onKeyDown,
+        }} fullWidth />;
     } else {
         return <RenderSimilarity text={props.similarity ?? props.value ?? ""} highlightComponent={HighlightComponent} />;
     }

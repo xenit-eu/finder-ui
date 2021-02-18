@@ -1,7 +1,7 @@
 import { action } from "@storybook/addon-actions";
-import React from "react";
+import React, { useState } from "react";
 import TextComponent from "../renderer/Text";
-import EditableChip, { _editing } from "./EditableChip";
+import EditableChip from "./EditableChip";
 
 export default {
     title: "searchbar/chips/EditableChip",
@@ -48,3 +48,36 @@ export const withChangeEditingRange = () => <BaseEditableChip value={fieldWithRa
 
 export const withChangeEditingRangeOpenEnded = () => <BaseEditableChip value={fieldWithOpenRange} onDelete={action("delete")} onChange={action("change")} editing />;
 export const withChangeEditingRangeError = () => <BaseEditableChip value={fieldWithNoData} onDelete={action("delete")} onChange={action("change")} editing />;
+
+function InteractiveChip(props) {
+    const [editing, setEditing] = useState(false);
+    const [value, setValue] = useState(props.initialValue);
+    return <EditableChip
+        editing={editing}
+        onBeginEditing={() => setEditing(true)}
+        onCommitEditing={() => setEditing(false)}
+        onCancelEditing={() => {
+            setEditing(false);
+            setValue(props.initialValue);
+        }}
+        viewComponent={TextComponent}
+        editComponent={TextComponent}
+        onChange={setValue}
+        onDelete={action("delete")}
+        value={value}
+        {...props}
+    />;
+}
+
+export const interactive = () => <div>
+    <InteractiveChip initialValue={fieldWithValue} />
+    <InteractiveChip initialValue={fieldWithRange} />
+    <InteractiveChip initialValue={fieldWithOpenRange} />
+    <InteractiveChip initialValue={fieldWithNoData} />
+</div>;
+
+interactive.parameters = {
+    storyshots: {
+        disable: true,
+    },
+};
