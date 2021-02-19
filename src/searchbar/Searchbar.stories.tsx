@@ -7,6 +7,7 @@ import React, { useReducer, useState } from "react";
 import { ButtonWithIcon } from "../button";
 import AutocompleteChip from "./autocomplete/AutocompleteChip";
 import AutocompleteChips from "./autocomplete/AutocompleteChips";
+import AutocompleteListEntry from "./autocomplete/AutocompleteListEntry";
 import AutocompletePaper from "./autocomplete/AutocompletePaper";
 import EditableChip from "./chips/EditableChip";
 import TextComponent from "./renderer/Text";
@@ -138,6 +139,15 @@ function FullSearchbar() {
             <AutocompleteChip customText="BLIBLIBLI" viewComponent={TextComponent} value={null} onSelect={() => updateState({ type: "autocomplete-select", chip: "BLIBLIBLI" })} />
         </AutocompleteChips>
         <List>
+            <AutocompleteListEntry value={{
+                fieldName: "Some field",
+                fieldValue: { value: "abc" },
+            }} viewComponent={TextComponent} onSelect={() => {
+                updateState({
+                    type: "autocomplete-select",
+                    chip: "Some field: abc",
+                });
+            }} />
 
         </List>
 

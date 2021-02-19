@@ -8,7 +8,6 @@ type Searchbar_Props_t = {
     onChange: (value: string) => void;
     onKeyDown?: (event: React.KeyboardEvent) => void,
     editing: boolean;
-    tabIndex?: number;
     actions?: React.ReactNode;
 };
 

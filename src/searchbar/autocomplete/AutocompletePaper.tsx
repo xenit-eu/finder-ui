@@ -68,7 +68,7 @@ function calculateMaxHeight({ windowHeight, elemHeight, elemTop }: Record<"windo
 }
 
 function AutocompletePaper(props: AutocompletePaper_Props_t & WithStyles<typeof styles>) {
-    const collapseRctElem = useRef<React.ReactInstance>();
+    const [collapseElem, setCollapseElem] = useState<HTMLElement | null>(null);
     const rootElem = useRef<HTMLDivElement|null>(null);
     const [targetElem, setTargetElem] = useState<HTMLDivElement|null>(null);
     const [autocompleteMaxHeight, setAutocompleteMaxHeight] = useState(200);
@@ -94,7 +94,7 @@ function AutocompletePaper(props: AutocompletePaper_Props_t & WithStyles<typeof 
     const onDismiss = useCallback(() => props.onDismiss(), [props.onDismiss]);
 
     return <>
-        <FocusTrap active={props.open} containerElements={[rootElem.current!, collapseRctElem.current ? findDOMNode(collapseRctElem.current) as HTMLElement : undefined!]} focusTrapOptions={{
+        <FocusTrap active={props.open} containerElements={[rootElem.current!, collapseElem!]} focusTrapOptions={{
             onDeactivate: onDismiss,
             clickOutsideDeactivates: (e: MouseEvent) => {
                 e.preventDefault();
@@ -111,7 +111,7 @@ function AutocompletePaper(props: AutocompletePaper_Props_t & WithStyles<typeof 
             <Popper anchorEl={targetElem} open={props.open} className={props.classes.popover} placement="bottom-start" transition>
                 {({ TransitionProps }) => <Collapse className={props.classes.collapse} classes={{
                     wrapperInner: props.classes.collapseInner,
-                }} innerRef={collapseRctElem} {...TransitionProps}>
+                }} innerRef={(e: any) => setCollapseElem(findDOMNode(e) as HTMLElement)} {...TransitionProps}>
                     <Paper elevation={2} className={props.classes.paper} style={{
                         width: autocompleteWidth,
                         maxHeight: autocompleteMaxHeight,
