@@ -31,7 +31,7 @@ export default function DateComponent(props: FieldRendererComponentProps<Date, D
         let hasAmpm = /am|pm/i.test(renderDate(new Date()));
         return <Picker
             value={props.value}
-            onChange={(date: Date|null) => props.onChange!(date)}
+            onChange={(date: any|null) => props.onChange!(new Date(date))}
             clearable
             autoOk
             ampm={hasAmpm}
@@ -39,7 +39,7 @@ export default function DateComponent(props: FieldRendererComponentProps<Date, D
             okLabel={t("searchbar/renderer/Date/ok")}
             clearLabel={t("searchbar/renderer/Date/clear")}
             emptyLabel={t("searchbar/renderer/Date/null-date")}
-            labelFunc={(date: Date, invalidLabel: string) => {
+            labelFunc={(date: any, invalidLabel: string) => {
                 if (date) {
                     return renderDate(date);
                 } else {
