@@ -1,9 +1,11 @@
 import { Theme, withStyles, WithStyles } from "@material-ui/core/styles";
-import { emphasize } from "@material-ui/core/styles/colorManipulator";
+import { darken } from "@material-ui/core/styles/colorManipulator";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CloseIcon from "@material-ui/icons/Close";
 import classnames from "classnames";
-import React, { KeyboardEvent } from "react";
+import FocusTrap from "focus-trap-react";
+import React, { KeyboardEvent, ReactInstance, useCallback, useRef } from "react";
+import { findDOMNode } from "react-dom";
 import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
 import FieldRenderer, {FieldRendererComponent, ISearchboxFieldData, isEmptyValue, isRange} from "../FieldRenderer";
@@ -58,7 +60,7 @@ export type EditableChip_Props_t<T, D extends ISearchboxFieldData<T>> = {
 };
 
 type EditableChip_ChangeComponent_Props_t = {
-    onKeyUp: (event: KeyboardEvent) => void,
+    onKeyDown: (event: KeyboardEvent) => void,
 };
 
 const editableChipStyles = (theme: Theme) => ({
@@ -66,10 +68,10 @@ const editableChipStyles = (theme: Theme) => ({
         "backgroundColor": theme.palette.error.main,
         "color": theme.palette.error.contrastText,
         "&:hover, &:focus": {
-            backgroundColor: emphasize(theme.palette.error.main, 0.08),
+            backgroundColor: darken(theme.palette.error.main, 0.08),
         },
         "&:active": {
-            backgroundColor: emphasize(theme.palette.error.main, 0.12),
+            backgroundColor: darken(theme.palette.error.main, 0.12),
         },
     },
 });
@@ -85,29 +87,54 @@ function EditableChip<T, D extends ISearchboxFieldData<T>>(props: EditableChip_P
 
     const handlers = {
         onExit: props.editing ? props.onCancelEditing : undefined,
-        onCommit: props.editing ? (isInvalid(props.value) ? () => { } : props.onCommitEditing) : undefined,
+        onCommit: props.editing ? (isInvalid(props.value) ? () => { } : props.onCommitEditing) : props.onBeginEditing,
         onModify: !props.editing ? props.onBeginEditing : undefined,
+        onDelete: !props.editing ? props.onDelete : undefined,
     };
 
-    const keyUp = useKeypressHandler(handlers);
+    const keyDown = useKeypressHandler({
+        ...handlers,
+        stopPropagation: true,
+        isDefault: true,
+    });
 
-    return <ResizableChip
-        onDoubleClick={handlers.onModify}
-        onDelete={props.editing ? undefined : props.onDelete}
-        className={classnames({
-            [props.classes.invalidData]: isInvalid(props.value),
-        })}
-        label={<EditModeChipComponent<T, D>
-            value={props.value}
-            onChange={props.onChange!}
-            isEditing={props.editing}
-            viewComponent={props.viewComponent}
-            editComponent={props.editComponent!}
-            onCommit={handlers.onCommit}
-            onCancel={handlers.onExit}
-        />}
-        onKeyUp={keyUp}
-    />;
+    const chipRootRef = useRef<ReactInstance>();
+
+    const onDeleteHandler = useCallback((ev) => {
+        handlers.onDelete!();
+    }, [handlers.onDelete]);
+
+    return <FocusTrap active={props.editing} focusTrapOptions={{
+        onDeactivate: () => props.onCancelEditing ? props.onCancelEditing() : void 0,
+        initialFocus: () => {
+            const currentRoot = findDOMNode(chipRootRef.current) as HTMLElement;
+            if (currentRoot) {
+                return currentRoot.querySelector("input") ?? currentRoot;
+            }
+            return currentRoot;
+        },
+
+    }}>
+        <ResizableChip
+            ref={chipRootRef}
+            onKeyDown={keyDown}
+            onDoubleClick={handlers.onModify}
+            onDelete={handlers.onDelete ? onDeleteHandler : undefined}
+            clickable={!props.editing}
+            className={classnames({
+                [props.classes.invalidData]: isInvalid(props.value),
+            })}
+            label={<EditModeChipComponent<T, D>
+                value={props.value}
+                onChange={props.onChange!}
+                isEditing={props.editing}
+                viewComponent={props.viewComponent}
+                editComponent={props.editComponent!}
+                onCommit={handlers.onCommit}
+                onCancel={handlers.onExit}
+            />}
+        />
+    </FocusTrap>;
 }
 
 export default withStyles(editableChipStyles)(EditableChip);
@@ -125,7 +152,7 @@ type EditModeChipComponent_Props_t<T, D extends ISearchboxFieldData<T>> = {
 function EditModeChipComponent<T, D extends ISearchboxFieldData<T>>(props: EditModeChipComponent_Props_t<T, D>) {
     const { t } = useTranslation("finder-ui");
 
-    const onKeyUp = useKeypressHandler({
+    const onKeyDown = useKeypressHandler({
         onExit: props.onCancel,
     });
     if (!props.isEditing) {
@@ -136,7 +163,7 @@ function EditModeChipComponent<T, D extends ISearchboxFieldData<T>>(props: EditM
                 data={props.value}
                 onChange={props.onChange}
                 component={props.editComponent}
-                componentProps={{ onKeyUp }}
+                componentProps={{ onKeyDown }}
             />
             {props.onCommit && <ChipIconButton onClick={() => props.onCommit!()} color={isInvalid(props.value) ? "inherit" : "primary"} disabled={isInvalid(props.value)}>
                 <CheckCircleIcon aria-label={t("searchbar/chips/EditableChip/edit-done")} />

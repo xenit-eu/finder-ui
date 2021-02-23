@@ -63,7 +63,7 @@ const styles = (theme: Theme) => ({
 });
 function ChipIconButton({classes, disabled, onClick, color, className, ...props}: ChipIconButton_Props_t & WithStyles<typeof styles>) {
     const iconChild = React.Children.only(props.children);
-    const onKeyDown = useKeypressHandler({
+    const onKeyPress = useKeypressHandler({
         onCommit: onClick,
         stopPropagation: true,
     });
@@ -75,12 +75,12 @@ function ChipIconButton({classes, disabled, onClick, color, className, ...props}
             [classes.disabled]: disabled ?? false,
         }, className),
         "onClick": disabled ? undefined : onClick,
-        "onKeyDown": disabled ? undefined : onKeyDown,
+        "onKeyPress": disabled ? undefined : onKeyPress,
         "focusable": !disabled,
         "role": "button",
         "aria-hidden": false,
         "aria-disabled": !!disabled,
-        "tabindex": 0,
+        "tabIndex": 0,
 
         ...props,
     });

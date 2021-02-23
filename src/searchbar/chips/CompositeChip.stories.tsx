@@ -16,10 +16,11 @@ function viewComponent({ value }) {
     return value.toString();
 }
 function editComponent({ onChange, value, onKeyUp }) {
-    return <TextField value={value} onChange={(e) => onChange(e.target.value || null)} onKeyUp={onKeyUp} />;
+    return <TextField value={value} onChange={(e) => onChange(e.target.value || null)} onKeyPress={onKeyUp} />;
 }
 
 const SimpleChip = () => <EditableChip
+        editing={false}
         value={{
             fieldName: "Field",
             fieldValue: { value: "abc" },
