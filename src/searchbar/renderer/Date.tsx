@@ -30,6 +30,7 @@ export default function DateComponent(props: FieldRendererComponentProps<Date, D
         const Picker = props.includeTime ? InlineDateTimePicker : InlineDatePicker;
         let hasAmpm = /am|pm/i.test(renderDate(new Date()));
         return <Picker
+            keyboard
             value={props.value}
             onChange={(date: any|null) => props.onChange!(new Date(date))}
             clearable
