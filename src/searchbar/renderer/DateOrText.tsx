@@ -1,7 +1,7 @@
 import { TextField, Theme, WithStyles, withStyles } from "@material-ui/core";
 import { TextFieldProps } from "@material-ui/core/TextField";
 import { InlineDatePicker, InlineDateTimePicker } from "material-ui-pickers";
-import React from "react";
+import React, {ChangeEvent} from "react";
 import { useTranslation } from "react-i18next";
 import { FieldRendererComponentProps } from "../FieldRenderer";
 import { RenderSimilarity } from "../Similarity";
@@ -11,20 +11,19 @@ type DateComponent_Props_t = {
     includeTime: boolean,
 };
 
-function FullWidthTextField(props: TextFieldProps) {
-    return <TextField {...props} fullWidth />;
-}
-
-export default function DateComponent(props: FieldRendererComponentProps<Date, DateComponent_Props_t>) {
+export default function DateOrTextComponent(props: FieldRendererComponentProps<Date|string, DateComponent_Props_t>) {
     const { t } = useTranslation("finder-ui");
 
-    function renderDate(date: Date) {
-        if (props.includeTime) {
-            return t("searchbar/renderer/Date/date-time", { date: props.value });
-        } else {
-            return t("searchbar/renderer/Date/date", { date: props.value });
+    const renderDate = React.useCallback((date: Date|string) => {
+        if (typeof date === "string") {
+            return date;
         }
-    }
+        if (props.includeTime) {
+            return t("searchbar/renderer/Date/date-time", { date });
+        } else {
+            return t("searchbar/renderer/Date/date", { date });
+        }
+    }, [props.includeTime, t]);
 
     if (props.onChange) {
         const Picker = props.includeTime ? InlineDateTimePicker : InlineDatePicker;
@@ -32,7 +31,9 @@ export default function DateComponent(props: FieldRendererComponentProps<Date, D
         return <Picker
             keyboard
             value={props.value}
-            onChange={(date: any|null) => props.onChange!(new Date(date))}
+            onChange={(date: any | null) => {
+                props.onChange!(new Date(date));
+            }}
             clearable
             autoOk
             ampm={hasAmpm}
@@ -42,12 +43,23 @@ export default function DateComponent(props: FieldRendererComponentProps<Date, D
             emptyLabel={t("searchbar/renderer/Date/null-date")}
             labelFunc={(date: any, invalidLabel: string) => {
                 if (date) {
-                    return renderDate(date);
+                    return renderDate(new Date(date));
                 } else {
                     return invalidLabel;
                 }
             }}
-            TextFieldComponent={FullWidthTextField}
+            TextFieldComponent={(internalProps: TextFieldProps) => <TextField
+                {...(typeof props.value === "string" ? {
+                    ...internalProps,
+                    value: props.value,
+                    error: false,
+                    helperText: null,
+                } : internalProps)}
+                fullWidth
+                onChange={(ev: ChangeEvent<HTMLInputElement>) => {
+                    props.onChange!(ev.target.value);
+                }}
+            />}
         />;
     } else {
         if (!props.value) {
