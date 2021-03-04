@@ -102,7 +102,7 @@ function AutocompletePaper(props: AutocompletePaper_Props_t & WithStyles<typeof 
             },
         }} />
         <div className={props.classes.root} ref={rootElem}>
-            <Backdrop open={props.open} classes={{ root: props.classes.backdrop }} onClick={onDismiss} />
+            <Backdrop open={props.open} classes={{ root: props.classes.backdrop }} onClick={onDismiss} mountOnEnter unmountOnExit />
             <DivWithSize className={props.classes.target} ref={(e: any) => setTargetElem(findDOMNode(e) as HTMLDivElement)} onSize={({ width }) => {
                 setAutocompleteWidth(width ?? undefined);
             }}>
