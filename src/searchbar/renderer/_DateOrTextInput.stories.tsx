@@ -1,9 +1,8 @@
 import DateFnsUtils from "@date-io/date-fns";
 import { action } from "@storybook/addon-actions";
-import scoreStringSimilarity from "@xenit/finder-string-similarity-score";
 import MuiPickersUtilsProvider from "material-ui-pickers/MuiPickersUtilsProvider";
 import React from "react";
-import DateOrTextInput from "./_DateOrTextInput";
+import DateOrTextInput, { forcePickerStateOpen } from "./_DateOrTextInput";
 
 export default {
     title: "searchbar/renderer/DateOrTextInput",
@@ -22,8 +21,8 @@ export const dateOnly = () => <Wrapper>
     <DateOrTextInput
         textValue={"blabla"}
         dateValue={date}
-        onChangeText={action("changeText")}
-        onChangeDate={action("changeDate")}
+        onTextChange={action("textChange")}
+        onDateChange={action("dateChange")}
         includeTime={false}
     />
 </Wrapper>;
@@ -32,8 +31,8 @@ export const dateTimeAmpm = () => <Wrapper>
     <DateOrTextInput
         textValue={"blabla"}
         dateValue={date}
-        onChangeText={action("changeText")}
-        onChangeDate={action("changeDate")}
+        onTextChange={action("textChange")}
+        onDateChange={action("dateChange")}
         includeTime={"12h"}
     />
 </Wrapper>;
@@ -42,8 +41,41 @@ export const dateTime24h = () => <Wrapper>
     <DateOrTextInput
         textValue={"blabla"}
         dateValue={date}
-        onChangeText={action("changeText")}
-        onChangeDate={action("changeDate")}
+        onTextChange={action("textChange")}
+        onDateChange={action("dateChange")}
         includeTime={"24h"}
+    />
+</Wrapper>;
+
+export const dateOnlyOpen = () => <Wrapper>
+    <DateOrTextInput
+        textValue={"blabla"}
+        dateValue={date}
+        onTextChange={action("textChange")}
+        onDateChange={action("dateChange")}
+        includeTime={false}
+        _forcePickerState={forcePickerStateOpen}
+    />
+</Wrapper>;
+
+export const dateTimeAmpmOpen = () => <Wrapper>
+    <DateOrTextInput
+        textValue={"blabla"}
+        dateValue={date}
+        onTextChange={action("textChange")}
+        onDateChange={action("dateChange")}
+        includeTime={"12h"}
+        _forcePickerState={forcePickerStateOpen}
+    />
+</Wrapper>;
+
+export const dateTime24hOpen = () => <Wrapper>
+    <DateOrTextInput
+        textValue={"blabla"}
+        dateValue={date}
+        onTextChange={action("textChange")}
+        onDateChange={action("dateChange")}
+        includeTime={"24h"}
+        _forcePickerState={forcePickerStateOpen}
     />
 </Wrapper>;

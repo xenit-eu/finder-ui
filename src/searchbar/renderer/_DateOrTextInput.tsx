@@ -3,7 +3,9 @@ import CalendarIcon from "@material-ui/icons/Event";
 import DatePicker from "material-ui-pickers/DatePicker/DatePicker";
 import DateTimePicker from "material-ui-pickers/DateTimePicker/DateTimePicker";
 import React, { ChangeEvent, useCallback, useReducer, useRef } from "react";
-import invariant from "tiny-invariant";
+
+// @internal
+export const forcePickerStateOpen = Symbol("forcePickerStateOpen");
 
 export type DateOrTextInputProps = {
     readonly textValue: string;
@@ -13,16 +15,14 @@ export type DateOrTextInputProps = {
     readonly onDateChange: (value: Date) => void;
 
     readonly includeTime: false | "24h" | "12h";
+
+    // @internal
+    readonly _forcePickerState?: typeof forcePickerStateOpen;
 };
 
 type LocalState = {
     pickerOpen: boolean,
     currentDate: null | Date,
-};
-
-const defaultLocalState: LocalState = {
-    pickerOpen: false,
-    currentDate: null,
 };
 
 type LocalAction = {
@@ -35,12 +35,12 @@ type LocalAction = {
     commit: boolean,
 };
 
-function localStateReducer(state: LocalState, action: LocalAction): Partial<LocalState> {
+function localStateReducer(state: LocalState, action: LocalAction): LocalState {
     switch (action.type) {
         case "close":
-        default:
             return {
                 pickerOpen: false,
+                currentDate: state.currentDate,
             };
         case "open":
             return {
@@ -52,11 +52,16 @@ function localStateReducer(state: LocalState, action: LocalAction): Partial<Loca
                 pickerOpen: !action.commit,
                 currentDate: action.date,
             };
+        default:
+            return state;
     }
 }
 
 export default function DateOrTextInput(props: DateOrTextInputProps) {
-    const [localState, updateLocalState] = useReducer(localStateReducer, defaultLocalState);
+    const [localState, updateLocalState] = useReducer(localStateReducer, {
+        pickerOpen: props._forcePickerState === forcePickerStateOpen,
+        currentDate: null,
+    });
 
     const calendarIconOnClick = useCallback(() => {
         updateLocalState({type: "open"});
