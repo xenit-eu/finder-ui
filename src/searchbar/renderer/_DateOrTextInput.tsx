@@ -1,4 +1,4 @@
-import { IconButton, InputAdornment, Popover, TextField } from "@material-ui/core";
+import { IconButton, InputAdornment, Popover, TextField, Typography } from "@material-ui/core";
 import CalendarIcon from "@material-ui/icons/Event";
 import DatePicker from "material-ui-pickers/DatePicker/DatePicker";
 import DateTimePicker from "material-ui-pickers/DateTimePicker/DateTimePicker";
@@ -109,12 +109,14 @@ export default function DateOrTextInput(props: DateOrTextInputProps) {
             anchorEl={inputRef.current}
             onClose={onClose}
         >
-            <Picker
-                date={localState.currentDate ?? props.dateValue ?? new Date()}
-                onChange={dateOnChange}
-                ampm={props.includeTime === "12h"}
-                allowKeyboardControl
-            />
+            <Typography component="div">
+                <Picker
+                    date={localState.currentDate ?? props.dateValue ?? new Date()}
+                    onChange={dateOnChange}
+                    ampm={props.includeTime === "12h"}
+                    allowKeyboardControl
+                />
+            </Typography>
         </Popover>
     </>;
 
