@@ -1,7 +1,7 @@
 import DateFnsUtils from "@date-io/date-fns";
 import { action } from "@storybook/addon-actions";
 import scoreStringSimilarity from "@xenit/finder-string-similarity-score";
-import { MuiPickersUtilsProvider } from "material-ui-pickers";
+import MuiPickersUtilsProvider from "material-ui-pickers/MuiPickersUtilsProvider";
 import React from "react";
 import DateComponent from "./DateOrText";
 

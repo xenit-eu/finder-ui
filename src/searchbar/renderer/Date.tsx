@@ -1,10 +1,10 @@
 import { TextField, Theme, WithStyles, withStyles } from "@material-ui/core";
 import { TextFieldProps } from "@material-ui/core/TextField";
-import { InlineDatePicker, InlineDateTimePicker } from "material-ui-pickers";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { FieldRendererComponentProps } from "../FieldRenderer";
 import { RenderSimilarity } from "../Similarity";
+import DateOrTextInput, {DateOrTextInputProps} from "./_DateOrTextInput";
 import HighlightComponent from "./HighlightComponent";
 
 type DateComponent_Props_t = {
@@ -15,6 +15,7 @@ function FullWidthTextField(props: TextFieldProps) {
     return <TextField {...props} fullWidth />;
 }
 
+function empty() {}
 export default function DateComponent(props: FieldRendererComponentProps<Date, DateComponent_Props_t>) {
     const { t } = useTranslation("finder-ui");
 
@@ -26,28 +27,25 @@ export default function DateComponent(props: FieldRendererComponentProps<Date, D
         }
     }
 
-    if (props.onChange) {
-        const Picker = props.includeTime ? InlineDateTimePicker : InlineDatePicker;
+    function getTimeType(): DateOrTextInputProps["includeTime"] {
+        if (!props.includeTime) {
+            return false;
+        }
         let hasAmpm = /am|pm/i.test(renderDate(new Date()));
-        return <Picker
-            keyboard
-            value={props.value}
-            onChange={(date: any|null) => props.onChange!(new Date(date))}
-            clearable
-            autoOk
-            ampm={hasAmpm}
-            cancelLabel={t("searchbar/renderer/Date/cancel")}
-            okLabel={t("searchbar/renderer/Date/ok")}
-            clearLabel={t("searchbar/renderer/Date/clear")}
-            emptyLabel={t("searchbar/renderer/Date/null-date")}
-            labelFunc={(date: any, invalidLabel: string) => {
-                if (date) {
-                    return renderDate(date);
-                } else {
-                    return invalidLabel;
-                }
-            }}
-            TextFieldComponent={FullWidthTextField}
+        if (hasAmpm) {
+            return "12h";
+        } else {
+            return "24h";
+        }
+    }
+
+    if (props.onChange) {
+        return <DateOrTextInput
+            textValue={renderDate(props.value!)}
+            dateValue={props.value}
+            onTextChange={empty}
+            onDateChange={props.onChange}
+            includeTime={getTimeType()}
         />;
     } else {
         if (!props.value) {
