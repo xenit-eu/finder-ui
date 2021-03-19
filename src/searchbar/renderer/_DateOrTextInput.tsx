@@ -2,7 +2,8 @@ import { IconButton, InputAdornment, Popover, TextField, Typography } from "@mat
 import CalendarIcon from "@material-ui/icons/Event";
 import DatePicker from "material-ui-pickers/DatePicker/DatePicker";
 import DateTimePicker from "material-ui-pickers/DateTimePicker/DateTimePicker";
-import React, { ChangeEvent, useCallback, useReducer, useRef } from "react";
+import React, { ChangeEvent, useCallback, useEffect, useReducer, useRef, useState } from "react";
+import Activity from "../../global-activity-manager/Activity";
 
 // @internal
 export const forcePickerStateOpen = Symbol("forcePickerStateOpen");
@@ -104,20 +105,23 @@ export default function DateOrTextInput(props: DateOrTextInputProps) {
                 </InputAdornment>,
             }}
         />
-        <Popover
-            open={localState.pickerOpen}
-            anchorEl={inputRef.current}
-            onClose={onClose}
-        >
-            <Typography component="div">
-                <Picker
-                    date={localState.currentDate ?? props.dateValue ?? new Date()}
-                    onChange={dateOnChange}
-                    ampm={props.includeTime === "12h"}
-                    allowKeyboardControl
-                />
-            </Typography>
-        </Popover>
+        <Activity active={localState.pickerOpen} waitForDeactivate>{(open, onDeactivate) =>
+            <Popover
+                open={open}
+                anchorEl={inputRef.current}
+                onClose={onClose}
+                onExited={onDeactivate}
+            >
+                <Typography component="div">
+                    <Picker
+                        date={localState.currentDate ?? props.dateValue ?? new Date()}
+                        onChange={dateOnChange}
+                        ampm={props.includeTime === "12h"}
+                        allowKeyboardControl
+                    />
+                </Typography>
+            </Popover>
+        }</Activity>
     </>;
 
 }

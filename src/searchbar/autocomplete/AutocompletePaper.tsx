@@ -4,6 +4,7 @@ import FocusTrap from "focus-trap-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { findDOMNode } from "react-dom";
 import sizeMe from "react-sizeme";
+import Activity from "../../global-activity-manager/Activity";
 import useKeypressHandler from "../chips/useKeypressHandler";
 const d = debug("finder-ui:searchbar:autocomplete:AutocompletePaper");
 
@@ -26,7 +27,7 @@ const styles = (theme: Theme) => ({
         backgroundColor: "rgba(0, 0, 0, 0.25)",
     },
     popover: {
-        zIndex: theme.zIndex.tooltip,
+        zIndex: theme.zIndex.modal - 1,
     },
     paper: {
         maxHeight: "100vh",
@@ -93,8 +94,8 @@ function AutocompletePaper(props: AutocompletePaper_Props_t & WithStyles<typeof 
 
     const onDismiss = useCallback(() => props.onDismiss(), [props.onDismiss]);
 
-    return <>
-        <FocusTrap active={props.open} containerElements={[rootElem.current!, collapseElem!]} focusTrapOptions={{
+    return <Activity active={props.open}>{(open) => <>
+        <FocusTrap active={open} containerElements={[rootElem.current!, collapseElem!]} focusTrapOptions={{
             onDeactivate: onDismiss,
             clickOutsideDeactivates: (e: MouseEvent) => {
                 e.preventDefault();
@@ -122,7 +123,8 @@ function AutocompletePaper(props: AutocompletePaper_Props_t & WithStyles<typeof 
                 }
             </Popper>
         </div>
-    </>;
+    </>
+    }</Activity>;
 }
 
 export default withStyles(styles)(AutocompletePaper);
