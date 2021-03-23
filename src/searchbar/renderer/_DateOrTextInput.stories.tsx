@@ -58,6 +58,12 @@ export const dateOnlyOpen = () => <Wrapper>
     />
 </Wrapper>;
 
+dateOnlyOpen.parameters = {
+    storyshots: {
+        failureThreshold: 200, // differing pixels: number 11 on the calendar is inconsistent
+    },
+};
+
 export const dateTimeAmpmOpen = () => <Wrapper>
     <DateOrTextInput
         textValue={"blabla"}
@@ -69,6 +75,12 @@ export const dateTimeAmpmOpen = () => <Wrapper>
     />
 </Wrapper>;
 
+dateTimeAmpmOpen.parameters = {
+    storyshots: {
+        failureThreshold: 200, // differing pixels: number 11 on the calendar is inconsistent
+    },
+};
+
 export const dateTime24hOpen = () => <Wrapper>
     <DateOrTextInput
         textValue={"blabla"}
@@ -79,3 +91,9 @@ export const dateTime24hOpen = () => <Wrapper>
         _forcePickerState={forcePickerStateOpen}
     />
 </Wrapper>;
+
+dateTime24hOpen.parameters = {
+    storyshots: {
+        failureThreshold: 200, // differing pixels: number 11 on the calendar is inconsistent
+    },
+};
