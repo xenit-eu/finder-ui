@@ -1,20 +1,19 @@
-import { TextField, Theme, WithStyles, withStyles } from "@material-ui/core";
-import { TextFieldProps } from "@material-ui/core/TextField";
-import { InlineDatePicker, InlineDateTimePicker } from "material-ui-pickers";
-import React, {ChangeEvent} from "react";
+import { Theme, WithStyles, withStyles } from "@material-ui/core";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import { FieldRendererComponentProps } from "../FieldRenderer";
 import { RenderSimilarity } from "../Similarity";
+import DateOrTextInput, {DateOrTextInputProps} from "./_DateOrTextInput";
 import HighlightComponent from "./HighlightComponent";
 
 type DateComponent_Props_t = {
     includeTime: boolean,
 };
 
-export default function DateOrTextComponent(props: FieldRendererComponentProps<Date|string, DateComponent_Props_t>) {
+export default function DateOrTextComponent(props: FieldRendererComponentProps<Date | string, DateComponent_Props_t>) {
     const { t } = useTranslation("finder-ui");
 
-    const renderDate = React.useCallback((date: Date|string) => {
+    function renderDate(date: Date | string): string {
         if (typeof date === "string") {
             return date;
         }
@@ -23,43 +22,27 @@ export default function DateOrTextComponent(props: FieldRendererComponentProps<D
         } else {
             return t("searchbar/renderer/Date/date", { date });
         }
-    }, [props.includeTime, t]);
+    }
+
+    function getTimeType(): DateOrTextInputProps["includeTime"] {
+        if (!props.includeTime) {
+            return false;
+        }
+        let hasAmpm = /am|pm/i.test(renderDate(new Date()));
+        if (hasAmpm) {
+            return "12h";
+        } else {
+            return "24h";
+        }
+    }
 
     if (props.onChange) {
-        const Picker = props.includeTime ? InlineDateTimePicker : InlineDatePicker;
-        let hasAmpm = /am|pm/i.test(renderDate(new Date()));
-        return <Picker
-            keyboard
-            value={props.value}
-            onChange={(date: any | null) => {
-                props.onChange!(new Date(date));
-            }}
-            clearable
-            autoOk
-            ampm={hasAmpm}
-            cancelLabel={t("searchbar/renderer/Date/cancel")}
-            okLabel={t("searchbar/renderer/Date/ok")}
-            clearLabel={t("searchbar/renderer/Date/clear")}
-            emptyLabel={t("searchbar/renderer/Date/null-date")}
-            labelFunc={(date: any, invalidLabel: string) => {
-                if (date) {
-                    return renderDate(new Date(date));
-                } else {
-                    return invalidLabel;
-                }
-            }}
-            TextFieldComponent={(internalProps: TextFieldProps) => <TextField
-                {...(typeof props.value === "string" ? {
-                    ...internalProps,
-                    value: props.value,
-                    error: false,
-                    helperText: null,
-                } : internalProps)}
-                fullWidth
-                onChange={(ev: ChangeEvent<HTMLInputElement>) => {
-                    props.onChange!(ev.target.value);
-                }}
-            />}
+        return <DateOrTextInput
+            textValue={renderDate(props.value ?? "")}
+            dateValue={typeof props.value === "string" ? null : props.value}
+            onTextChange={props.onChange}
+            onDateChange={props.onChange}
+            includeTime={getTimeType()}
         />;
     } else {
         if (!props.value) {

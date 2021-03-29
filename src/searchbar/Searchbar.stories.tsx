@@ -1,8 +1,10 @@
+import DateFnsUtils from "@date-io/date-fns";
 import { Chip, IconButton, List } from "@material-ui/core";
 import BookmarkBorderIcon from "@material-ui/icons/BookmarkBorder";
 import SearchIcon from "@material-ui/icons/Search";
 import { action } from "@storybook/addon-actions";
 import keycode from "keycode";
+import MuiPickersUtilsProvider from "material-ui-pickers/MuiPickersUtilsProvider";
 import React, { useReducer, useState } from "react";
 import { ButtonWithIcon } from "../button";
 import AutocompleteChip from "./autocomplete/AutocompleteChip";
@@ -10,6 +12,7 @@ import AutocompleteChips from "./autocomplete/AutocompleteChips";
 import AutocompleteListEntry from "./autocomplete/AutocompleteListEntry";
 import AutocompletePaper from "./autocomplete/AutocompletePaper";
 import EditableChip from "./chips/EditableChip";
+import DateOrText from "./renderer/DateOrText";
 import TextComponent from "./renderer/Text";
 import Searchbar from "./Searchbar";
 
@@ -162,6 +165,42 @@ export const fullSearchbar = () => <div style={{ backgroundColor: "hotpink", pad
 </div>;
 
 fullSearchbar.parameters = {
+    storyshots: {
+        disable: true,
+    },
+};
+
+export const searchbarWithDateChip = () => <MuiPickersUtilsProvider utils={DateFnsUtils}>
+    <AutocompletePaper
+        target={<Searchbar editing={false} value="" onChange={action("change")}>
+            <EditableChip
+                editing
+                viewComponent={DateOrText}
+                editComponent={DateOrText}
+                value={{
+                    fieldName: "Test Date field",
+                    fieldValue: {
+                        value: "some text",
+                    },
+
+                }}
+                onChange={action("change")}
+            />
+        </Searchbar>}
+        open={true}
+        onDismiss={action("dismiss")}>
+        <List>
+            <AutocompleteListEntry value={{
+                fieldName: "Some field",
+                fieldValue: { value: "abc" },
+            }} viewComponent={TextComponent} onSelect={action("select")} />
+
+        </List>
+
+    </AutocompletePaper>
+</MuiPickersUtilsProvider>;
+
+searchbarWithDateChip.parameters = {
     storyshots: {
         disable: true,
     },

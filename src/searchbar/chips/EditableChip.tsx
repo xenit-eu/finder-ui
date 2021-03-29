@@ -4,7 +4,7 @@ import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CloseIcon from "@material-ui/icons/Close";
 import classnames from "classnames";
 import FocusTrap from "focus-trap-react";
-import React, { KeyboardEvent, ReactInstance, useCallback, useRef } from "react";
+import React, { KeyboardEvent, ReactInstance, useCallback, useLayoutEffect, useRef } from "react";
 import { findDOMNode } from "react-dom";
 import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
@@ -104,37 +104,30 @@ function EditableChip<T, D extends ISearchboxFieldData<T>>(props: EditableChip_P
         handlers.onDelete!();
     }, [handlers.onDelete]);
 
-    return <FocusTrap active={props.editing} focusTrapOptions={{
-        onDeactivate: () => props.onCancelEditing ? props.onCancelEditing() : void 0,
-        initialFocus: () => {
-            const currentRoot = findDOMNode(chipRootRef.current) as HTMLElement;
-            if (currentRoot) {
-                return currentRoot.querySelector("input") ?? currentRoot;
-            }
-            return currentRoot;
-        },
+    useLayoutEffect(() => {
+        const currentRoot = findDOMNode(chipRootRef.current) as HTMLElement;
+        currentRoot?.querySelector("input")?.focus();
+    }, [props.editing]);
 
-    }}>
-        <ResizableChip
-            ref={chipRootRef}
-            onKeyDown={keyDown}
-            onDoubleClick={handlers.onModify}
-            onDelete={handlers.onDelete ? onDeleteHandler : undefined}
-            clickable={!props.editing}
-            className={classnames({
-                [props.classes.invalidData]: isInvalid(props.value),
-            })}
-            label={<EditModeChipComponent<T, D>
-                value={props.value}
-                onChange={props.onChange!}
-                isEditing={props.editing}
-                viewComponent={props.viewComponent}
-                editComponent={props.editComponent!}
-                onCommit={handlers.onCommit}
-                onCancel={handlers.onExit}
-            />}
-        />
-    </FocusTrap>;
+    return <ResizableChip
+        ref={chipRootRef}
+        onKeyDown={keyDown}
+        onDoubleClick={handlers.onModify}
+        onDelete={handlers.onDelete ? onDeleteHandler : undefined}
+        clickable={!props.editing}
+        className={classnames({
+            [props.classes.invalidData]: isInvalid(props.value),
+        })}
+        label={<EditModeChipComponent<T, D>
+            value={props.value}
+            onChange={props.onChange!}
+            isEditing={props.editing}
+            viewComponent={props.viewComponent}
+            editComponent={props.editComponent!}
+            onCommit={handlers.onCommit}
+            onCancel={handlers.onExit}
+        />}
+    />;
 }
 
 export default withStyles(editableChipStyles)(EditableChip);

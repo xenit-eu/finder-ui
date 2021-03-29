@@ -9,8 +9,9 @@ initStoryshots({
     suite: "Image storyshots",
     test: imageSnapshot({
         storybookUrl,
-        getMatchOptions: () => ({
+        getMatchOptions: ({context}) => ({
             blur: 2,
+            failureThreshold: context.parameters?.storyshots?.failureThreshold ?? 0,
         }),
         beforeScreenshot: (page) => {
             return new Promise((resolve) => {
