@@ -1,4 +1,4 @@
-import DateFnsUtils from "@date-io/date-fns";
+import MomentUtils from "@date-io/moment";
 import { action } from "@storybook/addon-actions";
 import MuiPickersUtilsProvider from "material-ui-pickers/MuiPickersUtilsProvider";
 import React from "react";
@@ -10,7 +10,7 @@ export default {
 };
 
 function Wrapper({ children }) {
-    return <MuiPickersUtilsProvider utils={DateFnsUtils}>
+    return <MuiPickersUtilsProvider utils={MomentUtils}>
         {children}
     </MuiPickersUtilsProvider>;
 }

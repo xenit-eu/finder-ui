@@ -11,10 +11,6 @@ type DateComponent_Props_t = {
     includeTime: boolean,
 };
 
-function FullWidthTextField(props: TextFieldProps) {
-    return <TextField {...props} fullWidth />;
-}
-
 function empty() {}
 export default function DateComponent(props: FieldRendererComponentProps<Date, DateComponent_Props_t>) {
     const { t } = useTranslation("finder-ui");

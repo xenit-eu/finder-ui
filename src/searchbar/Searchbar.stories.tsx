@@ -1,4 +1,4 @@
-import DateFnsUtils from "@date-io/date-fns";
+import MomentUtils from "@date-io/moment";
 import { Chip, IconButton, List } from "@material-ui/core";
 import BookmarkBorderIcon from "@material-ui/icons/BookmarkBorder";
 import SearchIcon from "@material-ui/icons/Search";
@@ -170,7 +170,7 @@ fullSearchbar.parameters = {
     },
 };
 
-export const searchbarWithDateChip = () => <MuiPickersUtilsProvider utils={DateFnsUtils}>
+export const searchbarWithDateChip = () => <MuiPickersUtilsProvider utils={MomentUtils}>
     <AutocompletePaper
         target={<Searchbar editing={false} value="" onChange={action("change")}>
             <EditableChip
