@@ -1,4 +1,4 @@
-import DateFnsUtils from "@date-io/date-fns";
+import MomentUtils from "@date-io/moment";
 import { action } from "@storybook/addon-actions";
 import scoreStringSimilarity from "@xenit/finder-string-similarity-score";
 import MuiPickersUtilsProvider from "material-ui-pickers/MuiPickersUtilsProvider";
@@ -11,7 +11,7 @@ export default {
 };
 
 function Wrapper({ children }) {
-    return <MuiPickersUtilsProvider utils={DateFnsUtils}>
+    return <MuiPickersUtilsProvider utils={MomentUtils}>
         {children}
     </MuiPickersUtilsProvider>;
 }

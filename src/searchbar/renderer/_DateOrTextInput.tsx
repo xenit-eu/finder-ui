@@ -1,5 +1,6 @@
 import { IconButton, InputAdornment, Popover, TextField, Typography } from "@material-ui/core";
 import CalendarIcon from "@material-ui/icons/Event";
+import { withUtils, WithUtilsProps } from "material-ui-pickers/_shared/WithUtils";
 import DatePicker from "material-ui-pickers/DatePicker/DatePicker";
 import DateTimePicker from "material-ui-pickers/DateTimePicker/DateTimePicker";
 import React, { ChangeEvent, useCallback, useEffect, useReducer, useRef, useState } from "react";
@@ -58,7 +59,7 @@ function localStateReducer(state: LocalState, action: LocalAction): LocalState {
     }
 }
 
-export default function DateOrTextInput(props: DateOrTextInputProps) {
+function DateOrTextInput(props: DateOrTextInputProps & WithUtilsProps) {
     const [localState, updateLocalState] = useReducer(localStateReducer, {
         pickerOpen: props._forcePickerState === forcePickerStateOpen,
         currentDate: null,
@@ -114,7 +115,7 @@ export default function DateOrTextInput(props: DateOrTextInputProps) {
             >
                 <Typography component="div">
                     <Picker
-                        date={localState.currentDate ?? props.dateValue ?? new Date()}
+                        date={props.utils.date(localState.currentDate ?? props.dateValue ?? new Date())}
                         onChange={dateOnChange}
                         ampm={props.includeTime === "12h"}
                         allowKeyboardControl
@@ -125,3 +126,5 @@ export default function DateOrTextInput(props: DateOrTextInputProps) {
     </>;
 
 }
+
+export default withUtils()(DateOrTextInput);

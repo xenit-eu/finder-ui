@@ -3,7 +3,6 @@ import Visibility from "@material-ui/icons/Visibility";
 import { action } from "@storybook/addon-actions";
 import { number, text } from "@storybook/addon-knobs";
 import * as React from "react";
-import { interceptAction, raceActionWithCustomMessage, sendCustomMessage, stopIntercept } from "../__tests/puppeteerActionInterceptor";
 import UploadedFile from "./UploadedFile";
 
 export default {
@@ -34,19 +33,6 @@ export const withCancelButton = () => <Paper>
     </Grid>
 </Paper>;
 
-withCancelButton.parameters = {
-    async puppeteerTest(page: any) {
-        const cancelActionPromise = interceptAction(page, "cancel");
-
-        const button = await page.$("button");
-        await button.click();
-        const cancelActionData = await cancelActionPromise;
-        expect(cancelActionData.name).toBe("cancel");
-
-        stopIntercept(page);
-    },
-};
-
 export const clickable = () => <Paper>
     <Grid container >
         <Grid item xs id="uploadedItem">
@@ -59,28 +45,6 @@ export const clickable = () => <Paper>
         </Grid>
     </Grid>
 </Paper>;
-
-clickable.parameters = {
-    async puppeteerTest(page: any) {
-        const cancelActionPromise = interceptAction(page, "cancel");
-        const msg = "no click action logged";
-        const clickRacePromise = raceActionWithCustomMessage(page, "click", msg);
-        const button = await page.$("button");
-        await button.click();
-        const cancelActionData = await cancelActionPromise;
-        expect(cancelActionData.name).toBe("cancel");
-        await sendCustomMessage(page, msg);
-        await expect(clickRacePromise).resolves.toBe(msg);
-
-        const clickActionPromise = interceptAction(page, "click");
-        const uploadedItem = await page.$("#uploadedItem");
-        await uploadedItem.click();
-        const clickActionData = await clickActionPromise;
-        expect(clickActionData.name).toBe("click");
-
-        stopIntercept(page);
-    },
-};
 
 export const actions = () => <Paper>
     <Grid container >
