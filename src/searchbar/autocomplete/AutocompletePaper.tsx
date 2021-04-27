@@ -19,11 +19,11 @@ const styles = (theme: Theme) => ({
     root: {
     },
     target: {
+        zIndex: theme.zIndex.modal - 40,
 
     },
     backdrop: {
-        zIndex: 0,
-
+        zIndex: theme.zIndex.modal - 50,
         backgroundColor: "rgba(0, 0, 0, 0.25)",
     },
     popover: {

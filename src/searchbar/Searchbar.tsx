@@ -15,7 +15,6 @@ const styles = (theme: Theme) => ({
     root: {
         display: "flex" as const,
         alignItems: "center" as const,
-
     },
     chips: {
         "display": "flex" as const,

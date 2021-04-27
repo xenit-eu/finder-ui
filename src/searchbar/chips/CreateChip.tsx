@@ -3,7 +3,8 @@ import AddCircleIcon from "@material-ui/icons/AddCircle";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CloseIcon from "@material-ui/icons/Close";
 import FocusTrap from "focus-trap-react";
-import React from "react";
+import React, { ReactInstance, useLayoutEffect, useRef } from "react";
+import { findDOMNode } from "react-dom";
 import { useTranslation } from "react-i18next";
 import ChipIconButton from "./ChipIconButton";
 import ResizableChip from "./ResizableChip";
@@ -49,14 +50,18 @@ function CreateChip(props: CreateChip_Props_t) {
     const keyPress = useKeypressHandler({
         ...handlers,
     });
-    return <FocusTrap active={props.editing} focusTrapOptions={{
-        onDeactivate: () => props.editing ? props.onCancelEditing() : void 0,
-    }}>
-        <ResizableChip
-            onKeyPress={props.editing ? keyPress : undefined}
-            label={<CreateChipLabel {...handlers} value={props.value} onChange={props.onChange} editing={props.editing} />}
-        />
-    </FocusTrap>;
+
+    const chipRootRef = useRef<ReactInstance>();
+    useLayoutEffect(() => {
+        const currentRoot = findDOMNode(chipRootRef.current) as HTMLElement;
+        currentRoot?.querySelector("input")?.focus();
+    }, [props.editing]);
+
+    return <ResizableChip
+        ref={chipRootRef}
+        onKeyPress={props.editing ? keyPress : undefined}
+        label={<CreateChipLabel {...handlers} value={props.value} onChange={props.onChange} editing={props.editing} />}
+    />;
 }
 
 export default CreateChip;
