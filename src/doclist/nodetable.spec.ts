@@ -373,11 +373,11 @@ phantomDescribe("NodeList", () => {
 
         element.find("ReactTable Thead ThComponent .rt-th").at(1).simulate("click");
 
-        expect(onSortChanged).toHaveBeenCalledWith([{ name: "cm:name", sortDirection: NodeTableSortDirection.ASC }]);
+        expect(onSortChanged).toHaveBeenCalledWith([{ ...column1, sortDirection: NodeTableSortDirection.ASC }]);
 
         element.find("ReactTable Thead ThComponent .rt-th").at(1).simulate("click");
 
-        expect(onSortChanged).toHaveBeenCalledWith([{ name: "cm:name", sortDirection: NodeTableSortDirection.ASC }]);
+        expect(onSortChanged).toHaveBeenCalledWith([{ ...column1, sortDirection: NodeTableSortDirection.ASC }]);
 
         element.setProps({
             columns: [{
@@ -388,6 +388,6 @@ phantomDescribe("NodeList", () => {
 
         element.find("ReactTable Thead ThComponent .rt-th").at(1).simulate("click");
 
-        expect(onSortChanged).toHaveBeenCalledWith([{ name: "cm:name", sortDirection: NodeTableSortDirection.DESC }]);
+        expect(onSortChanged).toHaveBeenCalledWith([{ ...column1, sortDirection: NodeTableSortDirection.DESC }]);
     });
 });
