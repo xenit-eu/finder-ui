@@ -1,7 +1,7 @@
 import { Checkbox } from "material-ui";
 import ToggleIndeterminateCheckBox from "material-ui/svg-icons/toggle/indeterminate-check-box";
 import { createElement as __, CSSProperties, MouseEvent } from "react";
-import ReactTable, { Column, RowInfo, SortingRule, TableProps } from "react-table";
+import ReactTable, { Column, Resize, ResizedChangeFunction, RowInfo, SortingRule, TableProps } from "react-table";
 import "react-table/react-table.css";
 import { FieldHighlights_t, Node_t } from "../metadata";
 import { ColumnRenderer_t } from "./renderer/interface";
@@ -11,6 +11,7 @@ export { MenuItem_t as NodeTableRowMenuItem_t } from "./RowMenu";
 export interface INodeTableBasicColumn {
     name: string;
     sortDirection: NodeTableSortDirection;
+    width?: number | null;
 }
 export interface INodeTableColumn extends INodeTableBasicColumn {
     label: string;
@@ -40,6 +41,7 @@ type Translations_t = {
 };
 
 type OnColumnSort_t = (sorts: INodeTableBasicColumn[]) => void;
+type OnColumnResize_t = (sizes: INodeTableBasicColumn[]) => void;
 type OnMenuSelected_t<T> = (node: Node_t, menuKey: T, rowIndex: number, menuIndex: number) => void;
 
 export interface INodeTableRow<T> {
@@ -68,6 +70,7 @@ export interface INodeTableProps<T> {
     onRowMenuLoadRequested?: (node: Node_t, rowIndex: number, callback: NodeTableMenuLoad_Callback_t<T>) => Promise<void>;
     onRowMenuItemClicked: OnMenuSelected_t<T>; // Called when a row menu item is selected
     onSortChanged: OnColumnSort_t; // Called when a column has to be sorted
+    onColumnResized?: OnColumnResize_t;
 };
 
 export function NodeTable<T>(props: INodeTableProps<T>) {
@@ -139,6 +142,7 @@ export function NodeTable<T>(props: INodeTableProps<T>) {
         columns: firstColumns.concat(columns),
 
         showPageSizeOptions: false,
+        showPageJump: false,
         onPageChange: (index: number) => props.onPageChanged(index + 1),
         page: props.pager.selectedPage - 1,
         minRows: props.pager.pageSize,
@@ -151,6 +155,10 @@ export function NodeTable<T>(props: INodeTableProps<T>) {
             const sorts: INodeTableBasicColumn[] = props.columns.map((col) => sortingRuleToBasicColumn(col, newSorted));
             props.onSortChanged(sorts);
         },
+        onResizedChange: props.onColumnResized ? (newResizes: Resize[]) => {
+            const resizes: INodeTableBasicColumn[] = props.columns.map((col) => resizeToBasicColumn(col, newResizes));
+            props.onColumnResized!(resizes);
+        } : undefined,
         getTrProps: (state: TableProps, rowInfo?: RowInfo) => (rowInfo ? {
             style: rowInfo.original.rowStyle,
         } : {}),
@@ -169,14 +177,26 @@ function sortingRuleToBasicColumn(col: INodeTableBasicColumn, rules: SortingRule
     const sortingRule = rules.find((sort) => sort.id === col.name);
     if (!sortingRule) {
         return {
-            name: col.name,
+            ...col,
             sortDirection: NodeTableSortDirection.NONE,
         };
     }
 
     return {
-        name: col.name,
+        ...col,
         sortDirection: sortingRule.desc ? NodeTableSortDirection.DESC : NodeTableSortDirection.ASC,
+    };
+}
+
+function resizeToBasicColumn(col: INodeTableBasicColumn, resizes: Resize[]): INodeTableBasicColumn {
+    const resize = resizes.find((r) => r.id === col.name);
+    if (!resize) {
+        return col;
+    }
+
+    return {
+        ...col,
+        width: resize.value as number,
     };
 }
 
@@ -197,6 +217,7 @@ function createColumn(col: INodeTableColumn): Column {
         Header: col.label,
         accessor: (row: INodeTableRow<any>) => row,
         sortable: col.sortable,
+        width: col.width ?? undefined,
         Cell: (prop: { value: INodeTableRow<any> }) => __(col.renderer, {
             node: prop.value.node,
             row: 0,
