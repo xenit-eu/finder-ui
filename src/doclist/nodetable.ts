@@ -191,10 +191,7 @@ function sortingRuleToBasicColumn(col: INodeTableBasicColumn, rules: SortingRule
 function resizeToBasicColumn(col: INodeTableBasicColumn, resizes: Resize[]): INodeTableBasicColumn {
     const resize = resizes.find((r) => r.id === col.name);
     if (!resize) {
-        return {
-            ...col,
-            width: null,
-        };
+        return col;
     }
 
     return {
