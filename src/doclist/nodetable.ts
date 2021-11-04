@@ -10,7 +10,7 @@ export { MenuItem_t as NodeTableRowMenuItem_t } from "./RowMenu";
 
 export interface INodeTableBasicColumn {
     name: string;
-    sortDirection?: NodeTableSortDirection;
+    sortDirection: NodeTableSortDirection;
     width?: number | null;
 }
 export interface INodeTableColumn extends INodeTableBasicColumn {
