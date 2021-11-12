@@ -34,6 +34,8 @@ export enum NodeTableTranslations {
     PAGE = "finder-ui.nodelist.PAGE",
     OF = "finder-ui.nodelist.OF",
     ROWS = "finder-ui.nodelist.ROWS",
+    SORT = "finder-ui.nodelist.SORT",
+    GROUP = "finder-ui.nodelist.GROUP",
 };
 
 type Translations_t = {
