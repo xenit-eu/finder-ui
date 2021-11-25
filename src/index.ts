@@ -11,6 +11,7 @@ export * from "./docpreview";
 export * from "./docpreviewPdfjs";
 export * from "./explorer";
 export * from "./filters";
+export { OverflowMenu } from "./menu";
 export * from "./metadata";
 export * from "./metadataDialog";
 export * from "./metadataPanel";
