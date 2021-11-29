@@ -71,7 +71,6 @@
     "react-rte": "^0.16.1",
     "react-sizeme": "^2.6.12",
     "react-sortable-hoc": "^0.8.4",
-    "react-table": "^6.11.5",
     "sortablejs": "^1.10.2",
     "tiny-invariant": "^1.1.0",
     "uuid": "^7.0.2"

@@ -16,7 +16,6 @@ export * from "./metadata";
 export * from "./metadataDialog";
 export * from "./metadataPanel";
 export * from "./pageMenu";
-export * from "./pager";
 export * from "./resizer";
 export * from "./search";
 export * from "./tabspanel";
