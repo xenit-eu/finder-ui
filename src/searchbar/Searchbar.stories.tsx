@@ -6,9 +6,9 @@ import { action } from "@storybook/addon-actions";
 import keycode from "keycode";
 import MuiPickersUtilsProvider from "material-ui-pickers/MuiPickersUtilsProvider";
 import React, { useReducer, useState } from "react";
-import { ButtonWithIcon } from "../button";
 import AutocompleteChip from "./autocomplete/AutocompleteChip";
 import AutocompleteChips from "./autocomplete/AutocompleteChips";
+import CompositeChip from "./chips/CompositeChip";
 import AutocompleteListEntry from "./autocomplete/AutocompleteListEntry";
 import AutocompletePaper from "./autocomplete/AutocompletePaper";
 import EditableChip from "./chips/EditableChip";
@@ -33,6 +33,40 @@ const SomeEditableChip = (props) => <EditableChip
         fieldValue: { value: Array(props.i ?? 3).fill("a").join("") },
     }}
 />;
+
+const SomeBigCompositeEditableChip = (props) => <CompositeChip onDelete={action("delete")}>
+<SomeEditableChip/>
+OR
+<SomeEditableChip/>
+OR
+<SomeEditableChip/>
+OR
+<SomeEditableChip/>
+OR
+<SomeEditableChip/>
+OR
+<SomeEditableChip/>
+OR
+<SomeEditableChip/>
+OR
+<SomeEditableChip/>
+OR
+<SomeEditableChip/>
+</CompositeChip>;
+
+const BigEditableChip = (props) => <EditableChip
+    viewComponent={TextComponent}
+    editComponent={TextComponent}
+    onBeginEditing={action("beginEditing")}
+    onCommitEditing={action("commitEditing")}
+    onCancelEditing={action("cancelEditing")}
+    editing={false}
+    value={{
+        fieldName: "Some field",
+        fieldValue: { value: Array(500).fill("a").join("") },
+    }}
+/>;
+
 const actions = <>
     <IconButton color="primary">
         <SearchIcon />
@@ -66,6 +100,20 @@ export const notEditing = () => <div style={{ backgroundColor: "hotpink", paddin
 export const manyChips = () => <div style={{ width: 600, backgroundColor: "hotpink", padding: 25 }}>
     <Searchbar value="Input value" onChange={action("change")} onKeyDown={action("keyDown")} editing={true} actions={actions}>
         {Array(15).fill(null).map((_, i) => <SomeEditableChip key={i} i={i} />)}
+    </Searchbar>
+</div>;
+
+export const compositeChipsWithManyChips = () => <div style={{ width: 600, backgroundColor: "hotpink", padding: 25 }}>
+    <Searchbar value="Input value" onChange={action("change")} onKeyDown={action("keyDown")} editing={true} actions={actions}>
+        {Array(1).fill(null).map((_, i) => <SomeBigCompositeEditableChip key={i} i={i} />)}
+    </Searchbar>
+</div>;
+
+export const veryBigChip = () => <div style={{ width: 600, backgroundColor: "hotpink", padding: 25 }}>
+    <Searchbar value="Input value" onChange={action("change")} onKeyDown={action("keyDown")} editing={true} actions={actions}>
+        {Array(1).fill(null).map((_, i) => <BigEditableChip key={i} i={i} />)}
+        <SomeEditableChip/>
+        <SomeBigCompositeEditableChip/>
     </Searchbar>
 </div>;
 

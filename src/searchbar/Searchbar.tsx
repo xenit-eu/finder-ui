@@ -1,5 +1,5 @@
-import { Input, Paper, Theme, withStyles, WithStyles } from "@material-ui/core";
-import React, { useLayoutEffect, useRef } from "react";
+import React from "react";
+import { Input, Paper, Theme, WithStyles, withStyles } from "@material-ui/core";
 import { useTranslation } from "react-i18next";
 
 type Searchbar_Props_t = {
@@ -20,20 +20,19 @@ const styles = (theme: Theme) => ({
         "display": "flex" as const,
         "flexWrap": "wrap" as const,
         "flex": 1,
+        "overflow": "auto" as const,
         "& > *": {
             marginLeft: theme.spacing.unit / 2,
             marginRight: theme.spacing.unit / 2,
             marginTop: theme.spacing.unit / 4,
             marginBottom: theme.spacing.unit / 4,
         },
-
     },
     inputField: {
         flex: 1,
         minWidth: 300,
     },
     actions: {
-
     },
 
 });
