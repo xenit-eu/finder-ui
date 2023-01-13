@@ -25,15 +25,7 @@ jobs:
         run: npm run lint
 
       - name: Test
-        run: npm run test -- --ci --updateSnapshot
-
-      - name: Zip Folder
-        run: zip -r new-snapshots.zip ./__tests__/__image_snapshots__/
-
-      - uses: actions/upload-artifact@v3
-        with:
-          name: new-snapshots.zip
-          path: new-snapshots.zip
+        run: npm run test -- --ci
 
       - name: Save failed snapshots
         if: ${{ failure() }}
