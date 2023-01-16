@@ -22,6 +22,7 @@ const compositeChipStyle = (theme: Theme) => {
             },
         },
         label: {
+            whiteSpace: "pre-line" as const,
             paddingTop: theme.spacing.unit / 2,
             paddingBottom: theme.spacing.unit / 2,
         },
