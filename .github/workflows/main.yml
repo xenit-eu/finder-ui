@@ -70,7 +70,7 @@ jobs:
           registry-url: https://registry.npmjs.org/
 
       - name: Install dependencies
-        run: yarn install
+        run: npm install
 
       - name: Set version from git
         id: tagversion
