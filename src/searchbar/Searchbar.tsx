@@ -46,7 +46,7 @@ function Searchbar(props: Searchbar_Props_t & WithStyles<typeof styles>) {
                 <Input
                     fullWidth
                     disableUnderline
-                    placeholder={t("searchbar/Searchbar/placeholder")}
+                    placeholder={props.children ? "" : t("searchbar/Searchbar/placeholder")}
                     value={props.value}
                     onChange={(e) => props.onChange(e.target.value)}
                     onKeyDown={props.onKeyDown}
