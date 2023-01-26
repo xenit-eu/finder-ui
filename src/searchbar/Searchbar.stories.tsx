@@ -90,6 +90,11 @@ export const emptySearchbar = () => <div style={{ backgroundColor: "hotpink", pa
     </Searchbar>
 </div>;
 
+export const emptySearchbarNoChips = () => <div style={{ backgroundColor: "hotpink", padding: 25 }}>
+    <Searchbar value="" onChange={action("change")} onKeyDown={action("keyDown")} editing={true} actions={actions}>
+    </Searchbar>
+</div>;
+
 export const notEditing = () => <div style={{ backgroundColor: "hotpink", padding: 25 }}>
     <Searchbar value="Some typed in value" onChange={action("change")} onKeyDown={action("keyDown")} editing={false} actions={actions}>
         <SomeEditableChip />
