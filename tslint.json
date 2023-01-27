@@ -16,6 +16,7 @@
         "member-ordering": [
             false
         ],
-        "interface-over-type-literal": false
+        "interface-over-type-literal": false,
+        "no-string-literal": false
     }
 }
