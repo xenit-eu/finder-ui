@@ -46,7 +46,8 @@ function Searchbar(props: Searchbar_Props_t & WithStyles<typeof styles>) {
                 <Input
                     fullWidth
                     disableUnderline
-                    placeholder={(props.children && (props.children.hasOwnProperty("length") ? props.children.length > 0 : true)) ? "" : t("searchbar/Searchbar/placeholder")}
+                    {/* tslint:disable-next-line:no-string-literal */}
+                    placeholder={(props.children && (props.children.hasOwnProperty("length") ? props.children["length"] > 0 : true)) ? "" : t("searchbar/Searchbar/placeholder")}
                     value={props.value}
                     onChange={(e) => props.onChange(e.target.value)}
                     onKeyDown={props.onKeyDown}
