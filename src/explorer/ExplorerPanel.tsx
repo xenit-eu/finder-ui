@@ -9,6 +9,7 @@ import { ExplorerFolderState, IExplorerListFolder } from "./types";
 
 type ExplorerPanel_Props_t<T extends IExplorerListFolder> = {
     folders: readonly T[],
+    uploadEnabled: readonly T[],
     onOpen: (folder: T) => void,
     onClose: (folder: T) => void,
     onSearch?: (folder: T) => void,
@@ -37,7 +38,6 @@ export default function ExplorerPanel<T extends IExplorerListFolder>(props: Expl
         onFilesDropped={props.onFilesDropped}
         folderActions={(folder) => <ExplorerPanelMenu {...props} folder={folder} />}
     />;
-
 }
 
 type ExplorerPanelMenu_Props_t<T extends IExplorerListFolder> = ExplorerPanel_Props_t<T> & {
@@ -58,7 +58,7 @@ function ExplorerPanelMenu<T extends IExplorerListFolder>({ folder, ...props }: 
         });
     }
 
-    if (props.onUpload) {
+    if (props.onUpload && props.uploadEnabled) {
         actions.push({
             icon: <CloudUploadIcon />,
             label: t("explorer/ExplorerPanel/upload-file-here"),
