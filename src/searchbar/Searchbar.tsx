@@ -26,8 +26,8 @@ const styles = (theme: Theme) => ({
               "max-height" : "60em",
         },
         "&:hover": {
-                      "max-height" : "60em",
-                },
+              "max-height" : "60em",
+        },
         "& > *": {
             marginLeft: theme.spacing.unit / 2,
             marginRight: theme.spacing.unit / 2,
@@ -47,7 +47,7 @@ const styles = (theme: Theme) => ({
 function Searchbar(props: Searchbar_Props_t & WithStyles<typeof styles>) {
     const { t } = useTranslation("finder-ui");
     return <Paper elevation={0} className={props.classes.root}>
-        <span className={props.classes.chips} >
+        <div className={props.classes.chips} >
             {props.children}
             {props.editing && <div className={props.classes.inputField} >
                 <Input
@@ -59,7 +59,7 @@ function Searchbar(props: Searchbar_Props_t & WithStyles<typeof styles>) {
                     onKeyDown={props.onKeyDown}
                 />
             </div>}
-        </span>
+        </div>
         <div className={props.classes.actions}>
             {props.actions ?? <span/>}
         </div>
