@@ -22,7 +22,7 @@ const styles = (theme: Theme) => ({
         "flexWrap": "wrap" as const,
         "flex": 1,
         "overflow": "auto" as const,
-        maxHeight: "6em",
+        "max-height": "6em",
         "&:focus-within": {
             maxHeight: "60em",
         },
