@@ -1,4 +1,5 @@
 import React from "react";
+import type { CSSProperties } from "@material-ui/core/styles/withStyles";
 import { Input, Paper, Theme, WithStyles, withStyles } from "@material-ui/core";
 import { useTranslation } from "react-i18next";
 
@@ -15,19 +16,26 @@ const styles = (theme: Theme) => ({
     root: {
         display: "flex" as const,
         alignItems: "center" as const,
-    },
+    } as CSSProperties,
     chips: {
         "display": "flex" as const,
         "flexWrap": "wrap" as const,
         "flex": 1,
         "overflow": "auto" as const,
+        "max-height": "6em",
+        "&:focus-within": {
+            maxHeight: "60em",
+        },
+        "&:hover": {
+            maxHeight: "60em",
+        },
         "& > *": {
             marginLeft: theme.spacing.unit / 2,
             marginRight: theme.spacing.unit / 2,
             marginTop: theme.spacing.unit / 4,
             marginBottom: theme.spacing.unit / 4,
         },
-    },
+    } as CSSProperties,
     inputField: {
         flex: 1,
         minWidth: 300,
@@ -54,7 +62,7 @@ function Searchbar(props: Searchbar_Props_t & WithStyles<typeof styles>) {
             </div>}
         </div>
         <div className={props.classes.actions}>
-            {props.actions ?? <span/>}
+            {props.actions ?? <span />}
         </div>
     </Paper>;
 }
