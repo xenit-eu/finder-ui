@@ -1,4 +1,5 @@
 import React from "react";
+import type { CSSProperties } from "@material-ui/core/styles/withStyles";
 import { Input, Paper, Theme, WithStyles, withStyles } from "@material-ui/core";
 import { useTranslation } from "react-i18next";
 
@@ -15,18 +16,18 @@ const styles = (theme: Theme) => ({
     root: {
         display: "flex" as const,
         alignItems: "center" as const,
-    },
+    } as CSSProperties,
     chips: {
         "display": "flex" as const,
         "flexWrap": "wrap" as const,
         "flex": 1,
         "overflow": "auto" as const,
-        "max-height" : "6em",
+        maxHeight: "6em",
         "&:focus-within": {
-              "max-height" : "60em",
+            maxHeight: "60em",
         },
         "&:hover": {
-              "max-height" : "60em",
+            maxHeight: "60em",
         },
         "& > *": {
             marginLeft: theme.spacing.unit / 2,
@@ -34,7 +35,7 @@ const styles = (theme: Theme) => ({
             marginTop: theme.spacing.unit / 4,
             marginBottom: theme.spacing.unit / 4,
         },
-    },
+    } as CSSProperties,
     inputField: {
         flex: 1,
         minWidth: 300,
@@ -47,9 +48,9 @@ const styles = (theme: Theme) => ({
 function Searchbar(props: Searchbar_Props_t & WithStyles<typeof styles>) {
     const { t } = useTranslation("finder-ui");
     return <Paper elevation={0} className={props.classes.root}>
-        <div className={props.classes.chips} >
+        <div className={props.classes.chips}>
             {props.children}
-            {props.editing && <div className={props.classes.inputField} >
+            {props.editing && <div className={props.classes.inputField}>
                 <Input
                     fullWidth
                     disableUnderline
@@ -61,7 +62,7 @@ function Searchbar(props: Searchbar_Props_t & WithStyles<typeof styles>) {
             </div>}
         </div>
         <div className={props.classes.actions}>
-            {props.actions ?? <span/>}
+            {props.actions ?? <span />}
         </div>
     </Paper>;
 }
