@@ -32,7 +32,7 @@ docker run --rm -v "$(pwd):/manual" -w /manual hub.xenit.eu/private/xenit-markdo
  * [XENFIN-1184](https://xenitsupport.jira.com/browse/XENFIN-1184): Add upload new version button to version panel
  * [XENFIN-1213](https://xenitsupport.jira.com/browse/XENFIN-1213): Add translations backend to load facet translations from Alfresco
  * [XENFIN-1253](https://xenitsupport.jira.com/browse/XENFIN-1253): Add highlighting of typed-in terms in autocomplete results
-
+ * [XENFIN-1364](https://xenitsupport.jira.com/browse/XENFIN-1364): Collapsable searchbar when Focused/unfocused
 
 ### Changed
  * [EF2I-1](https://xenitsupport.jira.com/browse/EF2I-1): Req1 - save the column width
@@ -55,6 +55,7 @@ docker run --rm -v "$(pwd):/manual" -w /manual hub.xenit.eu/private/xenit-markdo
  * [XENFIN-1291](https://xenitsupport.jira.com/browse/XENFIN-1291): Automatically create All chip with entered text when enter is pressed in the searchbox.
  * [XENFIN-1336](https://xenitsupport.jira.com/browse/XENFIN-1336): Remove react-table component from finder-ui
  * [XENFIN-996](https://xenitsupport.jira.com/browse/XENFIN-996): Focus & keyboard navigation in searchbar components
+ * [XENFIN-1351](https://xenitsupport.jira.com/browse/XENFIN-1351): Make the props.children condition a bit more rigourous
 
 
 ### Fixed
@@ -63,7 +64,7 @@ docker run --rm -v "$(pwd):/manual" -w /manual hub.xenit.eu/private/xenit-markdo
  * [XENFIN-1282](https://xenitsupport.jira.com/browse/XENFIN-1282): Clicking outside of the "search suggestions long box", should close it and just remember what is typed
  * [XENFIN-1294](https://xenitsupport.jira.com/browse/XENFIN-1294): Date-type chips can not be used when modifying an existing chip
  * [XENFIN-1300](https://xenitsupport.jira.com/browse/XENFIN-1300): Chips are not removable while CreateChip is being edited
-
+ * [XENFIN-1345](https://xenitsupport.jira.com/browse/XENFIN-1345): Fixed search button pushed out by search chips
 
 ## 2.4.0 (2020-01-24)
 
