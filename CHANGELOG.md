@@ -78,10 +78,10 @@ docker run --rm -v "$(pwd):/manual" -w /manual hub.xenit.eu/private/xenit-markdo
 ## 2.3.0 (2019-09-09)
 
 ### Added
- * [INNOSEARCH-48](https://xenitsupport.jira.com/browse/INNOSEARCH-48): Add Spanish translation to Finder
+ * Add Spanish translation to Finder
 
 ### Changed
  * [XENFIN-1060](https://xenitsupport.jira.com/browse/XENFIN-1060): Better date range labels
  * [XENFIN-1073](https://xenitsupport.jira.com/browse/XENFIN-1073): Refactoring: get global connected components out of global scope.
- * [XENFIN-1078](https://xenitsupport.jira.com/browse/XENFIN-1078): Correctly use content.size as property
+ * [XENFIN-1078](https://xenitsupport.jira.com/browse/XENFIN-1078): Correctly use content. Size as property
 
