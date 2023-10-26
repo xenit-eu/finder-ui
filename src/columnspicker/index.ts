@@ -24,6 +24,7 @@ export type ColumnsPicker_t = {
     sets: ColumnSet_t[],
     onSetsChange: (sets: ColumnSet_t[]) => void,
     onDone: (selectedColumns: string[]) => void,
+    onSelectColumnSet: (columnSetName: string) => void
 } & ({
     /** @deprecated, use columnGroups instead */
     allColumns?: never,
@@ -76,6 +77,7 @@ export class ColumnsPicker extends Component<ColumnsPicker_t, State_t> {
             selectedColumns: this.props.selectedColumns,
             sets: this.props.sets,
             onSetsChange: this.props.onSetsChange,
+            onSelectColumnSet: this.props.onSelectColumnSet,
             onDone: this.props.onDone,
             onClose: () => this.setState({ opened: false }),
             columnGroups: this.props.columnGroups || [{
