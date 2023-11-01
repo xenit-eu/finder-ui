@@ -13,6 +13,7 @@ type ColumnsPickerContent_Props_t = {
     selectedColumns: string[], // list of names
     sets: ColumnSet_t[],
     onSetsChange: (sets: ColumnSet_t[]) => void,
+    onSelectColumnSet: (columnSetName: string) => void
     onDone: (selectedColumns: string[]) => void,
     columnGroups: ColumnGroup_t[],
     onDismiss: () => void,
@@ -93,7 +94,7 @@ export class ColumnsPickerContent extends Component<ColumnsPickerContent_Props_t
         this.translate = new WordTranslator(() => this.props.language, translations);
     }
 
-    public componentWillReceiveProps(props: ColumnsPickerContent_Props_t) {
+    public componentDidUpdate(props: ColumnsPickerContent_Props_t) {
         if (!deepEqual(props.selectedColumns, this.props.selectedColumns) ||
             !deepEqual(props.sets, this.props.sets) ||
             !deepEqual(props.columnGroups, this.props.columnGroups)) {
@@ -111,6 +112,7 @@ export class ColumnsPickerContent extends Component<ColumnsPickerContent_Props_t
         if (!set) {
             this.setState({ selectedSet: null });
         } else {
+            this.props.onSelectColumnSet(set.id);
             this.setState({
                 selectedSet: set.id,
                 selected: set.columns,

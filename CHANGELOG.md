@@ -23,6 +23,11 @@ docker run --rm -v "$(pwd):/manual" -w /manual hub.xenit.eu/private/xenit-markdo
 # Alfred Finder - UI - Changelog
 
 
+## 2.5.3 (2023-10-26)
+
+### Added
+ * [PVEBUPGR7-49](https://xenitsupport.jira.com/browse/PVEBUPGR7-49): update the column set used on click
+
 ## 2.5.0 (2021-11-29)
 
 ### Added

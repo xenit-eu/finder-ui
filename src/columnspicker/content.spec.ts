@@ -90,6 +90,7 @@ describe("ColumnsPicker: ColumnsPickerContent", () => {
         columnGroups,
         onSetsChange: () => { },
         onDone: () => { },
+        onSelectColumnSet: () => {},
         onDismiss: () => { },
         onClose: () => { },
         classes,

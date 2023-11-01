@@ -1,6 +1,6 @@
 {
   "name": "@xenit/finder-ui",
-  "version": "2.5.2-alpha.2",
+  "version": "2.5.3",
   "description": "Finder UI components using ReactJS (based on material-ui.com)",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -11,6 +11,7 @@
     "clean": "rimraf dist",
     "dist": "cpy '**/*.less' ../dist/ --cwd=src --parents && tsc",
     "prepare": "npm run clean && npm run dist",
+    "jest": "jest",
     "test": "build-storybook && jest",
     "lint": "tslint -c ./tslint.json 'src/**/*.ts' 'src/**/*.tsx'",
     "storybook": "start-storybook -p 6006",
