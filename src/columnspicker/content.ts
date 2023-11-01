@@ -94,7 +94,7 @@ export class ColumnsPickerContent extends Component<ColumnsPickerContent_Props_t
         this.translate = new WordTranslator(() => this.props.language, translations);
     }
 
-    public componentWillReceiveProps(props: ColumnsPickerContent_Props_t) {
+    public componentDidUpdate(props: ColumnsPickerContent_Props_t) {
         if (!deepEqual(props.selectedColumns, this.props.selectedColumns) ||
             !deepEqual(props.sets, this.props.sets) ||
             !deepEqual(props.columnGroups, this.props.columnGroups)) {

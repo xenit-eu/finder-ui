@@ -56,6 +56,7 @@ type State_t = {
  * @param sets Column sets that are available
  * @param onSetsChange Called when column sets have changed and "Done" is pressed
  * @param onDone Called when "Done" is pressed with the columns that have been selected
+ * @param onSelectColumnSet Called when a column set change has occurred
  * @param allColumns A list of all columns that are available @deprecated Use columnGroups instead
  * @param columnGroups A list of all column groups that are available
  */

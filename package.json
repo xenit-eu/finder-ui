@@ -11,6 +11,7 @@
     "clean": "rimraf dist",
     "dist": "cpy '**/*.less' ../dist/ --cwd=src --parents && tsc",
     "prepare": "npm run clean && npm run dist",
+    "jest": "jest",
     "test": "build-storybook && jest",
     "lint": "tslint -c ./tslint.json 'src/**/*.ts' 'src/**/*.tsx'",
     "storybook": "start-storybook -p 6006",
