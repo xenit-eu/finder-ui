@@ -24,7 +24,7 @@ export type ColumnsPicker_t = {
     sets: ColumnSet_t[],
     onSetsChange: (sets: ColumnSet_t[]) => void,
     onDone: (selectedColumns: string[]) => void,
-    onSelectColumnSet: (columnSetName: string) => void
+    onSelectColumnSet: (columnSetName: string) => void,
 } & ({
     /** @deprecated, use columnGroups instead */
     allColumns?: never,
