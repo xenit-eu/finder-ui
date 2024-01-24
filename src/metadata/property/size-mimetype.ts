@@ -56,7 +56,7 @@ export const MimetypeIcon: PropertyRenderer_t<Content_t | null> = (config: Prope
             let value = config.mapToView(node);
             if (value) {
                 if (value.mimetype) {
-                    return "icon-"+value.mimetype;
+                    return "icon-" + value.mimetype;
                 }
             }
             return "";

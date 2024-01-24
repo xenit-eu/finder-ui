@@ -61,7 +61,7 @@ const Label: PropertyRenderer_t<string | string[]> = (config: PropertyRenderConf
             if (value.startsWith("icon-")) {
                 const iconProps = this.getIconProps(value.substring(5));
                 return _.div({title: iconProps.title}, __(FontIcon, {
-                    className: iconProps.classNames
+                    className: iconProps.classNames,
                 }));
             }
             return _.span({ ...classNamed, title: value }, value);
@@ -71,10 +71,10 @@ const Label: PropertyRenderer_t<string | string[]> = (config: PropertyRenderConf
             if (mimetype === "application/pdf") {
                 return {classNames: `fa fa-file-pdf-o`, title: "PDF"};
             }
-            if (mimetype.startsWith("text/")){
+            if (mimetype.startsWith("text/")) {
                 return {classNames: `fa fa-file-text-o`, title: "TEXT"};
             }
-            if (mimetype.startsWith("image/")){
+            if (mimetype.startsWith("image/")) {
                 return {classNames: `fa fa-file-image-o`, title: "IMAGE"};
             }
             if (mimetype === "message/rfc822" || mimetype === "application/octet-stream") {
