@@ -4,6 +4,7 @@ import * as _ from "react-dom-factories";
 
 import { FieldSkeleton_Props_t, RenderMode } from "../fields";
 import { PropertyRenderConfig_t, PropertyRenderer_t } from "./interface";
+import FontIcon from "material-ui/FontIcon";
 
 type KV_t = {
     key: string,
@@ -57,7 +58,29 @@ const Label: PropertyRenderer_t<string | string[]> = (config: PropertyRenderConf
             }
             const values = this.state.currentValues.map((item) => item.value);
             const value = values.join(", ");
+            if (value.startsWith("icon-")) {
+                const iconProps = this.getIconProps(value.substring(5));
+                return _.div({title: iconProps.title}, __(FontIcon, {
+                    className: iconProps.classNames
+                }));
+            }
             return _.span({ ...classNamed, title: value }, value);
+        }
+
+        private getIconProps(mimetype: string): {classNames: string, title: string} {
+            if (mimetype === "application/pdf") {
+                return {classNames: `fa fa-file-pdf-o`, title: "PDF"};
+            }
+            if (mimetype.startsWith("text/")){
+                return {classNames: `fa fa-file-text-o`, title: "TEXT"};
+            }
+            if (mimetype.startsWith("image/")){
+                return {classNames: `fa fa-file-image-o`, title: "IMAGE"};
+            }
+            if (mimetype === "message/rfc822" || mimetype === "application/octet-stream") {
+                return {classNames: `fa fa-envelope-o`, title: "EMAIL"};
+            }
+            return {classNames: `fa fa-file-o`, title: "other file"};
         }
 
     }

@@ -56,11 +56,7 @@ export const MimetypeIcon: PropertyRenderer_t<Content_t | null> = (config: Prope
             let value = config.mapToView(node);
             if (value) {
                 if (value.mimetype) {
-                    if (value.mimetype === "application/pdf") {
-                        return "PDF";
-                    } else {
-                        return "unknown";
-                    }
+                    return "icon-"+value.mimetype;
                 }
             }
             return "";
