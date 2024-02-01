@@ -77,7 +77,7 @@ const Label: PropertyRenderer_t<string | string[]> = (config: PropertyRenderConf
             if (mimetype.startsWith("image/")) {
                 return {classNames: `fa fa-file-image-o`, title: "IMAGE"};
             }
-            if (mimetype === "message/rfc822" || mimetype === "application/octet-stream") {
+            if (mimetype === "message/rfc822") {
                 return {classNames: `fa fa-envelope-o`, title: "EMAIL"};
             }
             return {classNames: `fa fa-file-o`, title: "other file"};
