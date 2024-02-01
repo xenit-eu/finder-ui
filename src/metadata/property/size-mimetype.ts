@@ -47,3 +47,19 @@ export const Mimetype: PropertyRenderer_t<Content_t | null> = (config: PropertyR
         },
     });
 };
+
+export const MimetypeIcon: PropertyRenderer_t<Content_t | null> = (config: PropertyRenderConfig_t<Content_t | null>) => {
+    return Label({
+        ...config,
+        mapToModel: (node: Node_t[], value: string) => config.mapToModel(node, null),
+        mapToView: (node: Node_t[]) => {
+            let value = config.mapToView(node);
+            if (value) {
+                if (value.mimetype) {
+                    return "icon-" + value.mimetype;
+                }
+            }
+            return "";
+        },
+    });
+};
