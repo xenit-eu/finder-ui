@@ -1,6 +1,6 @@
 ---
 title: Alfred Finder - UI - Changelog
-date: 16 December 2022
+date: 26 October 2023
 report: true
 colorlinks: true
 ---
@@ -23,10 +23,10 @@ docker run --rm -v "$(pwd):/manual" -w /manual hub.xenit.eu/private/xenit-markdo
 # Alfred Finder - UI - Changelog
 
 
-## 2.5.3 (2023-10-26)
+## 2.5.5 (2023-10-26)
 
 ### Added
- * [PVEBUPGR7-49](https://xenitsupport.jira.com/browse/PVEBUPGR7-49): update the column set used on click
+ * [XENFIN-1381](https://xenitsupport.jira.com/browse/XENFIN-1381): update the column set used on click
 
 ## 2.5.0 (2021-11-29)
 
