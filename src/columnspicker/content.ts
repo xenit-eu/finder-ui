@@ -112,7 +112,9 @@ export class ColumnsPickerContent extends Component<ColumnsPickerContent_Props_t
         if (!set) {
             this.setState({ selectedSet: null });
         } else {
-            this.props.onSelectColumnSet(set.id);
+            if (this.props.onSelectColumnSet) {
+                this.props.onSelectColumnSet(set.id);
+            }
             this.setState({
                 selectedSet: set.id,
                 selected: set.columns,
