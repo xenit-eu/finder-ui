@@ -13,10 +13,14 @@ export const SELECTINTENDEDQUERY = "Select the intended query.";
 export const SUBQUERY = "Subquery";
 export const NODEREF = "Noderef";
 export const TYPE = "Document type";
-export const FRENCH = "fr-be";
-export const ENGLISH = "en-us";
-export const DUTCH = "nl-be";
-export const SPANISH = "es-es";
+export const FRENCH_BASE = "fr";
+export const ENGLISH_BASE = "en";
+export const DUTCH_BASE = "nl";
+export const SPANISH_BASE = "es";
+export const FRENCH = "fr-BE";
+export const ENGLISH = "en-US";
+export const DUTCH = "nl-BE";
+export const SPANISH = "es-ES";
 type Translation = { [word: string]: string };
 
 //In case adding new language, change this interface to get typed checked assurance that you translate everything.
@@ -26,12 +30,20 @@ export interface TranslationsChecked {
     [ENGLISH]: Translation;
     [DUTCH]: Translation;
     [SPANISH]: Translation;
+    [FRENCH_BASE]: Translation;
+    [ENGLISH_BASE]: Translation;
+    [DUTCH_BASE]: Translation;
+    [SPANISH_BASE]: Translation;
 };
 export const EmptyTranslations: TranslationsChecked = {
     [FRENCH]: {},
     [ENGLISH]: {},
     [DUTCH]: {},
     [SPANISH]: {},
+    [FRENCH_BASE]: {},
+    [ENGLISH_BASE]: {},
+    [DUTCH_BASE]: {},
+    [SPANISH_BASE]: {},
 };
 export type GetLanguage = () => string;
 export type Translations = { [lang: string]: { [word: string]: string } };
@@ -94,6 +106,54 @@ const datewordTranslations: TranslationsChecked = {
         [DATE_RANGE_PICK]: "elige un rango de fechas...",
         [DATE_BETWEEN]: "Entre...",
     },
+    [ENGLISH_BASE]: {
+        [DATE_ON]: DATE_ON,
+        [DATE_FROM]: DATE_FROM,
+        [DATE_UNTIL]: DATE_UNTIL,
+        [DATE_TODAY]: DATE_TODAY,
+        [DATE_LASTWEEK]: DATE_LASTWEEK,
+        [DATE_LASTMONTH]: DATE_LASTMONTH,
+        [DATE_LAST6MONTH]: DATE_LAST6MONTH,
+        [DATE_LASTYEAR]: DATE_LASTYEAR,
+        [DATE_RANGE_PICK]: DATE_RANGE_PICK,
+
+    },
+    [FRENCH_BASE]: {
+        [DATE_ON]: "à...",
+        [DATE_FROM]: "a partir de...",
+        [DATE_UNTIL]: "jusqu'a...",
+        [DATE_TODAY]: "Aujourd'hui",
+        [DATE_LASTWEEK]: "cette semaine",
+        [DATE_LASTMONTH]: "cette mois",
+        [DATE_LAST6MONTH]: "cette 6 mois",
+        [DATE_LASTYEAR]: "cette annee",
+        [DATE_RANGE_PICK]: "choisissez une plage de dates...",
+        [DATE_BETWEEN]: "Entre...",
+    },
+    [DUTCH_BASE]: {
+        [DATE_ON]: "op...",
+        [DATE_FROM]: "vanaf...",
+        [DATE_UNTIL]: "tot...",
+        [DATE_TODAY]: "vandaag",
+        [DATE_LASTWEEK]: "deze week",
+        [DATE_LASTMONTH]: "deze maand",
+        [DATE_LAST6MONTH]: "deze 6 maanden",
+        [DATE_LASTYEAR]: "dit jaar",
+        [DATE_RANGE_PICK]: "kies een datum bereik...",
+        [DATE_BETWEEN]: "Tussen...",
+    },
+    [SPANISH_BASE]: {
+        [DATE_ON]: "en...",
+        [DATE_FROM]: "desde...",
+        [DATE_UNTIL]: "hasta...",
+        [DATE_TODAY]: "hoy",
+        [DATE_LASTWEEK]: "la semana pasada",
+        [DATE_LASTMONTH]: "el mes pasado",
+        [DATE_LAST6MONTH]: "ultimos 6 meses",
+        [DATE_LASTYEAR]: "el año pasado",
+        [DATE_RANGE_PICK]: "elige un rango de fechas...",
+        [DATE_BETWEEN]: "Entre...",
+    },
 };
 
 const folderWordTranslations: TranslationsChecked = {
@@ -107,6 +167,18 @@ const folderWordTranslations: TranslationsChecked = {
         [FOLDER]: "Map",
     },
     [SPANISH]: {
+        [FOLDER]: "Carpeta",
+    },
+    [ENGLISH_BASE]: {
+        [FOLDER]: FOLDER,
+    },
+    [FRENCH_BASE]: {
+        [FOLDER]: "Dossier",
+    },
+    [DUTCH_BASE]: {
+        [FOLDER]: "Map",
+    },
+    [SPANISH_BASE]: {
         [FOLDER]: "Carpeta",
     },
 };
@@ -124,6 +196,18 @@ const textWordTranslations: TranslationsChecked = {
     [SPANISH]: {
         [TEXT]: "Texto",
     },
+    [ENGLISH_BASE]: {
+        [TEXT]: TEXT,
+    },
+    [FRENCH_BASE]: {
+        [TEXT]: "Texte",
+    },
+    [DUTCH_BASE]: {
+        [TEXT]: "Tekst",
+    },
+    [SPANISH_BASE]: {
+        [TEXT]: "Texto",
+    },
 };
 
 const AllWordTranslations: TranslationsChecked = {
@@ -137,6 +221,18 @@ const AllWordTranslations: TranslationsChecked = {
         [ALL]: "Alles",
     },
     [SPANISH]: {
+        [ALL]: "Todo",
+    },
+    [ENGLISH_BASE]: {
+        [ALL]: ALL,
+    },
+    [FRENCH_BASE]: {
+        [ALL]: "Tout",
+    },
+    [DUTCH_BASE]: {
+        [ALL]: "Alles",
+    },
+    [SPANISH_BASE]: {
         [ALL]: "Todo",
     },
 };
@@ -158,6 +254,22 @@ export const logicWordTranslations: TranslationsChecked = {
         [AND]: "Y",
         [OR]: "O",
     },
+    [ENGLISH_BASE]: {
+        [AND]: AND,
+        [OR]: OR,
+    },
+    [FRENCH_BASE]: {
+        [AND]: "Et",
+        [OR]: "Ou",
+    },
+    [DUTCH_BASE]: {
+        [AND]: "En",
+        [OR]: "Of",
+    },
+    [SPANISH_BASE]: {
+        [AND]: "Y",
+        [OR]: "O",
+    },
 };
 
 export const subqueryTranslations: TranslationsChecked = {
@@ -171,6 +283,18 @@ export const subqueryTranslations: TranslationsChecked = {
         [SUBQUERY]: "Deelzoekopdracht",
     },
     [SPANISH]: {
+        [SUBQUERY]: "Subconsulta",
+    },
+    [ENGLISH_BASE]: {
+        [SUBQUERY]: SUBQUERY,
+    },
+    [FRENCH_BASE]: {
+        [SUBQUERY]: "Sous-requête",
+    },
+    [DUTCH_BASE]: {
+        [SUBQUERY]: "Deelzoekopdracht",
+    },
+    [SPANISH_BASE]: {
         [SUBQUERY]: "Subconsulta",
     },
 };
@@ -187,6 +311,18 @@ export const aspectTranslations: TranslationsChecked = {
     [SPANISH]: {
         [ASPECT]: "aspecto",
     },
+    [ENGLISH_BASE]: {
+        [ASPECT]: ASPECT,
+    },
+    [FRENCH_BASE]: {
+        [ASPECT]: "aspect",
+    },
+    [DUTCH_BASE]: {
+        [ASPECT]: "aspect",
+    },
+    [SPANISH_BASE]: {
+        [ASPECT]: "aspecto",
+    },
 };
 export const noderefTranslations: TranslationsChecked = {
     [ENGLISH]: {
@@ -201,6 +337,18 @@ export const noderefTranslations: TranslationsChecked = {
     [SPANISH]: {
         [NODEREF]: NODEREF,
     },
+    [ENGLISH_BASE]: {
+        [NODEREF]: NODEREF,
+    },
+    [FRENCH_BASE]: {
+        [NODEREF]: NODEREF,
+    },
+    [DUTCH_BASE]: {
+        [NODEREF]: NODEREF,
+    },
+    [SPANISH_BASE]: {
+        [NODEREF]: NODEREF,
+    },
 };
 export const typeTranslations: TranslationsChecked = {
     [ENGLISH]: {
@@ -213,6 +361,18 @@ export const typeTranslations: TranslationsChecked = {
         [TYPE]: "Documenttype",
     },
     [SPANISH]: {
+        [TYPE]: "Tipo de documento",
+    },
+    [ENGLISH_BASE]: {
+        [TYPE]: TYPE,
+    },
+    [FRENCH_BASE]: {
+        [TYPE]: "Type de document",
+    },
+    [DUTCH_BASE]: {
+        [TYPE]: "Documenttype",
+    },
+    [SPANISH_BASE]: {
         [TYPE]: "Tipo de documento",
     },
 };
@@ -233,6 +393,22 @@ export const translateSearchboxTranslations: TranslationsChecked = {
         [SELECTINTENDEDQUERY]: "Seleccione la consulta deseada.",
         [PLACEHOLDERTRANSLATION]: "Escriba el palabra de búsqueda/Consulta o 'Enter' para iniciar la búsqueda",
     },
+    [ENGLISH_BASE]: {
+        [PLACEHOLDERTRANSLATION]: "Type search term/query or 'Enter' to start searching",
+        [SELECTINTENDEDQUERY]: SELECTINTENDEDQUERY,
+    },
+    [FRENCH_BASE]: {
+        [PLACEHOLDERTRANSLATION]: "Taper un terme de recherche ou 'Entrer' pour lancer la recherche",
+        [SELECTINTENDEDQUERY]: "Sélectionnez la requête souhaitée.",
+    },
+    [DUTCH_BASE]: {
+        [SELECTINTENDEDQUERY]: "Selecteer de bedoelde zoekopdracht.",
+        [PLACEHOLDERTRANSLATION]: "Vul een zoekterm in of type 'Enter' om te zoeken",
+    },
+    [SPANISH_BASE]: {
+        [SELECTINTENDEDQUERY]: "Seleccione la consulta deseada.",
+        [PLACEHOLDERTRANSLATION]: "Escriba el palabra de búsqueda/Consulta o 'Enter' para iniciar la búsqueda",
+    },
 
 };
 export const translateComments: TranslationsChecked = {
@@ -246,6 +422,18 @@ export const translateComments: TranslationsChecked = {
         [ADD_A_COMMENT]: "Voeg commentaar toe...",
     },
     [SPANISH]: {
+        [ADD_A_COMMENT]: "Añadir un comentario...",
+    },
+    [ENGLISH_BASE]: {
+        [ADD_A_COMMENT]: ADD_A_COMMENT,
+    },
+    [FRENCH_BASE]: {
+        [ADD_A_COMMENT]: "ajouter un commentaire...",
+    },
+    [DUTCH_BASE]: {
+        [ADD_A_COMMENT]: "Voeg commentaar toe...",
+    },
+    [SPANISH_BASE]: {
         [ADD_A_COMMENT]: "Añadir un comentario...",
     },
 };
