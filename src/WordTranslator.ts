@@ -13,10 +13,10 @@ export const SELECTINTENDEDQUERY = "Select the intended query.";
 export const SUBQUERY = "Subquery";
 export const NODEREF = "Noderef";
 export const TYPE = "Document type";
-export const FRENCH = "fr-be";
-export const ENGLISH = "en-us";
-export const DUTCH = "nl-be";
-export const SPANISH = "es-es";
+export const FRENCH = "fr-BE";
+export const ENGLISH = "en-US";
+export const DUTCH = "nl-BE";
+export const SPANISH = "es-ES";
 type Translation = { [word: string]: string };
 
 //In case adding new language, change this interface to get typed checked assurance that you translate everything.
