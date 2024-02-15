@@ -10,7 +10,7 @@ describe("Metadata component", () => {
     it("should not open dialog when opened prop is false", () => {
 
         const props: CommentsDialog_t = {
-            language: "en-us",
+            language: "en",
             opened: false,
             comments: [],
             onClose: () => { },
