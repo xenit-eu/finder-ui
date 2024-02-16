@@ -1,6 +1,6 @@
 ---
 title: Alfred Finder - UI - Changelog
-date: 13 February 2024
+date: 15 February 2024
 report: true
 colorlinks: true
 ---
@@ -22,6 +22,10 @@ docker run --rm -v "$(pwd):/manual" -w /manual hub.xenit.eu/private/xenit-markdo
 
 # Alfred Finder - UI - Changelog
 
+## 2.5.8 (2024-02-15)
+
+### Fixed
+* [XENFIN-1390](https://xenitsupport.jira.com/browse/XENFIN-1390): Incorrect locale resolved
 
 ## 2.5.7 (2024-02-13)
 
