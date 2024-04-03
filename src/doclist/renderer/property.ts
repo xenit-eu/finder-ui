@@ -23,7 +23,9 @@ export default PropertyRenderer;
 /*We can use the metadata renderers of the metadata panel here instead of this function*/
 function convertToString(parameters: { [k: string]: any }, value: Property_t) {
     if (typeof value === "string") {
-        return value;
+        const pattern = parameters["string-pattern"];
+        const format = parameters["string-format"];
+        return (pattern && format) ? value.replace(new RegExp(pattern), format) : value;
     }
 
     if (typeof value === "boolean") {
