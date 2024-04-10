@@ -17,10 +17,15 @@ Template:
 ### Fixed
 ### Security
 
-docker run --rm -v "$(pwd):/manual" -w /manual hub.xenit.eu/private/xenit-markdowntopdf:latest --output Alfred_Finder_UI_CHANGELOG.pdf CHANGELOG.md
+docker run --rm -v "$(pwd):/manual" -w /manual private.docker.xenit.eu/xenit-markdowntopdf:latest --output Alfred_Finder_UI_CHANGELOG.pdf CHANGELOG.md
 -->
 
 # Alfred Finder - UI - Changelog
+
+## 2.6.0 (2024-04-04)
+
+### Added
+* [XENFIN-1392](https://xenitsupport.jira.com/browse/XENFIN-1392): Allow custom format for string properties
 
 ## 2.5.8 (2024-02-15)
 

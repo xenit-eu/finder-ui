@@ -56,7 +56,11 @@ const Label: PropertyRenderer_t<string | string[]> = (config: PropertyRenderConf
             if (!this.state.currentValuesLoaded) {
                 return _.span(classNamed, "Loading...");
             }
-            const values = this.state.currentValues.map((item) => item.value);
+            const pattern = config.parameters["string-pattern"];
+            const format = config.parameters["string-format"];
+            const values = (pattern && format)
+                ? this.state.currentValues.map((item) => item.value.replace(new RegExp(pattern), format))
+                : this.state.currentValues.map((item) => item.value);
             const value = values.join(", ");
             if (value.startsWith("icon-")) {
                 const iconProps = this.getIconProps(value.substring(5));
