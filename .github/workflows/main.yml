@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Use Node 12
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
           node-version: 12.x
 
@@ -35,14 +35,14 @@ jobs:
 
       - name: Save failed snapshots
         if: ${{ failure() }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: failed-snapshots
           path: __tests__/__image_snapshots__/__diff_output__/
 
       - name: Save storybook
         if: ${{ always() }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: storybook
           path: storybook-static/
@@ -64,13 +64,13 @@ jobs:
     if: "startsWith(github.ref, 'refs/tags/v')"
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Pull versions
         run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
 
       - name: Use Node 12
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
           node-version: 12.x
           registry-url: https://registry.npmjs.org/
